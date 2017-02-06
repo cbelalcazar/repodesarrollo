@@ -13,7 +13,8 @@ class CreateImportacionesV2Tmetrica extends Migration
      */
     public function up()
     {
-        Schema::connection('importacionesV2')->create('t_metrica', function (Blueprint $table) {
+        Schema::connection('importacionesV2')->create('t_metrica', function (Blueprint $table)
+        {
             $table->increments('id');
 
             $table->string('met_nombre')
@@ -23,7 +24,7 @@ class CreateImportacionesV2Tmetrica extends Migration
                   ->comment('Numero de dias de la metrica');
 
             $table->softDeletes();
-            
+
             $table->timestamps();
         });
     }

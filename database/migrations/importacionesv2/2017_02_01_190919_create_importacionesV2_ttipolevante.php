@@ -13,14 +13,15 @@ class CreateImportacionesV2Ttipolevante extends Migration
      */
     public function up()
     {
-        Schema::connection('importacionesV2')->create('t_tipo_levante', function (Blueprint $table) {
+        Schema::connection('importacionesV2')->create('t_tipo_levante', function (Blueprint $table)
+        {
             $table->increments('id');
 
             $table->string('tlev_nombre')
                   ->comment('Nombre del tipo de levante');
 
             $table->softDeletes();
-            
+
             $table->timestamps();
         });
     }

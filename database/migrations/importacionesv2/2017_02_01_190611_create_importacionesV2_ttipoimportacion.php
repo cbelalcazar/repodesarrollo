@@ -13,14 +13,15 @@ class CreateImportacionesV2Ttipoimportacion extends Migration
      */
     public function up()
     {
-        Schema::connection('importacionesV2')->create('t_tipo_importacion', function (Blueprint $table) {
+        Schema::connection('importacionesV2')->create('t_tipo_importacion', function (Blueprint $table)
+        {
             $table->increments('id');
 
             $table->string('timp_nombre')
                   ->comment('Nombre del tipo de importacion');
 
             $table->softDeletes();
-            
+
             $table->timestamps();
         });
     }

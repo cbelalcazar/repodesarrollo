@@ -20,11 +20,11 @@ class CreateImportacionesV2Torigenmercancia extends Migration
             $table->string('ormer_nombre')
                   ->comment('Nombre del origen de la mercancia');
 
-            $table->boolean('ormer_requ_cert_import')
-                  ->comment('¿la mercancia requiere certificado de importacion? R: True / False');
+            $table->boolean('ormer_requ_cert_origen')
+                  ->comment('¿la mercancia requiere certificado de origen? R: True / False');
 
             $table->softDeletes();
-            
+
             $table->timestamps();
         });
     }

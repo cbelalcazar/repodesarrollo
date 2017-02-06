@@ -13,7 +13,7 @@ class CreateImportacionesV2Timportacion extends Migration
      */
     public function up()
     {
-        Schema::connection('importacionesV2')->create('t_importacion', function (Blueprint $table) 
+        Schema::connection('importacionesV2')->create('t_importacion', function (Blueprint $table)
         {
             $table->increments('id');
 
@@ -25,13 +25,13 @@ class CreateImportacionesV2Timportacion extends Migration
 
             $table->integer('imp_puerto_embarque')
                   ->unsigned()
-                  ->comment('Campo que relaciona este campo con la tabla t_puerto_embarque');
+                  ->comment('Campo que relaciona esta tabla con la tabla t_puerto_embarque');
 
             $table->integer('imp_iconterm')
                   ->unsigned()
-                  ->comment('Campo que relaciona este campo con la tabla t_iconterm');
+                  ->comment('Campo que relaciona esta tabla con la tabla t_iconterm');
 
-            $table->integer('imp_moneda_negociacion')
+            $table->string('imp_moneda_negociacion')
                   ->comment('Campo que relaciona la moneda de negociacion del ERP al sistema de importaciones');
 
             $table->dateTime('imp_fecha_entrega_total')
@@ -43,16 +43,16 @@ class CreateImportacionesV2Timportacion extends Migration
 
             $table->integer('imp_estado_proceso')
                   ->unsigned()
-                  ->comment('Campo que relaciona este campo con la tabla t_estado clase estado 1 para proceso 1 origen - 2 transito - 3 puerto - 4 bodega - 5 liquidada -6 cerrada -7 anulada');
+                  ->comment('Campo que relaciona esta tabla con la tabla t_estado clase estado 1 para proceso 1 origen - 2 transito - 3 puerto - 4 bodega - 5 liquidada -6 cerrada -7 anulada');
 
-            $table->softDeletes();      
+            $table->softDeletes();
 
-            $table->timestamps();      
+            $table->timestamps();
         });
 
         Schema::connection('importacionesV2')->table('t_importacion', function(Blueprint $table) {
-             
-            $table->foreign('imp_puerto_embarque')->references('id')->on('t_puerto_embarque');   
+
+            $table->foreign('imp_puerto_embarque')->references('id')->on('t_puerto_embarque');
 
             $table->foreign('imp_iconterm')->references('id')->on('t_iconterm');
 

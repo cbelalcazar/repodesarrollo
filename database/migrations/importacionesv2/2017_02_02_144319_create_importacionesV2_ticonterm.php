@@ -13,14 +13,15 @@ class CreateImportacionesV2Ticonterm extends Migration
      */
     public function up()
     {
-        Schema::connection('importacionesV2')->create('t_iconterm', function (Blueprint $table) {
+        Schema::connection('importacionesV2')->create('t_iconterm', function (Blueprint $table)
+        {
             $table->increments('id');
 
             $table->string('inco_descripcion')
                   ->comment('Descripcion del inconterm');
 
             $table->softDeletes();
-            
+
             $table->timestamps();
         });
     }

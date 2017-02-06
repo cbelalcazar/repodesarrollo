@@ -13,15 +13,16 @@ class CreateImportacionesV2Tpuertoembarque extends Migration
      */
     public function up()
     {
-        Schema::connection('importacionesV2')->create('t_puerto_embarque', function (Blueprint $table) {
-            
+        Schema::connection('importacionesV2')->create('t_puerto_embarque', function (Blueprint $table)
+        {
+
             $table->increments('id');
 
             $table->string('puem_nombre')
                   ->comment('Nombre del puerto de embarque');
 
             $table->softDeletes();
-            
+
             $table->timestamps();
         });
     }

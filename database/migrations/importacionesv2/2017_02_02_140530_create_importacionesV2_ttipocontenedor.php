@@ -13,14 +13,15 @@ class CreateImportacionesV2Ttipocontenedor extends Migration
      */
     public function up()
     {
-        Schema::connection('importacionesV2')->create('t_tipo_contenedor', function (Blueprint $table) {
+        Schema::connection('importacionesV2')->create('t_tipo_contenedor', function (Blueprint $table)
+        {
             $table->increments('id');
 
             $table->string('tcont_descripcion')
                   ->comment('Descripcion del tipo de contenedor');
 
             $table->softDeletes();
-            
+
             $table->timestamps();
         });
     }

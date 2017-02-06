@@ -13,16 +13,19 @@ class CreateImportacionesV2Tcausalesdemora extends Migration
      */
     public function up()
     {
-        Schema::connection('importacionesV2')->create('t_causales_demora', function (Blueprint $table) {
+        Schema::connection('importacionesV2')->create('t_causales_demora', function (Blueprint $table)
+        {
             $table->increments('id');
 
             $table->string('cdem_nombre')
                   ->comment('Nombre del tipo de levante');
 
-            $table->integer('cdem_metrica')->unsigned();
+            $table->integer('cdem_metrica')
+                  ->unsigned()
+                  ->comment('Campo que relaciona esta tabla con la tabla t_metrica');
 
             $table->softDeletes();
-            
+
             $table->timestamps();
         });
 

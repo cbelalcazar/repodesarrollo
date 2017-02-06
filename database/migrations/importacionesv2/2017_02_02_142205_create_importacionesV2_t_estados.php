@@ -13,12 +13,13 @@ class CreateImportacionesV2TEstados extends Migration
      */
     public function up()
     {
-        Schema::connection('importacionesV2')->create('t_estados', function (Blueprint $table) {
+        Schema::connection('importacionesV2')->create('t_estados', function (Blueprint $table)
+        {
             $table->increments('id');
 
             $table->string('est_nombre')
                   ->comment('Nombre del estado');
-                  
+
             $table->timestamps();
         });
     }

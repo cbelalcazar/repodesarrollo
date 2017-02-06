@@ -13,7 +13,7 @@ class CreateImportacionesV2Ttipocarga extends Migration
      */
     public function up()
     {
-        Schema::connection('importacionesV2')->create('t_tipo_carga', function (Blueprint $table) 
+        Schema::connection('importacionesV2')->create('t_tipo_carga', function (Blueprint $table)
         {
             $table->increments('id');
 
@@ -21,7 +21,7 @@ class CreateImportacionesV2Ttipocarga extends Migration
                   ->comment('Descripcion del tipo de carga');
 
             $table->softDeletes();
-            
+
             $table->timestamps();
         });
     }
