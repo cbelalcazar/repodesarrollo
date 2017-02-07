@@ -24,4 +24,7 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('home', function () {
     return redirect(env('APPV1_URL'));
   });
+
+  //Rutas para el proyecto de importacionesv2
+  Route::resource('importacionesv2/OrigenMercancia', 'Importacionesv2\TOrigenMercanciaController');
 });
