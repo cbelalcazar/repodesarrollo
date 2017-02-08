@@ -27,4 +27,5 @@ Route::group(['middleware' => ['auth']], function () {
 
   //Rutas para el proyecto de importacionesv2
   Route::resource('importacionesv2/OrigenMercancia', 'Importacionesv2\TOrigenMercanciaController');
+  Route::resource('importacionesv2/PuertoEmbarque', 'Importacionesv2\TPuertoEmbarqueController');
 });

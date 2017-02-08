@@ -23,10 +23,17 @@ class TOrigenMercanciaController extends Controller
   *[1]-> Tipo de dato del campo en la tabla de la base de datos
   *[2]-> Elemento de html que puede representarlo en un formulario
   *[3]-> Label que debe aparecer el el formulario
+  *[4]-> Place holder que debe aparecer en el formulario
   */
-  public $id = array('id', 'int', 'hidden', 'Identificacion del origen de la mercancia');
-  public $ormer_nombre = array('ormer_nombre', 'string', 'text', 'Descripcion del origen de la mercancia');
-  public $ormer_requ_cert_origen = array('ormer_requ_cert_origen', 'boolean', 'checkbox', 'Requiere certificado de origen?');
+  public $id = array('id', 'int', 'hidden', 'Identificacion del origen de la mercancia', '');
+  public $ormer_nombre = array('ormer_nombre', 'string', 'text', 'Descripcion del origen de la mercancia', '');
+  public $ormer_requ_cert_origen = array('ormer_requ_cert_origen', 'boolean', 'checkbox', 'Requiere certificado de origen?', '');
+
+  //Strings urls
+  //Para diligenciar este campo debes en consola escribir php artisan route:list ya tienes que haber declarado
+  //la ruta en el archivo routes y debes buscar el method y uri correspondiente correspondiente a este controlador resource
+  //** method GET|HEAD
+  public $strUrlConsulta = 'importacionesv2/OrigenMercancia';
 
   //Defino las reglas de validacion para el formulario
   public $rules = array(
@@ -52,6 +59,8 @@ class TOrigenMercanciaController extends Controller
   */
   public function index()
   {
+    //Seteo el titulo en la funcion para mostrar en la vista index
+    $titulo = $this->titulo;
     /**
     *Variable datos debe contener la informacion que se quiere mostrar en el formulario generico.
     */
@@ -61,7 +70,7 @@ class TOrigenMercanciaController extends Controller
     *Variable titulosTabla debe contener un array con los titulos de la tabla.
     *La cantidad de titulos debe corresponder a la cantidad de columnas que trae la consulta.
     */
-    $titulosTabla =  array('Id', 'Nombre', 'Requiere Certificado de Origen', 'Acción');
+    $titulosTabla =  array('Id', 'Descripcion', 'Requiere Certificado de Origen', 'Acción');
 
     /**
     *Campos con su tipo de dato.
@@ -70,14 +79,14 @@ class TOrigenMercanciaController extends Controller
     */
     $campos =  array($this->id, $this->ormer_nombre, $this->ormer_requ_cert_origen);
 
-    //url debe tener la url completa para consulta
-    $url = url('importacionesv2/OrigenMercancia');
+    //Genera ulr completa de consulta
+    $url = url($this->strUrlConsulta);
 
-    return view('importacionesv2.index', array('titulo' => $this->titulo,
-    'datos' => $datos,
-    'titulosTabla' => $titulosTabla,
-    'campos' => $campos,
-    'url' => $url));
+    return view('importacionesv2.index', compact('titulo',
+    'datos',
+    'titulosTabla',
+    'campos',
+    'url'));
   }
 
   /**
@@ -87,13 +96,16 @@ class TOrigenMercanciaController extends Controller
   */
   public function create()
   {
-    //Array que contiene
+    //Array que contiene los campos que deseo mostrar en el formulario no debes tiene en cuenta timestamps ni softdeletes
     $campos =  array($this->id, $this->ormer_nombre, $this->ormer_requ_cert_origen);
-    $url = url('importacionesv2/OrigenMercancia');
-    $titulo = $this->titulo;
+    //Genera url completa de consulta
+    $url = url($this->strUrlConsulta);
+    //Variable que contiene el titulo de la vista crear
+    $titulo = "CREAR ".$this->titulo;
+    //Libreria de validaciones con ajax
     $validator = JsValidator::make($this->rules, $this->messages);
-    return view('importacionesv2.create', compact('titulo','campos' ,'url', 'validator'));
 
+    return view('importacionesv2.create', compact('titulo','campos' ,'url', 'validator'));
   }
 
   /**
@@ -105,7 +117,7 @@ class TOrigenMercanciaController extends Controller
   public function store(Request $request)
   {
     //Genera la url de consulta
-    $url = url('importacionesv2/OrigenMercancia');
+    $url = url($this->strUrlConsulta);
     //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
     $validarExistencia = TOrigenMercancia::where('ormer_nombre', '=', "$request->ormer_nombre")->get();
     if(count($validarExistencia) > 0){
@@ -114,14 +126,14 @@ class TOrigenMercanciaController extends Controller
       ->withErrors('El origen de la mercancia que intenta crear tiene el mismo nombre que un registro ya existente');
     }
     //Crea el registro en la tabla origen mercancia
-    $origenMercancia = new TOrigenMercancia;
-    $origenMercancia->ormer_nombre = strtoupper(Input::get('ormer_nombre'));
+    $ObjectCrear = new TOrigenMercancia;
+    $ObjectCrear->ormer_nombre = strtoupper(Input::get('ormer_nombre'));
     if ($request->ormer_requ_cert_origen == 1){
-      $origenMercancia->ormer_requ_cert_origen = 1;
+      $ObjectCrear->ormer_requ_cert_origen = 1;
     }else{
-      $origenMercancia->ormer_requ_cert_origen = 0;
+      $ObjectCrear->ormer_requ_cert_origen = 0;
     }
-    $origenMercancia->save();
+    $ObjectCrear->save();
     //Redirecciona a la pagina de consulta y muestra mensaje
     Session::flash('message', 'Origen de la mercancia fue creada exitosamente!');
     return Redirect::to($url);
@@ -147,13 +159,21 @@ class TOrigenMercanciaController extends Controller
   */
   public function edit($id)
   {
+    //Id del registro que deseamos editar
     $id = $id;
+    //Consulto el registro que deseo editar
     $objeto = TOrigenMercancia::find($id);
+    //organizo el array que me sirve para mostrar el formulario de edicion
     $campos =  array($this->id, $this->ormer_nombre, $this->ormer_requ_cert_origen);
-    $titulo = "EDITAR ORIGEN MERCANCÍA";
-    $url = url('importacionesv2/OrigenMercancia');
+    //Titulo de la pagina
+    $titulo = "EDITAR ".$this->titulo;
+    //url de redireccion para consultar
+    $url = url($this->strUrlConsulta);
+    // Validaciones ajax
     $validator = JsValidator::make($this->rules, $this->messages);
+    //url de redireccion para editar
     $route = 'OrigenMercancia.update';
+    //retorno a la vista
     return view('importacionesv2.edit', compact('campos', 'url', 'titulo', 'validator', 'route', 'id' ,'objeto'));
   }
 
@@ -167,24 +187,24 @@ class TOrigenMercanciaController extends Controller
   public function update(Request $request, $id)
   {
     //Genera la url de consulta
-    $url = url('importacionesv2/OrigenMercancia');
+    $url = url($this->strUrlConsulta);
     //Consulto el registro a editar
-    $origenMercancia = TOrigenMercancia::find($id);
+    $ObjectUpdate = TOrigenMercancia::find($id);
     //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
     $validarExistencia = TOrigenMercancia::where('ormer_nombre', '=', "$request->ormer_nombre")->first();
-    if(count($validarExistencia) > 0 && $validarExistencia != $origenMercancia){
+    if(count($validarExistencia) > 0 && $validarExistencia != $ObjectUpdate){
       //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
-      return Redirect::to("$url/create")
-      ->withErrors('El origen de la mercancia que intenta crear tiene el mismo nombre que un registro ya existente');
+      return Redirect::to("$url/$id/edit")
+      ->withErrors('El origen de la mercancia que intenta editar tiene el mismo nombre que un registro ya existente');
     }
-    //Edita el registro en la tabla origen mercancia
-    $origenMercancia->ormer_nombre = strtoupper(Input::get('ormer_nombre'));
+    //Edita el registro en la tabla
+    $ObjectUpdate->ormer_nombre = strtoupper(Input::get('ormer_nombre'));
     if ($request->ormer_requ_cert_origen == 1){
-      $origenMercancia->ormer_requ_cert_origen = 1;
+      $ObjectUpdate->ormer_requ_cert_origen = 1;
     }else{
-      $origenMercancia->ormer_requ_cert_origen = 0;
+      $ObjectUpdate->ormer_requ_cert_origen = 0;
     }
-    $origenMercancia->save();
+    $ObjectUpdate->save();
     //Redirecciona a la pagina de consulta y muestra mensaje
     Session::flash('message', 'Origen de la mercancia fue editado exitosamente!');
     return Redirect::to($url);
@@ -198,14 +218,16 @@ class TOrigenMercanciaController extends Controller
   */
   public function destroy($id)
   {
-    //
-       $origenMercancia = TOrigenMercancia::find($id);
-       $origenMercancia->delete();
-       $url = url('importacionesv2/OrigenMercancia');
+    //Consulto objeto a borrar
+    $ObjectDestroy = TOrigenMercancia::find($id);
+    //Borro el objeto
+    $ObjectDestroy->delete();
+    //Obtengo url de redireccion
+    $url = url($this->strUrlConsulta);
 
-       // redirect
-       Session::flash('message', 'Origen de la mercancia borrado exitosamente!');
-       return Redirect::to($url);
+    // redirect
+    Session::flash('message', 'El origen de la mercancia fue borrado exitosamente!');
+    return Redirect::to($url);
   }
 
   //---------------------------------------------------------------------------------------------------------

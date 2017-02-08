@@ -1,12 +1,10 @@
 @extends('importacionesv2.base')
 @section('generic')
-{{ Html::ul($errors->all()) }}
-
-
+@foreach($errors->all() as $key => $value)
+<div class="alert alert-danger">{{$value}}</div>
+@endforeach
 {{ Form::open(array('url' => "$url")) }}
-
 @foreach($campos as $key => $value )
-
 @if($value[2] == 'hidden')
 {{ Form::hidden("$value[0]") }}
 @elseif($value[2] == 'text')
