@@ -19,31 +19,32 @@
       @foreach($datos as $key => $value)
       <tr>
         @foreach($campos as $nombre => $campo)
-        @if($campo[1] == '' || $campo[1] == 'string' || $campo[1] == 'int')
-        <td>{{$value->$campo[0]}}</td>
-        @elseif($campo[1] == 'boolean')
-
-        @if($value->$campo[0] == 1)
-        <td>SI</td>
-        @elseif($value->$campo[0] == 0)
-        <td>NO</td>
-        @endif
-        @endif
+          @if($campo[1] == '' || $campo[1] == 'string' || $campo[1] == 'int')
+            <td>{{$value->$campo[0]}}</td>
+          @elseif($campo[1] == 'boolean')
+            @if($value->$campo[0] == 1)
+              <td>SI</td>
+            @elseif($value->$campo[0] == 0)
+              <td>NO</td>
+            @endif
+          @endif
         @endforeach
         <td>
-          <a class="btn btn-small btn-success" href="{{ URL::to("$url/" . $value->$campos[0][0]) }}">Visualizar</a>
           <a class="btn btn-small btn-info" href="{{ URL::to("$url/" . $value->$campos[0][0] . '/edit') }}">Editar</a>
+          <a class="btn red-mint" href="{{ URL::to("$url/" . $value->$campos[0][0] . '/edit') }}">Borrar</a>
         </td>
       </tr>
       @endforeach
     </tbody>
   </table>
 </div>
+
 <script type="text/javascript">
 $(document).ready( function () {
   $('#example').DataTable({
     responsive: true,
   });
 } );
+
 </script>
 @endsection

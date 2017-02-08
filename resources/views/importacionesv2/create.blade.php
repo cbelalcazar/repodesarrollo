@@ -9,15 +9,10 @@
 
 @if($value[2] == 'hidden')
 {{ Form::hidden("$value[0]") }}
-@endif
-
-@if($value[2] == 'text')
+@elseif($value[2] == 'text')
 <div class="form-group">
     {{ Form::label('', "$value[3]") }}
-
-    @if($value[2] == 'text')
     {{ Form::text("$value[0]", old("value[0]"), array('class' => 'form-control')) }}
-    @endif
 </div>
 @elseif($value[2] == 'checkbox')
 <div class="mt-checkbox-list">
@@ -27,10 +22,8 @@
     </label>
 </div>
 @endif
-
 @endforeach
 {{ Form::submit('Crear Nueva', array('class' => 'btn btn-primary')) }}
-
 {{ Form::close() }}
 {!! $validator  !!}
 @endsection

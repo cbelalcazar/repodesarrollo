@@ -10,15 +10,10 @@
         <!-- BEGIN SAMPLE FORM PORTLET-->
         <div class="portlet light ">
 
-          <div class="col-md-3 form-group">
-            <button type="button" onclick=" location.href='{{ $url }}' " class="btn default">Consultar todos</button>
+          <div class="btn-group btn-group-justified">
+            <a href="{{ $url }}" class="btn btn-default"> Consultar todos </a>
+            <a href="{{ $url.'/create' }}" class="btn btn-default"> Crear Nuevo </a>
           </div>
-          <div class="col-md-3 form-group">
-            <button type="button" onclick=" location.href='{{ $url.'/create' }}' " class="btn default">Crear Nuevo</button>
-          </div>
-          <br>
-          <br>
-          <br>
           <br>
           @yield('generic')
         </div>

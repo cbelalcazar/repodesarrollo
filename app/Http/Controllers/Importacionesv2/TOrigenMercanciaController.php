@@ -12,6 +12,10 @@ use JsValidator;
 
 class TOrigenMercanciaController extends Controller
 {
+
+  //---------------------------------------------------------------------------------------------------------
+  //DEFINICION DE VARIABLES GLOBALES A LA CLASE
+  //---------------------------------------------------------------------------------------------------------
   // Variable titulo sirve para setear el titulo en el formulario generico
   public $titulo = "ORIGEN MERCANCÍA";
   /**Array que representa los campos de la tabla, cada posicion corresponde a la siguiente informacion
@@ -33,6 +37,13 @@ class TOrigenMercanciaController extends Controller
   public $messages = array(
     'ormer_nombre.required'       => 'Favor ingresar el nombre del origen de la mercancia',
   );
+  //---------------------------------------------------------------------------------------------------------
+  //END DEFINICION DE VARIABLES GLOBALES A LA CLASE
+  //---------------------------------------------------------------------------------------------------------
+
+  //---------------------------------------------------------------------------------------------------------
+  //FUNCIONES RESOURCE
+  //---------------------------------------------------------------------------------------------------------
 
   /**
   * Display a listing of the resource.
@@ -96,9 +107,7 @@ class TOrigenMercanciaController extends Controller
     //Genera la url de consulta
     $url = url('importacionesv2/OrigenMercancia');
     //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
-
     $validarExistencia = TOrigenMercancia::where('ormer_nombre', '=', "$request->ormer_nombre")->get();
-
     if(count($validarExistencia) > 0){
       //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
       return Redirect::to("$url/create")
@@ -156,7 +165,28 @@ class TOrigenMercanciaController extends Controller
   */
   public function update(Request $request, $id)
   {
-    //
+    //Genera la url de consulta
+    $url = url('importacionesv2/OrigenMercancia');
+    //Consulto el registro a editar
+    $origenMercancia = TOrigenMercancia::find($id);
+    //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
+    $validarExistencia = TOrigenMercancia::where('ormer_nombre', '=', "$request->ormer_nombre")->first();
+    if(count($validarExistencia) > 0 && $validarExistencia != $origenMercancia){
+      //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
+      return Redirect::to("$url/create")
+      ->withErrors('El origen de la mercancia que intenta crear tiene el mismo nombre que un registro ya existente');
+    }
+    //Edita el registro en la tabla origen mercancia
+    $origenMercancia->ormer_nombre = strtoupper(Input::get('ormer_nombre'));
+    if ($request->ormer_requ_cert_origen == 1){
+      $origenMercancia->ormer_requ_cert_origen = 1;
+    }else{
+      $origenMercancia->ormer_requ_cert_origen = 0;
+    }
+    $origenMercancia->save();
+    //Redirecciona a la pagina de consulta y muestra mensaje
+    Session::flash('message', 'Origen de la mercancia fue editado exitosamente!');
+    return Redirect::to($url);
   }
 
   /**
@@ -169,4 +199,8 @@ class TOrigenMercanciaController extends Controller
   {
     //
   }
+
+  //---------------------------------------------------------------------------------------------------------
+  //END FUNCIONES RESOURCE
+  //---------------------------------------------------------------------------------------------------------
 }
