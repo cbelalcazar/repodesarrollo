@@ -31,7 +31,10 @@
         @endforeach
         <td>
           <a class="btn btn-small btn-info" href="{{ URL::to("$url/" . $value->$campos[0][0] . '/edit') }}">Editar</a>
-          <a class="btn red-mint" href="{{ URL::to("$url/" . $value->$campos[0][0] . '/edit') }}">Borrar</a>
+          {{ Form::open(array('url' => "$url/" . $value->$campos[0][0], 'class' => 'btn btn-small ')) }}
+                    {{ Form::hidden('_method', 'DELETE') }}
+                    {{ Form::submit('Borrar', array('class' => 'btn red-mint')) }}
+          {{ Form::close() }}
         </td>
       </tr>
       @endforeach

@@ -136,6 +136,7 @@ class TOrigenMercanciaController extends Controller
   public function show($id)
   {
     //
+
   }
 
   /**
@@ -198,6 +199,13 @@ class TOrigenMercanciaController extends Controller
   public function destroy($id)
   {
     //
+       $origenMercancia = TOrigenMercancia::find($id);
+       $origenMercancia->delete();
+       $url = url('importacionesv2/OrigenMercancia');
+
+       // redirect
+       Session::flash('message', 'Origen de la mercancia borrado exitosamente!');
+       return Redirect::to($url);
   }
 
   //---------------------------------------------------------------------------------------------------------

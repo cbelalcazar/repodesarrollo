@@ -3,12 +3,15 @@
 namespace App\Models\Importacionesv2;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class TImportacion
  */
 class TImportacion extends Model
 {
+    use SoftDeletes;
+
     protected $table = 't_importacion';
 
     public $timestamps = true;
@@ -25,5 +28,7 @@ class TImportacion extends Model
     ];
 
      protected $connection = 'importacionesV2';
+
+     protected $dates = ['deleted_at'];
 
 }

@@ -3,12 +3,15 @@
 namespace App\Models\Importacionesv2;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class TNacionalizacionImportacion
  */
 class TNacionalizacionImportacion extends Model
 {
+    use SoftDeletes;
+
     protected $table = 't_nacionalizacion_importacion';
 
     public $timestamps = true;
@@ -40,4 +43,6 @@ class TNacionalizacionImportacion extends Model
     ];
 
      protected $connection = 'importacionesV2';
+
+     protected $dates = ['deleted_at'];
 }
