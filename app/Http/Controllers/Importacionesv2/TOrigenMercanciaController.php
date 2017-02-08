@@ -12,7 +12,6 @@ use JsValidator;
 
 class TOrigenMercanciaController extends Controller
 {
-
   //---------------------------------------------------------------------------------------------------------
   //DEFINICION DE VARIABLES GLOBALES A LA CLASE
   //---------------------------------------------------------------------------------------------------------
@@ -70,7 +69,7 @@ class TOrigenMercanciaController extends Controller
     *Variable titulosTabla debe contener un array con los titulos de la tabla.
     *La cantidad de titulos debe corresponder a la cantidad de columnas que trae la consulta.
     */
-    $titulosTabla =  array('Id', 'Descripcion', 'Requiere Certificado de Origen', 'Acción');
+    $titulosTabla =  array('Id', 'Descripcion', 'Requiere Certificado de Origen', 'Editar', 'Eliminar');
 
     /**
     *Campos con su tipo de dato.
