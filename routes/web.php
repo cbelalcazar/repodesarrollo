@@ -30,4 +30,5 @@ Route::group(['middleware' => ['auth']], function () {
   Route::resource('importacionesv2/PuertoEmbarque', 'Importacionesv2\TPuertoEmbarqueController');
   Route::resource('importacionesv2/TipoImportacion', 'Importacionesv2\TTipoImportacionController');
   Route::resource('importacionesv2/TipoLevante', 'Importacionesv2\TTipoLevanteController');
+  Route::resource('importacionesv2/Metrica', 'Importacionesv2\TMetricaController');
 });
