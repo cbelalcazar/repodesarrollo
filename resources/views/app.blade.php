@@ -15,6 +15,8 @@
     <link href="{{url('/css/jquery.dataTables.min.css')}}" type="text/css" rel="stylesheet"/>
     <!--******************** CSS BESA **************************-->
     <link href="{{url('/css/besa.css')}}" type="text/css" rel="stylesheet"/>
+    <!--******************** CSS METRONIC **************************-->
+    <link href="{{url('/css/components.min.css')}}" type="text/css" rel="stylesheet"/>
 
     <!-- jQuery 3.1.1 -->
     <script src="{{url('/js/jquery.min.js')}}" type="text/javascript" language="javascript"></script>
@@ -35,12 +37,10 @@
     @stack('script_data_table')
   </head>
   <body>
-    @include('includes.header')
 
     <div class="wrap">
       @yield('content')
     </div>
 
-    @include('includes.footer')
   </body>
 </html>
