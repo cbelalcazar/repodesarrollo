@@ -212,7 +212,7 @@ class TTipoCargaController extends Controller
           $url = url($this->strUrlConsulta);
 
           // redirect
-          Session::flash('message', 'El inconterm fue borrado exitosamente!');
+          Session::flash('message', 'El tipo de carga fue borrado exitosamente!');
           return Redirect::to($url);
   }
 }
