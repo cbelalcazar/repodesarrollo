@@ -32,4 +32,5 @@ Route::group(['middleware' => ['auth']], function () {
   Route::resource('importacionesv2/TipoLevante', 'Importacionesv2\TTipoLevanteController');
   Route::resource('importacionesv2/Metrica', 'Importacionesv2\TMetricaController');
   Route::resource('importacionesv2/CausalesDemora', 'Importacionesv2\TCausalesDemoraController');
+  Route::resource('importacionesv2/Inconterm', 'Importacionesv2\TIcontermController');
 });
