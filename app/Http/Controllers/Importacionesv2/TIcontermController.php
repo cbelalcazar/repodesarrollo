@@ -120,7 +120,7 @@ class TIcontermController extends Controller
         if(count($validarExistencia) > 0){
             //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
             return Redirect::to("$url/create")
-            ->withErrors('La metrica que intenta crear tiene la misma descripcion que un registro ya existente');
+            ->withErrors('La inconterm que intenta crear tiene la misma descripcion que un registro ya existente');
         }
         //Crea el registro en la tabla origen mercancia
         $ObjectCrear = new TIconterm;
