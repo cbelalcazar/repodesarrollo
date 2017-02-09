@@ -20,6 +20,8 @@
         @foreach($campos as $nombre => $campo)
         @if($campo[1] == '' || $campo[1] == 'string' || $campo[1] == 'int')
         <td>{{$value->$campo[0]}}</td>
+        @elseif($campo[1] == 'relation')
+        <td>{{$value->$campo[6]}}</td>
         @elseif($campo[1] == 'boolean')
         @if($value->$campo[0] == 1)
         <td>SI</td>

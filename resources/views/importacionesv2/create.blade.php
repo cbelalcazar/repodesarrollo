@@ -12,6 +12,11 @@
     {{ Form::label('', "$value[3]") }}
     {{ Form::text("$value[0]", old("value[0]"), array('class' => 'form-control')) }}
 </div>
+@elseif($value[2] == 'select')
+<div class="form-group">
+    <label>{{$value[3]}}</label>
+    {{  Form::select($value[0],$value[5], null, ['placeholder'=>$value[4], 'class' => 'form-control'] ) }}
+</div>
 @elseif($value[2] == 'checkbox')
 <div class="mt-checkbox-list">
     <label class="mt-checkbox mt-checkbox-outline">{{$value[3]}}

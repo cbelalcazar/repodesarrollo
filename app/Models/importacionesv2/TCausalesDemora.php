@@ -25,4 +25,9 @@ class TCausalesDemora extends Model
 
      protected $dates = ['deleted_at'];
 
+     public function metricas()
+    {
+        return $this->hasOne('App\Models\Importacionesv2\TMetrica', 'id', 'cdem_metrica');
+    }
+
 }

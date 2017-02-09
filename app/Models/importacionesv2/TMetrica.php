@@ -24,4 +24,9 @@ class TMetrica extends Model
      protected $connection = 'importacionesV2';
 
      protected $dates = ['deleted_at'];
+
+     public function causalesdemora()
+   {
+       return $this->belongsTo('App\Models\Importacionesv2\TCausalesDemora', 'cdem_metrica', 'id');
+   }
 }
