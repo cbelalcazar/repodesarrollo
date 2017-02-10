@@ -24,5 +24,6 @@
     </div>
     <!-- END SAMPLE FORM PORTLET-->
   </div>
+  </div>
 
   @endsection

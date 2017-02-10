@@ -35,4 +35,5 @@ Route::group(['middleware' => ['auth']], function () {
   Route::resource('importacionesv2/Inconterm', 'Importacionesv2\TIcontermController');
   Route::resource('importacionesv2/TipoCarga', 'Importacionesv2\TTipoCargaController');
   Route::resource('importacionesv2/TipoContenedor', 'Importacionesv2\TTipoContenedorController');
+  Route::resource('importacionesv2/Producto', 'Importacionesv2\TProductoController');
 });
