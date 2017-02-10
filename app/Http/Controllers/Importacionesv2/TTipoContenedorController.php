@@ -9,6 +9,7 @@ use Input;
 use Redirect;
 use Session;
 use JsValidator;
+use \Cache;
 
 
 class TTipoContenedorController extends Controller
@@ -62,7 +63,10 @@ class TTipoContenedorController extends Controller
         /**
         *Variable datos debe contener la informacion que se quiere mostrar en el formulario generico.
         */
-        $datos = TTipoContenedor::all();
+        $datos = Cache::remember('tipocontenedor', 60, function()
+        {
+            return TTipoContenedor::all();
+        });
 
         /**
         *Variable titulosTabla debe contener un array con los titulos de la tabla.
@@ -127,6 +131,7 @@ class TTipoContenedorController extends Controller
         $ObjectCrear = new TTipoContenedor;
         $ObjectCrear->tcont_descripcion = strtoupper(Input::get('tcont_descripcion'));
         $ObjectCrear->save();
+        Cache::forget('tipocontenedor');
         //Redirecciona a la pagina de consulta y muestra mensaje
         Session::flash('message', 'El tipo de contenedor fue creado exitosamente!');
         return Redirect::to($url);
@@ -193,6 +198,7 @@ class TTipoContenedorController extends Controller
         //Edita el registro en la tabla
         $ObjectUpdate->tcont_descripcion = strtoupper(Input::get('tcont_descripcion'));
         $ObjectUpdate->save();
+        Cache::forget('tipocontenedor');
         //Redirecciona a la pagina de consulta y muestra mensaje
         Session::flash('message', 'El tipo de contenedor fue editado exitosamente!');
         return Redirect::to($url);
@@ -212,7 +218,7 @@ class TTipoContenedorController extends Controller
         $ObjectDestroy->delete();
         //Obtengo url de redireccion
         $url = url($this->strUrlConsulta);
-
+        Cache::forget('tipocontenedor');
         // redirect
         Session::flash('message', 'El tipo de contenedor fue borrado exitosamente!');
         return Redirect::to($url);

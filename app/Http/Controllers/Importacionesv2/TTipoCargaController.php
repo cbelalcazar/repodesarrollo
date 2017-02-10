@@ -9,6 +9,7 @@ use Input;
 use Redirect;
 use Session;
 use JsValidator;
+use \Cache;
 
 class TTipoCargaController extends Controller
 {
@@ -60,7 +61,10 @@ class TTipoCargaController extends Controller
     /**
     *Variable datos debe contener la informacion que se quiere mostrar en el formulario generico.
     */
-    $datos = TTipoCarga::all();
+    $datos = Cache::remember('tipocarga', 60, function()
+    {
+        return TTipoCarga::all();
+    });
 
     /**
     *Variable titulosTabla debe contener un array con los titulos de la tabla.
@@ -125,6 +129,7 @@ class TTipoCargaController extends Controller
     $ObjectCrear = new TTipoCarga;
     $ObjectCrear->tcar_descripcion = strtoupper(Input::get('tcar_descripcion'));
     $ObjectCrear->save();
+    Cache::forget('tipocarga');
     //Redirecciona a la pagina de consulta y muestra mensaje
     Session::flash('message', 'El tipo de carga fue creado exitosamente!');
     return Redirect::to($url);
@@ -191,6 +196,7 @@ class TTipoCargaController extends Controller
     //Edita el registro en la tabla
     $ObjectUpdate->tcar_descripcion = strtoupper(Input::get('tcar_descripcion'));
     $ObjectUpdate->save();
+    Cache::forget('tipocarga');
     //Redirecciona a la pagina de consulta y muestra mensaje
     Session::flash('message', 'El tipo de carga fue editado exitosamente!');
     return Redirect::to($url);
@@ -210,7 +216,7 @@ class TTipoCargaController extends Controller
           $ObjectDestroy->delete();
           //Obtengo url de redireccion
           $url = url($this->strUrlConsulta);
-
+          Cache::forget('tipocarga');
           // redirect
           Session::flash('message', 'El tipo de carga fue borrado exitosamente!');
           return Redirect::to($url);
