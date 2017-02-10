@@ -9,6 +9,7 @@ use Input;
 use Redirect;
 use Session;
 use JsValidator;
+use \Cache;
 
 class TIcontermController extends Controller
 {
@@ -61,7 +62,10 @@ class TIcontermController extends Controller
         /**
         *Variable datos debe contener la informacion que se quiere mostrar en el formulario generico.
         */
-        $datos = TIconterm::all();
+        $datos = Cache::remember('inconterm', 15/60, function()
+        {
+            return TIconterm::all();
+        });
 
         /**
         *Variable titulosTabla debe contener un array con los titulos de la tabla.

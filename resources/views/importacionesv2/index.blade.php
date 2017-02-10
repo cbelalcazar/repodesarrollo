@@ -19,13 +19,13 @@
       <tr>
         @foreach($campos as $nombre => $campo)
         @if($campo[1] == '' || $campo[1] == 'string' || $campo[1] == 'int')
-        <td>{{$value->$campo[0]}}</td>
+        <td>{{$value[$campo[0]]}}</td>
         @elseif($campo[1] == 'relation')
-        <td>{{$value->$campo[6]}}</td>
+        <td>{{$value[$campo[6]]}}</td>
         @elseif($campo[1] == 'boolean')
-        @if($value->$campo[0] == 1)
+        @if($value[$campo[0]] == 1)
         <td>SI</td>
-        @elseif($value->$campo[0] == 0)
+        @elseif($value[$campo[0]] == 0)
         <td>NO</td>
         @endif
         @endif
