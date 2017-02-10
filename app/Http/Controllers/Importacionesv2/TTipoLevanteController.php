@@ -9,6 +9,7 @@ use Input;
 use Redirect;
 use Session;
 use JsValidator;
+use \Cache;
 
 class TTipoLevanteController extends Controller
 {
@@ -61,7 +62,10 @@ class TTipoLevanteController extends Controller
         /**
         *Variable datos debe contener la informacion que se quiere mostrar en el formulario generico.
         */
-        $datos = TTipoLevante::all();
+        $datos = Cache::remember('tipolevante', 60, function()
+        {
+            return TTipoLevante::all();
+        });
 
         /**
         *Variable titulosTabla debe contener un array con los titulos de la tabla.
@@ -126,6 +130,7 @@ class TTipoLevanteController extends Controller
         $ObjectCrear = new TTipoLevante;
         $ObjectCrear->tlev_nombre = strtoupper(Input::get('tlev_nombre'));
         $ObjectCrear->save();
+        Cache::forget('tipolevante');
         //Redirecciona a la pagina de consulta y muestra mensaje
         Session::flash('message', 'El tipo de levante fue creada exitosamente!');
         return Redirect::to($url);
@@ -192,6 +197,7 @@ class TTipoLevanteController extends Controller
         //Edita el registro en la tabla
         $ObjectUpdate->tlev_nombre = strtoupper(Input::get('tlev_nombre'));
         $ObjectUpdate->save();
+        Cache::forget('tipolevante');
         //Redirecciona a la pagina de consulta y muestra mensaje
         Session::flash('message', 'El tipo de levante fue editado exitosamente!');
         return Redirect::to($url);
@@ -211,7 +217,7 @@ class TTipoLevanteController extends Controller
         $ObjectDestroy->delete();
         //Obtengo url de redireccion
         $url = url($this->strUrlConsulta);
-
+        Cache::forget('tipolevante');
         // redirect
         Session::flash('message', 'El tipo de importacion fue borrado exitosamente!');
         return Redirect::to($url);

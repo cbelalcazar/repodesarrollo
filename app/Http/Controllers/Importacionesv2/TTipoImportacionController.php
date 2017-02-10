@@ -9,6 +9,7 @@ use Input;
 use Redirect;
 use Session;
 use JsValidator;
+use \Cache;
 
 class TTipoImportacionController extends Controller
 {
@@ -60,7 +61,10 @@ class TTipoImportacionController extends Controller
         /**
         *Variable datos debe contener la informacion que se quiere mostrar en el formulario generico.
         */
-        $datos = TTipoImportacion::all();
+        $datos = Cache::remember('tipoimportacion', 60, function()
+        {
+            return TTipoImportacion::all();
+        });
 
         /**
         *Variable titulosTabla debe contener un array con los titulos de la tabla.
@@ -125,6 +129,7 @@ class TTipoImportacionController extends Controller
         $ObjectCrear = new TTipoImportacion;
         $ObjectCrear->timp_nombre = strtoupper(Input::get('timp_nombre'));
         $ObjectCrear->save();
+        Cache::forget('tipoimportacion');
         //Redirecciona a la pagina de consulta y muestra mensaje
         Session::flash('message', 'El tipo de importacion fue creada exitosamente!');
         return Redirect::to($url);
@@ -191,6 +196,7 @@ class TTipoImportacionController extends Controller
         //Edita el registro en la tabla
         $ObjectUpdate->timp_nombre = strtoupper(Input::get('timp_nombre'));
         $ObjectUpdate->save();
+        Cache::forget('tipoimportacion');
         //Redirecciona a la pagina de consulta y muestra mensaje
         Session::flash('message', 'El tipo de importacion fue editado exitosamente!');
         return Redirect::to($url);
@@ -210,7 +216,7 @@ class TTipoImportacionController extends Controller
         $ObjectDestroy->delete();
         //Obtengo url de redireccion
         $url = url($this->strUrlConsulta);
-
+        Cache::forget('tipoimportacion');
         // redirect
         Session::flash('message', 'El tipo de importacion fue borrado exitosamente!');
         return Redirect::to($url);
