@@ -27,7 +27,7 @@ class TProductoController extends Controller
   *[4]-> Place holder que debe aparecer en el formulario
   */
   public $id = array('id', 'int', 'hidden', 'Identificacion del producto', '');
-  public $prod_referencia = array('prod_referencia', 'string', 'text', 'Seleccionar producto', 'Seleccionar producto...');
+  public $prod_referencia = array('prod_referencia', 'string', 'text', 'Seleccionar producto', 'Seleccionar producto...', '', '','show-consult');
   public $prod_req_declaracion_anticipado = array('prod_req_declaracion_anticipado', 'boolean', 'checkbox', 'Requiere declaracion anticipada', '','','');
   public $prod_req_registro_importacion = array('prod_req_registro_importacion', 'boolean', 'checkbox', 'Requiere registro de importacion', '','','');
   //Strings urls
@@ -113,6 +113,7 @@ class TProductoController extends Controller
   */
   public function store(Request $request)
   {
+
   }
 
   /**

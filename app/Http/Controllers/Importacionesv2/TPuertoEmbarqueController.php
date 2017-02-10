@@ -9,6 +9,7 @@ use Input;
 use Redirect;
 use Session;
 use JsValidator;
+use \Cache;
 
 class TPuertoEmbarqueController extends Controller
 {
@@ -67,7 +68,10 @@ class TPuertoEmbarqueController extends Controller
         /**
         *Variable datos debe contener la informacion que se quiere mostrar en el formulario generico.
         */
-        $datos = TPuertoEmbarque::all();
+        $datos = Cache::remember('puertoembarque', 60, function()
+        {
+            return TPuertoEmbarque::all();
+        });
 
         /**
         *Variable titulosTabla debe contener un array con los titulos de la tabla.
@@ -133,6 +137,7 @@ class TPuertoEmbarqueController extends Controller
         $ObjectCrear = new TPuertoEmbarque;
         $ObjectCrear->puem_nombre = strtoupper(Input::get('puem_nombre'));
         $ObjectCrear->save();
+        Cache::forget('puertoembarque');
         //Redirecciona a la pagina de consulta y muestra mensaje
         Session::flash('message', 'El puerto de embarque fue creado exitosamente!');
         return Redirect::to($url);
@@ -199,6 +204,7 @@ class TPuertoEmbarqueController extends Controller
         //Edita el registro en la tabla
         $ObjectUpdate->puem_nombre = strtoupper(Input::get('puem_nombre'));
         $ObjectUpdate->save();
+        Cache::forget('puertoembarque');
         //Redirecciona a la pagina de consulta y muestra mensaje
         Session::flash('message', 'El puerto de embarque fue editado exitosamente!');
         return Redirect::to($url);
@@ -218,7 +224,7 @@ class TPuertoEmbarqueController extends Controller
         $ObjectDestroy->delete();
         //Obtengo url de redireccion
         $url = url($this->strUrlConsulta);
-
+        Cache::forget('puertoembarque');
         // redirect
         Session::flash('message', 'El origen de la mercancia fue borrado exitosamente!');
         return Redirect::to($url);

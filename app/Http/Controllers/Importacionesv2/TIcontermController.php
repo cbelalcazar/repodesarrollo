@@ -9,6 +9,7 @@ use Input;
 use Redirect;
 use Session;
 use JsValidator;
+use \Cache;
 
 class TIcontermController extends Controller
 {
@@ -61,7 +62,10 @@ class TIcontermController extends Controller
         /**
         *Variable datos debe contener la informacion que se quiere mostrar en el formulario generico.
         */
-        $datos = TIconterm::all();
+        $datos = Cache::remember('inconterm', 60, function()
+        {
+            return TIconterm::all();
+        });
 
         /**
         *Variable titulosTabla debe contener un array con los titulos de la tabla.
@@ -126,6 +130,7 @@ class TIcontermController extends Controller
         $ObjectCrear = new TIconterm;
         $ObjectCrear->inco_descripcion = strtoupper(Input::get('inco_descripcion'));
         $ObjectCrear->save();
+        Cache::forget('inconterm');
         //Redirecciona a la pagina de consulta y muestra mensaje
         Session::flash('message', 'El iconterm fue creado exitosamente!');
         return Redirect::to($url);
@@ -192,6 +197,7 @@ class TIcontermController extends Controller
         //Edita el registro en la tabla
         $ObjectUpdate->inco_descripcion = strtoupper(Input::get('inco_descripcion'));
         $ObjectUpdate->save();
+        Cache::forget('inconterm');
         //Redirecciona a la pagina de consulta y muestra mensaje
         Session::flash('message', 'El inconterm fue editado exitosamente!');
         return Redirect::to($url);
@@ -211,7 +217,7 @@ class TIcontermController extends Controller
         $ObjectDestroy->delete();
         //Obtengo url de redireccion
         $url = url($this->strUrlConsulta);
-
+        Cache::forget('inconterm');
         // redirect
         Session::flash('message', 'El inconterm fue borrado exitosamente!');
         return Redirect::to($url);
