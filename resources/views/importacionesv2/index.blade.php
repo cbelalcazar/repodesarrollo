@@ -21,7 +21,7 @@
         @if($campo[1] == '' || $campo[1] == 'string' || $campo[1] == 'int')
         <td>{{$value[$campo[0]]}}</td>
         @elseif($campo[1] == 'relation')
-        <td>{{$value[$campo[6]]}}</td>
+        <td>{{$value[$campo[6][0]][$campo[6][1]]}}</td>
         @elseif($campo[1] == 'boolean')
         @if($value[$campo[0]] == 1)
         <td>SI</td>
@@ -31,10 +31,10 @@
         @endif
         @endforeach
         <td>
-          <a class="btn btn-small btn-info" href="{{ URL::to("$url/" . $value->$campos[0][0] . '/edit') }}">Editar</a>
+          <a class="btn btn-small btn-info" href="{{ URL::to("$url/" . $value[$campos[0][0]] . '/edit') }}">Editar</a>
         </td>
         <td>
-          {{ Form::open(array('url' => "$url/" . $value->$campos[0][0], 'class' => 'btn btn-small ')) }}
+          {{ Form::open(array('url' => "$url/" . $value[$campos[0][0]], 'class' => 'btn btn-small ')) }}
           {{ Form::hidden('_method', 'DELETE') }}
           {{ Form::submit('Borrar', array('class' => 'btn btn-small red-mint')) }}
           {{ Form::close() }}

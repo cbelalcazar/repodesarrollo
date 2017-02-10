@@ -64,7 +64,11 @@ class TMetricaController extends Controller
       /**
       *Variable datos debe contener la informacion que se quiere mostrar en el formulario generico.
       */
-      $datos = TMetrica::all();
+      $datos = Cache::remember('metrica', 60, function()
+          {
+              return TMetrica::all();
+          });
+
 
       /**
       *Variable titulosTabla debe contener un array con los titulos de la tabla.
@@ -130,6 +134,7 @@ class TMetricaController extends Controller
         $ObjectCrear->met_nombre = strtoupper(Input::get('met_nombre'));
         $ObjectCrear->met_numero_dias = strtoupper(Input::get('met_numero_dias'));
         $ObjectCrear->save();
+        Cache::forget('metrica');
         //Redirecciona a la pagina de consulta y muestra mensaje
         Session::flash('message', 'La metrica fue creada exitosamente!');
         return Redirect::to($url);
@@ -197,6 +202,7 @@ class TMetricaController extends Controller
         $ObjectUpdate->met_nombre = strtoupper(Input::get('met_nombre'));
         $ObjectUpdate->met_numero_dias = Input::get('met_numero_dias');
         $ObjectUpdate->save();
+        Cache::forget('metrica');
         //Redirecciona a la pagina de consulta y muestra mensaje
         Session::flash('message', 'La metrica fue editada exitosamente!');
         return Redirect::to($url);
@@ -216,7 +222,7 @@ class TMetricaController extends Controller
         $ObjectDestroy->delete();
         //Obtengo url de redireccion
         $url = url($this->strUrlConsulta);
-
+        Cache::forget('metrica');
         // redirect
         Session::flash('message', 'La metrica fue borrada exitosamente!');
         return Redirect::to($url);

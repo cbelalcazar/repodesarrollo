@@ -9,6 +9,7 @@ use Input;
 use Redirect;
 use Session;
 use JsValidator;
+use \Cache;
 
 class TOrigenMercanciaController extends Controller
 {
@@ -63,7 +64,10 @@ class TOrigenMercanciaController extends Controller
     /**
     *Variable datos debe contener la informacion que se quiere mostrar en el formulario generico.
     */
-    $datos = TOrigenMercancia::all();
+    $datos = Cache::remember('origenmercancia', 60, function()
+    {
+        return TOrigenMercancia::all();
+    });
 
     /**
     *Variable titulosTabla debe contener un array con los titulos de la tabla.
@@ -133,6 +137,7 @@ class TOrigenMercanciaController extends Controller
       $ObjectCrear->ormer_requ_cert_origen = 0;
     }
     $ObjectCrear->save();
+    Cache::forget('origenmercancia');
     //Redirecciona a la pagina de consulta y muestra mensaje
     Session::flash('message', 'Origen de la mercancia fue creada exitosamente!');
     return Redirect::to($url);
@@ -204,6 +209,7 @@ class TOrigenMercanciaController extends Controller
       $ObjectUpdate->ormer_requ_cert_origen = 0;
     }
     $ObjectUpdate->save();
+    Cache::forget('origenmercancia');
     //Redirecciona a la pagina de consulta y muestra mensaje
     Session::flash('message', 'Origen de la mercancia fue editado exitosamente!');
     return Redirect::to($url);
@@ -223,7 +229,7 @@ class TOrigenMercanciaController extends Controller
     $ObjectDestroy->delete();
     //Obtengo url de redireccion
     $url = url($this->strUrlConsulta);
-
+    Cache::forget('origenmercancia');
     // redirect
     Session::flash('message', 'El origen de la mercancia fue borrado exitosamente!');
     return Redirect::to($url);
