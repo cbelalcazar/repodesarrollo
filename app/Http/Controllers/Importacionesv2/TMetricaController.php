@@ -9,6 +9,7 @@ use Input;
 use Redirect;
 use Session;
 use JsValidator;
+use \Cache;
 
 class TMetricaController extends Controller
 {
