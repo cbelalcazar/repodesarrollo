@@ -185,6 +185,7 @@ return [
         Barryvdh\DomPDF\ServiceProvider::class,
         Proengsoft\JsValidation\JsValidationServiceProvider::class,
         OwenIt\Auditing\AuditingServiceProvider::class,
+        Iber\Generator\ModelGeneratorProvider::class,
     ],
 
     /*
@@ -236,6 +237,7 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'JsValidator' => Proengsoft\JsValidation\Facades\JsValidatorFacade::class,
+        'Input' => Illuminate\Support\Facades\Input::class,
     ],
 
 ];

@@ -159,3 +159,39 @@ table.dataTable thead{
     color: #EEE;
     text-decoration: none;
 }
+
+
+
+.barraEncabezado {
+  background:#0072C6 repeat-x;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  z-index: 500;
+  border-radius: 5px !important;
+
+}
+
+.tituloForm{
+  background:#8fbf5c;
+  width: 50%;
+  padding-top:5px;
+  padding-bottom: 5px;
+  height: auto;
+  text-transform:uppercase;
+  text-align: center;
+  margin-left: 25%;
+  color: #fff;
+  box-shadow: 7px -5px 5px #888888;
+  border-radius: 5px !important;
+}
+
+.letra1{
+  margin: 5px;
+   font-size: 15px;
+   color: #fff;
+   width: 950px;
+   float: left;
+   font-family: Segoe UI Web Semibold, Segoe UI Web Regular, Segoe UI, Segoe UI Symbol,Helvetica Neue, Open Sans, Arial !important;
+}
