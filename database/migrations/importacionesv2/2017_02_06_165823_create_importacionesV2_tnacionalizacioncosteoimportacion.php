@@ -28,7 +28,7 @@ class CreateImportacionesV2Tnacionalizacioncosteoimportacion extends Migration
             $table->float('naco_anticipo_aduana', 10, 2)
                   ->comment('Valor anticipo aduana');
 
-            $table->dateTime('naco_fecha_anticipo_aduana')
+            $table->date('naco_fecha_anticipo_aduana')
                   ->comment('Fecha de anticipo a la aduana');
 
             $table->boolean('naco_preinscripcion')
@@ -37,31 +37,31 @@ class CreateImportacionesV2Tnacionalizacioncosteoimportacion extends Migration
             $table->boolean('naco_control_posterior')
                   ->comment('¿la nacionalizacion requiere control posterior? True / False');
 
-            $table->dateTime('naco_fecha_recibo_fact_be')
+            $table->date('naco_fecha_recibo_fact_be')
                   ->comment('Fecha de recibido facturas en Belleza Express');
 
-            $table->dateTime('naco_fecha_entrega_fact_cont')
+            $table->date('naco_fecha_entrega_fact_cont')
                   ->comment('Fecha de entrega de facturas a contabilidad');
 
-            $table->dateTime('naco_fecha_entrega_docu_transp')
+            $table->date('naco_fecha_entrega_docu_transp')
                   ->comment('Fecha de entrega de documentos transportador');
 
-            $table->dateTime('naco_fecha_retiro_puert')
+            $table->date('naco_fecha_retiro_puert')
                   ->comment('Fecha de retiro del Puerto / Aeropuerto');
 
-            $table->dateTime('naco_fecha_envio_comex')
+            $table->date('naco_fecha_envio_comex')
                   ->comment('Fecha de envio a Comex');
 
-            $table->dateTime('naco_fecha_llegada_be')
+            $table->date('naco_fecha_llegada_be')
                   ->comment('Fecha de llegada a belleza express');
 
-            $table->dateTime('naco_fecha_recep_list_empaq')
+            $table->date('naco_fecha_recep_list_empaq')
                   ->comment('Fecha de recepcion lista de empaque + ciego');
 
-            $table->dateTime('naco_fecha_envi_liqu_costeo')
+            $table->date('naco_fecha_envi_liqu_costeo')
                   ->comment('Fecha de envio a liquidacion y costeo');
 
-            $table->dateTime('naco_fecha_entrada_sistema')
+            $table->date('naco_fecha_entrada_sistema')
                   ->comment('Fecha de entrada al sistema');
 
             $table->float('naco_sobrante', 10, 2)

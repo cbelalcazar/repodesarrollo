@@ -31,10 +31,10 @@ class CreateImportacionesV2Tembarqueimportacion extends Migration
                   ->unsigned()
                   ->comment('Campo que relaciona esta tabla con la tabla t_tipo_carga');
 
-            $table->dateTime('emim_fecha_etd')
+            $table->date('emim_fecha_etd')
                   ->comment('Fecha ETD');
 
-            $table->dateTime('emim_fecha_eta')
+            $table->date('emim_fecha_eta')
                   ->comment('Fecha ETA');
 
             $table->string('emim_documento_transporte')
@@ -43,16 +43,16 @@ class CreateImportacionesV2Tembarqueimportacion extends Migration
             $table->integer('emim_valor_flete')
                   ->comment('Valor del flete de embarque');
 
-            $table->dateTime('emim_fecha_recibido_documentos_ori')
+            $table->date('emim_fecha_recibido_documentos_ori')
                   ->comment('Fecha recibido documentos originales');
 
-            $table->dateTime('emim_fecha_envio_aduana')
+            $table->date('emim_fecha_envio_aduana')
                   ->comment('Fecha envio documentos a la aduana');
 
-            $table->dateTime('emim_fecha_envio_ficha_tecnica')
+            $table->date('emim_fecha_envio_ficha_tecnica')
                   ->comment('Fecha envio ficha tecnica');
 
-            $table->dateTime('emim_fecha_envio_lista_empaque')
+            $table->date('emim_fecha_envio_lista_empaque')
                         ->comment('Fecha envio lista de empaque');
 
             $table->string('emim_aduana')
@@ -61,10 +61,10 @@ class CreateImportacionesV2Tembarqueimportacion extends Migration
             $table->string('emim_transportador')
                   ->comment('Campo que relacion el nit del transportador en el ERP al sistema de importaciones');
 
-            $table->dateTime('emim_fecha_solicitud_reserva')
+            $table->date('emim_fecha_solicitud_reserva')
                     ->comment('Fecha de solicitud de la reserva');
 
-            $table->dateTime('emim_fecha_confirm_reserva')
+            $table->date('emim_fecha_confirm_reserva')
                   ->comment('Fecha de confirmacion de la reserva');
 
             $table->softDeletes();

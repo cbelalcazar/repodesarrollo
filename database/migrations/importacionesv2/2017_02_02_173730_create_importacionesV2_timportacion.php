@@ -34,7 +34,7 @@ class CreateImportacionesV2Timportacion extends Migration
             $table->string('imp_moneda_negociacion')
                   ->comment('Campo que relaciona la moneda de negociacion del ERP al sistema de importaciones');
 
-            $table->dateTime('imp_fecha_entrega_total')
+            $table->date('imp_fecha_entrega_total')
                   ->comment('Fecha entrega total estimada de la mercancia segun proveedor');
 
             $table->string('imp_observaciones')

@@ -43,13 +43,13 @@ class CreateImportacionesV2Tdeclaracion extends Migration
                   ->unsigned()
                   ->comment('Campo que relaciona esta tabla con la tabla t_tipo_levante');
 
-            $table->dateTime('decl_fecha_aceptacion')
+            $table->date('decl_fecha_aceptacion')
                   ->comment('Fecha de aceptacion ');
 
-            $table->dateTime('decl_fecha_levante')
+            $table->date('decl_fecha_levante')
                   ->comment('Fecha de levante ');
 
-            $table->dateTime('decl_fecha_legaliza_giro')
+            $table->date('decl_fecha_legaliza_giro')
                   ->nullable()
                   ->comment('Fecha de legalizacion del giro ');
 

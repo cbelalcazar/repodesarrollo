@@ -25,19 +25,19 @@ class CreateImportacionesV2Tproductoimportacion extends Migration
                   ->unsigned()
                   ->comment('Campo que relaciona esta tabla con la tabla t_importacion');
 
-            $table->dateTime('pdim_fech_req_declaracion_anticipado')
+            $table->date('pdim_fech_req_declaracion_anticipado')
                   ->nullable()
                   ->comment('Fecha creacion alerta producto requiere proceso de declaracion de anticipado');
 
-            $table->dateTime('pdim_fech_cierre_declaracion_anticipado')
+            $table->date('pdim_fech_cierre_declaracion_anticipado')
                   ->nullable()
                   ->comment('Fecha cierre alerta producto requiere proceso de declaracion de anticipado');
 
-            $table->dateTime('pdim_fech_requ_registro_importacion')
+            $table->date('pdim_fech_requ_registro_importacion')
                   ->nullable()
                   ->comment('Fecha creacion alerta producto requiere proceso de registro de importacion');
 
-            $table->dateTime('pdim_fech_cierre_registro_importacion')
+            $table->date('pdim_fech_cierre_registro_importacion')
                   ->nullable()
                   ->comment('Fecha cierre alerta producto requiere proceso de registro de importacion');
 
@@ -49,7 +49,7 @@ class CreateImportacionesV2Tproductoimportacion extends Migration
                   ->nullable()
                   ->comment('Campo que relacion la referencia del producto en el ERP al sistema de importaciones');
 
-            $table->dateTime('pdim_fecha_anticipado')
+            $table->date('pdim_fecha_anticipado')
                   ->nullable()
                   ->comment('Fecha de anticipado');
 

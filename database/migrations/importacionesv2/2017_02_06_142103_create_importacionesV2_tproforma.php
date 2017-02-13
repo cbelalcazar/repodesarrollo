@@ -24,10 +24,10 @@ class CreateImportacionesV2Tproforma extends Migration
             $table->string('prof_numero')
                   ->comment('Numero de la proforma');
 
-            $table->dateTime('prof_fecha_creacion')
+            $table->date('prof_fecha_creacion')
                   ->comment('Fecha creacion de la proforma');
 
-            $table->dateTime('prof_fecha_entrega')
+            $table->date('prof_fecha_entrega')
                   ->comment('Fecha entrega de la proforma');
 
             $table->integer('prof_valor_proforma')

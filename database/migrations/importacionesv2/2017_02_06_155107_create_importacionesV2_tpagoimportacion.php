@@ -36,13 +36,13 @@ class CreateImportacionesV2Tpagoimportacion extends Migration
             $table->float('pag_valor_fob', 10, 2)
                   ->comment('pago valor fob');
 
-            $table->dateTime('pag_fecha_factura')
+            $table->date('pag_fecha_factura')
                   ->comment('Fecha de la factura');
 
             $table->float('trm_liquidacion_factura', 10, 2)
                   ->comment('pago valor fob');
 
-            $table->dateTime('pag_fecha_envio_contabilidad')
+            $table->date('pag_fecha_envio_contabilidad')
                   ->comment('Fecha de envio documentacion a contabilidad');
 
             $table->softDeletes();
