@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class TEstado extends Model
 {
-    use SoftDeletes;
 
     protected $table = 't_estados';
 
@@ -22,6 +21,9 @@ class TEstado extends Model
 
      protected $connection = 'importacionesV2';
 
-     protected $dates = ['deleted_at'];
-
+      public function importacion()
+   {
+       return $this->belongsTo('App\Models\Importacionesv2\TCausalesDemora', 'imp_estado_proceso', 'id');
+   }
 }
+

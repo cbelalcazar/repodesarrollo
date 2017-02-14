@@ -1,5 +1,5 @@
-@extends('app')
-@section('formulario')
+@extends('importacionesv2.importacionTemplate.titulosbase')
+@section('generic')
 <link href="{{url('/css/importacionesv2.css')}}" type="text/css" rel="stylesheet"/>
 <script src="{{url('/js/importacionesv2.js')}}" type="text/javascript" language="javascript"></script>
 @foreach($errors->all() as $key => $value)
@@ -8,7 +8,7 @@
 {{ Form::open(array('url' => "$url")) }}
 <div class="form-group">
   {{ Form::label('', "Consecutivo de creacion") }}
-  {{ Form::text("imp_consecutivo", old("imp_consecutivo"), ['class' => 'form-control', 'id' =>  'imp_consecutivo', 'placeholder' =>  'Ingresar el consecutivo de creacion']) }}
+  {{ Form::text("imp_consecutivo", old("imp_consecutivo") ? old("imp_consecutivo") : $imp_consecutivo, ['class' => 'form-control', 'id' =>  'imp_consecutivo', 'placeholder' =>  'Ingresar el consecutivo de creacion','maxlength' => '250']) }}
 </div>
 <div class="form-group">
   {{ Form::open(['action' => ['Importacionesv2\TImportacionController@autocomplete'], 'method' => 'post']) }}
@@ -67,14 +67,10 @@
   {{ Form::text("imp_fecha_entrega_total", old("imp_fecha_entrega_total"), ['class' => 'form-control', 'id' =>  'imp_fecha_entrega_total', 'placeholder' =>  'Ingresar fecha de entrega total de la mercancia']) }}
 </div>
 
-
-
-
-{{ Form::close() }}
-
-
-
+<div class="form-group">
 {{ Form::submit('Crear Nueva', array('class' => 'btn btn-primary')) }}
+</div>
+
 {{ Form::close() }}
 {!! $validator  !!}
 @endsection

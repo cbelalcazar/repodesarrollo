@@ -31,4 +31,15 @@ class TImportacion extends Model
 
      protected $dates = ['deleted_at'];
 
+    public function estado()
+    {
+        return $this->hasOne('App\Models\Importacionesv2\TEstado', 'id', 'imp_estado_proceso');
+    }
+
+      public function puerto_embarque()
+    {
+        return $this->hasOne('App\Models\Importacionesv2\TPuertoEmbarque', 'id', 'imp_puerto_embarque');
+    }
+
+
 }
