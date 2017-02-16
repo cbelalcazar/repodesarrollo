@@ -187,9 +187,24 @@ class TImportacionController extends Controller
         foreach ($queries as $query)
         {
             $results[] = [ 'id' => $query->nitTercero, 'value' => $query->nitTercero.' -> '.$query->razonSocialTercero];
-
         }
         return Response::json($results);
+    }
+
+
+     public function autocompleteProducto(Request $request){
+      $referencia = strtoupper($request->obj);
+      $referencia = str_replace("¬¬¬°°°", "+", $referencia);
+      $queries = DB::connection('genericas')
+        ->table('item')
+        ->where('referenciaItem', 'LIKE', "%$referencia%")
+        ->get();
+
+       if($queries->all() != []){
+        $string = $queries[0]->referenciaItem . " -- " . $queries[0]->descripcionItem;
+        return $string;
+       }
+       return "error";
     }
 
     public function consultas($consulta){

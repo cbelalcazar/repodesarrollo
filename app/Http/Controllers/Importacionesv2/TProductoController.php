@@ -27,7 +27,7 @@ class TProductoController extends Controller
   *[4]-> Place holder que debe aparecer en el formulario
   */
   public $id = array('id', 'int', 'hidden', 'Identificacion del producto', '');
-  public $prod_referencia = array('prod_referencia', 'string', 'text', 'Seleccionar producto', 'Seleccionar producto...', '', '','show-consult');
+  public $prod_referencia = array('prod_referencia', 'string', 'text', 'Descripcion del origen de la mercancia', '');
   public $prod_req_declaracion_anticipado = array('prod_req_declaracion_anticipado', 'boolean', 'checkbox', 'Requiere declaracion anticipada', '','','');
   public $prod_req_registro_importacion = array('prod_req_registro_importacion', 'boolean', 'checkbox', 'Requiere registro de importacion', '','','');
   //Strings urls
@@ -38,13 +38,12 @@ class TProductoController extends Controller
 
   //Defino las reglas de validacion para el formulario
   public $rules = array(
-    'prod_referencia'       => 'required|exists:genericas.Item, referenciaItem',
+    'prod_referencia'       => 'required',
   );
 
   //Defino los mensajes de alerta segun las reglas definidas en la variable rules
   public $messages = array(
     'prod_referencia.required'       => 'Favor seleccionar la referencia del producto',
-    'prod_referencia.exists'       => 'Error',
   );
   //---------------------------------------------------------------------------------------------------------
   //END DEFINICION DE VARIABLES GLOBALES A LA CLASE
@@ -112,8 +111,35 @@ class TProductoController extends Controller
   * @return \Illuminate\Http\Response
   */
   public function store(Request $request)
-  {
+  {       
+    //Genera la url de consulta
+    $url = url($this->strUrlConsulta);
+    //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
+    $validarExistencia = TProducto::where('prod_referencia', '=', "$request->prod_referencia")->get();
+    if(count($validarExistencia) > 0){
+      //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
+      return Redirect::to("$url/create")
+      ->withErrors('El producto que intenta crear tiene el mismo nombre que un registro ya existente');
+    }
+    //Crea el registro en la tabla origen mercancia
+    $ObjectCrear = new TProducto;
+    $ObjectCrear->prod_referencia = strtoupper(Input::get('prod_referencia'));
 
+    if ($request->prod_req_declaracion_anticipado == 1){
+      $ObjectCrear->prod_req_declaracion_anticipado = 1;
+    }else{
+      $ObjectCrear->prod_req_declaracion_anticipado = 0;
+    }
+
+    if ($request->prod_req_registro_importacion == 1){
+      $ObjectCrear->prod_req_registro_importacion = 1;
+    }else{
+      $ObjectCrear->prod_req_registro_importacion = 0;
+    }
+    $ObjectCrear->save();
+    //Redirecciona a la pagina de consulta y muestra mensaje
+    Session::flash('message', 'El producto fue creado exitosamente!');
+    return Redirect::to($url);
   }
 
   /**
@@ -135,7 +161,22 @@ class TProductoController extends Controller
   */
   public function edit($id)
   {
-    //
+    //Id del registro que deseamos editar
+    $id = $id;
+    //Consulto el registro que deseo editar
+    $objeto = TProducto::find($id);
+    //organizo el array que me sirve para mostrar el formulario de edicion
+    $campos =  array($this->id, $this->prod_referencia, $this->prod_req_declaracion_anticipado, $this->prod_req_registro_importacion);
+    //Titulo de la pagina
+    $titulo = "EDITAR ".$this->titulo;
+    //url de redireccion para consultar
+    $url = url($this->strUrlConsulta);
+    // Validaciones ajax
+    $validator = JsValidator::make($this->rules, $this->messages);
+    //url de redireccion para editar
+    $route = 'Producto.update';
+    //retorno a la vista
+    return view('importacionesv2.edit', compact('campos', 'url', 'titulo', 'validator', 'route', 'id' ,'objeto'));
   }
 
   /**
@@ -147,7 +188,35 @@ class TProductoController extends Controller
   */
   public function update(Request $request, $id)
   {
-    //
+     //Genera la url de consulta
+    $url = url($this->strUrlConsulta);
+    //Consulto el registro a editar
+    $ObjectUpdate = TProducto::find($id);
+    //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
+    $validarExistencia = TProducto::where('prod_referencia', '=', "$request->prod_referencia")->first();
+    if(count($validarExistencia) > 0 && $validarExistencia != $ObjectUpdate){
+      //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
+      return Redirect::to("$url/$id/edit")
+      ->withErrors('El producto que intenta editar tiene el mismo nombre que un registro ya existente');
+    }
+    //Edita el registro en la tabla
+    $ObjectUpdate->prod_referencia = strtoupper(Input::get('prod_referencia'));
+
+    if ($request->prod_req_declaracion_anticipado == 1){
+      $ObjectUpdate->prod_req_declaracion_anticipado = 1;
+    }else{
+      $ObjectUpdate->prod_req_declaracion_anticipado = 0;
+    }
+
+    if ($request->prod_req_registro_importacion == 1){
+      $ObjectUpdate->prod_req_registro_importacion = 1;
+    }else{
+      $ObjectUpdate->prod_req_registro_importacion = 0;
+    }
+    $ObjectUpdate->save();
+    //Redirecciona a la pagina de consulta y muestra mensaje
+    Session::flash('message', 'El producto fue editado exitosamente!');
+    return Redirect::to($url);
   }
 
   /**
@@ -158,6 +227,14 @@ class TProductoController extends Controller
   */
   public function destroy($id)
   {
-    //
+     //Consulto objeto a borrar
+    $ObjectDestroy = TProducto::find($id);
+    //Borro el objeto
+    $ObjectDestroy->delete();
+    //Obtengo url de redireccion
+    $url = url($this->strUrlConsulta);
+    // redirect
+    Session::flash('message', 'El producto fue borrado exitosamente!');
+    return Redirect::to($url);
   }
 }

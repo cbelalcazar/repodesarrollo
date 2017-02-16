@@ -1,5 +1,6 @@
 @extends('app')
 @section('content')
+<link href="{{url('/css/importacionesv2.css')}}" type="text/css" rel="stylesheet"/>
 </div>
 <div class="barraEncabezado">
   <div class="letra1"><strong>IMPORTACIONES V2 // {{$titulo}}</strong></b></div>

@@ -38,5 +38,10 @@ Route::group(['middleware' => ['auth']], function () {
   Route::resource('importacionesv2/Producto', 'Importacionesv2\TProductoController');
   Route::resource('importacionesv2/Importacion', 'Importacionesv2\TImportacionController');
   Route::get('importacionesv2/search', 'Importacionesv2\TImportacionController@autocomplete')->name('search');
+  Route::post('importacionesv2/searchProducto', 'Importacionesv2\TImportacionController@autocompleteProducto')->name('searchProducto');
+  Route::get('importacionesv2/Puertoajax', 'Importacionesv2\TPuertoEmbarqueController@Puertoajax')->name('createpuertoajax');
+  Route::post('importacionesv2/StoreAjaxPuerto', 'Importacionesv2\TPuertoEmbarqueController@storeAjax')->name('storeajaxpuerto');
+  Route::get('importacionesv2/Incontermajax', 'Importacionesv2\TIcontermController@Incontermajax')->name('createincontermajax');
+  Route::post('importacionesv2/StoreAjaxInconterm', 'Importacionesv2\TIcontermController@storeAjax')->name('storeajaxinconterm');
   Route::get('importacionesv2/ConsultaFiltros', 'Importacionesv2\TImportacionController@consultaFiltrada')->name('consultaFiltros');
 });

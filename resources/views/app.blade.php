@@ -10,7 +10,7 @@
 
     <!-- Styles -->
      <!--******************** jQuery-ui **************************-->
-    <link href="{{url('/css/jquery-ui.min.css')}}" type="text/css" rel="stylesheet"/>
+    <link href="{{url('/css/jquery-ui.css')}}" type="text/css" rel="stylesheet"/>
     <link href="{{url('/css/jquery-ui.structure.min.css')}}" type="text/css" rel="stylesheet"/>
     <link href="{{url('/css/jquery-ui.theme.min.css')}}" type="text/css" rel="stylesheet"/>
     <!--******************** CSS BOOTSTRAP 3.3.7 *********************-->
@@ -35,7 +35,7 @@
     <script src="{{url('/js/bootstrap-datetimepicker.min.js')}}" type="text/javascript" language="javascript"></script>
     <!-- DataTables 1.10.13 -->
     <script src="{{url('/js/jquery.dataTables.min.js')}}" type="text/javascript" language="javascript"></script>
-    <link rel="stylesheet" href="/resources/demos/style.css">
+
 
     
 

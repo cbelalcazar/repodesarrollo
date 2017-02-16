@@ -1,8 +1,13 @@
 @extends('importacionesv2.importacionTemplate.titulosbase')
 @section('generic')
 
-<link href="{{url('/css/importacionesv2.css')}}" type="text/css" rel="stylesheet"/>
 <script src="{{url('/js/importacionesv2.js')}}" type="text/javascript" language="javascript"></script>
+<div class="btn-group btn-group-justified">
+        <a href="{{ $url }}" class="btn btn-default"> Consultar todos </a>
+        <a href="{{ route('Importacion.create') }}" class="btn btn-default"> Crear Nuevo </a>
+      </div>
+      <br>
+<link href="{{url('/css/importacionesv2.css')}}" type="text/css" rel="stylesheet"/>
 
  {{ Form::open(['url' => "$url", 'method' => 'get']) }}
  <input type="hidden" name="consulto" value="1">

@@ -37,12 +37,12 @@ class TPuertoEmbarqueController extends Controller
     //Defino las reglas de validacion para el formulario
     public $rules = array(
         'puem_nombre'       => 'required',
-    );
+        );
 
     //Defino los mensajes de alerta segun las reglas definidas en la variable rules
     public $messages = array(
         'puem_nombre.required'       => 'Favor ingresar el nombre del puerto de embarque',
-    );
+        );
 
 
     //---------------------------------------------------------------------------------------------------------
@@ -90,10 +90,10 @@ class TPuertoEmbarqueController extends Controller
         $url = url($this->strUrlConsulta);
 
         return view('importacionesv2.index', compact('titulo',
-        'datos',
-        'titulosTabla',
-        'campos',
-        'url'));
+            'datos',
+            'titulosTabla',
+            'campos',
+            'url'));
     }
 
     /**
@@ -113,6 +113,23 @@ class TPuertoEmbarqueController extends Controller
         $validator = JsValidator::make($this->rules, $this->messages);
 
         return view('importacionesv2.create', compact('titulo','campos' ,'url', 'validator'));
+
+    }
+
+    public function Puertoajax()
+    {
+        //Array que contiene los campos que deseo mostrar en el formulario no debes tiene en cuenta timestamps ni softdeletes
+        $campos =  array($this->id, $this->puem_nombre);
+        //Genera url completa de consulta
+        $url = url($this->strUrlConsulta);
+
+        $route = route('storeajaxpuerto');
+        //Variable que contiene el titulo de la vista crear
+        $titulo = "CREAR ".$this->titulo;
+        //Libreria de validaciones con ajax
+        $validator = JsValidator::make($this->rules, $this->messages);
+
+        return view('importacionesv2.ImportacionTemplate.createajax', compact('titulo','campos' ,'url', 'validator', 'route'));
 
     }
 
@@ -142,6 +159,40 @@ class TPuertoEmbarqueController extends Controller
         Session::flash('message', 'El puerto de embarque fue creado exitosamente!');
         return Redirect::to($url);
     }
+
+      /**
+    * Store a newly created resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @return \Illuminate\Http\Response
+    */
+      public function storeAjax(Request $request)
+      {
+        //Genera la url de consulta
+        $url = url($this->strUrlConsulta);
+        //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
+        $validarExistencia = TPuertoEmbarque::where('puem_nombre', '=', "$request->puem_nombre")->get();
+        if(count($validarExistencia) > 0){
+            //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
+           return array('error', 'Ya existe un puerto de embarque con la misma descripcion', '');
+        }
+
+        $validator = Validator::make(Input::all(), $this->rules, $this->messages);
+
+     // process the login
+        if ($validator->fails()) {
+            return array('error', 'Favor validar la integridad de los campos', '');
+        } else {
+        //Crea el registro en la tabla origen mercancia
+            $ObjectCrear = new TPuertoEmbarque;
+            $ObjectCrear->puem_nombre = strtoupper(Input::get('puem_nombre'));
+            $ObjectCrear->save();
+            Cache::forget('puertoembarque');
+        //Redirecciona a la pagina de consulta y muestra mensaje
+            return array('success', $ObjectCrear->id, $ObjectCrear->puem_nombre, '#imp_puerto_embarque');
+        }
+    }
+
 
     /**
     * Display the specified resource.

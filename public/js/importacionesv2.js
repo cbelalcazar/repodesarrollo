@@ -1,3 +1,24 @@
+// Ajax para creacion de puertos de embarque sobre formulario crear importacion
+function verModel(ruta){
+  $("#cargar").load(ruta);  
+}
+
+function storeajax(url, formulario){
+  var posteo =  $.post(url,formulario,function(res){
+
+    if(res[0]=="success"){
+      alert('Operacion realizada exitosamente.');
+      $(res[3]).append('<option selected value="' + res[1] +'">'+ res[2] +'</option>');
+      $('#cerrarmodal').click();
+    }
+    if(res[0]=="error"){
+      alert(res[1]);
+    }
+              }); 
+}
+//end
+
+//Funciones para realizar autocomplete
 $( function() {
   function split( val ) {
     return val.split( /,\s*/ );
@@ -11,16 +32,16 @@ $( function() {
   .on( "keydown", function( event ) {
     if ( event.keyCode === $.ui.keyCode.TAB &&
       $( this ).autocomplete( "instance" ).menu.active ) {
-        event.preventDefault();
-      }
-    })
-    .autocomplete({
-      source: function( request, response ) {
-        $.getJSON(  $( "#route1" ).val(), {
-          term: extractLast( request.term )
-        }, response );
-      },
-      search: function() {
+      event.preventDefault();
+  }
+})
+  .autocomplete({
+    source: function( request, response ) {
+      $.getJSON(  $( "#route1" ).val(), {
+        term: extractLast( request.term )
+      }, response );
+    },
+    search: function() {
         // custom minLength
         var term = extractLast( this.value );
         if ( term.length < 2 ) {
@@ -44,29 +65,117 @@ $( function() {
         return false;
       }
     });
-  } );
+} );
+
+//end
 
 
-  $(document).ready(function()
-  {
-    $('#imp_fecha_entrega_total').datepicker();
-    $("#razonSocialTercero").hide();
-    $("#proveedor").blur(function(){
-      $("#razonSocialTercero").show();
-      var info = $("#proveedor").val();
-      var fields = info.split(' -> ');
-      $("#proveedor").val(fields[0]);
-      $("#razonSocialTercero").val(fields[1]);
-
-      setTimeout(function(){
-        if($("#razonSocialTercero").val() == ""){
-          $("#proveedor").val("");
-          $("#razonSocialTercero").hide();
-        }
-      }, 500)
 
 
-    });
-    
 
-  });
+//Javascript para hacer calendarios y otros eventos que se ejecutan al momento que carga la pagina
+$(document).ready(function()
+{
+ $('#ocultar2').hide();
+ $('#imp_fecha_entrega_total').datepicker();
+ $("#razonSocialTercero").hide();
+ $("#proveedor").blur(function(){
+  $("#razonSocialTercero").show();
+  var info = $("#proveedor").val();
+  var fields = info.split(' -> ');
+  $("#proveedor").val(fields[0]);
+  $("#razonSocialTercero").val(fields[1]);
+
+  setTimeout(function(){
+    if($("#razonSocialTercero").val() == ""){
+      $("#proveedor").val("");
+      $("#razonSocialTercero").hide();
+    }
+  }, 500)
+
+
+});
+
+//Quitar filas de la tabla
+$(document).on('click', '.borrar', function (event) {
+  event.preventDefault();
+  $(this).closest('tr').remove();
+});
+
+
+//javascript tabla
+
+var $TABLE = $('#table');
+var $BTN = $('#export-btn');
+var $EXPORT = $('#export');
+
+$('.table-add').click(function () {
+  var idanterior = document.getElementsByName('imp_producto')[1].id;
+  var idnuevo = parseInt(idanterior)+1;
+  document.getElementById(idanterior).id = idnuevo;
+  var $clone = $TABLE.find('tr.hide').clone(true).removeClass('hide table-line');
+  $TABLE.find('table').append($clone);
+});
+
+$('.table-remove').click(function () {
+  $(this).parents('tr').detach();
+});
+
+
+
+});
+
+//end
+
+
+
+
+function autocompleteprod(obj){
+  var conteo = document.getElementById('tablaProducto').rows.length;
+   var encontrar = 0;
+   for (var i = 1; i < conteo; i++)
+   {
+    var string = "#"+ i;
+    var dato = $(string).html();
+    var arreglo3 = dato.split(" -- ");
+    if(arreglo3[0] == $('#imp_producto').val()){
+      encontrar = 1;
+    }
+
+  }
+
+  if($('#imp_producto').val() == ""){
+    alert('Favor ingresar una referencia para realizar la consulta');
+  }else if(encontrar == 1){
+    alert('El producto a importar ya fue ingresado anteriormente para esta importacion');
+    $('#imp_producto').val("");
+  }else{
+  var $this = $(obj);
+  $this.button('loading');
+  var url = document.getElementById('route2').value;
+  var datos = $('#importacionform').serialize();
+  var envio = $('#imp_producto').val();
+  envio1 = envio.replace('+', '¬¬¬°°°');
+  var info = datos+'&obj='+envio1;
+  console.log(info);
+  var posteo =  $.post(url,info,function(res){
+    if(res == 'error'){
+      $('#imp_producto').val("");
+      $('#imp_producto').focus();
+      alert('La referencia ingresada no fue encontrada');
+      $this.button('reset');
+    }else{
+     var id1 = document.getElementById('tablaProducto').rows.length;
+     $('#añadir1').append('<tr><td class="campos" id="'+ id1 +' "name="'+ id1 +'">'+res+'</td><td><span class="borrar glyphicon glyphicon-remove"></span></td></tr>');
+     $this.button('reset');
+     $('#ocultar2').show();
+     $('#imp_producto').val("");
+     $('#imp_producto').focus();
+
+   }
+
+ }); 
+
+}
+
+}

@@ -38,12 +38,12 @@ class TIcontermController extends Controller
     //Defino las reglas de validacion para el formulario
     public $rules = array(
         'inco_descripcion'         => 'required',
-    );
+        );
 
     //Defino los mensajes de alerta segun las reglas definidas en la variable rules
     public $messages = array(
         'inco_descripcion.required'       => 'Favor ingresar la descripcion del inconterm',
-    );
+        );
     //---------------------------------------------------------------------------------------------------------
     //END DEFINICION DE VARIABLES GLOBALES A LA CLASE
     //---------------------------------------------------------------------------------------------------------
@@ -84,10 +84,10 @@ class TIcontermController extends Controller
         $url = url($this->strUrlConsulta);
 
         return view('importacionesv2.index', compact('titulo',
-        'datos',
-        'titulosTabla',
-        'campos',
-        'url'));
+            'datos',
+            'titulosTabla',
+            'campos',
+            'url'));
     }
 
     /**
@@ -108,6 +108,24 @@ class TIcontermController extends Controller
 
         return view('importacionesv2.create', compact('titulo','campos' ,'url', 'validator'));
     }
+
+    public function Incontermajax()
+    {
+        //Array que contiene los campos que deseo mostrar en el formulario no debes tiene en cuenta timestamps ni softdeletes
+        $campos =  array($this->id, $this->inco_descripcion);
+        //Genera url completa de consulta
+        $url = url($this->strUrlConsulta);
+
+        $route = url('importacionesv2/StoreAjaxInconterm');
+        //Variable que contiene el titulo de la vista crear
+        $titulo = "CREAR ".$this->titulo;
+        //Libreria de validaciones con ajax
+        $validator = JsValidator::make($this->rules, $this->messages);
+
+        return view('importacionesv2.ImportacionTemplate.createajax', compact('titulo','campos' ,'url', 'validator', 'route'));
+
+    }
+
 
     /**
     * Store a newly created resource in storage.
@@ -134,6 +152,31 @@ class TIcontermController extends Controller
         //Redirecciona a la pagina de consulta y muestra mensaje
         Session::flash('message', 'El iconterm fue creado exitosamente!');
         return Redirect::to($url);
+    }
+
+    public function storeAjax(Request $request)
+    {
+        //Genera la url de consulta
+        $url = url($this->strUrlConsulta);
+        //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
+        $validarExistencia = TIconterm::where('inco_descripcion', '=', "$request->inco_descripcion")->get();
+        if(count($validarExistencia) > 0){
+            //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
+            return "error";
+        }
+        $validator = Validator::make(Input::all(), $this->rules, $this->messages);
+        //Crea el registro en la tabla origen mercancia
+        if ($validator->fails()) {
+            return "error1";
+        } else {
+            $ObjectCrear = new TIconterm;
+            $ObjectCrear->inco_descripcion = strtoupper(Input::get('inco_descripcion'));
+            $ObjectCrear->save();
+            Cache::forget('inconterm');
+        //Redirecciona a la pagina de consulta y muestra mensaje
+            Session::flash('message', 'El iconterm fue creado exitosamente!');
+            return array('success', $ObjectCrear->id, $ObjectCrear->inco_descripcion, '#imp_iconterm');
+        }
     }
 
     /**

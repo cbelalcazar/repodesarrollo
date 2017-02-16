@@ -17,7 +17,9 @@
 
       <div class="btn-group btn-group-justified">
         <a href="{{ $url }}" class="btn btn-default"> Consultar todos </a>
+        @if($titulo != "PRODUCTO" && $titulo != "EDITAR PRODUCTO" )
         <a href="{{ $url.'/create' }}" class="btn btn-default"> Crear Nuevo </a>
+        @endif
       </div>
       <br>
       @yield('generic')
