@@ -39,12 +39,12 @@ class TProductoController extends Controller
   //Defino las reglas de validacion para el formulario
   public $rules = array(
     'prod_referencia'       => 'required',
-  );
+    );
 
   //Defino los mensajes de alerta segun las reglas definidas en la variable rules
   public $messages = array(
     'prod_referencia.required'       => 'Favor seleccionar la referencia del producto',
-  );
+    );
   //---------------------------------------------------------------------------------------------------------
   //END DEFINICION DE VARIABLES GLOBALES A LA CLASE
   //-----------------------------------------------
@@ -79,10 +79,10 @@ class TProductoController extends Controller
     $url = url($this->strUrlConsulta);
 
     return view('importacionesv2.index', compact('titulo',
-    'datos',
-    'titulosTabla',
-    'campos',
-    'url'));
+      'datos',
+      'titulosTabla',
+      'campos',
+      'url'));
   }
 
   /**
@@ -103,6 +103,30 @@ class TProductoController extends Controller
 
     return view('importacionesv2.create', compact('titulo','campos' ,'url', 'validator'));
   }
+
+
+  public function Productoajax()
+  {
+        //Array que contiene los campos que deseo mostrar en el formulario no debes tiene en cuenta timestamps ni softdeletes
+    $campos =  array($this->id, $this->prod_referencia, $this->prod_req_declaracion_anticipado, $this->prod_req_registro_importacion);
+        //Genera url completa de consulta
+    $url = url($this->strUrlConsulta);
+
+    
+    $route = route('storeajaxproducto');
+        //Variable que contiene el titulo de la vista crear
+    $titulo = "CREAR ".$this->titulo;
+        //Libreria de validaciones con ajax
+    $validator = JsValidator::make($this->rules, $this->messages);
+
+    return view('importacionesv2.ImportacionTemplate.createajax', compact('titulo','campos' ,'url', 'validator', 'route'));
+
+  }
+
+
+
+
+
 
   /**
   * Store a newly created resource in storage.
@@ -141,6 +165,56 @@ class TProductoController extends Controller
     Session::flash('message', 'El producto fue creado exitosamente!');
     return Redirect::to($url);
   }
+
+
+
+  /**
+    * Store a newly created resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @return \Illuminate\Http\Response
+    */
+  public function storeAjax(Request $request)
+  {
+        //Genera la url de consulta
+    $url = url($this->strUrlConsulta);
+        //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
+    $validarExistencia = TProducto::where('prod_referencia', '=', "$request->prod_referencia")->get();
+    if(count($validarExistencia) > 0){
+            //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
+     return array('error', 'Ya existe un producto con la misma descripción', '');
+   }
+
+   $validator = Validator::make(Input::all(), $this->rules, $this->messages);
+
+     // process the login
+   if ($validator->fails()) {
+    return array('error', 'Favor validar la integridad de los campos', '');
+  } else {
+        //Crea el registro en la tabla origen mercancia
+     $ObjectCrear = new TProducto;
+    $ObjectCrear->prod_referencia = strtoupper(Input::get('prod_referencia'));
+
+    if ($request->prod_req_declaracion_anticipado == 1){
+      $ObjectCrear->prod_req_declaracion_anticipado = 1;
+    }else{
+      $ObjectCrear->prod_req_declaracion_anticipado = 0;
+    }
+
+    if ($request->prod_req_registro_importacion == 1){
+      $ObjectCrear->prod_req_registro_importacion = 1;
+    }else{
+      $ObjectCrear->prod_req_registro_importacion = 0;
+    }
+    $ObjectCrear->save();
+        //Redirecciona a la pagina de consulta y muestra mensaje
+    return array('success1', $ObjectCrear->id, $ObjectCrear->prod_referencia, $ObjectCrear->prod_req_declaracion_anticipado , $ObjectCrear->prod_req_registro_importacion);
+  }
+}
+
+
+
+
 
   /**
   * Display the specified resource.

@@ -15,6 +15,7 @@ use App\Models\Importacionesv2\TPuertoEmbarque;
 use App\Models\Importacionesv2\TIconterm;
 use App\Models\Importacionesv2\TImportacion;
 use App\Models\Importacionesv2\TEstado;
+use App\Models\Importacionesv2\TProducto;
 use Carbon\Carbon;
 
 class TImportacionController extends Controller
@@ -176,7 +177,7 @@ class TImportacionController extends Controller
 
 
     public function autocomplete(){
-        //Funcion para autocompletado
+        //Funcion para autocompletado de proveedores
         $term = Input::get('term');
         $results = array();
         $queries = DB::connection('genericas')
@@ -184,6 +185,7 @@ class TImportacionController extends Controller
         ->where('nitTercero', 'LIKE', '%'.$term.'%')
         ->orWhere('razonSocialTercero', 'LIKE', '%'.$term.'%')
         ->take(10)->get();
+
         foreach ($queries as $query)
         {
             $results[] = [ 'id' => $query->nitTercero, 'value' => $query->nitTercero.' -> '.$query->razonSocialTercero];
@@ -200,9 +202,19 @@ class TImportacionController extends Controller
         ->where('referenciaItem', 'LIKE', "%$referencia%")
         ->get();
 
+     
+      
        if($queries->all() != []){
         $string = $queries[0]->referenciaItem . " -- " . $queries[0]->descripcionItem;
-        return $string;
+        $producto = TProducto::where('prod_referencia','LIKE', "%$referencia%")
+                           ->get();
+        if($producto->all() == []){
+            return array($string, array(), '1');
+        }else{
+            return array($string, array($producto[0]->prod_req_declaracion_anticipado, $producto[0]->prod_req_registro_importacion), '0');
+        }
+
+        
        }
        return "error";
     }

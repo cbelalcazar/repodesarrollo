@@ -12,12 +12,13 @@
 @elseif($value[2] == 'text')
 <div class="form-group">
     {{ Form::label('', "$value[3]") }}
-    {{ Form::text("$value[0]", old("value[0]"), array('class' => 'form-control')) }}
+    {{ Form::text("$value[0]", old("value[0]"), array('class' => 'form-control', 'id' => "$value[0]")) }}
 </div>
+
 @elseif($value[2] == 'select')
 <div class="form-group">
     <label>{{$value[3]}}</label>
-    {{  Form::select($value[0],$value[5], null, ['placeholder'=>$value[4], 'class' => 'form-control', 'onkeypress' => 'return pulsar(event)'] ) }}
+    {{  Form::select($value[0],$value[5], null, ['placeholder'=>$value[4], 'class' => 'form-control'] ) }}
 </div>
 @elseif($value[2] == 'checkbox')
 <div class="mt-checkbox-list">

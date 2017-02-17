@@ -60,6 +60,8 @@
       <thead>
         <tr>
           <td>Referencia</td>
+          <td>Requiere declaracion</td>          
+          <td>Requiere Registro</td>
           <td>Eliminar</td>
         </tr>
       </thead>
@@ -129,7 +131,9 @@
 </div>
 
 @include('importacionesv2.importacionTemplate.modal')
-
+<input type="hidden" id="productoajax" value="{{route('createproductoajax')}}">
+<input type="hidden" id="productoGuarda" value="">
+<input type="hidden" id="idguarda" value="">
 {{ Form::close() }}
 {!! $validator  !!}
 @endsection
