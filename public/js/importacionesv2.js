@@ -4,6 +4,8 @@ function verModel(ruta){
   $("#cargar").load(ruta);  
 }
 
+
+
 function storeajax(url, formulario){
   //Funcion para guardar la creacion realizada en el fomrulario modal
   
@@ -17,25 +19,26 @@ function storeajax(url, formulario){
       $('#cerrarmodal').click();
     }
       //success1 lo use para los productos
-    if(res[0]=="success1"){
-      alert('Operacion realizada exitosamente.');
-      var res1 =  $('#productoGuarda').val();
-      var id1 =  $('#idguarda').val();
-      if (res[3] == 1){
-        var declaracion = "SI";
-      }else if(res[3] == 1){
-        var declaracion = "NO";
-      } 
-      if (res[4] == 1){
-        var registro = "SI";
-      }else if(res[4] == 0){
-        var registro = "NO";
-      } 
-      $('#ocultar2').show();
-      $('#añadir1').append('<tr><td class="campos" id="'+ id1 +'" name="'+ id1 +'">'+res1+'</td><td id="'+ id1 +'-decl" >'+declaracion+'</td><td id="'+ id1 +'-reg">'+registro+'</td><td><span class="borrar glyphicon glyphicon-remove"></span></td></tr>');
-      $('#cerrarmodal').click();
-    }
-              
+      if(res[0]=="success1"){
+        alert('Operacion realizada exitosamente.');
+        var res1 =  $('#productoGuarda').val();
+        var id1 =  $('#idguarda').val();
+        if (res[3] == 1){
+          var declaracion = "SI";
+        }else if(res[3] == 0){
+          var declaracion = "NO";
+        } 
+        if (res[4] == 1){
+          var registro = "SI";
+        }else if(res[4] == 0){
+          var registro = "NO";
+        } 
+        $('#ocultar2').show();
+        $('#añadir1').append('<tr><td class="campos" id="'+ id1 +'">'+res1+'<input type="hidden" name="'+ id1 +'" value='+res1+'></td><td id="'+ id1 +'-decl" >'+declaracion+'<input type="hidden" name="'+ id1 +'-decl"  value='+declaracion+'></td><td id="'+ id1 +'-reg">'+registro+'<input type="hidden" name="'+ id1 +'-reg"  value='+registro+'></td><td><span class="borrar glyphicon glyphicon-remove"></span></td></tr>');
+        $('#tablaGuardar').val(id1);
+        $('#cerrarmodal').click();
+      }
+    //Error compartido para todas las funciones
     if(res[0]=="error"){
       alert(res[1]);
     }
@@ -101,6 +104,7 @@ $( function() {
 //Javascript para hacer calendarios y otros eventos que se ejecutan al momento que carga la pagina
 $(document).ready(function()
 {
+ sessionStorage.setItem('tabla', '');
  $('#ocultar2').hide();
  $('#imp_fecha_entrega_total').datepicker();
  $("#razonSocialTercero").hide();
@@ -151,39 +155,53 @@ $('.table-remove').click(function () {
 //end
 
 function autocompleteprod(obj){
+ var tablaconteo = $('#tablaGuardar').val();
+ if(tablaconteo == ""){
   var conteo = document.getElementById('tablaProducto').rows.length;
-  var encontrar = 0;
-  for (var i = 1; i < conteo; i++)
-  {
-    var string = "#"+ i;
-    var dato = $(string).html();
+}else{
+  var conteo = tablaconteo+1;
+}
+var encontrar = 0;
+for (var i = 1; i < conteo; i++)
+{
+  var string = "#"+ i;
+  var dato = $(string).html();
+  if(typeof(dato) !== 'undefined'){
     var arreglo3 = dato.split(" -- ");
     if(arreglo3[0] == $('#imp_producto').val()){
       encontrar = 1;
     }
   }
-  if($('#imp_producto').val() == ""){
-    alert('Favor ingresar una referencia para realizar la consulta');
-  }else if(encontrar == 1){
-    alert('El producto a importar ya fue ingresado anteriormente para esta importacion');
-    $('#imp_producto').val("");
-  }else{
-    var $this = $(obj);
-    $this.button('loading');
-    var url = document.getElementById('route2').value;
-    var datos = $('#importacionform').serialize();
-    var envio = $('#imp_producto').val();
-    envio1 = envio.replace('+', '¬¬¬°°°');
-    var info = datos+'&obj='+envio1;
-    var posteo =  $.get(url,info,function(res){
-      if(res == 'error'){
-        $('#imp_producto').val("");
-        $('#imp_producto').focus();
-        alert('La referencia ingresada no fue encontrada');
-        $this.button('reset');
+  
+}
+if($('#imp_producto').val() == ""){
+  alert('Favor ingresar una referencia para realizar la consulta');
+}else if(encontrar == 1){
+  alert('El producto a importar ya fue ingresado anteriormente para esta importacion');
+  $('#imp_producto').val("");
+}else{
+  var $this = $(obj);
+  $this.button('loading');
+  var url = document.getElementById('route2').value;
+  var datos = $('#importacionform').serialize();
+  var envio = $('#imp_producto').val();
+  envio1 = envio.replace('+', '¬¬¬°°°');
+  var info = datos+'&obj='+envio1;
+  var posteo =  $.get(url,info,function(res){
+    if(res == 'error'){
+      $('#imp_producto').val("");
+      $('#imp_producto').focus();
+      alert('La referencia ingresada no fue encontrada');
+      $this.button('reset');
+    }else{
+
+      var tabla = $('#tablaGuardar').val();
+      if(tabla == ""){
+        var id1 = document.getElementById('tablaProducto').rows.length;
       }else{
-       var id1 = document.getElementById('tablaProducto').rows.length;
-       if (res[2] == '1') {
+        var id1 = ++tabla;
+      }
+      if (res[2] == '1') {
         $("#myModal").modal();
         $("#cargar").load($('#productoajax').val());  
         var str4 = res[0].split(" -- ");
@@ -200,7 +218,7 @@ function autocompleteprod(obj){
       }else{
         if (res[1][0] == 1){
           var declaracion = "SI";
-        }else if(res[1][0] == 0){
+        }else if(res[1][0] == 0 ){
           var declaracion = "NO";
         } 
         if (res[1][1] == 1){
@@ -208,7 +226,8 @@ function autocompleteprod(obj){
         }else if(res[1][1] == 0){
           var registro = "NO";
         } 
-        $('#añadir1').append('<tr><td class="campos" id="'+ id1 +'" name="'+ id1 +'">'+res[0]+'</td><td id="'+ id1 +'-decl" >'+declaracion+'</td><td id="'+ id1 +'-reg">'+registro+'</td><td><span class="borrar glyphicon glyphicon-remove"></span></td></tr>');
+        $('#añadir1').append('<tr><td class="campos" id="'+ id1 +'">'+res[0]+'<input type="hidden" name="'+ id1 +'" value='+res[0]+'></td><td id="'+ id1 +'-decl" >'+declaracion+'<input type="hidden" name="'+ id1 +'-decl"  value='+declaracion+'></td><td id="'+ id1 +'-reg">'+registro+'<input type="hidden" name="'+ id1 +'-reg"  value='+registro+'></td><td><span class="borrar glyphicon glyphicon-remove"></span></td></tr>');
+        $('#tablaGuardar').val(id1);
         $this.button('reset');
         $('#ocultar2').show();
         $('#imp_producto').val("");
@@ -221,6 +240,6 @@ function autocompleteprod(obj){
 
   }); 
 
-  }
+}
 
 }

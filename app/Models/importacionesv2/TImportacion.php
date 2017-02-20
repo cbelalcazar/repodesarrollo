@@ -42,4 +42,9 @@ class TImportacion extends Model
     }
 
 
+     public function productoimportacion()
+    {
+        return $this->belongsTo('App\Models\Importacionesv2\TProductoImportacion', 'pdim_importacion', 'id');
+    }
+
 }

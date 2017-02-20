@@ -2,10 +2,16 @@
 @section('generic')
 <link href="{{url('/css/importacionesv2.css')}}" type="text/css" rel="stylesheet"/>
 <link href="{{url('/css/font-awesome.min.css')}}" type="text/css" rel="stylesheet"/>
+<link href="{{url('/css/multi-select.css')}}" type="text/css" rel="stylesheet"/>
+<script src="{{url('/js/jquery.multi-select.js')}}" type="text/javascript" language="javascript"></script>
 <script src="{{url('/js/importacionesv2.js')}}" type="text/javascript" language="javascript"></script>
-@include('importacionesv2.importacionTemplate.lineaProceso')
 
-<br><br><br>
+<div class="form-group">
+@include('importacionesv2.importacionTemplate.lineaProceso')
+</div>
+
+
+<br><br><br><br><br>
 <div class="form-group">
   @foreach($errors->all() as $key => $value)
   <div class="alert alert-danger">{{$value}}</div>
@@ -26,7 +32,6 @@
   {{ Form::text('imp_proveedor', '', ['class' => 'form-control', 'id' =>  'proveedor', 'placeholder' =>  'Ingresar nombre o nit del proveedor'])}}
   {{ Form::label('', "") }}
   {{ Form::text('razonSocialTercero', '', ['class' => 'form-control', 'id' =>  'razonSocialTercero', 'readonly' =>  'readonly'])}}
-  {{ Form::close() }}
   <input type="hidden" id="route1" value="{{route('search')}}">
 </div>
 
@@ -70,8 +75,11 @@
     </table>
   </div>
 </div>
-
-
+<br><br>
+<div class="form-group">
+    {!!  Form::label('origenMercancia','Origen de la mercancia', ['class' => 'control-label col-md-3"']); !!}   
+      {!! Form::select('origenMercancia[]', ($origenMercancia), null, ['multiple'=>true,'class' => 'multi-select','id' => 'my-select', 'style' => 'position: absolute; left: -9999px;']) !!}
+    </div>
 
 
 <input type="hidden" id="route2" value="{{route('searchProducto')}}">
@@ -134,6 +142,9 @@
 <input type="hidden" id="productoajax" value="{{route('createproductoajax')}}">
 <input type="hidden" id="productoGuarda" value="">
 <input type="hidden" id="idguarda" value="">
+<input type="hidden" id="tablaGuardar" value="" name="tablaGuardar">
 {{ Form::close() }}
+
+<script>$('#my-select').multiSelect();</script>
 {!! $validator  !!}
 @endsection

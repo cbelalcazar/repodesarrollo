@@ -32,4 +32,9 @@ class TProductoImportacion extends Model
 
      protected $dates = ['deleted_at'];
 
+     public function importacion()
+    {
+        return $this->hasMany('App\Models\Importacionesv2\TImportacion', 'id', 'pdim_importacion');
+    }
+
 }
