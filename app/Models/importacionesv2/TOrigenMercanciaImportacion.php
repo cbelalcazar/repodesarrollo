@@ -25,4 +25,15 @@ class TOrigenMercanciaImportacion extends Model
 
      protected $dates = ['deleted_at'];
 
+       public function importacion()
+    {
+        return $this->hasMany('App\Models\Importacionesv2\TImportacion', 'id', 'omeim_importacion');
+    }
+
+     public function origenes()
+    {
+        return $this->hasMany('App\Models\Importacionesv2\TOrigenMercancia', 'id', 'omeim_origen_mercancia');
+    }
+
+
 }

@@ -23,4 +23,9 @@ class TOrigenMercancia extends Model
 
      protected $connection = 'importacionesV2';
 
+      public function origenMercanciaImportacion()
+    {
+        return $this->belongsTo('App\Models\Importacionesv2\TOrigenMercanciaImportacion', 'omeim_importacion', 'id');
+    }
+
 }

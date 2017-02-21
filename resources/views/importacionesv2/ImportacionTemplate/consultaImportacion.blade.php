@@ -66,7 +66,7 @@
         <td>{{$value->imp_proveedor}}</td>
         <td>{{$value->estado->est_nombre}}</td>
         <td>{{$value->puerto_embarque->puem_nombre}}</td>
-        <td>editar</td>
+        <td> <a class="btn btn-small btn-info" href="{{ URL::to("$url2/" . $value->id . '/edit') }}">Editar</a></td>
         <td>Eliminar</td>
       </tr>
       @endforeach

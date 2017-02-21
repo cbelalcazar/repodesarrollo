@@ -19,6 +19,7 @@ use App\Models\Importacionesv2\TProducto;
 use App\Models\Importacionesv2\TProductoImportacion;
 use App\Models\Importacionesv2\TOrigenMercancia;
 use App\Models\Importacionesv2\TOrigenMercanciaImportacion;
+use App\Models\Importacionesv2\TProforma;
 use Carbon\Carbon;
 
 class TImportacionController extends Controller
@@ -182,14 +183,36 @@ class TImportacionController extends Controller
            $strorimerc->save();
        }
 
+       $cantidadProformas = intval($request->tablaproformaguardar);
+       for ($i=1; $i < $cantidadProformas+1 ; $i++) { 
+           $strproforma = $i."objproforma";
+           $strproforma = new TProforma;
+           $strproforma->prof_importacion = $ObjectCrear->id;
+           $noprof = $i."-noprof";
+           $creaprof = $i."-creaprof";
+           $entregaprof = $i."-entregaprof";
+           $valorprof = $i."-valorprof";
+           $princprof = $i."-princprof";
+           $strproforma->prof_numero = $request->$noprof;
+           $date1 = Carbon::parse($request->$creaprof)->format('Y-m-d');
+           $strproforma->prof_fecha_creacion = $date1;
+           $date2 = Carbon::parse($request->$entregaprof)->format('Y-m-d');
+           $strproforma->prof_fecha_entrega = $date2;
+           $strproforma->prof_valor_proforma = $request->$valorprof;
+           $strproforma->prof_principal = intval($request->$princprof);
+           $strproforma->save();
+       }
 
 
-     Cache::forget('importacion');
+
+
+
+       Cache::forget('importacion');
         //Redirecciona a la pagina de creacion y muestra mensaje
-     Session::flash('message', 'El proceso de importación fue creado exitosamente!');
-     return Redirect::to($urlConsulta);
+       Session::flash('message', 'El proceso de importación fue creado exitosamente!');
+       return Redirect::to($urlConsulta);
 
- }
+   }
 }
 
     /**
@@ -211,7 +234,72 @@ class TImportacionController extends Controller
     */
     public function edit($id)
     {
-        //
+        //Id del registro que deseamos editar
+        $id = $id;
+        //Consulto el registro que deseo editar
+        $objeto = TImportacion::find($id);
+
+        //Titulo de la pagina
+        $titulo = "EDITAR PROCESO DE IMPORTACION";
+        //url de redireccion para consultar
+        $url = route('Importacion.store');
+        // Validaciones ajax
+        $validator = JsValidator::make($this->rules, $this->messages);
+        //url de redireccion para editar -- Name url correspondiente a method PUT|PATCH en comando route.list
+        //correspondiente a este controlador
+        $route = 'Importacion.update';
+        $objeto2 = TOrigenMercanciaImportacion::with('origenes')->where('omeim_importacion','=', "$id" )->get();
+        $seleccionados = [];
+        foreach ($objeto2 as $key => $value) {
+            array_push ($seleccionados, $value->origenes[0]->id);
+        }
+        $objeto3 = TProductoImportacion::select('pdim_producto')->where('pdim_importacion','=',"$id")->get();
+        $tablaProductos = array();
+        foreach ($objeto3 as $key => $value) {
+            $unProducto = array();
+            $prodLocal = TProducto::find($value->pdim_producto);
+            $referenciaProd = $prodLocal->prod_referencia;
+            $queries = DB::connection('genericas')
+            ->table('item')
+            ->select('referenciaItem', 'descripcionItem')
+            ->where('referenciaItem', 'LIKE', "%".$referenciaProd."%")
+            ->get();           
+            $descripcion = $queries[0]->referenciaItem." -- ".$queries[0]->descripcionItem;
+            array_push($unProducto, $descripcion);
+            if($prodLocal->prod_req_declaracion_anticipado == 1){
+                array_push($unProducto, "SI");
+            }else{
+                array_push($unProducto, "NO");
+            }
+            if($prodLocal->prod_req_registro_importacion == 1){
+                array_push($unProducto, "SI");
+            }else{
+                array_push($unProducto, "NO");
+            }
+            array_push($tablaProductos, $unProducto);
+
+        }
+        dd($tablaProductos);
+
+        $origenMercancia = TOrigenMercancia::pluck('ormer_nombre', 'id');
+         //crea los array de las consultas para mostrar en los Combobox
+        $consulta = array(1,2,3);
+        $combos = $this->consultas($consulta);
+        extract($combos);
+        
+        return view('importacionesv2.ImportacionTemplate.editImportacion', 
+            compact('campos',
+             'url',
+             'titulo', 
+             'validator', 
+             'route', 
+             'id',
+             'objeto',
+             'seleccionados',
+             'puertos', 
+             'inconterm',
+             'moneda',
+             'origenMercancia'));
     }
 
     /**
@@ -348,7 +436,7 @@ public function consultaFiltrada(Request $request){
         *Variable datos debe contener la informacion que se quiere mostrar en el formulario
         */
         if($where == [] && $request->consulto == 1){
-            $datos = TImportacion::with('estado')->with('puerto_embarque')->get();
+            $datos = TImportacion::with('estado')->with('puerto_embarque')->orderBy('t_importacion.imp_consecutivo', 'desc')->get();
         }elseif($where != [] && $request->consulto == 1){
             $datos = TImportacion::with('estado')->with('puerto_embarque')->orWhere($where)->get();
         }else{
@@ -367,12 +455,13 @@ public function consultaFiltrada(Request $request){
         extract($combos);
         //Genera url completa de consulta
         $url = route("consultaFiltros");
-
+        $url2 = route("Importacion.store");
         return view('importacionesv2.ImportacionTemplate.consultaImportacion', compact('titulo',
             'datos',
             'titulosTabla',
             'campos',
             'url',
+            'url2',
             'puertos',
             'estados'));
 

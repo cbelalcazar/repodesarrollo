@@ -105,8 +105,14 @@ $( function() {
 $(document).ready(function()
 {
  sessionStorage.setItem('tabla', '');
+ $('.solo-numero').keyup(function (){
+            this.value = (this.value + '').replace(/[^0-9]/g, '');
+          });
  $('#ocultar2').hide();
+ $('#ocultar3').hide();
  $('#imp_fecha_entrega_total').datepicker();
+ $('#fech_crea_profor').datepicker();
+ $('#fech_entreg_profor').datepicker();
  $("#razonSocialTercero").hide();
  $("#proveedor").blur(function(){
   $("#razonSocialTercero").show();
@@ -174,6 +180,7 @@ for (var i = 1; i < conteo; i++)
   }
   
 }
+//Valido que los campos tengan informacion diligenciada
 if($('#imp_producto').val() == ""){
   alert('Favor ingresar una referencia para realizar la consulta');
 }else if(encontrar == 1){
@@ -243,3 +250,78 @@ if($('#imp_producto').val() == ""){
 }
 
 }
+
+
+
+
+
+
+function tablaproforma(obj){
+
+var tablaconteo = $('#tablaproformaguardar').val();
+ if(tablaconteo == ""){
+  var conteo = document.getElementById('tablaproforma').rows.length;
+}else{
+  var conteo = tablaconteo+1;
+}
+var encontrar = 0;
+for (var i = 1; i < conteo; i++)
+{
+  var string = "#"+ i + "-prof";
+  var dato = $(string).html();
+  if(typeof(dato) !== 'undefined'){
+    var dato1 = dato.split('<input');
+    if(dato1[0] == $('#imp_proforma').val()){
+      encontrar = 1;
+    }
+  }
+  
+}
+
+//Valido que los campos tengan informacion diligenciada
+if($('#imp_proforma').val() == "" || $('#fech_crea_profor').val() == "" || $('#fech_entreg_profor').val() == "" || $('#imp_proforma').val() == "" || $('#val_proforma').val() == ""){
+  alert('Favor diligenciar toda la informacion de la proforma');
+}else if(encontrar == 1){
+  alert('la proforma ingresada ya fue digitada');
+  $('#imp_proforma').val("");
+  $('#fech_crea_profor').val("");
+  $('#fech_entreg_profor').val("");
+  $('#val_proforma').val("");
+}else{
+  var $this = $(obj);
+  $this.button('loading');
+  var tabla = $('#tablaproformaguardar').val();
+  if(tabla == ""){
+    var id1 = document.getElementById('tablaproforma').rows.length;
+  }else{
+    var id1 = ++tabla;
+  }
+  var borrar = '<td><span class="borrar glyphicon glyphicon-remove"></span></td>';
+  var noproforma = '<td class="campos" id="'+ id1 +'-prof">'+$('#imp_proforma').val()+'<input type="hidden" name="'+ id1 +'-noprof" value='+$('#imp_proforma').val()+'></td>';
+  var fech_creacion = '<td>'+$('#fech_crea_profor').val()+'<input type="hidden" name="'+ id1 +'-creaprof" value='+$('#fech_crea_profor').val()+'></td>';
+  var fech_entreg_profor = '<td>'+$('#fech_entreg_profor').val()+'<input type="hidden" name="'+ id1 +'-entregaprof" value='+$('#fech_entreg_profor').val()+'></td>';
+  var val_proforma = '<td>'+$('#val_proforma').val()+'<input type="hidden" name="'+ id1 +'-valorprof" value='+$('#val_proforma').val()+'></td>';
+
+   if($("#proforma_principal").is(':checked')) {  
+            var principal_prof = '<td>SI<input type="hidden" name="'+ id1 +'-princprof" value=1></td>';
+
+        } else {  
+             var principal_prof = '<td>NO<input type="hidden" name="'+ id1 +'-princprof" value=0></td>';
+        }  
+ $('#añadir2').append('<tr>'+noproforma+fech_creacion+fech_entreg_profor+val_proforma+principal_prof+borrar+'</tr>');
+  $('#tablaproformaguardar').val(id1);
+  $this.button('reset');
+  $('#ocultar3').show();
+  $('#imp_proforma').val("");
+  $('#fech_crea_profor').val("");
+  $('#fech_entreg_profor').val("");
+  $('#val_proforma').val("");
+  $('#imp_proforma').focus();
+
+
+}
+
+
+}
+
+

@@ -21,15 +21,15 @@
   @endif
 </div>
 
-{{ Form::open(array('url' => "$url",'id' => "importacionform")) }}
+{{ Form::model($objeto, array('route' => array($route, $id), 'method' => 'PUT')) }}
 <div class="form-group">
   {{ Form::label('', "Consecutivo de creacion") }}
-  {{ Form::text("imp_consecutivo", old("imp_consecutivo") ? old("imp_consecutivo") : $imp_consecutivo, ['class' => 'form-control', 'id' =>  'imp_consecutivo', 'placeholder' =>  'Ingresar el consecutivo de creacion','maxlength' => '250']) }}
+  {{ Form::text("imp_consecutivo", old("imp_consecutivo"), ['class' => 'form-control', 'id' =>  'imp_consecutivo', 'placeholder' =>  'Ingresar el consecutivo de creacion','maxlength' => '250']) }}
 </div>
 <div class="form-group">
   {{ Form::open(['action' => ['Importacionesv2\TImportacionController@autocomplete'], 'method' => 'post']) }}
   {{ Form::label('', "Busqueda de proveedor") }}
-  {{ Form::text('imp_proveedor', '', ['class' => 'form-control', 'id' =>  'proveedor', 'placeholder' =>  'Ingresar nombre o nit del proveedor'])}}
+  {{ Form::text('imp_proveedor', old("imp_proveedor"), ['class' => 'form-control', 'id' =>  'proveedor', 'placeholder' =>  'Ingresar nombre o nit del proveedor'])}}
   {{ Form::label('', "") }}
   {{ Form::text('razonSocialTercero', '', ['class' => 'form-control', 'id' =>  'razonSocialTercero', 'readonly' =>  'readonly'])}}
   <input type="hidden" id="route1" value="{{route('search')}}">
@@ -78,7 +78,7 @@
 <br><br>
 <div class="form-group">
   {!!  Form::label('origenMercancia','Origen de la mercancia', ['class' => 'control-label col-md-3"']); !!}   
-  {!! Form::select('origenMercancia[]', ($origenMercancia), null, ['multiple'=>true,'class' => 'multi-select','id' => 'my-select', 'style' => 'position: absolute; left: -9999px;']) !!}
+  {!! Form::select('origenMercancia[]', $origenMercancia, $seleccionados, ['multiple'=>true,'class' => 'multi-select','id' => 'my-select', 'style' => 'position: absolute; left: -9999px;']) !!}
 </div>
 
 

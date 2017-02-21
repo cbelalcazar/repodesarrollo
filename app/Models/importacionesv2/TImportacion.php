@@ -47,4 +47,9 @@ class TImportacion extends Model
         return $this->belongsTo('App\Models\Importacionesv2\TProductoImportacion', 'pdim_importacion', 'id');
     }
 
+     public function origenMercancia()
+    {
+        return $this->belongsTo('App\Models\Importacionesv2\TOrigenMercanciaImportacion', 'omeim_importacion', 'id');
+    }
+
 }
