@@ -21,11 +21,13 @@
   @endif
 </div>
 
-{{ Form::model($objeto, array('route' => array($route, $id), 'method' => 'PUT')) }}
+{{ Form::model($objeto, array('route' => array($route, $id), 'method' => 'PUT',  'id' => 'Formularioupdate1')) }}
+
 <div class="form-group">
   {{ Form::label('', "Consecutivo de creacion") }}
   {{ Form::text("imp_consecutivo", old("imp_consecutivo"), ['class' => 'form-control', 'id' =>  'imp_consecutivo', 'placeholder' =>  'Ingresar el consecutivo de creacion','maxlength' => '250']) }}
 </div>
+<input type="hidden" name="{{$objeto->id}}" id="identificador" value="{{$objeto->id}}">
 <div class="form-group">
   {{ Form::open(['action' => ['Importacionesv2\TImportacionController@autocomplete'], 'method' => 'post']) }}
   {{ Form::label('', "Busqueda de proveedor") }}
@@ -55,7 +57,7 @@
 
 
 
-<div class="form-group" id="ocultar2">
+<div class="form-group">
   <div class="portlet-body form">
     @if (Session::has('message'))
     <div class="alert alert-info">{{ Session::get('message') }}</div>
@@ -71,10 +73,24 @@
         </tr>
       </thead>
       <tbody id="añadir1">
+      @if($tablaProductos)
+        @foreach($tablaProductos as $key => $infoProducto)
+        <tr>
+          
+          <td class="campos" id="{{$key+1}}">{{ $infoProducto[0] }}<input type="hidden" name="{{$key+1}}" value='{{$infoProducto[0]}}'></td>
+          <td id="{{$key+1}}-decl" >{{ $infoProducto[1] }}<input type="hidden" name="{{$key+1}}-decl"  value="{{$infoProducto[1]}}"></td>
+          <td id="{{$key+1}}-reg" >{{ $infoProducto[2] }}<input type="hidden" name="{{$key+1}}-reg"  value="{{$infoProducto[2]}}"></td>
+          <td><span id="{{$infoProducto[3]}}" onclick="borrarprodimp(this);" class=" glyphicon glyphicon-remove"></span><input type="hidden" name="{{$key+1}}-idproducto" value="{{$infoProducto[3]}}"></td>
+        </tr>
+        @endforeach
+      @endif
       </tbody>
     </table>
   </div>
 </div>
+<input type="hidden" id="urlborrar" value="{{$urlBorrar}}">
+
+
 <br><br>
 <div class="form-group">
   {!!  Form::label('origenMercancia','Origen de la mercancia', ['class' => 'control-label col-md-3"']); !!}   
@@ -134,7 +150,7 @@
 
 
 
-<div class="form-group" id="ocultar3">
+<div class="form-group" id="">
   <div class="portlet-body form">
     @if (Session::has('message'))
     <div class="alert alert-info">{{ Session::get('message') }}</div>
@@ -152,11 +168,25 @@
         </tr>
       </thead>
       <tbody id="añadir2">
+       @if($tablaProformas)
+        @foreach($tablaProformas as $key1 => $infoProforma)
+        <tr>
+          <td class="campos" id="{{$key1+1}}-prof">{{ $infoProforma[0] }}<input type="hidden" name="{{$key1+1}}-noprof" value='{{$infoProforma[0]}}'></td>
+
+          <td>{{ $infoProforma[1] }}<input type="hidden" name="{{$key1+1}}-creaprof" value='{{$infoProforma[1]}}'></td>
+
+          <td>{{ $infoProforma[2] }}<input type="hidden" name="{{$key1+1}}-entregaprof" value='{{$infoProforma[2]}}'></td>
+          <td>{{ $infoProforma[3] }}<input type="hidden" name="{{$key1+1}}-valorprof" value='{{$infoProforma[3]}}'></td>
+          <td>{{ $infoProforma[4] }}<input type="hidden" name="{{$key1+1}}-princprof" value='{{$infoProforma[4]}}'></td>
+          <td><span  id="{{$infoProforma[5]}}" onclick="borrarproforma(this);" class=" glyphicon glyphicon-remove"></span><input type="hidden" name="{{$key1+1}}-idproforma" value="{{$infoProforma[5]}}"></td>
+        </tr>
+        @endforeach
+      @endif
       </tbody>
     </table>
   </div>
 </div>
-
+<input type="hidden" id="urlborrarprof" value="{{$urlBorrarProforma}}">
 <br><br><br>
 
 
@@ -214,7 +244,7 @@
 </div>
 
 <div class="form-group">
-  {{ Form::submit('Crear Nueva', array('class' => 'btn btn-primary')) }}
+  {{ Form::submit('Editar', array('class' => 'btn btn-primary')) }}
 </div>
 
 @include('importacionesv2.importacionTemplate.modal')

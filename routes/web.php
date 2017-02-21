@@ -46,4 +46,6 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('importacionesv2/ProductoAjax', 'Importacionesv2\TProductoController@Productoajax')->name('createproductoajax');
     Route::post('importacionesv2/StoreAjaxProducto', 'Importacionesv2\TProductoController@storeAjax')->name('storeajaxproducto');
   Route::get('importacionesv2/ConsultaFiltros', 'Importacionesv2\TImportacionController@consultaFiltrada')->name('consultaFiltros');
+  Route::get('importacionesv2/BorrarProductoImportacion', 'Importacionesv2\TImportacionController@borrar')->name('borrarProductoImportacion');
+  Route::get('importacionesv2/BorrarProformaImportacion', 'Importacionesv2\TImportacionController@borrarProforma')->name('borrarProformaImportacion');
 });

@@ -34,7 +34,7 @@ function storeajax(url, formulario){
           var registro = "NO";
         } 
         $('#ocultar2').show();
-        $('#añadir1').append('<tr><td class="campos" id="'+ id1 +'">'+res1+'<input type="hidden" name="'+ id1 +'" value='+res1+'></td><td id="'+ id1 +'-decl" >'+declaracion+'<input type="hidden" name="'+ id1 +'-decl"  value='+declaracion+'></td><td id="'+ id1 +'-reg">'+registro+'<input type="hidden" name="'+ id1 +'-reg"  value='+registro+'></td><td><span class="borrar glyphicon glyphicon-remove"></span></td></tr>');
+        $('#añadir1').append('<tr><td class="campos" id="'+ id1 +'">'+res1+'<input type="hidden" name="'+ id1 +'" value='+res1+'></td><td id="'+ id1 +'-decl" >'+declaracion+'<input type="hidden" name="'+ id1 +'-decl"  value='+declaracion+'></td><td id="'+ id1 +'-reg">'+registro+'<input type="hidden" name="'+ id1 +'-reg"  value='+registro+'></td><td><span class="borrar glyphicon glyphicon-remove"></span><input type="hidden" name="'+ id1 +'-idproducto" value=""></td></tr>');
         $('#tablaGuardar').val(id1);
         $('#cerrarmodal').click();
       }
@@ -106,8 +106,8 @@ $(document).ready(function()
 {
  sessionStorage.setItem('tabla', '');
  $('.solo-numero').keyup(function (){
-            this.value = (this.value + '').replace(/[^0-9]/g, '');
-          });
+  this.value = (this.value + '').replace(/[^0-9]/g, '');
+});
  $('#ocultar2').hide();
  $('#ocultar3').hide();
  $('#imp_fecha_entrega_total').datepicker();
@@ -233,7 +233,7 @@ if($('#imp_producto').val() == ""){
         }else if(res[1][1] == 0){
           var registro = "NO";
         } 
-        $('#añadir1').append('<tr><td class="campos" id="'+ id1 +'">'+res[0]+'<input type="hidden" name="'+ id1 +'" value='+res[0]+'></td><td id="'+ id1 +'-decl" >'+declaracion+'<input type="hidden" name="'+ id1 +'-decl"  value='+declaracion+'></td><td id="'+ id1 +'-reg">'+registro+'<input type="hidden" name="'+ id1 +'-reg"  value='+registro+'></td><td><span class="borrar glyphicon glyphicon-remove"></span></td></tr>');
+        $('#añadir1').append('<tr><td class="campos" id="'+ id1 +'">'+res[0]+'<input type="hidden" name="'+ id1 +'" value='+res[0]+'></td><td id="'+ id1 +'-decl" >'+declaracion+'<input type="hidden" name="'+ id1 +'-decl"  value='+declaracion+'></td><td id="'+ id1 +'-reg">'+registro+'<input type="hidden" name="'+ id1 +'-reg"  value='+registro+'></td><td><span class="borrar glyphicon glyphicon-remove"></span><input type="hidden" name="'+ id1 +'-idproducto" value=""></td></tr>');
         $('#tablaGuardar').val(id1);
         $this.button('reset');
         $('#ocultar2').show();
@@ -258,25 +258,25 @@ if($('#imp_producto').val() == ""){
 
 function tablaproforma(obj){
 
-var tablaconteo = $('#tablaproformaguardar').val();
- if(tablaconteo == ""){
-  var conteo = document.getElementById('tablaproforma').rows.length;
-}else{
-  var conteo = tablaconteo+1;
-}
-var encontrar = 0;
-for (var i = 1; i < conteo; i++)
-{
-  var string = "#"+ i + "-prof";
-  var dato = $(string).html();
-  if(typeof(dato) !== 'undefined'){
-    var dato1 = dato.split('<input');
-    if(dato1[0] == $('#imp_proforma').val()){
-      encontrar = 1;
-    }
+  var tablaconteo = $('#tablaproformaguardar').val();
+  if(tablaconteo == ""){
+    var conteo = document.getElementById('tablaproforma').rows.length;
+  }else{
+    var conteo = tablaconteo+1;
   }
-  
-}
+  var encontrar = 0;
+  for (var i = 1; i < conteo; i++)
+  {
+    var string = "#"+ i + "-prof";
+    var dato = $(string).html();
+    if(typeof(dato) !== 'undefined'){
+      var dato1 = dato.split('<input');
+      if(dato1[0] == $('#imp_proforma').val()){
+        encontrar = 1;
+      }
+    }
+
+  }
 
 //Valido que los campos tengan informacion diligenciada
 if($('#imp_proforma').val() == "" || $('#fech_crea_profor').val() == "" || $('#fech_entreg_profor').val() == "" || $('#imp_proforma').val() == "" || $('#val_proforma').val() == ""){
@@ -296,31 +296,71 @@ if($('#imp_proforma').val() == "" || $('#fech_crea_profor').val() == "" || $('#f
   }else{
     var id1 = ++tabla;
   }
-  var borrar = '<td><span class="borrar glyphicon glyphicon-remove"></span></td>';
+  var borrar = '<td><span class="borrar glyphicon glyphicon-remove"><input type="hidden" name="'+ id1 +'-idproforma" value=""></span></td>';
   var noproforma = '<td class="campos" id="'+ id1 +'-prof">'+$('#imp_proforma').val()+'<input type="hidden" name="'+ id1 +'-noprof" value='+$('#imp_proforma').val()+'></td>';
   var fech_creacion = '<td>'+$('#fech_crea_profor').val()+'<input type="hidden" name="'+ id1 +'-creaprof" value='+$('#fech_crea_profor').val()+'></td>';
   var fech_entreg_profor = '<td>'+$('#fech_entreg_profor').val()+'<input type="hidden" name="'+ id1 +'-entregaprof" value='+$('#fech_entreg_profor').val()+'></td>';
   var val_proforma = '<td>'+$('#val_proforma').val()+'<input type="hidden" name="'+ id1 +'-valorprof" value='+$('#val_proforma').val()+'></td>';
 
-   if($("#proforma_principal").is(':checked')) {  
-            var principal_prof = '<td>SI<input type="hidden" name="'+ id1 +'-princprof" value=1></td>';
+  if($("#proforma_principal").is(':checked')) {  
+    var principal_prof = '<td>SI<input type="hidden" name="'+ id1 +'-princprof" value=1></td>';
 
-        } else {  
-             var principal_prof = '<td>NO<input type="hidden" name="'+ id1 +'-princprof" value=0></td>';
-        }  
+  } else {  
+   var principal_prof = '<td>NO<input type="hidden" name="'+ id1 +'-princprof" value=0></td>';
+ }  
  $('#añadir2').append('<tr>'+noproforma+fech_creacion+fech_entreg_profor+val_proforma+principal_prof+borrar+'</tr>');
-  $('#tablaproformaguardar').val(id1);
-  $this.button('reset');
-  $('#ocultar3').show();
-  $('#imp_proforma').val("");
-  $('#fech_crea_profor').val("");
-  $('#fech_entreg_profor').val("");
-  $('#val_proforma').val("");
-  $('#imp_proforma').focus();
+ $('#tablaproformaguardar').val(id1);
+ $this.button('reset');
+ $('#ocultar3').show();
+ $('#imp_proforma').val("");
+ $('#fech_crea_profor').val("");
+ $('#fech_entreg_profor').val("");
+ $('#val_proforma').val("");
+ $('#imp_proforma').focus();
 
 
 }
 
+
+}
+
+
+function borrarprodimp(obj){
+  var urlBorrar = $('#urlborrar').val();
+  var formulario =  $('#Formularioupdate1').serialize();
+  var id = obj.id;
+  var ordenimportacion = $('#identificador').val();
+  var datos = formulario+'&obj='+id+'&identificador='+ordenimportacion;
+  var posteo =  $.get(urlBorrar,datos,function(res){
+    alert(res);
+    if (res == "Producto borrado exitosamente") {
+
+     event.preventDefault();
+     $(obj).closest('tr').remove();
+   }
+ });
+
+
+
+}
+
+
+function borrarproforma(obj){
+  var urlBorrar = $('#urlborrarprof').val();
+  var formulario =  $('#Formularioupdate1').serialize();
+  var id = obj.id;
+  var ordenimportacion = $('#identificador').val();
+  var datos = formulario+'&obj='+id+'&identificador='+ordenimportacion;
+  var posteo =  $.get(urlBorrar,datos,function(res){
+    alert(res);
+    if (res == "Proforma borrada exitosamente") {
+      
+     event.preventDefault();
+     $(obj).closest('tr').remove();
+   }
+ });
+
+  
 
 }
 
