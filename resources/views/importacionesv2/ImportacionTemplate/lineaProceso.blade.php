@@ -1,3 +1,9 @@
+<!-- /**
+ * Template creado por
+ * Creado por Carlos Belalcazar
+ * Analista desarrollador de software Belleza Express
+ * 22/02/2017
+ */ -->
 <div class="col-xs-12">
 <div class="stepwizard">
     <div class="stepwizard-row setup-panel">

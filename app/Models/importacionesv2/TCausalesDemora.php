@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class TCausalesDemora
+ * Creado por Carlos Belalcazar
+ * Analista desarrollador de software Belleza Express
+ * 22/02/2017
  */
 class TCausalesDemora extends Model
 {

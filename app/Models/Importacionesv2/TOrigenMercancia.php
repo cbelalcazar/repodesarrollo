@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class TOrigenMercancium
+ * Creado por Carlos Belalcazar
+ * Analista desarrollador de software Belleza Express
+ * 22/02/2017
  */
 class TOrigenMercancia extends Model
 {

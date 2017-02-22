@@ -1,5 +1,11 @@
 @extends('importacionesv2.base')
 @section('generic')
+<!-- /**
+ * Template creado por
+ * Creado por Carlos Belalcazar
+ * Analista desarrollador de software Belleza Express
+ * 22/02/2017
+ */ -->
 <div class="portlet-body form">
   @if (Session::has('message'))
   <div class="alert alert-info">{{ Session::get('message') }}</div>

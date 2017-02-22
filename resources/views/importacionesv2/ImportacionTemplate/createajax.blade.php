@@ -1,5 +1,11 @@
 @extends('importacionesv2.importacionTemplate.titulosbase')
 @section('generic')
+<!-- /**
+ * Template creado por
+ * Creado por Carlos Belalcazar
+ * Analista desarrollador de software Belleza Express
+ * 22/02/2017
+ */ -->
 <br><br><br>
 
 @foreach($errors->all() as $key => $value)

@@ -1,6 +1,13 @@
 @extends('importacionesv2.importacionTemplate.titulosbase')
 @section('generic')
 
+<!-- /**
+ * Template creado por
+ * Creado por Carlos Belalcazar
+ * Analista desarrollador de software Belleza Express
+ * 22/02/2017
+ */ -->
+
 <script src="{{url('/js/importacionesv2.js')}}" type="text/javascript" language="javascript"></script>
 <div class="btn-group btn-group-justified">
         <a href="{{ $url }}" class="btn btn-default"> Consultar todos </a>

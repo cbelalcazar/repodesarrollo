@@ -1,5 +1,11 @@
 @extends('importacionesv2.importacionTemplate.titulosbase')
 @section('generic')
+<!-- /**
+ * Template creado por
+ * Creado por Carlos Belalcazar
+ * Analista desarrollador de software Belleza Express
+ * 22/02/2017
+ */ -->
 <link href="{{url('/css/importacionesv2.css')}}" type="text/css" rel="stylesheet"/>
 <link href="{{url('/css/font-awesome.min.css')}}" type="text/css" rel="stylesheet"/>
 <link href="{{url('/css/multi-select.css')}}" type="text/css" rel="stylesheet"/>

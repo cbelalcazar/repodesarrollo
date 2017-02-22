@@ -11,6 +11,13 @@ use Session;
 use JsValidator;
 use \Cache;
 
+/**
+ * Controlador TTipoLevanteController
+ * Creado por Carlos Belalcazar
+ * Analista desarrollador de software Belleza Express
+ * 22/02/2017
+ */
+
 class TTipoLevanteController extends Controller
 {
 

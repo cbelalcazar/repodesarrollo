@@ -1,5 +1,11 @@
 @extends('importacionesv2.base')
 @section('generic')
+<!-- /**
+ * Template creado por
+ * Creado por Carlos Belalcazar
+ * Analista desarrollador de software Belleza Express
+ * 22/02/2017
+ */ -->
 @foreach($errors->all() as $key => $value)
 <div class="alert alert-danger">{{$value}}</div>
 @endforeach

@@ -8,6 +8,9 @@ class CreateImportacionesV2Ttipocarga extends Migration
 {
     /**
      * Run the migrations.
+     * Creado por Carlos Belalcazar
+     * Analista desarrollador de software Belleza Express
+     * 22/02/2017
      *
      * @return void
      */

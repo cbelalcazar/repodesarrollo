@@ -11,6 +11,13 @@ use Redirect;
 use Session;
 use JsValidator;
 
+/**
+ * Controlador TProductoController
+ * Creado por Carlos Belalcazar
+ * Analista desarrollador de software Belleza Express
+ * 22/02/2017
+ */
+
 class TProductoController extends Controller
 {
 

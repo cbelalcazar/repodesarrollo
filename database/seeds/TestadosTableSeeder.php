@@ -6,11 +6,15 @@ class TestadosTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     * Creado por Carlos Belalcazar
+     * Analista desarrollador de software Belleza Express
+     * 22/02/2017
      *
      * @return void
      */
     public function run()
     {
+        //Estados creados para el proceso de importacionesv2
          DB::connection('importacionesV2')->table('t_estados')->insert([
             'id' => 1,
             'est_nombre' => "ORIGEN",

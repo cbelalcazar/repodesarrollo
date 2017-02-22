@@ -1,5 +1,11 @@
 @extends('app')
 @section('content')
+<!-- /**
+ * Template creado por
+ * Creado por Carlos Belalcazar
+ * Analista desarrollador de software Belleza Express
+ * 22/02/2017
+ */ -->
 </div>
 <div class="barraEncabezado">
   <div class="letra1"><strong>IMPORTACIONES V2 // {{$titulo}}</strong></b></div>

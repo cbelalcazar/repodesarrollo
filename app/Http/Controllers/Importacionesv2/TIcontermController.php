@@ -11,6 +11,13 @@ use Session;
 use JsValidator;
 use \Cache;
 
+/**
+ * Controlador TIcontermController
+ * Creado por Carlos Belalcazar
+ * Analista desarrollador de software Belleza Express
+ * 22/02/2017
+ */
+
 class TIcontermController extends Controller
 {
 

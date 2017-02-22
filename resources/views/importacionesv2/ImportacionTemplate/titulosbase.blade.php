@@ -1,5 +1,11 @@
 @extends('app')
 @section('content')
+<!-- /**
+ * Template creado por
+ * Creado por Carlos Belalcazar
+ * Analista desarrollador de software Belleza Express
+ * 22/02/2017
+ */ -->
 <link href="{{url('/css/importacionesv2.css')}}" type="text/css" rel="stylesheet"/>
 </div>
 <div class="barraEncabezado">
