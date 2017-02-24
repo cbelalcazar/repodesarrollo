@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Importacionesv2;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use JsValidator;
+use Validator;
 use Input;
 use DB;
 use Response;
@@ -118,12 +119,29 @@ class TImportacionController extends Controller
             return Redirect::to("importacionesv2/Importacion/create")
             ->withErrors('La importacion que intenta crear tiene el mismo consecutivo que un registro ya existente')->withInput();
         }
+
+        $validator = Validator::make($request->all(), $this->rules, $this->messages);
+
+        if ($validator->fails()) {
+            return redirect($url)
+            ->withErrors($validator)
+            ->withInput();
+        }
+
         if($request->tablaGuardar == ""){
             //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
             return Redirect::to("importacionesv2/Importacion/create")
             ->withErrors('Debe ingresar almenos un producto')->withInput();
         }
+        if($request->tablaproformaguardar == ""){
+            //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
+            return Redirect::to("importacionesv2/Importacion/create")
+            ->withErrors('Debe ingresar almenos una proforma')->withInput();
+        }
+
         
+
+        DB::beginTransaction();
         //Crea el registro en la tabla importacion
         $ObjectCrear = new TImportacion;
         $ObjectCrear->imp_consecutivo = strtoupper(Input::get('imp_consecutivo'));
@@ -146,19 +164,20 @@ class TImportacionController extends Controller
      $ObjectCrear->save();
        #Si la creacion de la importacion genera error lo retorna
      if(!$ObjectCrear->id){
-        App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema');
+        DB::rollBack();
+        App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema [error 201]');        
     }else{
         #En caso de no existir error
         #crea todos los productos realcionados en la tabla
         $cantidad = intval($request->tablaGuardar);
-        
+        $banderaProducto = true;
         for ($i=1; $i < $cantidad+1; $i++) { 
 
             if($request->$i != ""){
                 $alerta = 0;
                 $strvariable = $i."variable";
                 $strvariable = new TProductoImportacion;
-                
+
                 $date = Carbon::now();
                 $date = $date->format('Y-m-d');
                 $ref = $request->$i;
@@ -177,6 +196,11 @@ class TImportacionController extends Controller
                 $strvariable->pdim_alerta =$alerta;
                 $strvariable->save();
 
+                if(!$strvariable->id){                    
+                    DB::rollBack();
+                    App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema [error 202]');
+                }   
+
 
             }
 
@@ -189,34 +213,48 @@ class TImportacionController extends Controller
            $strorimerc->omeim_origen_mercancia = $request->origenMercancia[$i];
            $strorimerc->omeim_importacion = $ObjectCrear->id;
            $strorimerc->save();
-       }
-     #Crea todas las proformas asociadas en la tabla
-       $cantidadProformas = intval($request->tablaproformaguardar);
-       for ($i=1; $i < $cantidadProformas+1 ; $i++) { 
-           $strproforma = $i."objproforma";
-           $strproforma = new TProforma;
-           $strproforma->prof_importacion = $ObjectCrear->id;
-           $noprof = $i."-noprof";
-           $creaprof = $i."-creaprof";
-           $entregaprof = $i."-entregaprof";
-           $valorprof = $i."-valorprof";
-           $princprof = $i."-princprof";
-           $strproforma->prof_numero = $request->$noprof;
-           $date1 = Carbon::parse($request->$creaprof)->format('Y-m-d');
-           $strproforma->prof_fecha_creacion = $date1;
-           $date2 = Carbon::parse($request->$entregaprof)->format('Y-m-d');
-           $strproforma->prof_fecha_entrega = $date2;
-           $strproforma->prof_valor_proforma = $request->$valorprof;
-           $strproforma->prof_principal = intval($request->$princprof);
-           $strproforma->save();
-       }
-     #Borra la cache de consulta 
-       Cache::forget('importacion');
-        //Redirecciona a la pagina de creacion y muestra mensaje
-       Session::flash('message', 'El proceso de importación fue creado exitosamente!');
-       return Redirect::to($urlConsulta);
+           if(!$strorimerc->id){                    
+            DB::rollBack();
+            App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema [error 203]');
+        }   
+    }
 
-   }
+     #Crea todas las proformas asociadas en la tabla
+    $cantidadProformas = intval($request->tablaproformaguardar);
+    for ($i=1; $i < $cantidadProformas+1 ; $i++) { 
+       $strproforma = $i."objproforma";
+       $strproforma = new TProforma;
+       $strproforma->prof_importacion = $ObjectCrear->id;
+       $noprof = $i."-noprof";
+       $creaprof = $i."-creaprof";
+       $entregaprof = $i."-entregaprof";
+       $valorprof = $i."-valorprof";
+       $princprof = $i."-princprof";
+       $strproforma->prof_numero = $request->$noprof;
+       $date1 = Carbon::parse($request->$creaprof)->format('Y-m-d');
+       $strproforma->prof_fecha_creacion = $date1;
+       $date2 = Carbon::parse($request->$entregaprof)->format('Y-m-d');
+       $strproforma->prof_fecha_entrega = $date2;
+       $strproforma->prof_valor_proforma = $request->$valorprof;
+       $strproforma->prof_principal = intval($request->$princprof);
+       $strproforma->save();
+       if(!$strproforma->id){                    
+        DB::rollBack();
+        App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema [error 204]');
+    }   
+}
+}
+
+
+DB::commit();
+
+     #Borra la cache de consulta 
+Cache::forget('importacion');
+        //Redirecciona a la pagina de creacion y muestra mensaje
+Session::flash('message', 'El proceso de importación fue creado exitosamente!');
+return Redirect::to($urlConsulta); 
+
+
 }
 
     /**

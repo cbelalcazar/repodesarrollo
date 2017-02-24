@@ -151,6 +151,196 @@ $(document).on('click', '.borrar', function (event) {
 
 
 
+
+
+
+  $('#my-select').multiSelect();
+  $("#tabs").tabs ();
+  $("#tabs").tabs ('disable', 1);
+  $("#tabs").tabs ('disable', 2);
+  $("#tabs").tabs ('disable', 3);
+  $("#tabs").tabs ('disable', 4);
+
+
+  //Validaciones al dar siguiente a la pagina 1 del menu
+  $('#siguiente1').click(function() {
+    var continuar = true;
+    if ($('#imp_consecutivo').val() == ""){
+      $('#error_imp_consecutivo').html('Favor ingresar consecutivo de importación');
+      $('#imp_consecutivo-div').addClass('has-error');
+      continuar = false;
+    }
+    if ($('#proveedor').val() == ""){
+      $('#error_proveedor').html('Favor ingresar el proveedor');
+      $('#proveedor-div').addClass('has-error');
+      continuar = false;
+    }
+    if ($('#imp_puerto_embarque').val() == ""){
+      $('#error_puerto').html('Favor ingresar el puerto de embarque');
+      $('#puerto-div').addClass('has-error');
+      continuar = false;
+    }
+    if ($('#imp_iconterm').val() == ""){
+      $('#error_inconterm').html('Favor ingresar el inconterm');
+      $('#inconterm-div').addClass('has-error');
+      continuar = false;
+    }
+    if ($('#imp_moneda_negociacion').val() == ""){
+      $('#error_moneda').html('Favor ingresar el inconterm');
+      $('#moneda-div').addClass('has-error');
+      continuar = false;
+    }    
+    if (continuar) {
+      $("#tabs").tabs ('enable', 1);
+      $('#menu2').click();
+      $("#tabs").tabs ('disable', 0);
+    }
+
+  });
+  //Validaciones basadas en eventos formulario pestaña 2
+
+   //Validaciones al dar siguiente a la pagina 2 del menu
+   $('#siguiente2').click(function() {
+    var continuar = true;
+    if ($('#my-select').val().length == 0){
+      $('#error_origen').html('Favor ingresar el origen de la mercancia');
+      $('#origen-div').addClass('has-error');
+      continuar = false;
+    }    
+    if (continuar) {
+      $("#tabs").tabs ('enable', 2);
+      
+      $("#tabs").tabs ('disable', 1);
+      $('#menu3').click();
+    }
+  });
+  //Validaciones basadas en eventos formulario pestaña 2
+
+  //Boton atras tab 2
+  $('#atras2').click(function() {
+    $("#tabs").tabs ('enable', 0);
+    $('#menu1').click();
+    $("#tabs").tabs ('disable', 1);
+  });
+  //End Boton atras tab 2
+
+   //Validaciones al dar siguiente a la pagina 3 del menu
+   $('#siguiente3').click(function() {
+    var continuar = true;
+    if (document.getElementById('tablaProducto').rows.length == 1){
+      $('#error_producto').html('Favor asociar minimo un producto a la importacion');
+      $('#producto-div').addClass('has-error');
+      continuar = false;
+    }    
+    if (continuar) {
+      $("#tabs").tabs ();
+      $("#tabs").tabs ('enable', 3);
+      $('#menu4').click();
+      $("#tabs").tabs ('disable', 2);
+      $("#tabs").tabs ('disable', 1);
+      $("#tabs").tabs ('disable', 0);
+      $("#tabs").tabs ('disable', 4);
+
+
+    }
+  });
+
+    //Boton atras tab 2
+    $('#atras3').click(function() {
+      $("#tabs").tabs ('enable', 1);
+      $('#menu2').click();
+      $("#tabs").tabs ('disable', 2);
+    });
+  //End Boton atras tab 2
+
+    //Validaciones al dar siguiente a la pagina 3 del menu
+    $('#siguiente4').click(function() {
+      var continuar = true;
+      if (document.getElementById('tablaproforma').rows.length == 1){
+        $('#error_proforma').html('Favor asociar minimo una proforma a la importacion');
+        $('#proforma-div').addClass('has-error');
+        continuar = false;
+      }    
+      if (continuar) {
+        $("#tabs").tabs ('enable', 4);
+        $('#menu5').click();
+        $("#tabs").tabs ('disable', 3);
+      }
+    });
+
+   //Boton atras tab 2
+   $('#atras4').click(function() {
+    $("#tabs").tabs ('enable', 2);
+    $('#menu3').click();
+    $("#tabs").tabs ('disable', 4);
+  });
+
+     //Boton atras tab 2
+     $('#atras5').click(function() {
+      $("#tabs").tabs ('enable', 3);
+      $('#menu4').click();
+      $("#tabs").tabs ('disable', 4);
+    });
+
+
+  //Validaciones basadas en eventos formulario pestaña 3
+  $('.validemos').blur(function() {
+
+    if ($('#imp_consecutivo').val() == ""){
+      $('#error_imp_consecutivo').html('Favor ingresar consecutivo de importación');
+      $('#imp_consecutivo-div').addClass('has-error');
+    }else if ($('#imp_consecutivo').val() != ""){
+      $('#error_imp_consecutivo').html('');
+      $('#imp_consecutivo-div').removeClass('has-error');
+      $('#imp_consecutivo-div').addClass('has-success');
+    }
+
+    if ($('#proveedor').val() == ""){
+      $('#error_proveedor').html('Favor ingresar el proveedor');
+      $('#proveedor-div').addClass('has-error');
+    }else if ($('#proveedor').val() != ""){
+      $('#error_proveedor').html('');
+      $('#proveedor-div').removeClass('has-error');
+      $('#proveedor-div').addClass('has-success');
+    }
+
+
+    if ($('#imp_puerto_embarque').val() == ""){
+      $('#error_puerto').html('Favor ingresar el puerto de embarque');
+      $('#puerto-div').addClass('has-error');
+    }else if ($('#imp_puerto_embarque').val() != ""){
+      $('#error_puerto').html('');
+      $('#puerto-div').removeClass('has-error');
+      $('#puerto-div').addClass('has-success');
+    }
+
+
+    if ($('#imp_iconterm').val() == ""){
+      $('#error_inconterm').html('Favor ingresar el inconterm');
+      $('#inconterm-div').addClass('has-error');
+    }else if ($('#imp_iconterm').val() != ""){
+      $('#error_inconterm').html('');
+      $('#inconterm-div').removeClass('has-error');
+      $('#inconterm-div').addClass('has-success');
+    }
+
+    if ($('#imp_moneda_negociacion').val() == ""){
+      $('#error_moneda').html('Favor ingresar el inconterm');
+      $('#moneda-div').addClass('has-error');
+    }else if ($('#imp_moneda_negociacion').val() != ""){
+      $('#error_moneda').html('');
+      $('#moneda-div').removeClass('has-error');
+      $('#moneda-div').addClass('has-success');
+    }
+
+  });
+
+  //End Validaciones basadas en eventos formulario pestaña 1
+
+
+
+
+
 });
 
 //end
@@ -364,3 +554,4 @@ function borrarproforma(obj){
    }
  });
 }
+
