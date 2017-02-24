@@ -29,5 +29,10 @@ class TProducto extends Model
 
      protected $dates = ['deleted_at'];
 
+      public function prodimportacion()
+    {
+        return $this->belongsTo('App\Models\Importacionesv2\TProductoImportacion', 'pdim_producto', 'id');
+    }
+
 
  }

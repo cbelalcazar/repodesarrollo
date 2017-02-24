@@ -29,6 +29,7 @@ Route::group(['middleware' => ['auth']], function () {
 /*
  * Creado por Carlos Belalcazar
  * Analista desarrollador de software Belleza Express
+ * Rutas para el aplicativo importacionesv2
  * 22/02/2017
 */
   Route::resource('importacionesv2/OrigenMercancia', 'Importacionesv2\TOrigenMercanciaController');
@@ -53,6 +54,7 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('importacionesv2/ConsultaFiltros', 'Importacionesv2\TImportacionController@consultaFiltrada')->name('consultaFiltros');
   Route::get('importacionesv2/BorrarProductoImportacion', 'Importacionesv2\TImportacionController@borrar')->name('borrarProductoImportacion');
   Route::get('importacionesv2/BorrarProformaImportacion', 'Importacionesv2\TImportacionController@borrarProforma')->name('borrarProformaImportacion');
+  Route::get('importacionesv2/AlertasImportacion', 'Importacionesv2\TImportacionController@alertasImportacion')->name('consultaAlertas');
 
   //End importacionesv2
 

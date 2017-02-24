@@ -139,13 +139,13 @@ class TImportacionController extends Controller
         if($request->imp_fecha_entrega_total == ""){ 
             $ObjectCrear->imp_fecha_entrega_total = null;
         }else{
-           $date = Carbon::parse(Input::get('imp_fecha_entrega_total'))->format('Y-m-d');
-           $ObjectCrear->imp_fecha_entrega_total = $date ; 
-       }
-       $ObjectCrear->imp_estado_proceso = 1;
-       $ObjectCrear->save();
+         $date = Carbon::parse(Input::get('imp_fecha_entrega_total'))->format('Y-m-d');
+         $ObjectCrear->imp_fecha_entrega_total = $date ; 
+     }
+     $ObjectCrear->imp_estado_proceso = 1;
+     $ObjectCrear->save();
        #Si la creacion de la importacion genera error lo retorna
-       if(!$ObjectCrear->id){
+     if(!$ObjectCrear->id){
         App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema');
     }else{
         #En caso de no existir error
@@ -184,39 +184,39 @@ class TImportacionController extends Controller
         #Crea todos los origenes de la mercancia asociados en la tabla
         $cantidadOrigenes = count($request->origenMercancia);
         for ($i=0; $i < $cantidadOrigenes ; $i++) { 
-         $strorimerc = $i."variable";
-         $strorimerc = new TOrigenMercanciaImportacion;
-         $strorimerc->omeim_origen_mercancia = $request->origenMercancia[$i];
-         $strorimerc->omeim_importacion = $ObjectCrear->id;
-         $strorimerc->save();
-     }
+           $strorimerc = $i."variable";
+           $strorimerc = new TOrigenMercanciaImportacion;
+           $strorimerc->omeim_origen_mercancia = $request->origenMercancia[$i];
+           $strorimerc->omeim_importacion = $ObjectCrear->id;
+           $strorimerc->save();
+       }
      #Crea todas las proformas asociadas en la tabla
-     $cantidadProformas = intval($request->tablaproformaguardar);
-     for ($i=1; $i < $cantidadProformas+1 ; $i++) { 
-         $strproforma = $i."objproforma";
-         $strproforma = new TProforma;
-         $strproforma->prof_importacion = $ObjectCrear->id;
-         $noprof = $i."-noprof";
-         $creaprof = $i."-creaprof";
-         $entregaprof = $i."-entregaprof";
-         $valorprof = $i."-valorprof";
-         $princprof = $i."-princprof";
-         $strproforma->prof_numero = $request->$noprof;
-         $date1 = Carbon::parse($request->$creaprof)->format('Y-m-d');
-         $strproforma->prof_fecha_creacion = $date1;
-         $date2 = Carbon::parse($request->$entregaprof)->format('Y-m-d');
-         $strproforma->prof_fecha_entrega = $date2;
-         $strproforma->prof_valor_proforma = $request->$valorprof;
-         $strproforma->prof_principal = intval($request->$princprof);
-         $strproforma->save();
-     }
+       $cantidadProformas = intval($request->tablaproformaguardar);
+       for ($i=1; $i < $cantidadProformas+1 ; $i++) { 
+           $strproforma = $i."objproforma";
+           $strproforma = new TProforma;
+           $strproforma->prof_importacion = $ObjectCrear->id;
+           $noprof = $i."-noprof";
+           $creaprof = $i."-creaprof";
+           $entregaprof = $i."-entregaprof";
+           $valorprof = $i."-valorprof";
+           $princprof = $i."-princprof";
+           $strproforma->prof_numero = $request->$noprof;
+           $date1 = Carbon::parse($request->$creaprof)->format('Y-m-d');
+           $strproforma->prof_fecha_creacion = $date1;
+           $date2 = Carbon::parse($request->$entregaprof)->format('Y-m-d');
+           $strproforma->prof_fecha_entrega = $date2;
+           $strproforma->prof_valor_proforma = $request->$valorprof;
+           $strproforma->prof_principal = intval($request->$princprof);
+           $strproforma->save();
+       }
      #Borra la cache de consulta 
-     Cache::forget('importacion');
+       Cache::forget('importacion');
         //Redirecciona a la pagina de creacion y muestra mensaje
-     Session::flash('message', 'El proceso de importación fue creado exitosamente!');
-     return Redirect::to($urlConsulta);
+       Session::flash('message', 'El proceso de importación fue creado exitosamente!');
+       return Redirect::to($urlConsulta);
 
- }
+   }
 }
 
     /**
@@ -321,23 +321,23 @@ class TImportacionController extends Controller
         #Retorna la informacion a la vista editar       
         return view('importacionesv2.ImportacionTemplate.editImportacion', 
             compact('campos',
-               'url',
-               'titulo', 
-               'validator', 
-               'route', 
-               'id',
-               'objeto',
-               'seleccionados',
-               'puertos', 
-               'inconterm',
-               'moneda',
-               'origenMercancia',
-               'tablaProductos',
-               'cantidadProductos',
-               'tablaProformas',
-               'cantidadProformas',
-               'urlBorrar',
-               'urlBorrarProforma'));
+             'url',
+             'titulo', 
+             'validator', 
+             'route', 
+             'id',
+             'objeto',
+             'seleccionados',
+             'puertos', 
+             'inconterm',
+             'moneda',
+             'origenMercancia',
+             'tablaProductos',
+             'cantidadProductos',
+             'tablaProformas',
+             'cantidadProformas',
+             'urlBorrar',
+             'urlBorrarProforma'));
     }
 
     /**
@@ -409,33 +409,33 @@ class TImportacionController extends Controller
                 $str5 = $i.'-idproforma';
                 if($request->$str5 == "")
                 {
-                   $strproforma = $i."objproforma";
-                   $strproforma = new TProforma;
-                   $strproforma->prof_importacion = $id;
-                   $noprof = $i."-noprof";
-                   $creaprof = $i."-creaprof";
-                   $entregaprof = $i."-entregaprof";
-                   $valorprof = $i."-valorprof";
-                   $princprof = $i."-princprof";
-                   $strproforma->prof_numero = $request->$noprof;
-                   $date1 = Carbon::parse($request->$creaprof)->format('Y-m-d');
-                   $strproforma->prof_fecha_creacion = $date1;
-                   $date2 = Carbon::parse($request->$entregaprof)->format('Y-m-d');
-                   $strproforma->prof_fecha_entrega = $date2;
-                   $strproforma->prof_valor_proforma = $request->$valorprof;
-                   $strproforma->prof_principal = intval($request->$princprof);
-                   $strproforma->save();
-               }
+                 $strproforma = $i."objproforma";
+                 $strproforma = new TProforma;
+                 $strproforma->prof_importacion = $id;
+                 $noprof = $i."-noprof";
+                 $creaprof = $i."-creaprof";
+                 $entregaprof = $i."-entregaprof";
+                 $valorprof = $i."-valorprof";
+                 $princprof = $i."-princprof";
+                 $strproforma->prof_numero = $request->$noprof;
+                 $date1 = Carbon::parse($request->$creaprof)->format('Y-m-d');
+                 $strproforma->prof_fecha_creacion = $date1;
+                 $date2 = Carbon::parse($request->$entregaprof)->format('Y-m-d');
+                 $strproforma->prof_fecha_entrega = $date2;
+                 $strproforma->prof_valor_proforma = $request->$valorprof;
+                 $strproforma->prof_principal = intval($request->$princprof);
+                 $strproforma->save();
+             }
 
-           }
+         }
 
-       }
+     }
        #Obtiene los origenes de la mercancia asociados a la importacion
-       $origenesExistentes = TOrigenMercanciaImportacion::where('omeim_importacion','=',intval($id))->get();
+     $origenesExistentes = TOrigenMercanciaImportacion::where('omeim_importacion','=',intval($id))->get();
        #Valida cuales de los origenes de la mercancia de la bd fueron quitados del multiselect y los borra
-       foreach ($origenesExistentes as $key => $value) {
-           $buscar = in_array($value->omeim_origen_mercancia, $request->origenMercancia);
-           if(!$buscar){
+     foreach ($origenesExistentes as $key => $value) {
+         $buscar = in_array($value->omeim_origen_mercancia, $request->origenMercancia);
+         if(!$buscar){
             $value->id;
             $ObjectDestroy = TOrigenMercanciaImportacion::find($value->id);
             $ObjectDestroy->delete();
@@ -473,8 +473,8 @@ class TImportacionController extends Controller
     public function borrar(Request $request)
     {
         #Consulto los productos asociados a la importacion y valido que exista almenos un registro en la base de datos, si hay mas de un registro el sistema debe permitir borrar
-       $contador = TProductoImportacion::where('pdim_importacion', '=', intval($request->identificador))->get()->count();
-       if($contador > 1){
+     $contador = TProductoImportacion::where('pdim_importacion', '=', intval($request->identificador))->get()->count();
+     if($contador > 1){
             //Consulto objeto a borrar
         $ObjectDestroy = TProductoImportacion::find($request->obj);
         //Borro el objeto
@@ -495,8 +495,8 @@ class TImportacionController extends Controller
     */
     public function borrarProforma(Request $request)
     {
-       $contador = TProforma::where('prof_importacion', '=', intval($request->identificador))->get()->count();
-       if($contador > 1){
+     $contador = TProforma::where('prof_importacion', '=', intval($request->identificador))->get()->count();
+     if($contador > 1){
             //Consulto objeto a borrar
         $ObjectDestroy = TProforma::find($request->obj);
         //Borro el objeto
@@ -628,7 +628,6 @@ return "error";
         array_push($where, $whereNit);
     }
 
-
         //Seteo el titulo en la funcion para mostrar en la vista index
     $titulo = "CONSULTA ORDENES DE IMPORTACION";
 
@@ -667,4 +666,27 @@ return "error";
             'estados'));
 
     }
+
+
+    public function alertasImportacion(Request $request){
+    //Seteo el titulo en la funcion para mostrar en la vista index
+        $titulo = "CONSULTA ALERTAS DE PRODUCTO IMPORTACION";
+     /**
+        *Variable titulosTabla debe contener un array con los titulos de la tabla.
+        *La cantidad de titulos debe corresponder a la cantidad de columnas que trae la consulta.
+        */
+     $titulosTabla =  array('Referencia', 'Consecutivo importacion',  'Alerta activa', 'Cerrar alertas');
+
+        //Genera url completa de consulta
+     $url = route("consultaAlertas");
+        #Retorna la informacion a la vista
+
+     $datos = TProductoImportacion::with('importacion')->with('producto')->where('pdim_alerta','=','1')->get();
+
+
+     return view('importacionesv2.ImportacionTemplate.consultaAlertas', compact('titulo',
+        'datos',
+        'titulosTabla',
+        'url'));
+ }
 }

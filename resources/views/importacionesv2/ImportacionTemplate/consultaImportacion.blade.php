@@ -31,19 +31,26 @@
     <div class="col-xs-4">
       {{ Form::label('', "Consulta por consecutivo") }}
       {{ Form::text("imp_consecutivo", old("imp_consecutivo"), ['class' => 'form-control', 'id' =>  'imp_consecutivo', 'placeholder' =>  'Ingresar el consecutivo de creacion','maxlength' => '250']) }}
-    </div>
-
-  </div>
-  <br>
-  <div class="form-group">
+    </div><!-- 
+    <div class="col-xs-4"><br>
+      {{ Form::label('', "Consulta por numero de proforma") }}
+      {{ Form::text("imp_proforma", old("imp_proforma"), ['class' => 'form-control', 'id' =>  'imp_proforma', 'placeholder' =>  'Ingresar el consecutivo de creacion','maxlength' => '250']) }}
+    </div> -->
+    <div class="col-xs-12"><br>
     {{ Form::open(['action' => ['Importacionesv2\TImportacionController@autocomplete'], 'method' => 'post']) }}
     {{ Form::label('', "Busqueda de proveedor") }}
     {{ Form::text('imp_proveedor', '', ['class' => 'form-control', 'id' =>  'proveedor', 'placeholder' =>  'Ingresar nombre o nit del proveedor'])}}
+    </div>
+    <div class="col-xs-12">
     {{ Form::label('', "") }}
     {{ Form::text('razonSocialTercero', '', ['class' => 'form-control', 'id' =>  'razonSocialTercero', 'readonly' =>  'readonly'])}}
-    <input type="hidden" id="route1" value="{{route('search')}}">
+    </div>
+
   </div>
-    <div class="form-group">
+   
+    <input type="hidden" id="route1" value="{{route('search')}}">
+ 
+    <div class="form-group"><br>
     {{ Form::submit('Consultar', array('class' => 'btn btn-primary')) }}
     </div>
   

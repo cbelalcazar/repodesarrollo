@@ -363,9 +363,4 @@ function borrarproforma(obj){
      $(obj).closest('tr').remove();
    }
  });
-
-  
-
 }
-
-
