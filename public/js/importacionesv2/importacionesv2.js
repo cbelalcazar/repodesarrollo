@@ -191,9 +191,13 @@ $(document).on('click', '.borrar', function (event) {
       continuar = false;
     }    
     if (continuar) {
+      $("#tabs").tabs ();
       $("#tabs").tabs ('enable', 1);
       $('#menu2').click();
       $("#tabs").tabs ('disable', 0);
+      $("#tabs").tabs ('disable', 2);
+      $("#tabs").tabs ('disable', 3);
+      $("#tabs").tabs ('disable', 4);
     }
 
   });

@@ -39,6 +39,11 @@ class TImportacion extends Model
         return $this->hasOne('App\Models\Importacionesv2\TEstado', 'id', 'imp_estado_proceso');
     }
 
+    public function proveedor()
+    {
+        return $this->hasOne('App\Models\Genericas\Tercero', 'nitTercero', 'imp_proveedor');
+    }
+
       public function puerto_embarque()
     {
         return $this->hasOne('App\Models\Importacionesv2\TPuertoEmbarque', 'id', 'imp_puerto_embarque');
@@ -47,12 +52,17 @@ class TImportacion extends Model
 
      public function productoimportacion()
     {
-        return $this->belongsTo('App\Models\Importacionesv2\TProductoImportacion', 'pdim_importacion', 'id');
+        return $this->belongsTo('App\Models\Importacionesv2\TProductoImportacion', 'id', 'pdim_importacion');
     }
 
      public function origenMercancia()
     {
-        return $this->belongsTo('App\Models\Importacionesv2\TOrigenMercanciaImportacion', 'omeim_importacion', 'id');
+        return $this->belongsTo('App\Models\Importacionesv2\TOrigenMercanciaImportacion', 'id', 'omeim_importacion');
+    }
+
+     public function embarqueimportacion()
+    {
+        return $this->belongsTo('App\Models\Importacionesv2\TEmbarqueImportacion', 'id', 'emim_importacion');
     }
 
 }

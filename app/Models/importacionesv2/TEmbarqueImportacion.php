@@ -42,5 +42,10 @@ class TEmbarqueImportacion extends Model
 
      protected $dates = ['deleted_at'];
 
+     public function importacion()
+    {
+        return $this->hasOne('App\Models\Importacionesv2\TImportacion', 'id', 'emim_importacion');
+    }
+
 
 }

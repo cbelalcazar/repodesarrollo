@@ -12,7 +12,7 @@
  <link href="{{url('/css/font-awesome.min.css')}}" type="text/css" rel="stylesheet"/>
  <link href="{{url('/css/multi-select.css')}}" type="text/css" rel="stylesheet"/>
  <script src="{{url('/js/jquery.multi-select.js')}}" type="text/javascript" language="javascript"></script>
- <script src="{{url('/js/importacionesv2.js')}}" type="text/javascript" language="javascript"></script>
+ <script src="{{url('/js/importacionesv2/importacionesv2.js')}}" type="text/javascript" language="javascript"></script>
 
  <!-- ************************************ -->
  <!-- General errors in form -->
@@ -82,7 +82,7 @@
     <!-- Port of shipment -->
     <div class="form-group" id="puerto-div">
       <div class="row">
-        <div class="col-xs-12">
+        <div class="col-sm-12">
           <label>Puerto de embarque: (*)</label>
           <div class="input-group add-on">
             {{ Form::select('imp_puerto_embarque', $puertos, null, ['placeholder' => 'Selecciona un puerto de embarque...', 'class' => 'form-control validemos', 'id' => 'imp_puerto_embarque']) }}
@@ -102,7 +102,7 @@
     <!-- Inconterm -->
     <div class="form-group" id="inconterm-div">
       <div class="row">
-        <div class="col-xs-12">
+        <div class="col-sm-12">
           <label>Inconterm: (*)</label>
           <div class="input-group add-on">
             {{ Form::select('imp_iconterm', $inconterm, null, ['placeholder' => 'Selecciona un inconterm...', 'class' => 'form-control validemos', 'id' => 'imp_iconterm']) }}
@@ -125,6 +125,13 @@
       {{ Form::select('imp_moneda_negociacion', $moneda, null, ['placeholder' => 'Selecciona una moneda...', 'class' => 'form-control validemos', 'id' => 'imp_moneda_negociacion']) }}
       <div class="help-block error-help-block" id='error_moneda'></div>
     </div>   
+
+
+    <div class="form-group">
+      <a class="btn btn-default pull-right" id="siguiente1" role="button">Siguiente   <span class="glyphicon glyphicon-chevron-right"></span></a>
+    </div>
+    <br><br>
+
     
 
   </div>
@@ -173,14 +180,14 @@
     <label  class="control-label">Productos de importación: (*)</label>
     <div class="form-group" id="producto-div">
       <div class="row">
-        <div class="col-xs-10">
+        <div class="col-sm-10">
           {{ Form::text('imp_producto', '', ['class' => 'form-control', 'id' =>  'imp_producto', 'placeholder' =>  'Ingresar la referencia del producto'])}}
         </div>        
-        <button type="button" class="btn btn-primary " id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Procesando orden" onclick="autocompleteprod(this);">Consultar
+        <button type="button" class="btn btn-primary " id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Procesando orden" onclick="autocompleteprod(this);">Agregar
         </button>      
       </div>
       <div class="help-block error-help-block has-error" id='error_producto'></div>
-      <div class="col-xs-2">
+      <div class="col-sm-2">
       </div>
     </div>
     <!-- End Submit products -->
@@ -231,33 +238,33 @@
     <!-- Submit proforma -->
     <div class="form-group" id="proforma-div">
       <div class="row">
-        <div class="col-xs-4">
+        <div class="col-sm-4">
           <label  class="control-label">No de proforma: (*)</label>
           {{ Form::text('imp_proforma', '', ['class' => 'form-control', 'id' =>  'imp_proforma', 'placeholder' =>  'Ingresar el numero de la proforma'])}}
         </div>
-        <div class="col-xs-4">
+        <div class="col-sm-4">
           <label  class="control-label">Fecha creacion: (*)</label>
           {{ Form::text("fech_crea_profor", old("fech_crea_profor"), ['class' => 'form-control', 'id' =>  'fech_crea_profor', 'placeholder' =>  'Ingresar fecha de creacion de la proforma', 'readonly' =>  'readonly']) }}
         </div>
-        <div class="col-xs-4">
+        <div class="col-sm-4">
           <label  class="control-label">Fecha entrega: (*)</label>
           {{ Form::text("fech_entreg_profor", old("fech_entreg_profor"), ['class' => 'form-control', 'id' =>  'fech_entreg_profor', 'placeholder' =>  'Ingresar fecha de entrega de la proforma', 'readonly' =>  'readonly']) }}
         </div>
       </div>
       <br><br>
       <div class="row">
-        <div class="col-xs-4">
+        <div class="col-sm-4">
           <label  class="control-label">Valor proforma: (*)</label>
           {{ Form::text('val_proforma', '', ['class' => 'form-control solo-numero', 'id' =>  'val_proforma', 'placeholder' =>  'Ingresar el valor de la proforma', 'minlength' =>  '0', 'maxlength' =>  '11'])}}
         </div>
-        <div class="col-xs-4">
+        <div class="col-sm-4">
           <label  class="control-label">Proforma principal: (*)</label>
           <div class="form-group">
             {{ Form::checkbox("proforma_principal", '1', null,  ['class' => 'field', 'id' => 'proforma_principal']) }}
           </div>
         </div>     
-        <div class="col-xs-4">
-          <button type="button" class="btn btn-primary " id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Procesando proforma" onclick="tablaproforma(this);">Grabar
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary " id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Procesando proforma" onclick="tablaproforma(this);">Agregar
           </button>      
         </div>
       </div>

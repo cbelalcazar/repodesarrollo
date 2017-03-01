@@ -10,7 +10,7 @@
  <link href="{{url('/css/font-awesome.min.css')}}" type="text/css" rel="stylesheet"/>
  <link href="{{url('/css/multi-select.css')}}" type="text/css" rel="stylesheet"/>
  <script src="{{url('/js/jquery.multi-select.js')}}" type="text/javascript" language="javascript"></script>
- <script src="{{url('/js/importacionesv2.js')}}" type="text/javascript" language="javascript"></script>
+ <script src="{{url('/js/importacionesv2/importacionesv2.js')}}" type="text/javascript" language="javascript"></script>
 
 
 

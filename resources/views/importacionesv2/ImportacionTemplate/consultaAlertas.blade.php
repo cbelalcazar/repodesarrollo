@@ -8,7 +8,7 @@
  * 22/02/2017
  */ -->
 
-<script src="{{url('/js/importacionesv2.js')}}" type="text/javascript" language="javascript"></script>
+<script src="{{url('/js/importacionesv2/importacionesv2.js')}}" type="text/javascript" language="javascript"></script>
 <div class="btn-group btn-group-justified">
         <a href="{{ $url }}" class="btn btn-default"> Consultar todos </a>
       </div>

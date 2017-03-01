@@ -108,7 +108,6 @@ class TImportacionController extends Controller
     */
     public function store(Request $request)
     {
-
         #Genera url de consulta usando el name de la url
         $url = url("importacionesv2/Importacion/create");
         $urlConsulta = route('consultaFiltros');
@@ -673,18 +672,17 @@ return "error";
         *Variable datos debe contener la informacion que se quiere mostrar en el formulario
         */
         if($where == [] && $request->consulto == 1){
-            $datos = TImportacion::with('estado')->with('puerto_embarque')->orderBy('t_importacion.imp_consecutivo', 'desc')->get();
+            $datos = TImportacion::with('estado','puerto_embarque','embarqueimportacion','proveedor')->orderBy('t_importacion.imp_consecutivo', 'desc')->get();
         }elseif($where != [] && $request->consulto == 1){
             $datos = TImportacion::with('estado')->with('puerto_embarque')->orWhere($where)->get();
         }else{
             $datos = array();
         }
-        
         /**
         *Variable titulosTabla debe contener un array con los titulos de la tabla.
         *La cantidad de titulos debe corresponder a la cantidad de columnas que trae la consulta.
         */
-        $titulosTabla =  array('Consecutivo', 'Proveedor',  'Estado', 'Puerto de embarque', 'Editar', 'Eliminar');
+        $titulosTabla =  array('Consecutivo', 'Proveedor',  'Estado', 'Puerto de embarque', 'Importacion', 'Embarque');
 
         //crea los array de las consultas para mostrar en los Combobox
         $consulta = array(1, 4);
@@ -692,7 +690,8 @@ return "error";
         extract($combos);
         //Genera url completa de consulta
         $url = route("consultaFiltros");
-        $url2 = route("Importacion.store");
+        $url2 = route("Importacion.store");        
+        $url3 = route("Embarque.store");
         #Retorna la informacion a la vista
         return view('importacionesv2.ImportacionTemplate.consultaImportacion', compact('titulo',
             'datos',
@@ -700,6 +699,7 @@ return "error";
             'campos',
             'url',
             'url2',
+            'url3',
             'puertos',
             'estados'));
 

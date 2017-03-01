@@ -8,7 +8,7 @@
  * 22/02/2017
  */ -->
 
-<script src="{{url('/js/importacionesv2.js')}}" type="text/javascript" language="javascript"></script>
+<script src="{{url('/js/importacionesv2/importacionesv2.js')}}" type="text/javascript" language="javascript"></script>
 <div class="btn-group btn-group-justified">
         <a href="{{ $url }}" class="btn btn-default"> Consultar todos </a>
         <a href="{{ route('Importacion.create') }}" class="btn btn-default"> Crear Nuevo </a>
@@ -75,13 +75,16 @@
       <!-- Aqui se generan los registros de la tabla-->
       @foreach($datos as $key => $value)
       <tr>
-
         <td>{{$value->imp_consecutivo}}</td>
-        <td>{{$value->imp_proveedor}}</td>
+        <td>{{$value->imp_proveedor}} -- {{$value->proveedor->razonSocialTercero}}</td>
         <td>{{$value->estado->est_nombre}}</td>
         <td>{{$value->puerto_embarque->puem_nombre}}</td>
-        <td> <a class="btn btn-small btn-info" href="{{ URL::to("$url2/" . $value->id . '/edit') }}">Editar</a></td>
-        <td>Eliminar</td>
+        <td> <a class="btn btn-small btn-info glyphicon glyphicon-ok" href="{{ URL::to("$url2/" . $value->id . '/edit') }}"></a></td>
+        @if($value->embarqueimportacion == null)
+        <td> <a class="btn btn-small btn-danger glyphicon glyphicon-plus" href="{{route('createEmbarque1',['id' => $value->id])}}"'></a></td>
+        @elseif($value->embarqueimportacion != null)
+        <td> <a class="btn btn-small btn-info glyphicon glyphicon-ok" href="{{ URL::to("$url3/" . $value->embarqueimportacion->id . '/edit') }}"></a></td>
+        @endif
       </tr>
       @endforeach
     </tbody>
@@ -94,6 +97,13 @@
       responsive: true,
     });
   } );
+
+function crearEmbarque(id, url){
+  alert(url);
+  alert(id);
+  $( "#mostrar2" ).load(url, id);
+  alert('holis');
+}
 
 </script>
 @endsection

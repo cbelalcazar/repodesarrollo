@@ -53,7 +53,7 @@
   </head>
   <body>
 
-    <div class="wrap">
+    <div class="wrap" id="mostrar">
       @yield('content')
       @yield('formulario')
     </div>

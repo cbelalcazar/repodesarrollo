@@ -8,7 +8,8 @@
  */ -->
 <link href="{{url('/css/importacionesv2.css')}}" type="text/css" rel="stylesheet"/>
 </div>
-<div class="barraEncabezado">
+<div id="mostrar2">
+  <div class="barraEncabezado">
   <div class="letra1"><strong>IMPORTACIONES V2 // {{$titulo}}</strong></b></div>
 </div>
 <br>
@@ -27,5 +28,8 @@
     <!-- END SAMPLE FORM PORTLET-->
   </div>
   </div>
+
+  
+</div>
 
   @endsection

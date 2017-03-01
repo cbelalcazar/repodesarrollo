@@ -43,7 +43,7 @@ class CreateImportacionesV2Tembarqueimportacion extends Migration
             $table->string('emim_documento_transporte')
                   ->comment('Numero documento transporte');
 
-            $table->integer('emim_valor_flete')
+            $table->bigInteger('emim_valor_flete')
                   ->comment('Valor del flete de embarque');
 
             $table->date('emim_fecha_recibido_documentos_ori')
