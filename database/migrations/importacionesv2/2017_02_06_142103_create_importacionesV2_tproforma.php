@@ -33,7 +33,7 @@ class CreateImportacionesV2Tproforma extends Migration
             $table->date('prof_fecha_entrega')
                   ->comment('Fecha entrega de la proforma');
 
-            $table->integer('prof_valor_proforma')
+            $table->float('prof_valor_proforma', 10, 2)
                   ->comment('Valor de la proforma');
 
             $table->boolean('prof_principal')

@@ -59,7 +59,12 @@ Route::group(['middleware' => ['auth']], function () {
   //Rutas para proceso de embarque de importacion 
   Route::resource('importacionesv2/Embarque', 'Importacionesv2\TEmbarqueImportacionController');
   Route::get('importacionesv2/CreateEmbarque1/{id}', 'Importacionesv2\TEmbarqueImportacionController@create')->name('createEmbarque1');
-
+   //Rutas para proceso de pagos de importacion 
+  Route::resource('importacionesv2/Pagos', 'Importacionesv2\TPagoImportacionController');  
+  Route::get('importacionesv2/PagosCreate/{id}', 'Importacionesv2\TPagoImportacionController@create')->name('createPagos');
+   //Rutas para proceso de nacionalizacion y costeo de importacion 
+  Route::resource('importacionesv2/NacionalizacionCosteo', 'Importacionesv2\TNacionalizacionImportacionController');  
+  Route::get('importacionesv2/NCCreate/{id}', 'Importacionesv2\TNacionalizacionImportacionController@create')->name('createNC');
   //End importacionesv2
 
 });

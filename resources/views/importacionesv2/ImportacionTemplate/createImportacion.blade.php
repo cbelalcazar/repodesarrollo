@@ -255,7 +255,7 @@
       <div class="row">
         <div class="col-sm-4">
           <label  class="control-label">Valor proforma: (*)</label>
-          {{ Form::text('val_proforma', '', ['class' => 'form-control solo-numero', 'id' =>  'val_proforma', 'placeholder' =>  'Ingresar el valor de la proforma', 'minlength' =>  '0', 'maxlength' =>  '11'])}}
+          {{ Form::number('val_proforma', '', ['class' => 'form-control', 'id' =>  'val_proforma', 'placeholder' =>  'Ingresar el valor de la proforma','min' => '1','max' => '999999999','step' => '0.01'])}}
         </div>
         <div class="col-sm-4">
           <label  class="control-label">Proforma principal: (*)</label>

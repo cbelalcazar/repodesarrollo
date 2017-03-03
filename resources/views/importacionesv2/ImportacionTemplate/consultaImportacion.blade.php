@@ -79,12 +79,27 @@
         <td>{{$value->imp_proveedor}} -- {{$value->proveedor->razonSocialTercero}}</td>
         <td>{{$value->estado->est_nombre}}</td>
         <td>{{$value->puerto_embarque->puem_nombre}}</td>
-        <td> <a class="btn btn-small btn-info glyphicon glyphicon-ok" href="{{ URL::to("$url2/" . $value->id . '/edit') }}"></a></td>
+        <td> <a class="btn btn-small btn-success glyphicon glyphicon-ok" href="{{ URL::to("$url2/" . $value->id . '/edit') }}"></a></td>
         @if($value->embarqueimportacion == null)
         <td> <a class="btn btn-small btn-danger glyphicon glyphicon-plus" href="{{route('createEmbarque1',['id' => $value->id])}}"'></a></td>
         @elseif($value->embarqueimportacion != null)
-        <td> <a class="btn btn-small btn-info glyphicon glyphicon-ok" href="{{ URL::to("$url3/" . $value->embarqueimportacion->id . '/edit') }}"></a></td>
+        <td> <a class="btn btn-small btn-success glyphicon glyphicon-ok" href="{{ URL::to("$url3/" . $value->embarqueimportacion->id . '/edit') }}"></a></td>
         @endif
+
+        @if($value->pagosimportacion == null)
+        <td> <a class="btn btn-small btn-danger glyphicon glyphicon-plus" href="{{route('createPagos',['id' => $value->id])}}"'></a></td>
+        @elseif($value->pagosimportacion != null)
+        <td> <a class="btn btn-small btn-success glyphicon glyphicon-ok" href="{{ URL::to("$url4/" . $value->pagosimportacion->id . '/edit') }}"></a></td>
+        @endif
+      
+        @if($value->nacionalizacionimportacion == null && $value->embarqueimportacion == null)
+        <td> <a class="btn btn-small btn-default glyphicon glyphicon-remove-sign disabled" href="#"></a></td>
+        @elseif($value->nacionalizacionimportacion == null && $value->embarqueimportacion != null)
+        <td> <a class="btn btn-small btn-danger glyphicon glyphicon-plus" href="{{route('createNC',['id' => $value->id])}}"'></a></td>
+        @elseif($value->nacionalizacionimportacion != null)
+        <td> <a class="btn btn-small btn-success glyphicon glyphicon-ok" href="{{ URL::to("$url5/" . $value->nacionalizacionimportacion->id . '/edit') }}"></a></td>
+        @endif  
+
       </tr>
       @endforeach
     </tbody>

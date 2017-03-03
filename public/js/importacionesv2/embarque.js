@@ -9,7 +9,6 @@ $('#emim_fecha_envio_ficha_tecnica').datepicker();
 $('#emim_fecha_envio_lista_empaque').datepicker();
 $('#emim_fecha_solicitud_reserva').datepicker();
 $('#emim_fecha_confirm_reserva').datepicker();
-$('#formTipocarga').hide();
 $('#ocultar1').hide();
 $("#tabs").tabs ('disable', 1);
 $("#tabs").tabs ('disable', 2);
@@ -19,6 +18,7 @@ $("#tabs").tabs ('disable', 3);
 setTimeout(function(){
 	if($('#emim_tipo_carga').val() == 3){
 		fcl();
+		$('#agregar').show();
 	}
 	$('#guardartablahtml').val($('#agregar').html());
 

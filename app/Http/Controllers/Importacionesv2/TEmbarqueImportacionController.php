@@ -90,7 +90,9 @@ class TEmbarqueImportacionController extends Controller
     public function create(Request $request, $id)
     {
         $idImportacion=$id;
-        
+        $ObtenerFecha = TImportacion::find($idImportacion);
+        $imp_fechaentregatotal = Carbon::parse($ObtenerFecha->imp_fecha_entrega_total);
+        $imp_fechaentregatotal =  $imp_fechaentregatotal->addDays(8)->format('Y-m-d');
         #Contiene el titulo de formulario
         $titulo = "CREAR EMBARQUE DE IMPORTACION";
         #String que hace referencia al URI del route que se le pasa al formulario y genere la url de post
@@ -106,7 +108,8 @@ class TEmbarqueImportacionController extends Controller
                 'url',
                 'tipocarga',
                 'contenedores',
-                'idImportacion'));
+                'idImportacion',
+                'imp_fechaentregatotal'));
     }
 
     /**
@@ -197,8 +200,6 @@ class TEmbarqueImportacionController extends Controller
         }elseif($request->emim_tipo_carga == 3){
             #Crea todas las proformas asociadas en la tabla
             $cantidad = intval($request->tablaContenedorGuardar);
-            echo "<pre>";print_r($cantidad);            
-            echo "<pre>";print_r($request->all());
             $contador = 1;
             do {
                 $objContenedor1 = new TContenedorEmbarque;
@@ -270,7 +271,7 @@ class TEmbarqueImportacionController extends Controller
         $url = route('Embarque.store');
         //url de redireccion para editar -- Name url correspondiente a method PUT|PATCH en comando route.list
         //correspondiente a este controlador
-        $route = 'Importacion.update';
+        $route = 'Embarque.update';
         #Consulta los origenes de la mercancia importacion asociados a esta en especifico
         $contenedoresArray = TContenedorEmbarque::where('cont_embarque','=', "$objeto->id" )->get();
         $cantidadContenedores = count($contenedoresArray);
@@ -301,7 +302,75 @@ class TEmbarqueImportacionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //Genera la url de consulta
+        $url = route('consultaFiltros');
+        //Consulto el registro a editar
+        $ObjectUpdate = TEmbarqueImportacion::find($id);
+        $ObjectUpdate->emim_importacion = $request->emim_importacion;
+        $ObjectUpdate->emim_embarcador = $request->emim_embarcador;
+        $ObjectUpdate->emim_linea_maritima = $request->emim_linea_maritima;
+        $ObjectUpdate->emim_aduana = $request->emim_aduana;
+        $ObjectUpdate->emim_transportador = $request->emim_transportador;
+        $ObjectUpdate->emim_tipo_carga = $request->emim_tipo_carga;
+
+        $ObjectUpdate->emim_fecha_etd = Carbon::parse($request->emim_fecha_etd)->format('Y-m-d');
+        $ObjectUpdate->emim_fecha_eta = Carbon::parse($request->emim_fecha_eta)->format('Y-m-d');
+        $ObjectUpdate->emim_fecha_recibido_documentos_ori = Carbon::parse($request->emim_fecha_recibido_documentos_ori)->format('Y-m-d');
+        $ObjectUpdate->emim_fecha_envio_aduana = Carbon::parse($request->emim_fecha_envio_aduana)->format('Y-m-d');
+        $ObjectUpdate->emim_fecha_envio_ficha_tecnica = Carbon::parse($request->emim_fecha_envio_ficha_tecnica)->format('Y-m-d');
+        $ObjectUpdate->emim_fecha_envio_lista_empaque = Carbon::parse($request->emim_fecha_envio_lista_empaque)->format('Y-m-d');
+        $ObjectUpdate->emim_fecha_solicitud_reserva = Carbon::parse($request->emim_fecha_solicitud_reserva)->format('Y-m-d');
+        $ObjectUpdate->emim_fecha_confirm_reserva = Carbon::parse($request->emim_fecha_confirm_reserva)->format('Y-m-d');
+        $ObjectUpdate->emim_fecha_confirm_reserva = Carbon::parse($request->emim_fecha_confirm_reserva)->format('Y-m-d');
+        $ObjectUpdate->emim_documento_transporte =$request->emim_documento_transporte;
+        $ObjectUpdate->emim_valor_flete =$request->emim_valor_flete;
+        $ObjectUpdate->save();
+
+        $contenedoresBorrar = TContenedorEmbarque::where('cont_embarque','=', "$ObjectUpdate->id")->delete();;
+
+
+        if($request->emim_tipo_carga == 1 || $request->emim_tipo_carga == 2){
+            $objContenedor = new TContenedorEmbarque;
+            $objContenedor->cont_embarque = $ObjectUpdate->id;
+            $objContenedor->cont_cubicaje = $request->cubicaje;
+            $objContenedor->cont_peso     = $request->peso;
+            $objContenedor->cont_cajas    = $request->cajas;
+            $objContenedor->save();
+            if(!$objContenedor->id){                    
+                DB::rollBack();
+                App::abort(500, 'La importacion no fue creada, se genero un problema en la creacion de la carga [error 204]');
+            }   
+        }elseif($request->emim_tipo_carga == 3){
+            #Crea todas las proformas asociadas en la tabla
+            $cantidad = intval($request->tablaContenedorGuardar);
+            $contador = 1;
+            do {
+                $objContenedor1 = new TContenedorEmbarque;
+                $objContenedor1->cont_embarque = $ObjectUpdate->id;
+
+                $tipoContenedor1 = "$contador"."-tipocont";
+                $objContenedor1->cont_tipo_contenedor = $request->$tipoContenedor1;
+
+                $cantidad1 = "$contador"."-cantidad";
+                $objContenedor1->cont_cantidad = $request->$cantidad1;
+
+                $numeroImportacion1 = "$contador"."-numeroImportacion";
+                $objContenedor1->cont_numero_contenedor = $request->$numeroImportacion1;
+
+                $cubicaje1 = "$contador"."-cubicaje";
+                $objContenedor1->cont_cubicaje = $request->$cubicaje1;
+
+                $peso1 = "$contador"."-peso";
+                $objContenedor1->cont_peso = $request->$peso1;
+
+                $objContenedor1->save();
+                $contador++;
+            } while ($contador <= $cantidad);
+
+        }
+         //Redirecciona a la pagina de consulta y muestra mensaje
+        Session::flash('message', 'El proceso de embarque fue editado exitosamente!');
+        return Redirect::to($url);
     }
 
     /**

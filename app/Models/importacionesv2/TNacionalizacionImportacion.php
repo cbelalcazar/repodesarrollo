@@ -48,4 +48,9 @@ class TNacionalizacionImportacion extends Model
      protected $connection = 'importacionesV2';
 
      protected $dates = ['deleted_at'];
+
+      public function importacion()
+    {
+        return $this->hasOne('App\Models\Importacionesv2\TImportacion', 'id', 'naco_importacion');
+    }
 }

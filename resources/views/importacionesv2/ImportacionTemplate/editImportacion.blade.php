@@ -276,7 +276,7 @@
 
         <div class="col-xs-4">
           <label  class="control-label">Valor proforma:</label>
-          {{ Form::text('val_proforma', '', ['class' => 'form-control solo-numero', 'id' =>  'val_proforma', 'placeholder' =>  'Ingresar el valor de la proforma'])}}
+          {{ Form::text('val_proforma', '', ['class' => 'form-control solo-numero', 'id' =>  'val_proforma', 'placeholder' =>  'Ingresar el valor de la proforma','min' => '1','max' => '999999999','step' => '0.01'])}}
         </div>
         <div class="col-xs-4">
 
@@ -288,7 +288,7 @@
         </div>
 
         <div class="col-xs-4">
-          <button type="button" class="btn btn-primary " id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Procesando proforma" onclick="tablaproforma(this);">Grabar
+          <button type="button" class="btn btn-primary " id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Procesando proforma" onclick="tablaproforma(this);">Agregar
           </button>      
         </div>
       </div>

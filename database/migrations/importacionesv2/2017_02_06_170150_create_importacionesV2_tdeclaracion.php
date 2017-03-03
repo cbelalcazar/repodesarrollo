@@ -30,13 +30,13 @@ class CreateImportacionesV2Tdeclaracion extends Migration
             $table->string('decl_sticker')
                   ->comment('Numero del sticker de declaracion de importacion');
 
-            $table->integer('decl_arancel')
+            $table->float('decl_arancel', 10, 2)
                   ->comment('Valor del arancel');
 
             $table->integer('decl_iva')
                   ->comment('Valor del iva');
 
-            $table->integer('decl_valor_otros')
+            $table->float('decl_valor_otros', 10, 2)
                   ->comment('Valor otros');
 
             $table->float('decl_trm', 10, 2)

@@ -38,11 +38,11 @@ class CreateImportacionesV2Tcontenedorembarque extends Migration
                   ->nullable()
                   ->comment('numero del contenedor');
 
-            $table->integer('cont_cubicaje')
+            $table->float('cont_cubicaje', 10, 2)
                   ->nullable()
                   ->comment('Cubicaje importado');
 
-            $table->integer('cont_peso')
+            $table->float('cont_peso', 10, 2)
                   ->nullable()
                   ->comment('peso importado');
 

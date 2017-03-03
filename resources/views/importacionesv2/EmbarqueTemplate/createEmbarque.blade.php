@@ -177,12 +177,12 @@
     <div class="row">
       <div class="col-sm-6" id="etd_div">
        <label  class="control-label">Fecha ETD: (*)</label>
-       {{ Form::text("emim_fecha_etd", old("emim_fecha_etd"), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_etd', 'placeholder' =>  'Ingresar fecha del ETD', 'readonly' =>  'readonly']) }}
+       {{ Form::text("emim_fecha_etd", old("emim_fecha_etd") ? old("emim_fecha_etd") : $imp_fechaentregatotal, ['class' => 'form-control validemos', 'id' =>  'emim_fecha_etd', 'placeholder' =>  'Ingresar fecha del ETD', 'readonly' =>  'readonly']) }}
        <div class="help-block error-help-block" id='error_etd'></div>
      </div>     
      <div class="col-sm-6" id="eta_div">
       <label  class="control-label">Fecha ETA: (*)</label>
-      {{ Form::text("emim_fecha_eta", old("emim_fecha_etd"), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_eta', 'placeholder' =>  'Ingresar fecha del ETA', 'readonly' =>  'readonly']) }}
+      {{ Form::text("emim_fecha_eta", old("emim_fecha_eta") ? old("emim_fecha_eta") : $imp_fechaentregatotal, ['class' => 'form-control validemos', 'id' =>  'emim_fecha_eta', 'placeholder' =>  'Ingresar fecha del ETA', 'readonly' =>  'readonly']) }}
       <div class="help-block error-help-block" id='error_eta'></div>
     </div>
   </div>

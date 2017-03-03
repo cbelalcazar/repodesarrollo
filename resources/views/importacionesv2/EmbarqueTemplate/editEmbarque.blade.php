@@ -31,7 +31,7 @@
 <!-- End General errors in form -->
 <!-- ************************************ -->
 
-{{ Form::open(array('url' => "$url",'id' => "importacionform"))}}
+{{ Form::model($objeto, array('route' => array($route, $id), 'method' => 'PUT',  'id' => 'importacionform')) }}
 
 
 <!-- ************************************ -->
@@ -130,6 +130,23 @@
     </div>
 
     <div class="form-group" id="formTipocarga">
+
+      @if($contenedoresArray[0]->cont_cajas != "")
+      <div class="row">
+        <div class='col-sm-4' id='cubicaje_div'>
+          <label  class='control-label'>Cubicaje: (*)</label>
+          {{ Form::text("cubicaje", $contenedoresArray[0]->cont_cubicaje, ['class' => 'form-control validemos', 'id' =>  'cubicaje', 'placeholder' =>  'Ingresar cubicaje']) }}
+        </div>
+        <div class='col-sm-4' id='peso_div'>
+          <label  class='control-label'>Peso: (*)</label>
+          {{ Form::text("peso", $contenedoresArray[0]->cont_peso, ['class' => 'form-control validemos', 'id' =>  'peso', 'placeholder' =>  'Ingresar cubicaje']) }}
+        </div>
+        <div class='col-sm-4' id='cajas_div'>
+          <label  class='control-label'>No. cajas: (*)</label>
+          {{ Form::text("cajas", $contenedoresArray[0]->cont_cajas, ['class' => 'form-control validemos', 'id' =>  'cajas', 'placeholder' =>  'Ingresar cubicaje']) }}
+        </div>        
+      </div>
+      @endif
     </div>
 
     <!-- Table of proformas -->
@@ -151,15 +168,15 @@
             </tr>
           </thead>
           <tbody id="agregar">
-            @if($contenedoresArray)
+            @if($contenedoresArray[0]->cont_cajas == "" )
             @foreach($contenedoresArray as $key => $value)
             <tr>
-            <td class="campos" id="{{$key+1}}-tipocont">{{$value->cont_tipo_contenedor}}<input type="hidden" name="{{$key+1}}-tipocont" value="{{$value->cont_tipo_contenedor}}"></td>
-            <td class="campos" id="{{$key+1}}-cantidad">{{$value->cont_cantidad}}<input type="hidden" name="{{$key+1}}-cantidad" value="{{$value->cont_cantidad}}"></td>
-            <td class="campos" id="{{$key+1}}-numeroImportacion">{{$value->cont_numero_contenedor}}<input type="hidden" name="{{$key+1}}-numeroImportacion" value="{{$value->cont_numero_contenedor}}"></td>
-            <td class="campos" id="{{$key+1}}-cubicaje">{{$value->cont_cubicaje}}<input type="hidden" name="{{$key+1}}-cubicaje" value="{{$value->cont_cubicaje}}"></td>
-            <td class="campos" id="{{$key+1}}-peso">{{$value->cont_peso}}<input type="hidden" name="{{$key+1}}-peso" value="{{$value->cont_peso}}"></td>
-            <td><span id="{{$value->id}}" onclick="" class=" glyphicon glyphicon-remove"></span><input type="hidden" name="{{$key+1}}-idcontenedor" value="{{$value->id}}"></td>
+              <td class="campos" id="{{$key+1}}-tipocont">{{$value->cont_tipo_contenedor}}<input type="hidden" name="{{$key+1}}-tipocont" value="{{$value->cont_tipo_contenedor}}"></td>
+              <td class="campos" id="{{$key+1}}-cantidad">{{$value->cont_cantidad}}<input type="hidden" name="{{$key+1}}-cantidad" value="{{$value->cont_cantidad}}"></td>
+              <td class="campos" id="{{$key+1}}-numeroImportacion">{{$value->cont_numero_contenedor}}<input type="hidden" name="{{$key+1}}-numeroImportacion" value="{{$value->cont_numero_contenedor}}"></td>
+              <td class="campos" id="{{$key+1}}-cubicaje">{{$value->cont_cubicaje}}<input type="hidden" name="{{$key+1}}-cubicaje" value="{{$value->cont_cubicaje}}"></td>
+              <td class="campos" id="{{$key+1}}-peso">{{$value->cont_peso}}<input type="hidden" name="{{$key+1}}-peso" value="{{$value->cont_peso}}"></td>
+              <td><span id="{{$value->id}}" onclick="" class="borrar glyphicon glyphicon-remove"></span><input type="hidden" name="{{$key+1}}-idcontenedor" value="{{$value->id}}"></td>
             </tr>
             @endforeach
             @endif
@@ -185,7 +202,7 @@
   <!-- ************************************ -->
   <div id="menu-3">
     <h3>Fechas</h3>
-    
+
 
     <div class="row">
       <div class="col-sm-6" id="etd_div">
