@@ -42,7 +42,8 @@ class TProductoImportacion extends Model
 
      public function producto()
     {
-        return $this->hasMany('App\Models\Importacionesv2\TProducto', 'id', 'pdim_producto');
+        return $this->hasOne('App\Models\Importacionesv2\TProducto', 'id', 'pdim_producto');
     }
+
 
 }

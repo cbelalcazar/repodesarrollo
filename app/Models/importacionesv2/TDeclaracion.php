@@ -38,5 +38,17 @@ class TDeclaracion extends Model
 
      protected $dates = ['deleted_at'];
 
+      public function levanteDeclaracion()
+    {
+        return $this->hasOne('App\Models\Importacionesv2\TTipoLevante', 'id', 'decl_tipo_levante');
+    }
+
+     public function admindianDeclaracion()
+    {
+        return $this->hasOne('App\Models\Importacionesv2\TAdministracionDian', 'id', 'decl_admin_dian');
+    }
+
+
+
 
 }

@@ -21,6 +21,9 @@ use App\Models\Importacionesv2\TProductoImportacion;
 use App\Models\Importacionesv2\TOrigenMercancia;
 use App\Models\Importacionesv2\TOrigenMercanciaImportacion;
 use App\Models\Importacionesv2\TProforma;
+use App\Models\Importacionesv2\TEmbarqueImportacion;
+use App\Models\Importacionesv2\TPagoImportacion;
+use App\Models\Importacionesv2\TNacionalizacionImportacion;
 use Carbon\Carbon;
 
 /**
@@ -79,7 +82,7 @@ class TImportacionController extends Controller
         $url = url($this->strUrlConsulta);
         #crea los array de las consultas para mostrar en los combobox en el formulario
 
-        $consulta = array(1,2,3,5);
+        $consulta = array(1,2,5);
         $combos = $this->consultas($consulta);
         extract($combos);
         #Consigue el usuario de session y fecha actual
@@ -97,7 +100,6 @@ class TImportacionController extends Controller
                 'validator', 
                 'puertos', 
                 'inconterm',
-                'moneda',
                 'imp_consecutivo',
                 'origenMercancia'));
     }
@@ -272,6 +274,42 @@ return Redirect::to($urlConsulta);
     public function show($id)
     {
         //
+        $titulo = "CERRAR ORDEN DE IMPORTACION";
+        $object = TImportacion::with('estado','proveedor','puerto_embarque','origenMercancia','embarqueimportacion','pagosimportacion','nacionalizacionimportacion', 'inconterm')->where('t_importacion.id', "=", $id)->first();
+        // dd($object);
+        $objeto2 =TOrigenMercanciaImportacion::with('origenes')->where('omeim_importacion','=', "$id" )->get();
+        $objeto3 = TProductoImportacion::select('pdim_producto', 'id')->where('pdim_importacion','=',"$id")->get();
+        $objeto4 = TProforma::where('prof_importacion','=', intval($id))->get();       
+
+        $objeto5 = TEmbarqueImportacion::with('embarcador', 'lineamaritima', 'tipoCarga','aduana','transportador')->where('emim_importacion','=', intval($id))->get();
+        $objeto6 = TPagoImportacion::where('pag_importacion', '=', "$id")->get();
+        $objeto7 = TNacionalizacionImportacion::where('naco_importacion', '=', "$id")->get();
+        // dd($objeto7);
+        #Crea un array con la informacion necesaria para mostrar en una tabla los productos asociados a la orden de importacion
+        $tablaProductos = array();
+        foreach ($objeto3 as $key => $value) {
+            $unProducto = array();
+            $prodLocal = TProducto::find($value->pdim_producto);
+            $referenciaProd = $prodLocal->prod_referencia;
+            $queries = DB::connection('genericas')
+            ->table('item')
+            ->select('referenciaItem', 'descripcionItem')
+            ->where('referenciaItem', 'LIKE', "%".$referenciaProd."%")
+            ->get();           
+            $descripcion = $queries[0]->referenciaItem." -- ".$queries[0]->descripcionItem;
+            array_push($unProducto, $descripcion);
+            array_push($tablaProductos, $unProducto);
+
+        }
+        return view('importacionesv2.ImportacionTemplate.showImportacion', 
+            compact('object',
+                'titulo',
+                'tablaProductos',
+                'objeto2',
+                'objeto4',
+                'objeto5',
+                'objeto6',
+                'objeto7'));
     }
 
     /**
@@ -356,7 +394,7 @@ return Redirect::to($urlConsulta);
         $cantidadProformas = count($tablaProductos);
 
          #Crea los array de las consultas para mostrar en los Combobox
-        $consulta = array(1,2,3,5);
+        $consulta = array(1,2,5);
         $combos = $this->consultas($consulta);
         extract($combos);
         #Crea las urls de borrar producto y borrar proforma por ajax basado en el name de la ruta
@@ -374,7 +412,6 @@ return Redirect::to($urlConsulta);
                'seleccionados',
                'puertos', 
                'inconterm',
-               'moneda',
                'origenMercancia',
                'tablaProductos',
                'cantidadProductos',
@@ -621,13 +658,13 @@ return "error";
         $combos['inconterm'] = $inconterm;
     }
         //end Combobox puertos
-        // Combobox monedas
-    if(in_array(3, $consulta)){
-        $array = Cache::remember('moneda', 60, function(){return DB::connection('besa')->table('9000-appweb_monedas_ERP')->get();});
-        $moneda = array();
-        foreach ($array as $key => $value) {$moneda["$value->id_moneda"] = $value->desc_moneda;}
-        $combos['moneda'] = $moneda;
-    }
+    //     // Combobox monedas
+    // if(in_array(3, $consulta)){
+    //     $array = Cache::remember('moneda', 60, function(){return DB::connection('besa')->table('9000-appweb_monedas_ERP')->get();});
+    //     $moneda = array();
+    //     foreach ($array as $key => $value) {$moneda["$value->id_moneda"] = $value->desc_moneda;}
+    //     $combos['moneda'] = $moneda;
+    // }
         //end Combobox puertos
          //Combobox estado
     if(in_array(4, $consulta)){
@@ -689,7 +726,7 @@ return "error";
         *Variable titulosTabla debe contener un array con los titulos de la tabla.
         *La cantidad de titulos debe corresponder a la cantidad de columnas que trae la consulta.
         */
-        $titulosTabla =  array('Consecutivo', 'Proveedor',  'Estado', 'Puerto de embarque', 'Importacion', 'Embarque', 'Pagos', 'Nacionalizacion y costeo');
+        $titulosTabla =  array('Consecutivo', 'Proveedor',  'Estado', 'Puerto de embarque', 'Importacion', 'Embarque', 'Pagos', 'Nacionalizacion y costeo', 'Cerrar orden');
 
         //crea los array de las consultas para mostrar en los Combobox
         $consulta = array(1, 4);
@@ -710,6 +747,7 @@ return "error";
             'url2',
             'url3',
             'url4',
+            'url5',
             'puertos',
             'estados'));
 
@@ -737,4 +775,15 @@ return "error";
         'titulosTabla',
         'url'));
  }
+
+ public function cerrarOrden(Request $request){
+
+    $objectImportacion = TImportacion::find($request->OrdenId);
+    $objectImportacion->imp_estado_proceso = 6;
+    $objectImportacion->save();
+    $urlConsulta = route('consultaFiltros');
+    return Redirect::to($urlConsulta);
+}
+
+
 }

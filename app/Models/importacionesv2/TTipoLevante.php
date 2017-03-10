@@ -13,18 +13,24 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class TTipoLevante extends Model
 {
-    use SoftDeletes;
+	use SoftDeletes;
 
-    protected $table = 't_tipo_levante';
+	protected $table = 't_tipo_levante';
 
-    public $timestamps = true;
+	public $timestamps = true;
 
-    protected $fillable = [
-        'tlev_nombre'
-    ];
+	protected $fillable = [
+	'tlev_nombre'
+	];
 
-     protected $connection = 'importacionesV2';
+	protected $connection = 'importacionesV2';
 
-     protected $dates = ['deleted_at'];
+	protected $dates = ['deleted_at'];
+
+	public function levanteDeclaracion()
+	{
+		return $this->belongsTo('App\Models\Importacionesv2\TDeclaracion', 'id', 'decl_tipo_levante');
+	}
+
 
 }

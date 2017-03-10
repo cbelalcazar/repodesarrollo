@@ -125,7 +125,7 @@
     <!-- Currency trading -->
     <div class="form-group" id="moneda-div">
       {{ Form::label('', "Moneda negociación") }}
-      {{ Form::select('imp_moneda_negociacion', $moneda, null, ['placeholder' => 'Selecciona una moneda...', 'class' => 'form-control  validemos']) }}
+      {{ Form::select('imp_moneda_negociacion', ['COP' => 'PESOS', 'EUR' => 'EURO', 'USD' => 'DOLARES'], null, ['placeholder' => 'Selecciona una moneda...', 'class' => 'form-control  validemos']) }}
       <div class="help-block error-help-block" id='error_moneda'></div>
     </div>
     <!-- End Currency trading -->

@@ -100,6 +100,15 @@
         <td> <a class="btn btn-small btn-success glyphicon glyphicon-ok" href="{{ URL::to("$url5/" . $value->nacionalizacionimportacion->id . '/edit') }}"></a></td>
         @endif  
 
+
+        @if($value->nacionalizacionimportacion == null || $value->embarqueimportacion == null || $value->pagosimportacion == null)
+        <td> <a class="btn btn-small btn-default glyphicon glyphicon-remove-sign disabled" href="#"></a></td>
+        @elseif($value->nacionalizacionimportacion != null && $value->estado->est_nombre != 'CERRADA')
+        <td> <a class="btn btn-small btn-danger glyphicon glyphicon-plus" href="{{route('Importacion.show',['id' => $value->id])}}"'></a></td>
+        @elseif($value->nacionalizacionimportacion != null && $value->estado->est_nombre == 'CERRADA')
+        <td> <a class="btn btn-small btn-success glyphicon glyphicon-ok" href="{{route('Importacion.show',['id' => $value->id])}}"></a></td>
+        @endif  
+
       </tr>
       @endforeach
     </tbody>

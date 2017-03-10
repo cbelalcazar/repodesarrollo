@@ -27,4 +27,8 @@ class TIconterm extends Model
 
      protected $dates = ['deleted_at'];
 
+     public function importacion()
+	{
+		return $this->belongsTo('App\Models\Importacionesv2\TImportacion', 'imp_iconterm', 'id');
+	}
 }

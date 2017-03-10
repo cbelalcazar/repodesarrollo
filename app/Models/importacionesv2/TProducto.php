@@ -34,5 +34,11 @@ class TProducto extends Model
         return $this->belongsTo('App\Models\Importacionesv2\TProductoImportacion', 'pdim_producto', 'id');
     }
 
+    public function productoItem()
+    {
+        return $this->hasOne('App\Models\Genericas\Item', 'referenciaItem', 'prod_referencia');
+    }
+
+
 
  }

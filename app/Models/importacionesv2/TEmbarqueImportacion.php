@@ -47,5 +47,30 @@ class TEmbarqueImportacion extends Model
         return $this->hasOne('App\Models\Importacionesv2\TImportacion', 'id', 'emim_importacion');
     }
 
+    public function embarcador()
+    {
+        return $this->hasOne('App\Models\Genericas\Tercero', 'nitTercero', 'emim_embarcador');
+    }
+
+    public function lineamaritima()
+    {
+        return $this->hasOne('App\Models\Genericas\Tercero', 'nitTercero', 'emim_linea_maritima');
+    }
+
+     public function tipoCarga()
+    {
+        return $this->hasOne('App\Models\Importacionesv2\TTipoCarga', 'id', 'emim_tipo_carga');
+    }
+
+    public function aduana()
+    {
+        return $this->hasOne('App\Models\Genericas\Tercero', 'nitTercero', 'emim_aduana');
+    }
+
+     public function transportador()
+    {
+        return $this->hasOne('App\Models\Genericas\Tercero', 'nitTercero', 'emim_transportador');
+    }
+
 
 }

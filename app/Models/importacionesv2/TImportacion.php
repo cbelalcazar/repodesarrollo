@@ -49,6 +49,11 @@ class TImportacion extends Model
         return $this->hasOne('App\Models\Importacionesv2\TPuertoEmbarque', 'id', 'imp_puerto_embarque');
     }
 
+     public function inconterm()
+    {
+        return $this->hasOne('App\Models\Importacionesv2\TIconterm', 'id', 'imp_iconterm');
+    }
+
 
     public function productoimportacion()
     {
@@ -59,6 +64,7 @@ class TImportacion extends Model
     {
         return $this->belongsTo('App\Models\Importacionesv2\TOrigenMercanciaImportacion', 'id', 'omeim_importacion');
     }
+    
 
     public function embarqueimportacion()
     {

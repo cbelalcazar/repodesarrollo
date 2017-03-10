@@ -186,6 +186,7 @@ return [
         Proengsoft\JsValidation\JsValidationServiceProvider::class,
         OwenIt\Auditing\AuditingServiceProvider::class,
         Iber\Generator\ModelGeneratorProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
     ],
 
     /*
@@ -238,6 +239,7 @@ return [
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'JsValidator' => Proengsoft\JsValidation\Facades\JsValidatorFacade::class,
         'Input' => Illuminate\Support\Facades\Input::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];
