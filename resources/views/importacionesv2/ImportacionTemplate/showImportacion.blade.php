@@ -1,4 +1,4 @@
-@extends('importacionesv2.ImportacionTemplate.titulosbase')
+@extends('importacionesv2.importacionTemplate.titulosbase')
 @section('generic')
 <!-- ************************************ -->
 <!-- /************************************
