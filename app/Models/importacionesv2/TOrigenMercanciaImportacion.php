@@ -30,7 +30,7 @@ class TOrigenMercanciaImportacion extends Model
 
        public function importacion()
     {
-        return $this->hasMany('App\Models\Importacionesv2\TImportacion', 'id', 'omeim_importacion');
+        return $this->belongsTo('App\Models\Importacionesv2\TImportacion', 'omeim_importacion', 'id');
     }
 
      public function origenes()

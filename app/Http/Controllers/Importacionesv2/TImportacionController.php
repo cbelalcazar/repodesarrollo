@@ -94,7 +94,7 @@ class TImportacionController extends Controller
         $imp_consecutivo = TImportacion::max('id') + 1;
         $imp_consecutivo = "$imp_consecutivo/" .$year; 
         //retorna la informacion a la vista create
-        return view('importacionesv2.ImportacionTemplate.createImportacion', 
+        return view('importacionesv2.importacionTemplate.createImportacion', 
             compact('titulo',
                 'url',  
                 'validator', 
@@ -301,7 +301,7 @@ return Redirect::to($urlConsulta);
             array_push($tablaProductos, $unProducto);
 
         }
-        return view('importacionesv2.ImportacionTemplate.showImportacion', 
+        return view('importacionesv2.importacionTemplate.showImportacion', 
             compact('object',
                 'titulo',
                 'tablaProductos',
@@ -401,7 +401,7 @@ return Redirect::to($urlConsulta);
         $urlBorrar = route('borrarProductoImportacion');
         $urlBorrarProforma = route('borrarProformaImportacion');
         #Retorna la informacion a la vista editar       
-        return view('importacionesv2.ImportacionTemplate.editImportacion', 
+        return view('importacionesv2.importacionTemplate.editImportacion', 
             compact('campos',
                'url',
                'titulo', 
@@ -739,7 +739,7 @@ return "error";
         $url4 = route("Pagos.store");
         $url5 = route("NacionalizacionCosteo.store");
         #Retorna la informacion a la vista
-        return view('importacionesv2.ImportacionTemplate.consultaImportacion', compact('titulo',
+        return view('importacionesv2.importacionTemplate.consultaImportacion', compact('titulo',
             'datos',
             'titulosTabla',
             'campos',
@@ -770,7 +770,7 @@ return "error";
      $datos = TProductoImportacion::with('importacion')->with('producto')->where('pdim_alerta','=','1')->get();
 
 
-     return view('importacionesv2.ImportacionTemplate.consultaAlertas', compact('titulo',
+     return view('importacionesv2.importacionTemplate.consultaAlertas', compact('titulo',
         'datos',
         'titulosTabla',
         'url'));

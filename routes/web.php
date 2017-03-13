@@ -68,6 +68,7 @@ Route::resource('importacionesv2/NacionalizacionCosteo', 'Importacionesv2\TNacio
 Route::get('importacionesv2/NCCreate/{id}', 'Importacionesv2\TNacionalizacionImportacionController@create')->name('createNC');
   //End importacionesv2
 //Rutas para reportes importacionesv2
-Route::get('importacionesv2/ExcelOrdenesGeneral', 'Importacionesv2\ReportesImportacionesController@ExcelOrdenesGeneral')->name('ExcelOrdenesGeneral');
+Route::post('importacionesv2/ExcelOrdenesGeneral', 'Importacionesv2\ReportesImportacionesController@ExcelOrdenesGeneral')->name('ExcelOrdenesGeneral');
+Route::get('importacionesv2/ConsultaImportacionesExportar', 'Importacionesv2\ReportesImportacionesController@ConsultaImportacionesExportar')->name('ConsultaImportacionesExportar');
 
 });
