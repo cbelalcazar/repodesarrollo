@@ -125,7 +125,7 @@
     <!-- Currency trading -->
     <div class="form-group" id="moneda-div">
       {{ Form::label('', "Moneda negociación") }}
-      {{ Form::select('imp_moneda_negociacion', ['COP' => 'PESOS', 'EUR' => 'EURO', 'USD' => 'DOLARES'], null, ['placeholder' => 'Selecciona una moneda...', 'class' => 'form-control  validemos']) }}
+      {{ Form::select('imp_moneda_negociacion', $moneda, null, ['placeholder' => 'Selecciona una moneda...', 'class' => 'form-control  validemos']) }}
       <div class="help-block error-help-block" id='error_moneda'></div>
     </div>
     <!-- End Currency trading -->
@@ -276,7 +276,7 @@
 
         <div class="col-xs-4">
           <label  class="control-label">Valor proforma:</label>
-          {{ Form::text('val_proforma', '', ['class' => 'form-control solo-numero', 'id' =>  'val_proforma', 'placeholder' =>  'Ingresar el valor de la proforma','min' => '1','max' => '999999999','step' => '0.01'])}}
+          {{ Form::text('val_proforma', '', ['class' => 'form-control solo-numero', 'id' =>  'val_proforma', 'placeholder' =>  'Ingresar el valor de la proforma','min' => '0','max' => '999999999','step' => '0.01'])}}
         </div>
         <div class="col-xs-4">
 

@@ -82,7 +82,7 @@ class TImportacionController extends Controller
         $url = url($this->strUrlConsulta);
         #crea los array de las consultas para mostrar en los combobox en el formulario
 
-        $consulta = array(1,2,5);
+        $consulta = array(1,2,5,3);
         $combos = $this->consultas($consulta);
         extract($combos);
         #Consigue el usuario de session y fecha actual
@@ -91,8 +91,18 @@ class TImportacionController extends Controller
         $year = $date->format('Y');
         #consigue el ultimo id de la tabla y genera un consecutivo de creacion para sugerencia al usuario en el formulario de creacion
 
-        $imp_consecutivo = TImportacion::max('id') + 1;
-        $imp_consecutivo = "$imp_consecutivo/" .$year; 
+        $id2 = TImportacion::max('id');
+        if($id2 == null){
+            $consecutivo = 1;
+        }elseif($id2 != null){
+            $importacion1 = TImportacion::find($id2);
+            $numero = explode("/",$importacion1->imp_consecutivo);
+            $consecutivo = intval($numero[0])+1;
+
+        }
+        
+
+        $imp_consecutivo = "$consecutivo/" .$year; 
         //retorna la informacion a la vista create
         return view('importacionesv2.importacionTemplate.createImportacion', 
             compact('titulo',
@@ -101,7 +111,8 @@ class TImportacionController extends Controller
                 'puertos', 
                 'inconterm',
                 'imp_consecutivo',
-                'origenMercancia'));
+                'origenMercancia',
+                'moneda'));
     }
 
     /**
@@ -142,8 +153,17 @@ class TImportacionController extends Controller
             ->withErrors('Debe ingresar almenos una proforma')->withInput();
         }
 
-        
-
+         #Crea todas las proformas asociadas en la tabla
+        $cantidadProformas = intval($request->tablaproformaguardar);
+        for ($i=1; $i < $cantidadProformas+1 ; $i++) { 
+            $valorprof = $i."-valorprof";
+            if(strlen(round($request->$valorprof,0)) > 10){
+            //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
+                return Redirect::to("importacionesv2/Importacion/create")
+                ->withErrors('El valor de la proforma no puede tener mas de 10 numeros')->withInput();
+            }
+            
+        }
         DB::beginTransaction();
         //Crea el registro en la tabla importacion
         $ObjectCrear = new TImportacion;
@@ -222,8 +242,7 @@ class TImportacionController extends Controller
         }   
     }
 
-     #Crea todas las proformas asociadas en la tabla
-    $cantidadProformas = intval($request->tablaproformaguardar);
+    
     for ($i=1; $i < $cantidadProformas+1 ; $i++) { 
 
         $strproforma = $i."objproforma";        
@@ -394,7 +413,7 @@ return Redirect::to($urlConsulta);
         $cantidadProformas = count($tablaProductos);
 
          #Crea los array de las consultas para mostrar en los Combobox
-        $consulta = array(1,2,5);
+        $consulta = array(1,2,5,3);
         $combos = $this->consultas($consulta);
         extract($combos);
         #Crea las urls de borrar producto y borrar proforma por ajax basado en el name de la ruta
@@ -418,7 +437,8 @@ return Redirect::to($urlConsulta);
                'tablaProformas',
                'cantidadProformas',
                'urlBorrar',
-               'urlBorrarProforma'));
+               'urlBorrarProforma'
+               'moneda'));
     }
 
     /**
@@ -436,6 +456,17 @@ return Redirect::to($urlConsulta);
             //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
             return Redirect::to("importacionesv2/Importacion/$id/edit")
             ->withErrors('El consecutivo ingresado ya existe para otra orden de importacion')->withInput();
+        }
+         #Crea todas las proformas asociadas en la tabla
+        $cantidad1 = intval($request->tablaproformaguardar);
+        for ($i=1; $i < $cantidad1+1 ; $i++) { 
+            $valorprof = $i."-valorprof";
+            if(count("$request->$valorprof") > 10){
+            //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
+                return Redirect::to("importacionesv2/Importacion/create")
+                ->withErrors('Debe el valor de la proforma no puede tener mas de 10 numeros')->withInput();
+            }
+            
         }
         //Genera la url de consulta
         $url = route('consultaFiltros');
@@ -484,7 +515,7 @@ return Redirect::to($urlConsulta);
             }    
         }
         #Obtiene las proformas que va a guardar de la tabla proformas
-        $cantidad1 = intval($request->tablaproformaguardar);
+        
         if($cantidad1 != ""){
             for ($i=1; $i < $cantidad1+1 ; $i++) { 
                 $str5 = $i.'-idproforma';
@@ -659,12 +690,12 @@ return "error";
     }
         //end Combobox puertos
     //     // Combobox monedas
-    // if(in_array(3, $consulta)){
-    //     $array = Cache::remember('moneda', 60, function(){return DB::connection('besa')->table('9000-appweb_monedas_ERP')->get();});
-    //     $moneda = array();
-    //     foreach ($array as $key => $value) {$moneda["$value->id_moneda"] = $value->desc_moneda;}
-    //     $combos['moneda'] = $moneda;
-    // }
+    if(in_array(3, $consulta)){
+        $array = Cache::remember('moneda', 60, function(){return DB::connection('besa')->table('9000-appweb_monedas_ERP')->get();});
+        $moneda = array();
+        foreach ($array as $key => $value) {$moneda["$value->id_moneda"] = $value->desc_moneda;}
+        $combos['moneda'] = $moneda;
+    }
         //end Combobox puertos
          //Combobox estado
     if(in_array(4, $consulta)){

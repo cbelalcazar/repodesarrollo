@@ -81,6 +81,15 @@ class CreateImportacionesV2Tnacionalizacioncosteoimportacion extends Migration
         ->nullable()
         ->comment('Valor faltante');
 
+
+        $table->float('naco_sobrante_euro', 10, 2)
+        ->nullable()
+        ->comment('Valor sobrante en euros');
+
+        $table->float('naco_faltante_euro', 10, 2)
+        ->nullable()
+        ->comment('Valor faltante en euros');
+
         $table->float('naco_factor_dolar_porc', 10, 2)
         ->nullable()
         ->comment('Valor factor dolar porcentaje');
@@ -100,6 +109,10 @@ class CreateImportacionesV2Tnacionalizacioncosteoimportacion extends Migration
         $table->float('naco_factor_arancel_porc', 10, 2)
         ->nullable()
         ->comment('Valor factor arancel porcentaje resta de los dos anteriores');
+
+         $table->integer('naco_numero_comex')
+        ->nullable()
+        ->comment('Numero de comex');
 
         $table->integer('naco_tipo_nacionalizacion')
         ->nullable()

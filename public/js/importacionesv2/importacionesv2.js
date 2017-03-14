@@ -365,7 +365,7 @@ for (var i = 1; i < conteo; i++)
   var dato = $(string).html();
   if(typeof(dato) !== 'undefined'){
     var arreglo3 = dato.split(" -- ");
-    if(arreglo3[0] == $('#imp_producto').val()){
+    if(arreglo3[0] == $('#imp_producto').val().toUpperCase()){
       encontrar = 1;
     }
   }
@@ -467,7 +467,7 @@ function tablaproforma(obj){
     var dato = $(string).html();
     if(typeof(dato) !== 'undefined'){
       var dato1 = dato.split('<input');
-      if(dato1[0] == $('#imp_proforma').val()){
+      if(dato1[0] == $('#imp_proforma').val().toUpperCase()){
         encontrar = 1;
       }
     }
@@ -494,7 +494,7 @@ if($('#imp_proforma').val() == "" || $('#fech_crea_profor').val() == "" || $('#f
     var id1 = ++tabla;
   }
   var borrar = '<td><span class="borrar glyphicon glyphicon-remove"><input type="hidden" name="'+ id1 +'-idproforma" value=""></span></td>';
-  var noproforma = '<td class="campos" id="'+ id1 +'-prof">'+$('#imp_proforma').val()+'<input type="hidden" name="'+ id1 +'-noprof" value='+$('#imp_proforma').val()+'></td>';
+  var noproforma = '<td class="campos" id="'+ id1 +'-prof">'+$('#imp_proforma').val().toUpperCase()+'<input type="hidden" name="'+ id1 +'-noprof" value='+$('#imp_proforma').val().toUpperCase()+'></td>';
   var fech_creacion = '<td>'+$('#fech_crea_profor').val()+'<input type="hidden" name="'+ id1 +'-creaprof" value='+$('#fech_crea_profor').val()+'></td>';
   var fech_entreg_profor = '<td>'+$('#fech_entreg_profor').val()+'<input type="hidden" name="'+ id1 +'-entregaprof" value='+$('#fech_entreg_profor').val()+'></td>';
   var val_proforma = '<td>'+$('#val_proforma').val()+'<input type="hidden" name="'+ id1 +'-valorprof" value='+$('#val_proforma').val()+'></td>';

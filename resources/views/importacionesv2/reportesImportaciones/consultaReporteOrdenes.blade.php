@@ -29,7 +29,7 @@
 
 <div class="col-xs-12">
 	{{ Form::label('', "Consulta por estado") }}
-	{{ Form::select('imp_estado_proceso', $estados, null, ['placeholder' => 'Selecciona una moneda...', 'class' => 'form-control']) }}
+	{{ Form::select('imp_estado_proceso', $estados, null, ['placeholder' => 'Selecciona un estado...', 'class' => 'form-control']) }}
 </div>
 <br><br><br><br>
 <div class="form-group">

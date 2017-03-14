@@ -9,6 +9,7 @@ use App\Models\Importacionesv2\TProforma;
 use App\Models\Importacionesv2\TDeclaracion;
 use App\Models\Importacionesv2\TContenedorEmbarque;
 use App\Models\Importacionesv2\TTipoContenedor;
+use App\Models\Importacionesv2\TEstado;
 use Excel;
 use \Cache;
 

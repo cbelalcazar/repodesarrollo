@@ -38,7 +38,7 @@
 <!-- Valor anticipo  -->
 <div class="col-sm-6">
   {{ Form::label('', "Valor anticipo: (*)") }}
-  {{ Form::number("pag_valor_anticipo", $objeto->pag_valor_anticipo, ['class' => 'form-control validemosText', 'id' =>  'pag_valor_anticipo', 'placeholder' =>  'Ingresar el valor del anticipo','min' => '1','max' => '999999999','step' => '0.01','required' => 'required']) }}
+  {{ Form::number("pag_valor_anticipo", $objeto->pag_valor_anticipo, ['class' => 'form-control validemosText', 'id' =>  'pag_valor_anticipo', 'placeholder' =>  'Ingresar el valor del anticipo','min' => '0','max' => '999999999','step' => '0.01','required' => 'required']) }}
 <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor anticipo    -->
@@ -46,7 +46,7 @@
 <!-- Valor saldo  -->
 <div class="col-sm-6">
   {{ Form::label('', "Valor saldo: (*)") }}
-  {{ Form::number("pag_valor_saldo", $objeto->pag_valor_saldo, ['class' => 'form-control validemosText', 'id' =>  'pag_valor_saldo', 'placeholder' =>  'Ingresar el valor del saldo','min' => '1','max' => '999999999','step' => '0.01','required' => 'required']) }}
+  {{ Form::number("pag_valor_saldo", $objeto->pag_valor_saldo, ['class' => 'form-control validemosText', 'id' =>  'pag_valor_saldo', 'placeholder' =>  'Ingresar el valor del saldo','min' => '0','max' => '999999999','step' => '0.01','required' => 'required']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor saldo -->
@@ -54,7 +54,7 @@
 <!-- Valor comision  -->
 <div class="col-sm-6">
   {{ Form::label('', "Valor comisión: (*)") }}
-  {{ Form::number("pag_valor_comision", $objeto->pag_valor_comision, ['class' => 'form-control validemosText', 'id' =>  'pag_valor_comision', 'placeholder' =>  'Ingresar el valor de la comisión','min' => '1','max' => '999999999','step' => '0.01','required' => 'required']) }}
+  {{ Form::number("pag_valor_comision", $objeto->pag_valor_comision, ['class' => 'form-control validemosText', 'id' =>  'pag_valor_comision', 'placeholder' =>  'Ingresar el valor de la comisión','min' => '0','max' => '999999999','step' => '0.01','required' => 'required']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor comision    -->
@@ -62,7 +62,7 @@
 <!-- Valor total  -->
 <div class="col-sm-6">
   {{ Form::label('', "Valor total: (*)") }}
-  {{ Form::number("pag_valor_total", $objeto->pag_valor_total, ['class' => 'form-control validemosText', 'id' =>  'pag_valor_total', 'placeholder' =>  'Ingresar el valor total','min' => '1','max' => '999999999','step' => '0.01','required' => 'required']) }}
+  {{ Form::number("pag_valor_total", $objeto->pag_valor_total, ['class' => 'form-control validemosText', 'id' =>  'pag_valor_total', 'placeholder' =>  'Ingresar el valor total','min' => '0','max' => '999999999','step' => '0.01','required' => 'required']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor total    -->
@@ -70,7 +70,7 @@
 <!-- Valor FOB  -->
 <div class="col-sm-6">
   {{ Form::label('', "Valor FOB: (*)") }}
-  {{ Form::number("pag_valor_fob", $objeto->pag_valor_fob, ['class' => 'form-control validemosText', 'id' =>  'pag_valor_fob', 'placeholder' =>  'Ingresar el valor total','min' => '1','max' => '999999999','step' => '0.01','required' => 'required']) }}
+  {{ Form::number("pag_valor_fob", $objeto->pag_valor_fob, ['class' => 'form-control validemosText', 'id' =>  'pag_valor_fob', 'placeholder' =>  'Ingresar el valor total','min' => '0','max' => '999999999','step' => '0.01','required' => 'required']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor FOB    -->
@@ -78,7 +78,7 @@
 <!-- Valor trm liquidacion factura  -->
 <div class="col-sm-6">
   {{ Form::label('', "TRM liquidación factura: (*)") }}
-  {{ Form::number("trm_liquidacion_factura", $objeto->trm_liquidacion_factura, ['class' => 'form-control validemosText', 'id' =>  'trm_liquidacion_factura', 'placeholder' =>  'Ingresar el valor total','min' => '1','max' => '999999999','step' => '0.01','required' => 'required']) }}
+  {{ Form::number("trm_liquidacion_factura", $objeto->trm_liquidacion_factura, ['class' => 'form-control validemosText', 'id' =>  'trm_liquidacion_factura', 'placeholder' =>  'Ingresar el valor total','min' => '0','max' => '999999999','step' => '0.01','required' => 'required']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor trm liquidacion factura    -->
