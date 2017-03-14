@@ -437,7 +437,7 @@ return Redirect::to($urlConsulta);
                'tablaProformas',
                'cantidadProformas',
                'urlBorrar',
-               'urlBorrarProforma'
+               'urlBorrarProforma',
                'moneda'));
     }
 
