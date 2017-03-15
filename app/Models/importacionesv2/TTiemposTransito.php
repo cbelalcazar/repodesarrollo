@@ -31,4 +31,14 @@ class TTiemposTransito extends Model
 
      protected $dates = ['deleted_at'];
 
+     public function puerto_embarque()
+    {
+        return $this->hasOne('App\Models\Importacionesv2\TPuertoEmbarque', 'id', 'tran_puerto_embarque');
+    }
+
+     public function tipoCarga()
+    {
+        return $this->hasOne('App\Models\Importacionesv2\TTipoCarga', 'id', 'tran_tipo_carga');
+    }
+
 }
