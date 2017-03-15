@@ -23,7 +23,8 @@
 
       <div class="btn-group btn-group-justified">
         <a href="{{ $url }}" class="btn btn-default"> Consultar todos </a>
-        @if($titulo != "PRODUCTO" && $titulo != "EDITAR PRODUCTO" )
+         
+        @if($titulo != "PRODUCTO" && $titulo != "EDITAR PRODUCTO" && !isset($metrica) )
         <a href="{{ $url.'/create' }}" class="btn btn-default"> Crear Nuevo </a>
         @endif
       </div>

@@ -42,7 +42,9 @@
         <td>
           {{ Form::open(array('url' => "$url/" . $value[$campos[0][0]], 'class' => 'btn btn-small ')) }}
           {{ Form::hidden('_method', 'DELETE') }}
+          @if(!isset($metrica))
           {{ Form::submit('Borrar', array('class' => 'btn btn-small red-mint')) }}
+          @endif
           {{ Form::close() }}
         </td>
       </tr>

@@ -82,7 +82,7 @@ class TMetricaController extends Controller
       *Variable titulosTabla debe contener un array con los titulos de la tabla.
       *La cantidad de titulos debe corresponder a la cantidad de columnas que trae la consulta.
       */
-      $titulosTabla =  array('Id', 'Descripcion', 'Numero de dias',  'Editar', 'Eliminar');
+      $titulosTabla =  array('Id', 'Descripcion', 'Numero de dias',  'Editar');
 
       /**
       *Campos con su tipo de dato.
@@ -93,12 +93,14 @@ class TMetricaController extends Controller
 
       //Genera url completa de consulta
       $url = url($this->strUrlConsulta);
+      $metrica = true;
 
       return view('importacionesv2.index', compact('titulo',
       'datos',
       'titulosTabla',
       'campos',
-      'url'));
+      'url',
+      'metrica'));
     }
 
     /**
