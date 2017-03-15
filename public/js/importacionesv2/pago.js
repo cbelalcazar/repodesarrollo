@@ -11,6 +11,7 @@ jQuery(document).ready(function($) {
       $('#sobrante').prop('checked', false);
       $('#faltante').prop('checked', false);
       $('#naco_valorseleccion').val("");
+      $('#naco_valorseleccion_euro').val("");
       $('.cajas1').addClass('hide');
     }
     

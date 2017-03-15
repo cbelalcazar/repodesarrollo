@@ -71,26 +71,28 @@ class TPagoImportacionController extends Controller
      */
     public function store(Request $request)
     {
-        //     
+        //  
         $urlConsulta = route('consultaFiltros'); 
-        $url = url("importacionesv2/Pagos/create");
 
+       
+        $url = url("importacionesv2/Pagos/create");
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
             return redirect()->action(
-                'Importacionesv2\TEmbarqueImportacionController@create', ['id' => $request->emim_importacion]
+                'Importacionesv2\TPagoImportacionController@create', ['id' => $request->pag_importacion]
                 )->withErrors($validator)->withInput();
         }
 
         //Valida la existencia del registro que se intenta crear en la tabla de la bd 
         $validarExistencia = TPagoImportacion::where('pag_importacion', '=', "$request->pag_importacion")->get();
+
         if(count($validarExistencia) > 0){
             //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
             return redirect()->action(
-                'Importacionesv2\TPagoImportacionController@create', ['id' => $request->emim_importacion]
-                )->withErrors('El proceso de pago que intenta crear ya existe en la base de datos')->withInput();            
+                'Importacionesv2\TPagoImportacionController@create', ['id' => $request->pag_importacion]
+                )->withErrors("Ya existe un proceso de pagos asociado a esta importacion")->withInput();   
         }
-         //Crea el registro en la tabla importacion
+        //Crea el registro en la tabla importación
         $ObjectCrear = new TPagoImportacion;
         $ObjectCrear->pag_importacion = $request->pag_importacion;
         $ObjectCrear->pag_valor_anticipo = round($request->pag_valor_anticipo,2);
@@ -100,8 +102,12 @@ class TPagoImportacionController extends Controller
         $ObjectCrear->pag_valor_fob = round($request->pag_valor_fob,2);
         $ObjectCrear->trm_liquidacion_factura = round($request->trm_liquidacion_factura,2);
         $ObjectCrear->pag_fecha_factura = Carbon::parse($request->pag_fecha_factura)->format('Y-m-d');
-        $ObjectCrear->pag_fecha_envio_contabilidad = Carbon::parse($request->pag_fecha_envio_contabilidad)->format('Y-m-d');
+        $ObjectCrear->pag_fecha_envio_contabilidad = Carbon::parse($request->pag_fecha_envio_contabilidad)->format('Y-m-d');        
+        $ObjectCrear->pag_fecha_anticipo = Carbon::parse($request->pag_fecha_anticipo)->format('Y-m-d');
+        $ObjectCrear->pag_fecha_saldo = Carbon::parse($request->pag_fecha_saldo)->format('Y-m-d');        
+        $ObjectCrear->pag_numero_factura = strtoupper($request->pag_numero_factura);
         $ObjectCrear->save();
+
         Session::flash('message', 'El proceso de pago fue creado exitosamente!');
         return Redirect::to($urlConsulta);
     }
@@ -165,7 +171,7 @@ class TPagoImportacionController extends Controller
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
             return redirect()->action(
-                'Importacionesv2\TEmbarqueImportacionController@create', ['id' => $request->emim_importacion]
+                'Importacionesv2\TPagoImportacionController@create', ['id' => $request->pag_importacion]
                 )->withErrors($validator)->withInput();
         }
 
@@ -178,6 +184,9 @@ class TPagoImportacionController extends Controller
         $ObjectUpdate->trm_liquidacion_factura = round($request->trm_liquidacion_factura,2);
         $ObjectUpdate->pag_fecha_factura = Carbon::parse($request->pag_fecha_factura)->format('Y-m-d');
         $ObjectUpdate->pag_fecha_envio_contabilidad = Carbon::parse($request->pag_fecha_envio_contabilidad)->format('Y-m-d');
+        $ObjectUpdate->pag_numero_factura = strtoupper($request->pag_numero_factura);
+        $ObjectUpdate->pag_fecha_anticipo = Carbon::parse($request->pag_fecha_anticipo)->format('Y-m-d');
+        $ObjectUpdate->pag_fecha_saldo = Carbon::parse($request->pag_fecha_saldo)->format('Y-m-d');
         $ObjectUpdate->save();
 
          //Redirecciona a la pagina de consulta y muestra mensaje

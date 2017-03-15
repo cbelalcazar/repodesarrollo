@@ -43,6 +43,13 @@
 </div>
 <!-- End Valor anticipo    -->
 
+<!-- Valor fecha del anticipo  -->
+<div class="col-sm-6">
+  {{ Form::label('', "Fecha del anticipo : (*)") }}
+  {{ Form::text("pag_fecha_anticipo", $objeto->pag_fecha_anticipo, ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_anticipo', 'placeholder' =>  'Ingresar la fecha del anticipo','readonly' => 'readonly','required' => 'required']) }}
+  <div class="help-block error-help-block" id='error'></div>
+</div>
+
 <!-- Valor saldo  -->
 <div class="col-sm-6">
   {{ Form::label('', "Valor saldo: (*)") }}
@@ -50,6 +57,15 @@
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor saldo -->
+
+
+<!-- Fecha del saldo  -->
+<div class="col-sm-6">
+  {{ Form::label('', "Fecha del saldo : (*)") }}
+  {{ Form::text("pag_fecha_saldo", $objeto->pag_fecha_saldo, ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_saldo', 'placeholder' =>  'Ingresar la fecha del saldo','readonly' => 'readonly','required' => 'required']) }}
+  <div class="help-block error-help-block" id='error'></div>
+</div>
+<!-- End Fecha del saldo    -->
 
 <!-- Valor comision  -->
 <div class="col-sm-6">
@@ -74,6 +90,14 @@
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor FOB    -->
+
+<!-- Numero factura  -->
+<div class="col-sm-6">
+  {{ Form::label('', "No. Factura: (*)") }}
+  {{ Form::number("pag_numero_factura", $objeto->pag_numero_factura, ['class' => 'form-control validemosText', 'id' =>  'pag_numero_factura', 'placeholder' =>  'Ingresar el numero de la factura','required' => 'required']) }}
+  <div class="help-block error-help-block" id='error'></div>
+</div>
+<!-- End Numero factura    -->
 
 <!-- Valor trm liquidacion factura  -->
 <div class="col-sm-6">

@@ -117,6 +117,7 @@ class TNacionalizacionImportacionController extends Controller
         $ObjectCrear = new TNacionalizacionImportacion;
         $ObjectCrear->naco_importacion = $request->naco_importacion;
         $ObjectCrear->naco_tipo_importacion = $request->naco_tipo_importacion;
+        $ObjectCrear->naco_numero_comex = intval($request->naco_numero_comex);
         $ObjectCrear->naco_anticipo_aduana = round($request->naco_anticipo_aduana,2);
         $ObjectCrear->naco_fecha_anticipo_aduana =  Carbon::parse($request->naco_fecha_anticipo_aduana)->format('Y-m-d');
         if ($request->naco_preinscripcion) {
@@ -154,6 +155,15 @@ if ($request->naco_ajuste && $request->naco_opcion && $request->naco_valorselecc
         $ObjectCrear->naco_sobrante = $request->naco_valorseleccion;
     } elseif($request->naco_opcion == "faltante") {
         $ObjectCrear->naco_faltante = $request->naco_valorseleccion;
+    }
+
+}
+
+if ($request->naco_ajuste && $request->naco_opcion && $request->naco_valorseleccion_euro){
+    if ($request->naco_opcion == "sobrante") {
+        $ObjectCrear->naco_sobrante_euro = $request->naco_valorseleccion_euro;
+    } elseif($request->naco_opcion == "faltante") {
+        $ObjectCrear->naco_faltante_euro = $request->naco_valorseleccion_euro;
     }
 
 }
@@ -296,6 +306,15 @@ return Redirect::to($urlConsulta);
             $faltante = true;
             $naco_valorseleccion = $objeto->naco_sobrante;
         }
+
+        if($objeto->naco_sobrante_euro){
+            $sobrante = true;
+            $naco_valorseleccion_euro = $objeto->naco_sobrante_euro;
+        }
+        if ($objeto->naco_faltante_euro) {
+            $faltante = true;
+            $naco_valorseleccion_euro = $objeto->naco_sobrante_euro;
+        }
         #Retorna la informacion a la vista editar       
         return view('importacionesv2.NacionalizacionCosteoTemplate.editNacionalizacionCosteo', 
             compact('url',
@@ -312,6 +331,7 @@ return Redirect::to($urlConsulta);
                'sobrante',
                'faltante',
                'naco_valorseleccion',
+               'naco_valorseleccion_euro',
                'decl_admin_dian'));
     }
 
@@ -345,6 +365,7 @@ return Redirect::to($urlConsulta);
         $ObjectEditar->naco_control_posterior = 0;
     }      
     $ObjectEditar->naco_tipo_nacionalizacion = $request->naco_tipo_nacionalizacion;
+    $ObjectEditar->naco_numero_comex = intval($request->naco_numero_comex);
     $ObjectEditar->naco_fecha_recibo_fact_be = Carbon::parse($request->naco_fecha_recibo_fact_be)->format('Y-m-d');
     $ObjectEditar->naco_fecha_entrega_fact_cont = Carbon::parse($request->naco_fecha_entrega_fact_cont)->format('Y-m-d');
     $ObjectEditar->naco_fecha_entrega_docu_transp = Carbon::parse($request->naco_fecha_entrega_docu_transp)->format('Y-m-d');
@@ -366,11 +387,21 @@ if ($request->naco_fecha_entrada_sistema) {
 }
 $ObjectEditar->naco_sobrante = null;
 $ObjectEditar->naco_faltante = null;
+$ObjectEditar->naco_sobrante_euro = null;
+$ObjectEditar->naco_faltante_euro = null;
 if ($request->naco_ajuste && $request->naco_opcion && $request->naco_valorseleccion){
     if ($request->naco_opcion == "sobrante") {
         $ObjectEditar->naco_sobrante = $request->naco_valorseleccion;
     } elseif($request->naco_opcion == "faltante") {
         $ObjectEditar->naco_faltante = $request->naco_valorseleccion;
+    }
+
+}
+if ($request->naco_ajuste && $request->naco_opcion && $request->naco_valorseleccion_euro){
+    if ($request->naco_opcion == "sobrante") {
+        $ObjectEditar->naco_sobrante_euro = $request->naco_valorseleccion_euro;
+    } elseif($request->naco_opcion == "faltante") {
+        $ObjectEditar->naco_faltante_euro = $request->naco_valorseleccion_euro;
     }
 
 }

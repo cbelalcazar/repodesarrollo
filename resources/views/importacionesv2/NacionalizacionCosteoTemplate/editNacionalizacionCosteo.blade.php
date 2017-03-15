@@ -268,6 +268,15 @@
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
 
+<!-- numero comex  -->
+<div class="col-sm-6">
+  <br>
+  {{ Form::label('', "No. Comex: (*)") }}
+  {{ Form::number("naco_numero_comex", $objeto->naco_numero_comex, ['class' => 'form-control validemosText', 'id' =>  'naco_numero_comex', 'placeholder' =>  'Ingresar el numero de comex','min' => '0','max' => '999999999','step' => '1']) }}
+  <div class="help-block error-help-block" id='error'></div>
+</div>
+<br><br>
+
 <!-- Valor fecha envio a contabilidad  -->
 <div class="col-sm-6">
   <br>
@@ -347,6 +356,15 @@
   <br>
   {{ Form::label('', "Valor ajuste: (*)") }}
   {{ Form::number("naco_valorseleccion", $naco_valorseleccion, ['class' => 'form-control', 'id' =>  'naco_valorseleccion', 'placeholder' =>  'Ingresar el valor del anticipo a la agencia de aduanas','min' => '0','max' => '999999999','step' => '0.01']) }}
+  <div class="help-block error-help-block" id='error'></div>
+</div>
+<br><br>
+
+
+<div class="col-sm-12 hide cajas1">
+  <br>
+  {{ Form::label('', "Valor ajuste Euros: (*)") }}
+  {{ Form::number("naco_valorseleccion_euro", $naco_valorseleccion_euro, ['class' => 'form-control', 'id' =>  'naco_valorseleccion_euro', 'placeholder' =>  'Ingresar el valor del ajuste en euros','min' => '0','max' => '999999999','step' => '0.01']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <br><br>

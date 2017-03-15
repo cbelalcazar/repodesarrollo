@@ -28,7 +28,10 @@ class TPagoImportacion extends Model
         'pag_valor_fob',
         'pag_fecha_factura',
         'trm_liquidacion_factura',
-        'pag_fecha_envio_contabilidad'
+        'pag_fecha_envio_contabilidad',
+        'pag_fecha_anticipo',
+        'pag_fecha_saldo',
+        'pag_numero_factura'
     ];
 
      protected $connection = 'importacionesV2';
