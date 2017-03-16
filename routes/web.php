@@ -43,6 +43,7 @@ Route::resource('importacionesv2/TipoCarga', 'Importacionesv2\TTipoCargaControll
 Route::resource('importacionesv2/TipoContenedor', 'Importacionesv2\TTipoContenedorController');
 Route::resource('importacionesv2/Producto', 'Importacionesv2\TProductoController');
 Route::resource('importacionesv2/TiemposTransito', 'Importacionesv2\TTiemposTransitoController');
+Route::resource('importacionesv2/ProductoImportacion', 'Importacionesv2\TProductoImportacionController');
   //Rutas para proceso de importacion 
 Route::resource('importacionesv2/Importacion', 'Importacionesv2\TImportacionController');
 Route::get('importacionesv2/search', 'Importacionesv2\TImportacionController@autocomplete')->name('search');

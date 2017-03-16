@@ -787,7 +787,7 @@ return "error";
 
     public function alertasImportacion(Request $request){
     //Seteo el titulo en la funcion para mostrar en la vista index
-        $titulo = "CONSULTA ALERTAS DE PRODUCTO IMPORTACION";
+        $titulo = "CERRAR ALERTAS DE PRODUCTO IMPORTACION";
      /**
         *Variable titulosTabla debe contener un array con los titulos de la tabla.
         *La cantidad de titulos debe corresponder a la cantidad de columnas que trae la consulta.
