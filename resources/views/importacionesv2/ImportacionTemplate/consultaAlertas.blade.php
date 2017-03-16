@@ -8,11 +8,11 @@
  * 22/02/2017
  */ -->
 
-<script src="{{url('/js/importacionesv2/importacionesv2.js')}}" type="text/javascript" language="javascript"></script>
-<div class="btn-group btn-group-justified">
-        <a href="{{ $url }}" class="btn btn-default"> Consultar todos </a>
-      </div>
-      <br>
+ <script src="{{url('/js/importacionesv2/importacionesv2.js')}}" type="text/javascript" language="javascript"></script>
+ <div class="btn-group btn-group-justified">
+  <a href="{{ $url }}" class="btn btn-default"> Consultar todos </a>
+</div>
+<br>
 <link href="{{url('/css/importacionesv2.css')}}" type="text/css" rel="stylesheet"/>
 <div class="portlet-body form">
   @if (Session::has('message'))
@@ -32,18 +32,21 @@
       @foreach($datos as $key => $value)
       <tr>
 
-        <td>{{$value->producto[0]->prod_referencia}}</td>
+        <td>{{$value->producto->prod_referencia}}</td>
         <td>{{$value->importacion[0]->imp_consecutivo}}</td>
         @if($value->pdim_alerta == 1)
         <td>SI</td>
         @else
         <td>NO</td>
         @endif
-        <td>Cerrar</td>
-      </tr>
-      @endforeach
-    </tbody>
-  </table>
+        <td>
+        <a class="btn btn-small btn-info" href="{{ URL::to('importacionesv2/ProductoImportacion' .'/'. $value->id . '/edit') }}">Editar</a>
+       </td>
+       
+     </tr>
+     @endforeach
+   </tbody>
+ </table>
 </div>
 
 <script type="text/javascript">

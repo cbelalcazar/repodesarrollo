@@ -69,14 +69,14 @@ class TTiemposTransitoController extends Controller
     public function index()
     {
         //Seteo el titulo en la funcion para mostrar en la vista index
-        $titulo = $this->titulo;
+      $titulo = $this->titulo;
 
     /**
     *Variable datos debe contener la informacion que se quiere mostrar en el formulario generico.
     */
     $datos = Cache::remember('tiemposTransito', 60, function() {
       return TTiemposTransito::with(array('puerto_embarque' => function($query){$query->withTrashed();}),array('tipoCarga' => function($query){$query->withTrashed();}))->get();
-  });
+    });
 
 
     /**
@@ -96,11 +96,11 @@ class TTiemposTransitoController extends Controller
     $url = url($this->strUrlConsulta);
 
     return view('importacionesv2.index', compact('titulo',
-        'datos',
-        'titulosTabla',
-        'campos',
-        'url'));
-}
+      'datos',
+      'titulosTabla',
+      'campos',
+      'url'));
+  }
 
     /**
      * Show the form for creating a new resource.
@@ -110,27 +110,27 @@ class TTiemposTransitoController extends Controller
     public function create()
     {
          //Consulta para mostrar combobox y guarda la consulta en cache para ser reutilizada en max 60 minutos
-        $array = Cache::remember('puertoembarque', 60, function()
-        {
-            return TPuertoEmbarque::all();
-        });
+      $array = Cache::remember('puertoembarque', 60, function()
+      {
+        return TPuertoEmbarque::all();
+      });
 
         //Se crea array con dos posiciones para llenar el combobox
-        $combobox = array();
-        foreach ($array as $key => $value) {
-          $combobox["$value->id"] = $value->puem_nombre;
+      $combobox = array();
+      foreach ($array as $key => $value) {
+        $combobox["$value->id"] = $value->puem_nombre;
       }
 
           //Consulta para mostrar combobox y guarda la consulta en cache para ser reutilizada en max 60 minutos
       $array1 = Cache::remember('tipocarga', 60, function()
       {
         return TTipoCarga::all();
-    });
+      });
 
         //Se crea array con dos posiciones para llenar el combobox
       $combobox1 = array();
       foreach ($array1 as $key => $value) {
-          $combobox1["$value->id"] = $value->tcar_descripcion;
+        $combobox1["$value->id"] = $value->tcar_descripcion;
       }
 
 
@@ -151,7 +151,7 @@ class TTiemposTransitoController extends Controller
       $javascriptImport = true;
 
       return view('importacionesv2.create', compact('titulo','campos' ,'url', 'validator', 'javascriptImport'));
-  }
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -162,15 +162,15 @@ class TTiemposTransitoController extends Controller
     public function store(Request $request)
     {
         //Genera la url de consulta
-        $url = url($this->strUrlConsulta);
+      $url = url($this->strUrlConsulta);
     //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
 
 
-        $validarExistencia = TTiemposTransito::where(array(array('tran_embarcador', '=', "$request->tran_embarcador"), array('tran_puerto_embarque', '=', "$request->tran_puerto_embarque"), array('tran_linea_maritima', '=', "$request->tran_linea_maritima"), array('tran_tipo_carga', '=', "$request->tran_tipo_carga")))->get();
-        if(count($validarExistencia) > 0){
+      $validarExistencia = TTiemposTransito::where(array(array('tran_embarcador', '=', "$request->tran_embarcador"), array('tran_puerto_embarque', '=', "$request->tran_puerto_embarque"), array('tran_linea_maritima', '=', "$request->tran_linea_maritima"), array('tran_tipo_carga', '=', "$request->tran_tipo_carga")))->get();
+      if(count($validarExistencia) > 0){
       //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
-          return Redirect::to("$url/create")
-          ->withErrors('El tiempo de transito que intenta parametrizar ya existe');
+        return Redirect::to("$url/create")
+        ->withErrors('El tiempo de transito que intenta parametrizar ya existe');
       }
     //Crea el registro en la tabla origen mercancia
       $ObjectCrear = new TTiemposTransito;
@@ -185,7 +185,7 @@ class TTiemposTransitoController extends Controller
     //Redirecciona a la pagina de consulta y muestra mensaje
       Session::flash('message', 'El tiempo de transito fue creado exitosamente!');
       return Redirect::to($url);
-  }
+    }
 
     /**
      * Display the specified resource.
@@ -208,32 +208,32 @@ class TTiemposTransitoController extends Controller
     {
 
     //Id del registro que deseamos editar
-        $id = $id;
+      $id = $id;
     //Consulto el registro que deseo editar
-        $objeto = TTiemposTransito::find($id);
+      $objeto = TTiemposTransito::find($id);
 
          //Consulta para mostrar combobox y guarda la consulta en cache para ser reutilizada en max 60 minutos
-        $array = Cache::remember('puertoembarque', 60, function()
-        {
-            return TPuertoEmbarque::all();
-        });
+      $array = Cache::remember('puertoembarque', 60, function()
+      {
+        return TPuertoEmbarque::all();
+      });
 
         //Se crea array con dos posiciones para llenar el combobox
-        $combobox = array();
-        foreach ($array as $key => $value) {
-          $combobox["$value->id"] = $value->puem_nombre;
+      $combobox = array();
+      foreach ($array as $key => $value) {
+        $combobox["$value->id"] = $value->puem_nombre;
       }
 
           //Consulta para mostrar combobox y guarda la consulta en cache para ser reutilizada en max 60 minutos
       $array1 = Cache::remember('tipocarga', 60, function()
       {
         return TTipoCarga::all();
-    });
+      });
 
         //Se crea array con dos posiciones para llenar el combobox
       $combobox1 = array();
       foreach ($array1 as $key => $value) {
-          $combobox1["$value->id"] = $value->tcar_descripcion;
+        $combobox1["$value->id"] = $value->tcar_descripcion;
       }
 
 
@@ -257,7 +257,7 @@ class TTiemposTransitoController extends Controller
       $javascriptImport = true;
 
       return view('importacionesv2.edit', compact('campos', 'url', 'titulo', 'validator', 'route', 'id' ,'objeto', 'javascriptImport'));
-  }
+    }
 
     /**
      * Update the specified resource in storage.
@@ -269,15 +269,15 @@ class TTiemposTransitoController extends Controller
     public function update(Request $request, $id)
     {
         //Genera la url de consulta
-        $url = url($this->strUrlConsulta);
+      $url = url($this->strUrlConsulta);
     //Consulto el registro a editar
-        $ObjectUpdate = TTiemposTransito::find($id);
+      $ObjectUpdate = TTiemposTransito::find($id);
     //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
-        $validarExistencia = TTiemposTransito::where(array(array('tran_embarcador', '=', "$request->tran_embarcador"), array('tran_puerto_embarque', '=', "$request->tran_puerto_embarque"), array('tran_linea_maritima', '=', "$request->tran_linea_maritima"), array('tran_tipo_carga', '=', "$request->tran_tipo_carga")))->first();
-        if(count($validarExistencia) > 0 && $validarExistencia != $ObjectUpdate){
+      $validarExistencia = TTiemposTransito::where(array(array('tran_embarcador', '=', "$request->tran_embarcador"), array('tran_puerto_embarque', '=', "$request->tran_puerto_embarque"), array('tran_linea_maritima', '=', "$request->tran_linea_maritima"), array('tran_tipo_carga', '=', "$request->tran_tipo_carga")))->first();
+      if(count($validarExistencia) > 0 && $validarExistencia != $ObjectUpdate){
       //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
-          return Redirect::to("$url/$id/edit")
-          ->withErrors('El tiempo de transito ya que intenta parametrizar ya existe');
+        return Redirect::to("$url/$id/edit")
+        ->withErrors('El tiempo de transito ya que intenta parametrizar ya existe');
       }
     //Edita el registro en la tabla
       $ObjectUpdate->tran_embarcador = $request->tran_embarcador;
@@ -291,7 +291,7 @@ class TTiemposTransitoController extends Controller
     //Redirecciona a la pagina de consulta y muestra mensaje
       Session::flash('message', 'El tiempo de transito fue actualizado exitosamente!');
       return Redirect::to($url);
-  }
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -302,5 +302,16 @@ class TTiemposTransitoController extends Controller
     public function destroy($id)
     {
         //
+        //Consulto objeto a borrar
+      $ObjectDestroy = TTiemposTransito::find($id);
+    //Borro el objeto
+      $ObjectDestroy->delete();
+    //Obtengo url de redireccion
+      $url = url($this->strUrlConsulta);
+      Cache::forget('tiemposTransito');
+
+    // redirect
+      Session::flash('message', 'El tiempo de transito fue borrado exitosamente!');
+      return Redirect::to($url);
     }
-}
+  }
