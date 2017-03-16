@@ -24,7 +24,7 @@
     @foreach($errors->all() as $key => $value)
     <span class="glyphicon glyphicon-remove red"></span>  {{$value}} <br>
     @endforeach
-    <script> setTimeout(function(){
+    <script> setTimeout(function(){ 
       $( "#mensajealerta" ).fadeToggle("slow");
      }, 5000);</script>
   </div>
@@ -87,11 +87,11 @@
           <div class="input-group add-on">
             {{ Form::select('imp_puerto_embarque', $puertos, null, ['placeholder' => 'Selecciona un puerto de embarque...', 'class' => 'form-control validemos', 'id' => 'imp_puerto_embarque']) }}
             <span class="input-group-addon" data-toggle="modal" data-target="#myModal" onclick="verModel($('#ajaxpuerto').val());">
-              <a class='my-tool-tip' data-toggle="tooltip" data-placement="left" title="Agregar un nuevo puerto">
+              <a class='my-tool-tip' data-toggle="tooltip" data-placement="left" title="Agregar un nuevo puerto"> 
                 <i class='glyphicon glyphicon-plus'></i>
               </a>
-            </span>
-          </div>
+            </span>            
+          </div>          
           <div class="help-block error-help-block" id='error_puerto'></div>
         </div>
       </div>
@@ -107,7 +107,7 @@
           <div class="input-group add-on">
             {{ Form::select('imp_iconterm', $inconterm, null, ['placeholder' => 'Selecciona un inconterm...', 'class' => 'form-control validemos', 'id' => 'imp_iconterm']) }}
             <span class="input-group-addon" data-toggle="modal" data-target="#myModal"  onclick="verModel($('#ajaxinconterm').val());">
-              <a class='my-tool-tip' data-toggle="tooltip" data-placement="left" title="Agregar un nuevo inconterm ">
+              <a class='my-tool-tip' data-toggle="tooltip" data-placement="left" title="Agregar un nuevo inconterm "> 
                 <i class='glyphicon glyphicon-plus'></i>
               </a>
             </span>
@@ -122,9 +122,9 @@
     <!-- Currency trading -->
     <div class="form-group" id="moneda-div">
       {{ Form::label('', "Moneda negociación: (*)") }}
-      {{ Form::select('imp_moneda_negociacion', $moneda, null, ['placeholder' => 'Selecciona una moneda...', 'class' => 'form-control validemos', 'id' => 'imp_moneda_negociacion']) }}
+      {{ Form::select('imp_moneda_negociacion', ['COP' => 'PESOS', 'EUR' => 'EURO', 'USD' => 'DOLARES'], null, ['placeholder' => 'Selecciona una moneda...', 'class' => 'form-control validemos', 'id' => 'imp_moneda_negociacion']) }}
       <div class="help-block error-help-block" id='error_moneda'></div>
-    </div>
+    </div>   
 
 
     <div class="form-group">
@@ -132,7 +132,7 @@
     </div>
     <br><br>
 
-
+    
 
   </div>
   <!-- ************************************ -->
@@ -151,7 +151,7 @@
       <br>
       <div class="help-block error-help-block" id='error_origen'></div>
       {!! Form::select('origenMercancia[]', ($origenMercancia), null, ['multiple'=>true,'class' => 'multi-select','id' => 'my-select', 'style' => 'position: absolute; left: -9999px;']) !!}
-
+      
     </div>
     <!-- End Origins of the merchandise  -->
 
@@ -182,9 +182,9 @@
       <div class="row">
         <div class="col-sm-10">
           {{ Form::text('imp_producto', '', ['class' => 'form-control', 'id' =>  'imp_producto', 'placeholder' =>  'Ingresar la referencia del producto'])}}
-        </div>
+        </div>        
         <button type="button" class="btn btn-primary " id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Procesando orden" onclick="autocompleteprod(this);">Agregar
-        </button>
+        </button>      
       </div>
       <div class="help-block error-help-block has-error" id='error_producto'></div>
       <div class="col-sm-2">
@@ -203,7 +203,7 @@
           <thead>
             <tr>
               <td>Referencia</td>
-              <td>Requiere declaracion</td>
+              <td>Requiere declaracion</td>          
               <td>Requiere Registro</td>
               <td>Eliminar</td>
             </tr>
@@ -223,7 +223,7 @@
 
     <!-- end table of related products -->
 
-  </div>
+  </div>  
   <!-- ************************************ -->
   <!-- End Associate products                         -->
   <!-- ************************************ -->
@@ -255,17 +255,17 @@
       <div class="row">
         <div class="col-sm-4">
           <label  class="control-label">Valor proforma: (*)</label>
-          {{ Form::number('val_proforma', '', ['class' => 'form-control', 'id' =>  'val_proforma', 'placeholder' =>  'Ingresar el valor de la proforma','min' => '0','max' => '999999999','step' => '0.01'])}}
+          {{ Form::number('val_proforma', '', ['class' => 'form-control', 'id' =>  'val_proforma', 'placeholder' =>  'Ingresar el valor de la proforma','min' => '1','max' => '999999999','step' => '0.01'])}}
         </div>
         <div class="col-sm-4">
           <label  class="control-label">Proforma principal: (*)</label>
           <div class="form-group">
             {{ Form::checkbox("proforma_principal", '1', null,  ['class' => 'field', 'id' => 'proforma_principal']) }}
           </div>
-        </div>
+        </div>     
         <div class="col-sm-4">
           <button type="button" class="btn btn-primary " id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Procesando proforma" onclick="tablaproforma(this);">Agregar
-          </button>
+          </button>      
         </div>
       </div>
       <div class="form-group">
@@ -285,7 +285,7 @@
             <thead>
               <tr>
                 <td>No. Proforma</td>
-                <td>Fecha creacion:</td>
+                <td>Fecha creacion:</td>          
                 <td>Fecha entrega:</td>
                 <td>Valor proforma:</td>
                 <td>Proforma principal:</td>
@@ -308,7 +308,7 @@
     </div>
     <br><br>
 
-  </div>
+  </div>  
   <!-- ************************************ -->
   <!-- End Proforma                         -->
   <!-- ************************************ -->
@@ -332,7 +332,7 @@
       {{ Form::text("imp_fecha_entrega_total", old("imp_fecha_entrega_total"), ['class' => 'form-control', 'id' =>  'imp_fecha_entrega_total', 'placeholder' =>  'Ingresar fecha de entrega total de la mercancia', 'readonly' =>  'readonly']) }}
     </div>
     <!-- End Delivery date total merchandise -->
-
+    
 
 
     <div class="form-group">
@@ -342,9 +342,9 @@
     </div>
     <br><br>
 
+    
 
-
-  </div>
+  </div>  
   <!-- ************************************ -->
   <!-- End Finalize creation                -->
   <!-- ************************************ -->

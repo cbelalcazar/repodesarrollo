@@ -100,19 +100,18 @@ class TImportacionController extends Controller
             $consecutivo = intval($numero[0])+1;
 
         }
-        
 
-        $imp_consecutivo = "$consecutivo/" .$year; 
+
+        $imp_consecutivo = "$consecutivo/" .$year;
         //retorna la informacion a la vista create
-        return view('importacionesv2.importacionTemplate.createImportacion', 
+        return view('importacionesv2.importacionTemplate.createImportacion',
             compact('titulo',
-                'url',  
-                'validator', 
-                'puertos', 
+                'url',
+                'validator',
+                'puertos',
                 'inconterm',
                 'imp_consecutivo',
-                'origenMercancia',
-                'moneda'));
+                'origenMercancia'));
     }
 
     /**
@@ -155,14 +154,14 @@ class TImportacionController extends Controller
 
          #Crea todas las proformas asociadas en la tabla
         $cantidadProformas = intval($request->tablaproformaguardar);
-        for ($i=1; $i < $cantidadProformas+1 ; $i++) { 
+        for ($i=1; $i < $cantidadProformas+1 ; $i++) {
             $valorprof = $i."-valorprof";
             if(strlen(round($request->$valorprof,0)) > 10){
             //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
                 return Redirect::to("importacionesv2/Importacion/create")
                 ->withErrors('El valor de la proforma no puede tener mas de 10 numeros')->withInput();
             }
-            
+
         }
         DB::beginTransaction();
         //Crea el registro en la tabla importacion
@@ -172,29 +171,29 @@ class TImportacionController extends Controller
         $ObjectCrear->imp_puerto_embarque = Input::get('imp_puerto_embarque');
         $ObjectCrear->imp_iconterm = Input::get('imp_iconterm');
         $ObjectCrear->imp_moneda_negociacion = Input::get('imp_moneda_negociacion');
-        if($request->imp_observaciones == ""){ 
+        if($request->imp_observaciones == ""){
             $ObjectCrear->imp_observaciones = null;
         }else{
-            $ObjectCrear->imp_observaciones = strtoupper(Input::get('imp_observaciones')); 
+            $ObjectCrear->imp_observaciones = strtoupper(Input::get('imp_observaciones'));
         }
-        if($request->imp_fecha_entrega_total == ""){ 
+        if($request->imp_fecha_entrega_total == ""){
             $ObjectCrear->imp_fecha_entrega_total = null;
         }else{
            $date = Carbon::parse(Input::get('imp_fecha_entrega_total'))->format('Y-m-d');
-           $ObjectCrear->imp_fecha_entrega_total = $date ; 
+           $ObjectCrear->imp_fecha_entrega_total = $date ;
        }
        $ObjectCrear->imp_estado_proceso = 1;
        $ObjectCrear->save();
        #Si la creacion de la importacion genera error lo retorna
        if(!$ObjectCrear->id){
         DB::rollBack();
-        App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema [error 201]');        
+        App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema [error 201]');
     }else{
         #En caso de no existir error
         #crea todos los productos realcionados en la tabla
         $cantidad = intval($request->tablaGuardar);
         $banderaProducto = true;
-        for ($i=1; $i < $cantidad+1; $i++) { 
+        for ($i=1; $i < $cantidad+1; $i++) {
 
             if($request->$i != ""){
                 $alerta = 0;
@@ -219,10 +218,10 @@ class TImportacionController extends Controller
                 $strvariable->pdim_alerta =$alerta;
                 $strvariable->save();
 
-                if(!$strvariable->id){                    
+                if(!$strvariable->id){
                     DB::rollBack();
                     App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema [error 202]');
-                }   
+                }
 
 
             }
@@ -230,22 +229,22 @@ class TImportacionController extends Controller
         }
         #Crea todos los origenes de la mercancia asociados en la tabla
         $cantidadOrigenes = count($request->origenMercancia);
-        for ($i=0; $i < $cantidadOrigenes ; $i++) { 
+        for ($i=0; $i < $cantidadOrigenes ; $i++) {
          $strorimerc = $i."variable";
          $strorimerc = new TOrigenMercanciaImportacion;
          $strorimerc->omeim_origen_mercancia = $request->origenMercancia[$i];
          $strorimerc->omeim_importacion = $ObjectCrear->id;
          $strorimerc->save();
-         if(!$strorimerc->id){                    
+         if(!$strorimerc->id){
             DB::rollBack();
             App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema [error 203]');
-        }   
+        }
     }
 
-    
-    for ($i=1; $i < $cantidadProformas+1 ; $i++) { 
 
-        $strproforma = $i."objproforma";        
+    for ($i=1; $i < $cantidadProformas+1 ; $i++) {
+
+        $strproforma = $i."objproforma";
         $noprof = $i."-noprof";
         $creaprof = $i."-creaprof";
         $entregaprof = $i."-entregaprof";
@@ -263,23 +262,23 @@ class TImportacionController extends Controller
             $strproforma->prof_valor_proforma = round($request->$valorprof,2);
             $strproforma->prof_principal = intval($request->$princprof);
             $strproforma->save();
-            if(!$strproforma->id){                    
+            if(!$strproforma->id){
                 DB::rollBack();
                 App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema [error 204]');
             }
 
-        }   
+        }
     }
 }
 
 
 DB::commit();
 
-     #Borra la cache de consulta 
+     #Borra la cache de consulta
 Cache::forget('importacion');
         //Redirecciona a la pagina de creacion y muestra mensaje
 Session::flash('message', 'El proceso de importación fue creado exitosamente!');
-return Redirect::to($urlConsulta); 
+return Redirect::to($urlConsulta);
 
 
 }
@@ -298,7 +297,7 @@ return Redirect::to($urlConsulta);
         // dd($object);
         $objeto2 =TOrigenMercanciaImportacion::with('origenes')->where('omeim_importacion','=', "$id" )->get();
         $objeto3 = TProductoImportacion::select('pdim_producto', 'id')->where('pdim_importacion','=',"$id")->get();
-        $objeto4 = TProforma::where('prof_importacion','=', intval($id))->get();       
+        $objeto4 = TProforma::where('prof_importacion','=', intval($id))->get();
 
         $objeto5 = TEmbarqueImportacion::with('embarcador', 'lineamaritima', 'tipoCarga','aduana','transportador')->where('emim_importacion','=', intval($id))->get();
         $objeto6 = TPagoImportacion::where('pag_importacion', '=', "$id")->get();
@@ -314,13 +313,13 @@ return Redirect::to($urlConsulta);
             ->table('item')
             ->select('referenciaItem', 'descripcionItem')
             ->where('referenciaItem', 'LIKE', "%".$referenciaProd."%")
-            ->get();           
+            ->get();
             $descripcion = $queries[0]->referenciaItem." -- ".$queries[0]->descripcionItem;
             array_push($unProducto, $descripcion);
             array_push($tablaProductos, $unProducto);
 
         }
-        return view('importacionesv2.importacionTemplate.showImportacion', 
+        return view('importacionesv2.importacionTemplate.showImportacion',
             compact('object',
                 'titulo',
                 'tablaProductos',
@@ -371,7 +370,7 @@ return Redirect::to($urlConsulta);
             ->table('item')
             ->select('referenciaItem', 'descripcionItem')
             ->where('referenciaItem', 'LIKE', "%".$referenciaProd."%")
-            ->get();           
+            ->get();
             $descripcion = $queries[0]->referenciaItem." -- ".$queries[0]->descripcionItem;
             array_push($unProducto, $descripcion);
             if($prodLocal->prod_req_declaracion_anticipado == 1){
@@ -395,7 +394,7 @@ return Redirect::to($urlConsulta);
         #Crea un array con las proformas asociadas a la importacion para mostrarlas en una tabla
         $tablaProformas = array();
         foreach ($objeto4 as $key => $value) {
-            $unaProforma = array();          
+            $unaProforma = array();
             array_push($unaProforma, $value->prof_numero);
             array_push($unaProforma, $value->prof_fecha_creacion);
             array_push($unaProforma, $value->prof_fecha_entrega);
@@ -419,17 +418,17 @@ return Redirect::to($urlConsulta);
         #Crea las urls de borrar producto y borrar proforma por ajax basado en el name de la ruta
         $urlBorrar = route('borrarProductoImportacion');
         $urlBorrarProforma = route('borrarProformaImportacion');
-        #Retorna la informacion a la vista editar       
-        return view('importacionesv2.importacionTemplate.editImportacion', 
+        #Retorna la informacion a la vista editar
+        return view('importacionesv2.importacionTemplate.editImportacion',
             compact('campos',
                'url',
-               'titulo', 
-               'validator', 
-               'route', 
+               'titulo',
+               'validator',
+               'route',
                'id',
                'objeto',
                'seleccionados',
-               'puertos', 
+               'puertos',
                'inconterm',
                'origenMercancia',
                'tablaProductos',
@@ -459,14 +458,14 @@ return Redirect::to($urlConsulta);
         }
          #Crea todas las proformas asociadas en la tabla
         $cantidad1 = intval($request->tablaproformaguardar);
-        for ($i=1; $i < $cantidad1+1 ; $i++) { 
+        for ($i=1; $i < $cantidad1+1 ; $i++) {
             $valorprof = $i."-valorprof";
             if(count("$request->$valorprof") > 10){
             //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
                 return Redirect::to("importacionesv2/Importacion/create")
                 ->withErrors('Debe el valor de la proforma no puede tener mas de 10 numeros')->withInput();
             }
-            
+
         }
         //Genera la url de consulta
         $url = route('consultaFiltros');
@@ -485,9 +484,9 @@ return Redirect::to($urlConsulta);
 
         #Obtiene los productos que debe guardar de la tabla productos
         $cantidad = intval($request->tablaGuardar);
-        
+
         if($cantidad != ""){
-            for ($i=1; $i < $cantidad+1; $i++) { 
+            for ($i=1; $i < $cantidad+1; $i++) {
                 $str4 = $i.'-idproducto';
                 if($request->$i != "" && $request->$str4 == ""){
                     $alerta = 0;
@@ -512,19 +511,19 @@ return Redirect::to($urlConsulta);
                     $strvariable->pdim_alerta =$alerta;
                     $strvariable->save();
                 }
-            }    
+            }
         }
         #Obtiene las proformas que va a guardar de la tabla proformas
-        
+
         if($cantidad1 != ""){
-            for ($i=1; $i < $cantidad1+1 ; $i++) { 
+            for ($i=1; $i < $cantidad1+1 ; $i++) {
                 $str5 = $i.'-idproforma';
                 $noprof = $i."-noprof";
                 if($request->$str5 == "" && $request->$noprof != "")
                 {
                    $strproforma = $i."objproforma";
                    $strproforma = new TProforma;
-                   $strproforma->prof_importacion = $id;                   
+                   $strproforma->prof_importacion = $id;
                    $creaprof = $i."-creaprof";
                    $entregaprof = $i."-entregaprof";
                    $valorprof = $i."-valorprof";
@@ -765,7 +764,7 @@ return "error";
         extract($combos);
         //Genera url completa de consulta
         $url = route("consultaFiltros");
-        $url2 = route("Importacion.store");        
+        $url2 = route("Importacion.store");
         $url3 = route("Embarque.store");
         $url4 = route("Pagos.store");
         $url5 = route("NacionalizacionCosteo.store");
