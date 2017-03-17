@@ -4,6 +4,7 @@ namespace App\Models\Importacionesv2;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Auditable;
 
 /**
  * Class TOrigenMercanciaImportacion
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class TOrigenMercanciaImportacion extends Model
 {
     use SoftDeletes;
+    use Auditable;
 
     protected $table = 't_origen_mercancia_importacion';
 

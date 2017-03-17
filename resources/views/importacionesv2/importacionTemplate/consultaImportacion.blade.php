@@ -94,7 +94,7 @@
       
         @if($value['nacionalizacionimportacion'] == null && $value['embarqueimportacion'] == null)
         <td> <a class="btn btn-small btn-default glyphicon glyphicon-remove-sign disabled" href="#"></a></td>
-        @elseif($value->nacionalizacionimportacion == null && $value->embarqueimportacion != null)
+        @elseif($value->nacionalizacionimportacion == null && $value->embarqueimportacion != null && $value->pagosimportacion != null)
         <td> <a class="btn btn-small btn-danger glyphicon glyphicon-plus" href="{{route('createNC',['id' => $value->id])}}"'></a></td>
         @elseif($value->nacionalizacionimportacion != null)
         <td> <a class="btn btn-small btn-success glyphicon glyphicon-ok" href="{{ URL::to("$url5/" . $value->nacionalizacionimportacion->id . '/edit') }}"></a></td>
@@ -130,4 +130,5 @@ function crearEmbarque(id, url){
 }
 
 </script>
+
 @endsection

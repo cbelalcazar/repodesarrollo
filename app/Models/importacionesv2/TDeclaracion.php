@@ -4,6 +4,7 @@ namespace App\Models\Importacionesv2;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Auditable;
 
 /**
  * Class TDeclaracion
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class TDeclaracion extends Model
 {
     use SoftDeletes;
+    use Auditable;
 
     protected $table = 't_declaracion';
 

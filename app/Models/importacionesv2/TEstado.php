@@ -4,6 +4,7 @@ namespace App\Models\Importacionesv2;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Auditable;
 
 /**
  * Class TEstado
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class TEstado extends Model
 {
-
+    use Auditable;
     protected $table = 't_estados';
 
     public $timestamps = true;

@@ -18,6 +18,8 @@
  <!-- General errors in form -->
  <!-- ************************************ -->
 
+
+
  <div class="form-group">
    @if ($errors->all())
    <div class="alert alert-danger" id="mensajealerta">
