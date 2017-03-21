@@ -22,20 +22,16 @@
   <div class="row">
     <div class="col-xs-4">
       {{ Form::label('', "Consulta por puerto") }}
-      {{ Form::select('imp_puerto_embarque', $puertos, null, ['placeholder' => 'Selecciona una moneda...', 'class' => 'form-control']) }}
+      {{ Form::select('imp_puerto_embarque', $puertos, null, ['placeholder' => 'Selecciona una puerto de embarque...', 'class' => 'form-control']) }}
     </div>
     <div class="col-xs-4">
       {{ Form::label('', "Consulta por estado") }}
-      {{ Form::select('imp_estado_proceso', $estados, null, ['placeholder' => 'Selecciona una moneda...', 'class' => 'form-control']) }}
+      {{ Form::select('imp_estado_proceso', $estados, null, ['placeholder' => 'Selecciona un estado...', 'class' => 'form-control']) }}
     </div>
     <div class="col-xs-4">
       {{ Form::label('', "Consulta por consecutivo") }}
       {{ Form::text("imp_consecutivo", old("imp_consecutivo"), ['class' => 'form-control', 'id' =>  'imp_consecutivo', 'placeholder' =>  'Ingresar el consecutivo de creacion','maxlength' => '250']) }}
-    </div><!-- 
-    <div class="col-xs-4"><br>
-      {{ Form::label('', "Consulta por numero de proforma") }}
-      {{ Form::text("imp_proforma", old("imp_proforma"), ['class' => 'form-control', 'id' =>  'imp_proforma', 'placeholder' =>  'Ingresar el consecutivo de creacion','maxlength' => '250']) }}
-    </div> -->
+    </div>
     <div class="col-xs-12"><br>
     {{ Form::open(['action' => ['Importacionesv2\TImportacionController@autocomplete'], 'method' => 'post']) }}
     {{ Form::label('', "Busqueda de proveedor") }}

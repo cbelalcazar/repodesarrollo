@@ -40,7 +40,7 @@
   @if (Session::has('message'))
   <div class="alert alert-info">{{ Session::get('message') }}</div>
   @endif
-  <table id="example" class="display" cellspacing="0" width="100%">
+  <table class="table">
     <!-- Aqui se generan los titulos de la tabla-->
     <thead>
       <tr>
@@ -52,28 +52,32 @@
     <tbody>
       <!-- Aqui se generan los registros de la tabla-->
       @foreach($datos as $key => $value)
-      <tr>
+      @if($value['importacion'][0]->embarqueimportacion != null)
+      <br>
+      @if(\Carbon\Carbon::parse($value->pdim_fech_req_declaracion_anticipado)->addDays(11)->diffInDays(\Carbon\Carbon::now()) > 8)
+      <tr class="warning">
+      @elseif(\Carbon\Carbon::parse($value->pdim_fech_req_declaracion_anticipado)->addDays(11)->diffInDays(\Carbon\Carbon::now()) >= 11)
+      <tr class="danger">
+      @else
+      <tr class="info">
+      @endif
         <td>{{$value->producto->prod_referencia}}</td>
         <td>{{$value->importacion[0]->imp_consecutivo}}</td>
+        <td>{{$value->pdim_fech_req_declaracion_anticipado}}</td>
+        <td>{{$value->pdim_fech_requ_registro_importacion}}</td>
         @if($value->pdim_alerta == 1)
         <td>SI</td>
         @else
         <td>NO</td>
         @endif
+        <td>{{\Carbon\Carbon::parse($value->pdim_fech_req_declaracion_anticipado)->addDays(11)->diffInDays(\Carbon\Carbon::now())}}</td>
         <td> <a class="btn btn-small btn-danger glyphicon glyphicon-plus" href="{{route('ProductoImportacion.edit',['id' => $value->id])}}"'></a></td>
       </tr>
+      @endif
       @endforeach
     </tbody>
   </table>
 </div>
 
-<script type="text/javascript">
-  $(document).ready( function () {
-    $('#example').DataTable({
-      responsive: true,
-    });
-  } );
-
-</script> 
 
 @endsection

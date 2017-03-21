@@ -203,15 +203,16 @@ $ObjectCrear->save();
 if ($ObjectCrear->id) {
   $objImportacion = TImportacion::find($request->naco_importacion);
 
-  if ($request->naco_fecha_retiro_puert && $objImportacion->imp_estado_proceso != 4 && $objImportacion->imp_estado_proceso != 5) {
-    $objImportacion->imp_estado_proceso = 3;
-  }
-  if ($request->naco_fecha_llegada_be && $request->naco_fecha_retiro_puert && $objImportacion->imp_estado_proceso != 5) {
-    $objImportacion->imp_estado_proceso = 4;
-  }
-  if ($request->naco_fecha_envio_comex && $request->naco_fecha_retiro_puert && $request->naco_fecha_llegada_be && $request->naco_fecha_recep_list_empaq && $request->naco_fecha_envi_liqu_costeo && $request->naco_fecha_entrada_sistema && $request->naco_factor_dolar_tasa && $request->naco_factor_dolar_porc && $request->naco_factor_logist_tasa && $request->naco_factor_logist_porc && $request->naco_factor_arancel_porc ) {
-    $objImportacion->imp_estado_proceso = 5;
-  }
+  if ($request->naco_fecha_retiro_puert && $objImportacion->imp_estado_proceso != 4 && $objImportacion->imp_estado_proceso != 5 && $objImportacion->imp_estado_proceso != 6) {
+  $objImportacion->imp_estado_proceso = 3;
+}
+
+if ($request->naco_fecha_llegada_be && $request->naco_fecha_retiro_puert && $objImportacion->imp_estado_proceso != 6 && $objImportacion->imp_estado_proceso != 5 ) {
+  $objImportacion->imp_estado_proceso = 4;
+}
+if ($request->naco_fecha_envio_comex && $request->naco_fecha_retiro_puert && $request->naco_fecha_llegada_be && $request->naco_fecha_recep_list_empaq && $request->naco_fecha_envi_liqu_costeo && $request->naco_fecha_entrada_sistema && $request->naco_factor_dolar_tasa && $request->naco_factor_dolar_porc && $request->naco_factor_logist_tasa && $request->naco_factor_logist_porc && $request->naco_factor_arancel_porc && $objImportacion->imp_estado_proceso != 6 ) {
+  $objImportacion->imp_estado_proceso = 5;
+}
 
   $objImportacion->save();
 
@@ -441,13 +442,14 @@ $contenedoresBorrar = TDeclaracion::where('decl_nacionalizacion','=', "$ObjectEd
 
 $objImportacion = TImportacion::find($request->naco_importacion);
 
-if ($request->naco_fecha_retiro_puert && $objImportacion->imp_estado_proceso != 4 && $objImportacion->imp_estado_proceso != 5) {
+if ($request->naco_fecha_retiro_puert && $objImportacion->imp_estado_proceso != 4 && $objImportacion->imp_estado_proceso != 5 && $objImportacion->imp_estado_proceso != 6) {
   $objImportacion->imp_estado_proceso = 3;
 }
-if ($request->naco_fecha_llegada_be && $request->naco_fecha_retiro_puert && $objImportacion->imp_estado_proceso != 5) {
+
+if ($request->naco_fecha_llegada_be && $request->naco_fecha_retiro_puert && $objImportacion->imp_estado_proceso != 6 && $objImportacion->imp_estado_proceso != 5 ) {
   $objImportacion->imp_estado_proceso = 4;
 }
-if ($request->naco_fecha_envio_comex && $request->naco_fecha_retiro_puert && $request->naco_fecha_llegada_be && $request->naco_fecha_recep_list_empaq && $request->naco_fecha_envi_liqu_costeo && $request->naco_fecha_entrada_sistema && $request->naco_factor_dolar_tasa && $request->naco_factor_dolar_porc && $request->naco_factor_logist_tasa && $request->naco_factor_logist_porc && $request->naco_factor_arancel_porc ) {
+if ($request->naco_fecha_envio_comex && $request->naco_fecha_retiro_puert && $request->naco_fecha_llegada_be && $request->naco_fecha_recep_list_empaq && $request->naco_fecha_envi_liqu_costeo && $request->naco_fecha_entrada_sistema && $request->naco_factor_dolar_tasa && $request->naco_factor_dolar_porc && $request->naco_factor_logist_tasa && $request->naco_factor_logist_porc && $request->naco_factor_arancel_porc && $objImportacion->imp_estado_proceso != 6 ) {
   $objImportacion->imp_estado_proceso = 5;
 }
 

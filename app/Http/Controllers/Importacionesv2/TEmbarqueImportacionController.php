@@ -8,6 +8,7 @@ use App\Models\Importacionesv2\TImportacion;
 use App\Models\Importacionesv2\TTipoContenedor;
 use App\Models\Importacionesv2\TEmbarqueImportacion;
 use App\Models\Importacionesv2\TContenedorEmbarque;
+use App\Models\Importacionesv2\TProductoImportacion;
 use \Cache;
 use Validator;
 use Carbon\Carbon;
@@ -234,6 +235,8 @@ class TEmbarqueImportacionController extends Controller
        $objImportacion = TImportacion::find($request->emim_importacion);
        $objImportacion->imp_estado_proceso = 2;
        $objImportacion->save();
+
+         $objProductosImportacion = TProductoImportacion::where('pdim_importacion','=', $request->emim_importacion)->update(['pdim_fech_req_declaracion_anticipado' => Carbon::now()->format('Y-m-d') , 'pdim_fech_requ_registro_importacion'=> Carbon::now()->format('Y-m-d') ]);
    }
 
    Session::flash('message', 'El proceso de embarque fue creado exitosamente!');

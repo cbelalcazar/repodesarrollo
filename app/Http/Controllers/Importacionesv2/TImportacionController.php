@@ -294,7 +294,6 @@ return Redirect::to($urlConsulta);
         //
         $titulo = "CERRAR ORDEN DE IMPORTACION";
         $object = TImportacion::with('estado','proveedor','puerto_embarque','origenMercancia','embarqueimportacion','pagosimportacion','nacionalizacionimportacion', 'inconterm')->where('t_importacion.id', "=", $id)->first();
-        // dd($object);
         $objeto2 =TOrigenMercanciaImportacion::with('origenes')->where('omeim_importacion','=', "$id" )->get();
         $objeto3 = TProductoImportacion::select('pdim_producto', 'id')->where('pdim_importacion','=',"$id")->get();
         $objeto4 = TProforma::where('prof_importacion','=', intval($id))->get();
@@ -302,7 +301,6 @@ return Redirect::to($urlConsulta);
         $objeto5 = TEmbarqueImportacion::with('embarcador', 'lineamaritima', 'tipoCarga','aduana','transportador')->where('emim_importacion','=', intval($id))->get();
         $objeto6 = TPagoImportacion::where('pag_importacion', '=', "$id")->get();
         $objeto7 = TNacionalizacionImportacion::where('naco_importacion', '=', "$id")->get();
-        // dd($objeto7);
         #Crea un array con la informacion necesaria para mostrar en una tabla los productos asociados a la orden de importacion
         $tablaProductos = array();
         foreach ($objeto3 as $key => $value) {
@@ -556,7 +554,6 @@ return Redirect::to($urlConsulta);
     foreach ($request->origenMercancia as $key => $value) {
         $flight = TOrigenMercanciaImportacion::firstOrCreate(['omeim_importacion' => $id,
             'omeim_origen_mercancia' => $value]);
-        echo "<pre>";print_r($flight);
     }
         //Redirecciona a la pagina de consulta y muestra mensaje
     Session::flash('message', 'El proceso de importacion fue editado exitosamente!');
@@ -791,14 +788,13 @@ return "error";
         *Variable titulosTabla debe contener un array con los titulos de la tabla.
         *La cantidad de titulos debe corresponder a la cantidad de columnas que trae la consulta.
         */
-     $titulosTabla =  array('Referencia', 'Consecutivo importacion',  'Alerta activa', 'Cerrar alertas');
+     $titulosTabla =  array('Referencia', 'Consecutivo importacion', 'Fecha declaracion anticipada', 'Fecha registro importacion',  'Alerta activa', 'Dias desde apertura', 'Cerrar alertas');
 
         //Genera url completa de consulta
      $url = route("consultaAlertas");
         #Retorna la informacion a la vista
 
-     $datos = TProductoImportacion::with('importacion')->with('producto')->where('pdim_alerta','=','1')->get();
-
+     $datos = TProductoImportacion::with('importacion.embarqueimportacion')->with('producto')->where('pdim_alerta','=','1')->get();
 
      return view('importacionesv2.importacionTemplate.consultaAlertas', compact('titulo',
         'datos',

@@ -1,4 +1,27 @@
 jQuery(document).ready(function($) {
+
+
+  $('#naco_factor_arancel_porc').focusin(function(event) {
+    if($('#naco_factor_dolar_tasa').val() == ""){
+      alert("Debes ingresar el factor total para realizar el calculo del factor arancel");
+      $('#naco_factor_dolar_tasa').focus();
+    }else if($('#naco_factor_logist_tasa').val() == ""){
+      alert("Debes ingresar el factor logistico para realizar el calculo del factor arancel");
+      $('#naco_factor_logist_tasa').focus();
+    }else if($('#naco_factor_logist_tasa').val() > $('#naco_factor_dolar_tasa').val()){
+      $('#naco_factor_logist_tasa').val("");
+      $('#naco_factor_logist_tasa').focus();
+      alert('El factor logistico debe ser menor al factor total');
+
+    }else if($('#naco_factor_logist_tasa').val() < $('#naco_factor_dolar_tasa').val()){
+      $('#naco_factor_arancel_porc').val($('#naco_factor_dolar_tasa').val() - $('#naco_factor_logist_tasa').val());
+    }
+    else{
+      $('#naco_factor_logist_tasa').focus();
+    }
+
+
+  });
 	//Valida los campos cuando pierden el foco
 	$('#ocultar3').hide();
 
