@@ -298,8 +298,9 @@
   <input type="hidden" name="infoTipoContenedor" id="infoTipoContenedor" value="{{ $contenedores }}">
   <input type="hidden" name="tablaContenedorGuardar" id="tablaContenedorGuardar" value="{{$cantidadContenedores}}">
   <div class="form-group">
+  @if($hasPerm == 1)
     {{ Form::submit('Editar', array('class' => 'btn btn-primary pull-right', 'id' => 'finalizar1')) }}
-
+  @endif
     <a class="btn btn-default pull-left" id="atras4" role="button"><span class="glyphicon glyphicon-chevron-left">   Atras</span></a>
   </div>
   <br><br>

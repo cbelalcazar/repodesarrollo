@@ -8,6 +8,8 @@ use Redirect;
 use Carbon\Carbon;
 use App\Models\Importacionesv2\TPagoImportacion;
 use Illuminate\Http\Request;
+use Auth;
+use App\Models\Importacionesv2\TPermisosImp;
 
 class TPagoImportacionController extends Controller
 {
@@ -33,6 +35,11 @@ class TPagoImportacionController extends Controller
     'trm_liquidacion_factura.required' => 'Favor ingresar el valor trm liquidacion factura',
     'pag_fecha_factura.required' => 'Favor ingresar la fecha de la factura',
     'pag_fecha_envio_contabilidad.required' => 'Favor ingresar la fecha de envio a contabilidad');
+
+    public function __construct()
+    {
+        $this->middleware('ImpMid')->only([ 'update']);
+    }
 
     /**
      * Display a listing of the resource.
@@ -145,13 +152,26 @@ class TPagoImportacionController extends Controller
         //correspondiente a este controlador
         $route = 'Pagos.update';
         $urlBorrar = "";
+        $hasPerm = $this->permisos();
+
         return view('importacionesv2.PagoTemplate.editPago', 
             compact('url',
                'titulo', 
                'route', 
                'id',
                'objeto',
-               'urlBorrar'));
+               'urlBorrar',
+               'hasPerm'));
+    }
+
+    public function permisos(){
+        $usuario = Auth::user();
+        $permisos = TPermisosImp::where('perm_cedula', '=',"$usuario->idTerceroUsuario")->first();
+        if($permisos == null || $permisos->perm_cargo == 2){
+            return 0;
+        }elseif($permisos->perm_cargo == 1){
+           return 1;
+        }
     }
 
     /**

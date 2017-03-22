@@ -25,6 +25,7 @@ use App\Models\Importacionesv2\TEmbarqueImportacion;
 use App\Models\Importacionesv2\TPagoImportacion;
 use App\Models\Importacionesv2\TNacionalizacionImportacion;
 use Carbon\Carbon;
+use App\Models\Importacionesv2\TPermisosImp;
 
 /**
  * Controlador TImportacionController
@@ -57,6 +58,11 @@ class TImportacionController extends Controller
     );
   //Name de la url de consulta la uso para no redundar este string en mis funciones
   public $strUrlConsulta = 'importacionesv2/Importacion';
+
+    public function __construct()
+    {
+        $this->middleware('ImpMid')->only(['store', 'update', 'cerrarOrden']);
+    }
     /**
     * Display a listing of the resource.
     *
@@ -179,13 +185,13 @@ class TImportacionController extends Controller
         if($request->imp_fecha_entrega_total == ""){
             $ObjectCrear->imp_fecha_entrega_total = null;
         }else{
-           $date = Carbon::parse(Input::get('imp_fecha_entrega_total'))->format('Y-m-d');
-           $ObjectCrear->imp_fecha_entrega_total = $date ;
-       }
-       $ObjectCrear->imp_estado_proceso = 1;
-       $ObjectCrear->save();
+         $date = Carbon::parse(Input::get('imp_fecha_entrega_total'))->format('Y-m-d');
+         $ObjectCrear->imp_fecha_entrega_total = $date ;
+     }
+     $ObjectCrear->imp_estado_proceso = 1;
+     $ObjectCrear->save();
        #Si la creacion de la importacion genera error lo retorna
-       if(!$ObjectCrear->id){
+     if(!$ObjectCrear->id){
         DB::rollBack();
         App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema [error 201]');
     }else{
@@ -230,12 +236,12 @@ class TImportacionController extends Controller
         #Crea todos los origenes de la mercancia asociados en la tabla
         $cantidadOrigenes = count($request->origenMercancia);
         for ($i=0; $i < $cantidadOrigenes ; $i++) {
-         $strorimerc = $i."variable";
-         $strorimerc = new TOrigenMercanciaImportacion;
-         $strorimerc->omeim_origen_mercancia = $request->origenMercancia[$i];
-         $strorimerc->omeim_importacion = $ObjectCrear->id;
-         $strorimerc->save();
-         if(!$strorimerc->id){
+           $strorimerc = $i."variable";
+           $strorimerc = new TOrigenMercanciaImportacion;
+           $strorimerc->omeim_origen_mercancia = $request->origenMercancia[$i];
+           $strorimerc->omeim_importacion = $ObjectCrear->id;
+           $strorimerc->save();
+           if(!$strorimerc->id){
             DB::rollBack();
             App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema [error 203]');
         }
@@ -417,26 +423,39 @@ return Redirect::to($urlConsulta);
         $urlBorrar = route('borrarProductoImportacion');
         $urlBorrarProforma = route('borrarProformaImportacion');
         #Retorna la informacion a la vista editar
+        $hasPerm = $this->permisos();
         return view('importacionesv2.importacionTemplate.editImportacion',
             compact('campos',
-               'url',
-               'titulo',
-               'validator',
-               'route',
-               'id',
-               'objeto',
-               'seleccionados',
-               'puertos',
-               'inconterm',
-               'origenMercancia',
-               'tablaProductos',
-               'cantidadProductos',
-               'tablaProformas',
-               'cantidadProformas',
-               'urlBorrar',
-               'urlBorrarProforma',
-               'moneda'));
+             'url',
+             'titulo',
+             'validator',
+             'route',
+             'id',
+             'objeto',
+             'seleccionados',
+             'puertos',
+             'inconterm',
+             'origenMercancia',
+             'tablaProductos',
+             'cantidadProductos',
+             'tablaProformas',
+             'cantidadProformas',
+             'urlBorrar',
+             'urlBorrarProforma',
+             'moneda',
+             'hasPerm'));
     }
+
+     public function permisos(){
+        $usuario = Auth::user();
+        $permisos = TPermisosImp::where('perm_cedula', '=',"$usuario->idTerceroUsuario")->first();
+        if($permisos == null || $permisos->perm_cargo == 2){
+            return 0;
+        }elseif($permisos->perm_cargo == 1){
+           return 1;
+        }
+    }
+
 
     /**
     * Update the specified resource in storage.
@@ -519,32 +538,32 @@ return Redirect::to($urlConsulta);
                 $noprof = $i."-noprof";
                 if($request->$str5 == "" && $request->$noprof != "")
                 {
-                   $strproforma = $i."objproforma";
-                   $strproforma = new TProforma;
-                   $strproforma->prof_importacion = $id;
-                   $creaprof = $i."-creaprof";
-                   $entregaprof = $i."-entregaprof";
-                   $valorprof = $i."-valorprof";
-                   $princprof = $i."-princprof";
-                   $strproforma->prof_numero = $request->$noprof;
-                   $date1 = Carbon::parse($request->$creaprof)->format('Y-m-d');
-                   $strproforma->prof_fecha_creacion = $date1;
-                   $date2 = Carbon::parse($request->$entregaprof)->format('Y-m-d');
-                   $strproforma->prof_fecha_entrega = $date2;
-                   $strproforma->prof_valor_proforma = $request->$valorprof;
-                   $strproforma->prof_principal = intval($request->$princprof);
-                   $strproforma->save();
-               }
+                 $strproforma = $i."objproforma";
+                 $strproforma = new TProforma;
+                 $strproforma->prof_importacion = $id;
+                 $creaprof = $i."-creaprof";
+                 $entregaprof = $i."-entregaprof";
+                 $valorprof = $i."-valorprof";
+                 $princprof = $i."-princprof";
+                 $strproforma->prof_numero = $request->$noprof;
+                 $date1 = Carbon::parse($request->$creaprof)->format('Y-m-d');
+                 $strproforma->prof_fecha_creacion = $date1;
+                 $date2 = Carbon::parse($request->$entregaprof)->format('Y-m-d');
+                 $strproforma->prof_fecha_entrega = $date2;
+                 $strproforma->prof_valor_proforma = $request->$valorprof;
+                 $strproforma->prof_principal = intval($request->$princprof);
+                 $strproforma->save();
+             }
 
-           }
+         }
 
-       }
+     }
        #Obtiene los origenes de la mercancia asociados a la importacion
-       $origenesExistentes = TOrigenMercanciaImportacion::where('omeim_importacion','=',intval($id))->get();
+     $origenesExistentes = TOrigenMercanciaImportacion::where('omeim_importacion','=',intval($id))->get();
        #Valida cuales de los origenes de la mercancia de la bd fueron quitados del multiselect y los borra
-       foreach ($origenesExistentes as $key => $value) {
-           $buscar = in_array($value->omeim_origen_mercancia, $request->origenMercancia);
-           if(!$buscar){
+     foreach ($origenesExistentes as $key => $value) {
+         $buscar = in_array($value->omeim_origen_mercancia, $request->origenMercancia);
+         if(!$buscar){
             $value->id;
             $ObjectDestroy = TOrigenMercanciaImportacion::find($value->id);
             $ObjectDestroy->delete();
@@ -581,8 +600,8 @@ return Redirect::to($urlConsulta);
     public function borrar(Request $request)
     {
         #Consulto los productos asociados a la importacion y valido que exista almenos un registro en la base de datos, si hay mas de un registro el sistema debe permitir borrar
-       $contador = TProductoImportacion::where('pdim_importacion', '=', intval($request->identificador))->get()->count();
-       if($contador > 1){
+     $contador = TProductoImportacion::where('pdim_importacion', '=', intval($request->identificador))->get()->count();
+     if($contador > 1){
             //Consulto objeto a borrar
         $ObjectDestroy = TProductoImportacion::find($request->obj);
         //Borro el objeto
@@ -603,8 +622,8 @@ return Redirect::to($urlConsulta);
     */
     public function borrarProforma(Request $request)
     {
-       $contador = TProforma::where('prof_importacion', '=', intval($request->identificador))->get()->count();
-       if($contador > 1){
+     $contador = TProforma::where('prof_importacion', '=', intval($request->identificador))->get()->count();
+     if($contador > 1){
             //Consulto objeto a borrar
         $ObjectDestroy = TProforma::find($request->obj);
         //Borro el objeto

@@ -18,6 +18,8 @@ use Session;
 use Redirect;
 use DB;
 use Illuminate\Http\Request;
+use Auth;
+use App\Models\Importacionesv2\TPermisosImp;
 
 class TNacionalizacionImportacionController extends Controller
 {
@@ -42,6 +44,12 @@ class TNacionalizacionImportacionController extends Controller
     'naco_fecha_entrega_fact_cont.required'=>'Favor ingresar la fecha de entrega de la factura a contabilidad',
     'naco_fecha_entrega_docu_transp.required'=>'Favor ingresar la fecha de entrega documentos al transportador',
     'naco_fecha_retiro_puert.required'=>'Favor ingresar la fecha de retiro del puerto');
+
+
+    public function __construct()
+    {
+        $this->middleware('ImpMid')->only(['update']);
+    }
 
     /**
      * Display a listing of the resource.
@@ -327,6 +335,13 @@ return Redirect::to($urlConsulta);
         $faltante = true;
         $naco_valorseleccion_euro = $objeto->naco_sobrante_euro;
       }
+      $hasPerm = $this->permisos();  
+
+      $ordenimportacion = TImportacion::where('id', '=', "$objeto->naco_importacion")->first();
+      if($ordenimportacion->imp_estado_proceso == 6 || $ordenimportacion->imp_estado_proceso == 5 ||$ordenimportacion->imp_estado_proceso == 7){
+        $hasPerm = 0;
+      }
+
         #Retorna la informacion a la vista editar       
       return view('importacionesv2.NacionalizacionCosteoTemplate.editNacionalizacionCosteo', 
         compact('url',
@@ -344,8 +359,20 @@ return Redirect::to($urlConsulta);
          'faltante',
          'naco_valorseleccion',
          'naco_valorseleccion_euro',
-         'decl_admin_dian'));
+         'decl_admin_dian',
+         'hasPerm'));
     }
+
+     public function permisos(){
+        $usuario = Auth::user();
+        $permisos = TPermisosImp::where('perm_cedula', '=',"$usuario->idTerceroUsuario")->first();
+        if($permisos == null || $permisos->perm_cargo == 2){
+            return 0;
+        }elseif($permisos->perm_cargo == 1){
+           return 1;
+        }
+    }
+
 
     /**
      * Update the specified resource in storage.

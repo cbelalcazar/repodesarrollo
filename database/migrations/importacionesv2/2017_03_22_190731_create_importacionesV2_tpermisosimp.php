@@ -15,7 +15,8 @@ class CreateImportacionesV2Tpermisosimp extends Migration
     {
        Schema::connection('importacionesV2')->create('t_permisos_imp', function (Blueprint $table)
        {
-         $table->string('perm_cedula')
+        $table->increments('id');
+        $table->string('perm_cedula')
          ->nullable()
          ->comment('Campo que relaciona la cedula, con el permiso de usuario');
         

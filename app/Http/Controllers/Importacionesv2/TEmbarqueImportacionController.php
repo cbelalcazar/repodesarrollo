@@ -15,6 +15,8 @@ use Carbon\Carbon;
 use Session;
 use Redirect;
 use DB;
+use Auth;
+use App\Models\Importacionesv2\TPermisosImp;
 
 /**
  * Controlador TImportacionController
@@ -73,6 +75,12 @@ class TEmbarqueImportacionController extends Controller
     'emim_valor_flete.integer'       => 'El campo valor del flete debe tener formato numerico');
   //Name de la url de consulta la uso para no redundar este string en mis funciones
   public $strUrlConsulta = 'importacionesv2/Embarque';
+
+
+    public function __construct()
+    {
+        $this->middleware('ImpMid')->only(['update']);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -81,6 +89,16 @@ class TEmbarqueImportacionController extends Controller
     public function index()
     {
         //
+    }
+
+    public function permisos(){
+        $usuario = Auth::user();
+        $permisos = TPermisosImp::where('perm_cedula', '=',"$usuario->idTerceroUsuario")->first();
+        if($permisos == null || $permisos->perm_cargo == 2){
+            return 0;
+        }elseif($permisos->perm_cargo == 1){
+           return 1;
+        }
     }
 
     /**
@@ -283,6 +301,7 @@ class TEmbarqueImportacionController extends Controller
         $combos = $this->consultas($consulta);
         extract($combos);
         $urlBorrar = "";
+        $hasPerm = $this->permisos();
         return view('importacionesv2.EmbarqueTemplate.editEmbarque', 
             compact('url',
              'titulo', 
@@ -293,7 +312,8 @@ class TEmbarqueImportacionController extends Controller
              'contenedores',
              'contenedoresArray',
              'cantidadContenedores',
-             'urlBorrar'));
+             'urlBorrar',
+             'hasPerm'));
     }
 
     /**

@@ -405,7 +405,9 @@
 <!-- End Valor fecha envio a contabilidad     -->
 <div class="col-sm-12">
   <br>
+  @if($hasPerm == 1)
   {{ Form::submit('Guardar', array('class' => 'btn btn-primary pull-right', 'id' => 'finalizar1')) }}
+  @endif
 </div>
 {{ Form::close() }}
 @endsection

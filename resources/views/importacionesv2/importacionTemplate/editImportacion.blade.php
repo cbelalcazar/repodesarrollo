@@ -374,7 +374,9 @@
   <!-- End Delivery date total merchandise -->
 
   <div class="form-group">
+    @if($hasPerm == 1)
     {{ Form::submit('Editar', array('class' => 'btn btn-primary  pull-right' )) }}
+    @endif
     <a class="btn btn-default pull-left" id="atras5" role="button"><span class="glyphicon glyphicon-chevron-left">   Atras</span></a>
   </div>  
   <br><br>  

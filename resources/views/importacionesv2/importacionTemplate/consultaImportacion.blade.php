@@ -55,6 +55,27 @@
 {{ Form::close() }}
 
 <div class="portlet-body form">
+ <!-- ************************************ -->
+ <!-- General errors in form -->
+ <!-- ************************************ -->
+ <div class="form-group">
+ @if ($errors->all())
+   <div class="alert alert-danger" id="mensajealerta">
+    @foreach($errors->all() as $key => $value)
+    <span class="glyphicon glyphicon-remove red"></span>  {{$value}} <br>
+    @endforeach
+    <script> setTimeout(function(){ 
+      $( "#mensajealerta" ).fadeToggle("slow");
+     }, 5000);</script>
+  </div>
+  @endif
+  @if (Session::has('message'))
+  <div class="alert alert-info">{{ Session::get('message') }}</div>
+  @endif
+</div>
+<!-- ************************************ -->
+<!-- End General errors in form -->
+<!-- ************************************ -->
   @if (Session::has('message'))
   <div class="alert alert-info">{{ Session::get('message') }}</div>
   @endif
