@@ -88,3 +88,15 @@ body{
 .columna1 {
   width: 400px;
 }
+
+.btn.btn-small.btn-default.glyphicon.glyphicon-remove-sign.disabled {
+  width:auto; 
+}
+
+.btn.btn-small.btn-success.glyphicon.glyphicon-pencil {
+  width:auto; 
+}
+
+.btn.btn-small.btn-danger.glyphicon.glyphicon-plus {
+  width:auto; 
+}
