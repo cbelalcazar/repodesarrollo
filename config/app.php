@@ -187,6 +187,7 @@ return [
         OwenIt\Auditing\AuditingServiceProvider::class,
         Iber\Generator\ModelGeneratorProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Mpociot\ApiDoc\ApiDocGeneratorServiceProvider::class,
     ],
 
     /*

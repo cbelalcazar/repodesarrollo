@@ -27,13 +27,13 @@ use App\Models\Importacionesv2\TNacionalizacionImportacion;
 use Carbon\Carbon;
 use App\Models\Importacionesv2\TPermisosImp;
 
+
 /**
  * Controlador TImportacionController
  * Creado por Carlos Belalcazar
  * Analista desarrollador de software Belleza Express
  * 22/02/2017
  */
-
 class TImportacionController extends Controller
 {
 

@@ -32,45 +32,48 @@ Route::group(['middleware' => ['auth']], function () {
  * Rutas para el aplicativo importacionesv2
  * 22/02/2017
 */
-Route::resource('importacionesv2/OrigenMercancia', 'Importacionesv2\TOrigenMercanciaController');
-Route::resource('importacionesv2/PuertoEmbarque', 'Importacionesv2\TPuertoEmbarqueController');
-Route::resource('importacionesv2/TipoImportacion', 'Importacionesv2\TTipoImportacionController');
-Route::resource('importacionesv2/TipoLevante', 'Importacionesv2\TTipoLevanteController');
-Route::resource('importacionesv2/Metrica', 'Importacionesv2\TMetricaController');
-Route::resource('importacionesv2/CausalesDemora', 'Importacionesv2\TCausalesDemoraController');
-Route::resource('importacionesv2/Inconterm', 'Importacionesv2\TIcontermController');
-Route::resource('importacionesv2/TipoCarga', 'Importacionesv2\TTipoCargaController');
-Route::resource('importacionesv2/TipoContenedor', 'Importacionesv2\TTipoContenedorController');
-Route::resource('importacionesv2/Producto', 'Importacionesv2\TProductoController');
-Route::resource('importacionesv2/TiemposTransito', 'Importacionesv2\TTiemposTransitoController');
-Route::resource('importacionesv2/ProductoImportacion', 'Importacionesv2\TProductoImportacionController');
+Route::group(array('prefix' => 'importacionesv2', 'middleware' => []), function () {
+
+Route::resource('OrigenMercancia', 'Importacionesv2\TOrigenMercanciaController');
+Route::resource('PuertoEmbarque', 'Importacionesv2\TPuertoEmbarqueController');
+Route::resource('TipoImportacion', 'Importacionesv2\TTipoImportacionController');
+Route::resource('TipoLevante', 'Importacionesv2\TTipoLevanteController');
+Route::resource('Metrica', 'Importacionesv2\TMetricaController');
+Route::resource('CausalesDemora', 'Importacionesv2\TCausalesDemoraController');
+Route::resource('Inconterm', 'Importacionesv2\TIcontermController');
+Route::resource('TipoCarga', 'Importacionesv2\TTipoCargaController');
+Route::resource('TipoContenedor', 'Importacionesv2\TTipoContenedorController');
+Route::resource('Producto', 'Importacionesv2\TProductoController');
+Route::resource('TiemposTransito', 'Importacionesv2\TTiemposTransitoController');
+Route::resource('ProductoImportacion', 'Importacionesv2\TProductoImportacionController');
   //Rutas para proceso de importacion 
-Route::resource('importacionesv2/Importacion', 'Importacionesv2\TImportacionController');
-Route::get('importacionesv2/search', 'Importacionesv2\TImportacionController@autocomplete')->name('search');
-Route::post('importacionesv2/cerrarOrden', 'Importacionesv2\TImportacionController@cerrarOrden')->name('cerrarImportacion');
-Route::get('importacionesv2/searchProducto', 'Importacionesv2\TImportacionController@autocompleteProducto')->name('searchProducto');
-Route::get('importacionesv2/Puertoajax', 'Importacionesv2\TPuertoEmbarqueController@Puertoajax')->name('createpuertoajax');
-Route::post('importacionesv2/StoreAjaxPuerto', 'Importacionesv2\TPuertoEmbarqueController@storeAjax')->name('storeajaxpuerto');
-Route::get('importacionesv2/Incontermajax', 'Importacionesv2\TIcontermController@Incontermajax')->name('createincontermajax');
-Route::post('importacionesv2/StoreAjaxInconterm', 'Importacionesv2\TIcontermController@storeAjax')->name('storeajaxinconterm');
-Route::get('importacionesv2/ProductoAjax', 'Importacionesv2\TProductoController@Productoajax')->name('createproductoajax');
-Route::post('importacionesv2/StoreAjaxProducto', 'Importacionesv2\TProductoController@storeAjax')->name('storeajaxproducto');
-Route::get('importacionesv2/ConsultaFiltros', 'Importacionesv2\TImportacionController@consultaFiltrada')->name('consultaFiltros');
-Route::get('importacionesv2/BorrarProductoImportacion', 'Importacionesv2\TImportacionController@borrar')->name('borrarProductoImportacion');
-Route::get('importacionesv2/BorrarProformaImportacion', 'Importacionesv2\TImportacionController@borrarProforma')->name('borrarProformaImportacion');
-Route::get('importacionesv2/AlertasImportacion', 'Importacionesv2\TImportacionController@alertasImportacion')->name('consultaAlertas');
+Route::resource('Importacion', 'Importacionesv2\TImportacionController');
+Route::get('search', 'Importacionesv2\TImportacionController@autocomplete')->name('search');
+Route::post('cerrarOrden', 'Importacionesv2\TImportacionController@cerrarOrden')->name('cerrarImportacion');
+Route::get('searchProducto', 'Importacionesv2\TImportacionController@autocompleteProducto')->name('searchProducto');
+Route::get('Puertoajax', 'Importacionesv2\TPuertoEmbarqueController@Puertoajax')->name('createpuertoajax');
+Route::post('StoreAjaxPuerto', 'Importacionesv2\TPuertoEmbarqueController@storeAjax')->name('storeajaxpuerto');
+Route::get('Incontermajax', 'Importacionesv2\TIcontermController@Incontermajax')->name('createincontermajax');
+Route::post('StoreAjaxInconterm', 'Importacionesv2\TIcontermController@storeAjax')->name('storeajaxinconterm');
+Route::get('ProductoAjax', 'Importacionesv2\TProductoController@Productoajax')->name('createproductoajax');
+Route::post('StoreAjaxProducto', 'Importacionesv2\TProductoController@storeAjax')->name('storeajaxproducto');
+Route::get('ConsultaFiltros', 'Importacionesv2\TImportacionController@consultaFiltrada')->name('consultaFiltros');
+Route::get('BorrarProductoImportacion', 'Importacionesv2\TImportacionController@borrar')->name('borrarProductoImportacion');
+Route::get('BorrarProformaImportacion', 'Importacionesv2\TImportacionController@borrarProforma')->name('borrarProformaImportacion');
+Route::get('AlertasImportacion', 'Importacionesv2\TImportacionController@alertasImportacion')->name('consultaAlertas');
   //Rutas para proceso de embarque de importacion 
-Route::resource('importacionesv2/Embarque', 'Importacionesv2\TEmbarqueImportacionController');
-Route::get('importacionesv2/CreateEmbarque1/{id}', 'Importacionesv2\TEmbarqueImportacionController@create')->name('createEmbarque1');
+Route::resource('Embarque', 'Importacionesv2\TEmbarqueImportacionController');
+Route::get('CreateEmbarque1/{id}', 'Importacionesv2\TEmbarqueImportacionController@create')->name('createEmbarque1');
    //Rutas para proceso de pagos de importacion 
-Route::resource('importacionesv2/Pagos', 'Importacionesv2\TPagoImportacionController');  
-Route::get('importacionesv2/PagosCreate/{id}', 'Importacionesv2\TPagoImportacionController@create')->name('createPagos');
+Route::resource('Pagos', 'Importacionesv2\TPagoImportacionController');  
+Route::get('PagosCreate/{id}', 'Importacionesv2\TPagoImportacionController@create')->name('createPagos');
    //Rutas para proceso de nacionalizacion y costeo de importacion 
-Route::resource('importacionesv2/NacionalizacionCosteo', 'Importacionesv2\TNacionalizacionImportacionController');  
-Route::get('importacionesv2/NCCreate/{id}', 'Importacionesv2\TNacionalizacionImportacionController@create')->name('createNC');
-  //End importacionesv2
+Route::resource('NacionalizacionCosteo', 'Importacionesv2\TNacionalizacionImportacionController');  
+Route::get('NCCreate/{id}', 'Importacionesv2\TNacionalizacionImportacionController@create')->name('createNC');
+//End importacionesv2
 //Rutas para reportes importacionesv2
-Route::post('importacionesv2/ExcelOrdenesGeneral', 'Importacionesv2\ReportesImportacionesController@ExcelOrdenesGeneral')->name('ExcelOrdenesGeneral');
-Route::get('importacionesv2/ConsultaImportacionesExportar', 'Importacionesv2\ReportesImportacionesController@ConsultaImportacionesExportar')->name('ConsultaImportacionesExportar');
+Route::post('ExcelOrdenesGeneral', 'Importacionesv2\ReportesImportacionesController@ExcelOrdenesGeneral')->name('ExcelOrdenesGeneral');
+Route::get('ConsultaImportacionesExportar', 'Importacionesv2\ReportesImportacionesController@ConsultaImportacionesExportar')->name('ConsultaImportacionesExportar');
+});
 
 });

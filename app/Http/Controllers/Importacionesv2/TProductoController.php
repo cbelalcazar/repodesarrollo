@@ -11,21 +11,27 @@ use Redirect;
 use Session;
 use JsValidator;
 
+
 /**
- * Controlador TProductoController
+ * @resource TProductoController
+ *
+ * Controlador creado para el crud de producto
+ * 
  * Creado por Carlos Belalcazar
+ * 
  * Analista desarrollador de software Belleza Express
+ * 
  * 22/02/2017
  */
-
 class TProductoController extends Controller
 {
+  /**
+  *DEFINICION DE VARIABLES GLOBALES A LA CLASE
+  */
 
-  //---------------------------------------------------------------------------------------------------------
-  //DEFINICION DE VARIABLES GLOBALES A LA CLASE
-  //---------------------------------------------------------------------------------------------------------
-  // Variable titulo sirve para setear el titulo en el formulario generico
+  #Variable titulo sirve para setear el titulo en el formulario generico
   public $titulo = "PRODUCTO";
+
   /**Array que representa los campos de la tabla, cada posicion corresponde a la siguiente informacion
   *[0]-> Nombre del campo en la tabla de la base de datos
   *[1]-> Tipo de dato del campo en la tabla de la base de datos
@@ -37,52 +43,51 @@ class TProductoController extends Controller
   public $prod_referencia = array('prod_referencia', 'string', 'text', 'Descripcion del origen de la mercancia', '');
   public $prod_req_declaracion_anticipado = array('prod_req_declaracion_anticipado', 'boolean', 'checkbox', 'Requiere declaracion anticipada', '','','');
   public $prod_req_registro_importacion = array('prod_req_registro_importacion', 'boolean', 'checkbox', 'Requiere registro de importacion', '','','');
-  //Strings urls
-  //Para diligenciar este campo debes en consola escribir php artisan route:list ya tienes que haber declarado
-  //la ruta en el archivo routes y debes buscar el method y uri correspondiente correspondiente a este controlador resource
-  //** method GET|HEAD
+
+  #Strings urls
+  #Para diligenciar este campo debes en consola escribir php artisan route:list ya tienes que haber declarado
+  #la ruta en el archivo routes y debes buscar el method y uri correspondiente correspondiente a este controlador resource
+  #method GET|HEAD
   public $strUrlConsulta = 'importacionesv2/Producto';
 
-  //Defino las reglas de validacion para el formulario
+  #Defino las reglas de validacion para el formulario
   public $rules = array(
     'prod_referencia'       => 'required',
     );
 
-  //Defino los mensajes de alerta segun las reglas definidas en la variable rules
+  #Defino los mensajes de alerta segun las reglas definidas en la variable rules
   public $messages = array(
     'prod_referencia.required'       => 'Favor seleccionar la referencia del producto',
     );
-  //---------------------------------------------------------------------------------------------------------
-  //END DEFINICION DE VARIABLES GLOBALES A LA CLASE
-  //-----------------------------------------------
+
+   /**
+  END DEFINICION DE VARIABLES GLOBALES A LA CLASE
+  */
+
   /**
-  * Display a listing of the resource.
+  * index
+  * Funcion que consulta todos los origenes de la mercancia y los retorna a la vista resource/views/importacionesv2/index.blade.php
   *
-  * @return \Illuminate\Http\Response
+  * 1 -  Asigno la variable $titulo con que se definio en la variable global titulo <br>
+  * 2 -  Asigno variable $datos con la consulta de todos los registros de la tabla t_producto <br> 
+  * 3 -  Asigno la variable $titulosTabla con un array donde cada posicion hace referencia a un titulo de columna de la tabla a mostrar, siempre al final le pongo las acciones editar y eliminar los demas campos son los mismos del array $campos <br>
+  * 4 -  Asigno la variable campos con un array de arrays cada array contenido en cada posicion debe tener informacion del campo de la base de datos que quiero mostrar en la tabla lo realizo para que la vista ejecute la accion de mostrar solo los campos que yo le indico en este array <br>
+  * 5 -  Asigno la variable $url la cual tiene ulr completa de consulta <br>
+  * 
+  * Return: retornar una vista con una lista de todas los productos 
+  * @return \Illuminate\Http\Response $titulo, $datos, $titulosTabla, $campos, $url
   */
   public function index()
   {
-    //Seteo el titulo en la funcion para mostrar en la vista index
+    #1
     $titulo = $this->titulo;
-    /**
-    *Variable datos debe contener la informacion que se quiere mostrar en el formulario generico.
-    */
+    #2
     $datos = TProducto::all();
-
-    /**
-    *Variable titulosTabla debe contener un array con los titulos de la tabla.
-    *La cantidad de titulos debe corresponder a la cantidad de columnas que trae la consulta.
-    */
+    #3
     $titulosTabla =  array('Id', 'Descripcion', 'Requiere declaracion anticipada','Requiere registro de importacion', 'Editar', 'Eliminar');
-
-    /**
-    *Campos con su tipo de dato.
-    *Variable que debe contener los campos de la tabla con su nombre real.
-    *De primero siempre debe ir el identificador de la tabla.
-    */
+    #4
     $campos =  array($this->id, $this->prod_referencia, $this->prod_req_declaracion_anticipado, $this->prod_req_registro_importacion);
-
-    //Genera ulr completa de consulta
+    #5
     $url = url($this->strUrlConsulta);
 
     return view('importacionesv2.index', compact('titulo',
@@ -93,37 +98,55 @@ class TProductoController extends Controller
   }
 
   /**
-  * Show the form for creating a new resource.
+  * create
+  * Funcion que muestra el formulario de creacion resource/views/importacionesv2/create.blade.php
   *
-  * @return \Illuminate\Http\Response
+  * 1 -  Asigno la variable campos con un array de arrays cada array contenido en cada posicion debe tener informacion del campo de la base de datos que quiero mostrar en el formulario lo realizo para que la vista ejecute la accion de mostrar solo los campos que yo le indico en este array y crear solo una vista <br>
+  * 2 -  Asigno la variable $url la cual tiene ulr completa de consulta <br>
+  * 3 -  Asigno la variable $titulo con que se definio en la variable global titulo <br>
+  * 4 -  Asigno la variable $validator la cual va a contener un script javascript que voy a pintar en la vista para realizar las rules de validacion que defino en el controlador
+  * 
+  * Return: Debe retornar una vista con un formulario de creacion con los campos para productos
+  * @return \Illuminate\Http\Response titulo, campos, url, validator
   */
   public function create()
   {
-    //Array que contiene los campos que deseo mostrar en el formulario no debes tiene en cuenta timestamps ni softdeletes
+    #1
     $campos =  array($this->id, $this->prod_referencia, $this->prod_req_declaracion_anticipado, $this->prod_req_registro_importacion);
-    //Genera url completa de consulta
+    #2
     $url = url($this->strUrlConsulta);
-    //Variable que contiene el titulo de la vista crear
+    #3
     $titulo = "CREAR ".$this->titulo;
-    //Libreria de validaciones con ajax
+    #4
     $validator = JsValidator::make($this->rules, $this->messages);
 
     return view('importacionesv2.create', compact('titulo','campos' ,'url', 'validator'));
   }
 
-
+  /**
+  * Productoajax
+  * Funcion que muestra el formulario de creacion cargado a traves de ajax en un modal de la vista de create importacion
+  *
+  * 1 -  Asigno la variable campos con un array de arrays cada array contenido en cada posicion debe tener informacion del campo de la base de datos que quiero mostrar en el formulario lo realizo para que la vista ejecute la accion de mostrar solo los campos que yo le indico en este array y crear solo una vista <br>
+  * 2 -  Asigno la variable $url la cual tiene ulr completa de consulta <br>
+  * 3 -  Asigno a la variable $route la ruta de la funcion que recibe la peticion ajax de creacion <br>
+  * 4 -  Asigno la variable $titulo con que se definio en la variable global titulo <br>
+  * 5 -  Asigno la variable $validator la cual va a contener un script javascript que voy a pintar en la vista para realizar las rules de validacion que defino en el controlador
+  * 
+  * Return: Debe retornar una vista con un formulario de creacion con los campos para productos en resource/views/importacioensv2/ImportacionTemplate/createajax
+  * @return \Illuminate\Http\Response titulo, campos, url, validator
+  */
   public function Productoajax()
   {
-        //Array que contiene los campos que deseo mostrar en el formulario no debes tiene en cuenta timestamps ni softdeletes
+    #1
     $campos =  array($this->id, $this->prod_referencia, $this->prod_req_declaracion_anticipado, $this->prod_req_registro_importacion);
-        //Genera url completa de consulta
+    #2
     $url = url($this->strUrlConsulta);
-
-    
+    #3
     $route = route('storeajaxproducto');
-        //Variable que contiene el titulo de la vista crear
+    #4
     $titulo = "CREAR ".$this->titulo;
-        //Libreria de validaciones con ajax
+    #5
     $validator = JsValidator::make($this->rules, $this->messages);
 
     return view('importacionesv2.ImportacionTemplate.createajax', compact('titulo','campos' ,'url', 'validator', 'route'));
@@ -131,90 +154,86 @@ class TProductoController extends Controller
   }
 
 
-
-
-
-
-  /**
-  * Store a newly created resource in storage.
+ /**
+  * store
+  * Funcion que se encarga de guardar la informacion del formulario de creacion y redireccionar al index
   *
-  * @param  \Illuminate\Http\Request  $request
-  * @return \Illuminate\Http\Response
+  * 1 -  Asigno la variable $url la cual tiene ulr completa de consulta <br>
+  * 2 -  Valida que no exista ningun registro con el mismo prod_referencia en la tabla t_producto, en caso de encontrar alguno retorna error a la vista create.blade.php <br>
+  * 3 -  Crea un registro en la tabla t_producto <br>
+  * 4 -  Redirecciona a la pagina de consulta y muestra un mensaje de exito <br>
+  * 
+  * Return: Debe retornar un mensaje de exito en caso de que se cree correctamente o un mensaje e error si encuentra un registro con el mismo prod_referencia
+  * @return \Illuminate\Http\Response message
   */
-  public function store(Request $request)
-  {       
-    //Genera la url de consulta
-    $url = url($this->strUrlConsulta);
-    //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
-    $validarExistencia = TProducto::where('prod_referencia', '=', "$request->prod_referencia")->get();
-    if(count($validarExistencia) > 0){
-      //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
-      return Redirect::to("$url/create")
-      ->withErrors('El producto que intenta crear tiene el mismo nombre que un registro ya existente');
-    }
-    //Crea el registro en la tabla origen mercancia
-    $ObjectCrear = new TProducto;
-    $ObjectCrear->prod_referencia = strtoupper(Input::get('prod_referencia'));
-
-    if ($request->prod_req_declaracion_anticipado == 1){
-      $ObjectCrear->prod_req_declaracion_anticipado = 1;
-    }else{
-      $ObjectCrear->prod_req_declaracion_anticipado = 0;
-    }
-
-    if ($request->prod_req_registro_importacion == 1){
-      $ObjectCrear->prod_req_registro_importacion = 1;
-    }else{
-      $ObjectCrear->prod_req_registro_importacion = 0;
-    }
-    $ObjectCrear->save();
-    //Redirecciona a la pagina de consulta y muestra mensaje
-    Session::flash('message', 'El producto fue creado exitosamente!');
-    return Redirect::to($url);
+ public function store(Request $request)
+ {       
+      #1
+  $url = url($this->strUrlConsulta);
+      #2
+  $validarExistencia = TProducto::where('prod_referencia', '=', "$request->prod_referencia")->get();
+  if(count($validarExistencia) > 0){
+        //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
+    return Redirect::to("$url/create")
+    ->withErrors('El producto que intenta crear tiene el mismo nombre que un registro ya existente');
   }
+      #3
+  $ObjectCrear = new TProducto;
+  $ObjectCrear->prod_referencia = strtoupper(Input::get('prod_referencia'));
+  ($request->prod_req_declaracion_anticipado == 1) ? $ObjectCrear->prod_req_declaracion_anticipado = 1 : $ObjectCrear->prod_req_declaracion_anticipado = 0;
+  ($request->prod_req_registro_importacion == 1) ? $ObjectCrear->prod_req_registro_importacion = 1 : $ObjectCrear->prod_req_registro_importacion = 0;  
+  $ObjectCrear->save();
+      #4
+  Session::flash('message', 'El producto fue creado exitosamente!');
+  return Redirect::to($url);
+}
 
 
 
   /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
+  * storeAjax
+  * Funcion que se encarga de guardar la informacion del formulario de creacion por una peticion ajax y redireccionar al index
+  *
+  * 1 -  Asigno la variable $url la cual tiene ulr completa de consulta <br>
+  * 2 -  Valida que no exista ningun registro con el mismo prod_referencia en la tabla t_producto, en caso de encontrar alguno retorna error a la vista create.blade.php <br>
+  * 3 -  Verifica el request con respecto a las reglas de validacion, en caso de encontrar algun error lo retorna
+  * 4 -  Crea el objeto producto con la informacion
+  * 
+  * Return: retorna un array() con la info del producto y success1
+  * @return \Illuminate\Http\Response message
+  */
   public function storeAjax(Request $request)
   {
-        //Genera la url de consulta
+    #1
     $url = url($this->strUrlConsulta);
-        //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
+    #2
     $validarExistencia = TProducto::where('prod_referencia', '=', "$request->prod_referencia")->get();
     if(count($validarExistencia) > 0){
             //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
      return array('error', 'Ya existe un producto con la misma descripción', '');
    }
-
+    #3
    $validator = Validator::make(Input::all(), $this->rules, $this->messages);
-
-     // process the login
    if ($validator->fails()) {
-    return array('error', 'Favor validar la integridad de los campos', '');
-  } else {
-        //Crea el registro en la tabla origen mercancia
+     return array('error', 'Favor validar la integridad de los campos', '');
+   }else {
+     #4
      $ObjectCrear = new TProducto;
-    $ObjectCrear->prod_referencia = strtoupper(Input::get('prod_referencia'));
+     $ObjectCrear->prod_referencia = strtoupper(Input::get('prod_referencia'));
 
-    if ($request->prod_req_declaracion_anticipado == 1){
-      $ObjectCrear->prod_req_declaracion_anticipado = 1;
-    }else{
-      $ObjectCrear->prod_req_declaracion_anticipado = 0;
-    }
+      if ($request->prod_req_declaracion_anticipado == 1){
+        $ObjectCrear->prod_req_declaracion_anticipado = 1;
+      }else{
+        $ObjectCrear->prod_req_declaracion_anticipado = 0;
+      }
 
-    if ($request->prod_req_registro_importacion == 1){
-      $ObjectCrear->prod_req_registro_importacion = 1;
-    }else{
-      $ObjectCrear->prod_req_registro_importacion = 0;
-    }
+      if ($request->prod_req_registro_importacion == 1){
+        $ObjectCrear->prod_req_registro_importacion = 1;
+      }else{
+        $ObjectCrear->prod_req_registro_importacion = 0;
+      }
     $ObjectCrear->save();
-        //Redirecciona a la pagina de consulta y muestra mensaje
+    #5
     return array('success1', $ObjectCrear->id, $ObjectCrear->prod_referencia, $ObjectCrear->prod_req_declaracion_anticipado , $ObjectCrear->prod_req_registro_importacion);
   }
 }
@@ -224,7 +243,9 @@ class TProductoController extends Controller
 
 
   /**
-  * Display the specified resource.
+  * show
+  * 
+  * Funcion resource no usada
   *
   * @param  int  $id
   * @return \Illuminate\Http\Response
