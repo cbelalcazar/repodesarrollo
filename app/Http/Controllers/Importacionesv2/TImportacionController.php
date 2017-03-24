@@ -813,7 +813,6 @@ return "error";
         //Genera url completa de consulta
      $url = route("consultaAlertas");
         #Retorna la informacion a la vista
-     dd($url);
      $datos = TProductoImportacion::with('importacion.embarqueimportacion')->with('producto')->where('pdim_alerta','=','1')->get();
 
      $embarque = TEmbarqueImportacion::where('emim_importacion', $datos[0]->pdim_importacion)->first();
