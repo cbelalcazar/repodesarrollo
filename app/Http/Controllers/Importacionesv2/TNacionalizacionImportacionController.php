@@ -315,6 +315,8 @@ return Redirect::to($urlConsulta);
       $ajuste = false;
       $sobrante = false;
       $faltante = false;
+      $naco_valorseleccion = "";
+      $naco_valorseleccion_euro ="";
       if ($objeto->naco_sobrante || $objeto->naco_faltante){
         $ajuste = true;
       }
@@ -341,7 +343,6 @@ return Redirect::to($urlConsulta);
       if($ordenimportacion->imp_estado_proceso == 6 || $ordenimportacion->imp_estado_proceso == 5 ||$ordenimportacion->imp_estado_proceso == 7){
         $hasPerm = 0;
       }
-
         #Retorna la informacion a la vista editar       
       return view('importacionesv2.NacionalizacionCosteoTemplate.editNacionalizacionCosteo', 
         compact('url',
