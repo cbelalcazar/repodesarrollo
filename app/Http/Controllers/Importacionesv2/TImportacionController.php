@@ -815,7 +815,7 @@ return "error";
         #Retorna la informacion a la vista
 
      $datos = TProductoImportacion::with('importacion.embarqueimportacion')->with('producto')->where('pdim_alerta','=','1')->get();
-
+     
      $embarque = TEmbarqueImportacion::where('emim_importacion', $datos[0]->pdim_importacion)->first();
 
      return view('importacionesv2.importacionTemplate.consultaAlertas', compact('titulo',
