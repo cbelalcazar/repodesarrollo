@@ -70,7 +70,7 @@
         @else
         <td>NO</td>
         @endif
-        <td>{{\Carbon\Carbon::parse($embarque->emim_fecha_eta)->subDays(13)->diffInDays(\Carbon\Carbon::now())}}</td>
+        <td></td>
         <td> <a class="btn btn-small btn-danger glyphicon glyphicon-plus" href="{{route('ProductoImportacion.edit',['id' => $value->id])}}"'></a></td>
       </tr>
       @endif

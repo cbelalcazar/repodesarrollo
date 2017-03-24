@@ -814,8 +814,13 @@ return "error";
      $url = route("consultaAlertas");
         #Retorna la informacion a la vista
 
+<<<<<<< HEAD
      $datos = TProductoImportacion::with('importacion.embarqueimportacion')->with('producto')->where('pdim_alerta','=','1')->get(); 
 
+=======
+     $datos = TProductoImportacion::with('importacion.embarqueimportacion')->with('producto')->where('pdim_alerta','=','1')->get();
+     
+>>>>>>> e15ea790e833d9abf6eddb1acd5985500cf8845d
      $embarque = TEmbarqueImportacion::where('emim_importacion', $datos[0]->pdim_importacion)->first();
 
      return view('importacionesv2.importacionTemplate.consultaAlertas', compact('titulo',
