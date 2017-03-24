@@ -196,7 +196,7 @@ class TEmbarqueImportacionController extends Controller
         $ObjectCrear->emim_fecha_solicitud_reserva = Carbon::parse($request->emim_fecha_solicitud_reserva)->format('Y-m-d');
         $ObjectCrear->emim_fecha_confirm_reserva = Carbon::parse($request->emim_fecha_confirm_reserva)->format('Y-m-d');
         $ObjectCrear->emim_fecha_confirm_reserva = Carbon::parse($request->emim_fecha_confirm_reserva)->format('Y-m-d');
-        $ObjectCrear->emim_documento_transporte =$request->emim_documento_transporte;
+        $ObjectCrear->emim_documento_transporte = strtoupper($request->emim_documento_transporte);
         $ObjectCrear->emim_valor_flete =$request->emim_valor_flete;
         $ObjectCrear->save();
 
@@ -254,7 +254,16 @@ class TEmbarqueImportacionController extends Controller
        $objImportacion->imp_estado_proceso = 2;
        $objImportacion->save();
 
-         $objProductosImportacion = TProductoImportacion::where('pdim_importacion','=', $request->emim_importacion)->update(['pdim_fech_req_declaracion_anticipado' => Carbon::now()->format('Y-m-d') , 'pdim_fech_requ_registro_importacion'=> Carbon::now()->format('Y-m-d') ]);
+         $objProductosImportacion = TProductoImportacion::where('pdim_importacion','=', $request->emim_importacion)->get();
+         foreach ($objProductosImportacion as $key => $value) {
+           if($value->pdim_fech_req_declaracion_anticipado != null){
+            $value->pdim_fech_req_declaracion_anticipado = Carbon::now()->format('Y-m-d');
+           }
+           if($value->pdim_fech_requ_registro_importacion != null){
+            $value->pdim_fech_requ_registro_importacion = Carbon::now()->format('Y-m-d');
+           }
+           $value->save();
+         }
    }
 
    Session::flash('message', 'El proceso de embarque fue creado exitosamente!');
@@ -283,11 +292,9 @@ class TEmbarqueImportacionController extends Controller
         //Id del registro que deseamos editar
         $id = $id;
         //Consulto el registro que deseo editar
-        $objeto = TEmbarqueImportacion::with('importacion')->find($id);
+        $objeto = TEmbarqueImportacion::with('importacion', 'lineamaritima', 'aduana', 'transportador', 'embarcador')->find($id);
         //Titulo de la pagina
-        $titulo = "EDITAR PROCESO DE EMBARQUE - ".$objeto->importacion->imp_consecutivo;
-
-        
+        $titulo = "EDITAR PROCESO DE EMBARQUE - ".$objeto->importacion->imp_consecutivo;       
         //url de redireccion para consultar
         $url = route('Embarque.store');
         //url de redireccion para editar -- Name url correspondiente a method PUT|PATCH en comando route.list
@@ -345,7 +352,7 @@ class TEmbarqueImportacionController extends Controller
         $ObjectUpdate->emim_fecha_solicitud_reserva = Carbon::parse($request->emim_fecha_solicitud_reserva)->format('Y-m-d');
         $ObjectUpdate->emim_fecha_confirm_reserva = Carbon::parse($request->emim_fecha_confirm_reserva)->format('Y-m-d');
         $ObjectUpdate->emim_fecha_confirm_reserva = Carbon::parse($request->emim_fecha_confirm_reserva)->format('Y-m-d');
-        $ObjectUpdate->emim_documento_transporte =$request->emim_documento_transporte;
+        $ObjectUpdate->emim_documento_transporte =strtoupper($request->emim_documento_transporte);
         $ObjectUpdate->emim_valor_flete =$request->emim_valor_flete;
         $ObjectUpdate->save();
 

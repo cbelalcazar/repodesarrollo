@@ -460,7 +460,9 @@ $('#emim_tipo_carga').click(function(event) {
  **************************************
  */
  //Oculta la caja de texto que contiene el nombre del proveedor
- $("#razonsocialembarcador").hide();
+ if($("#razonsocialembarcador").val() == ""){
+ 	$("#razonsocialembarcador").hide();
+ }
 
  $( function() {
  	function split( val ) {
@@ -540,7 +542,9 @@ $('#emim_tipo_carga').click(function(event) {
  **************************************
  */
  //Oculta la caja de texto que contiene el nombre del proveedor
- $("#razonsociallinea").hide();
+ if($("#razonsociallinea").val() == ""){
+ 	$("#razonsociallinea").hide();
+ }
 
  $( function() {
  	function split( val ) {
@@ -619,7 +623,9 @@ $('#emim_tipo_carga').click(function(event) {
  **************************************
  */
  //Oculta la caja de texto que contiene el nombre del proveedor
- $("#razonsocialaduana").hide();
+ if($("#razonsocialaduana").val() == ""){
+ 	$("#razonsocialaduana").hide();
+ }
 
  $( function() {
  	function split( val ) {
@@ -696,8 +702,10 @@ $('#emim_tipo_carga').click(function(event) {
  * Funciones para realizar autocomplete agencia de aduanas
  **************************************
  */
- //Oculta la caja de texto que contiene el nombre del proveedor
- $("#razonsocialtransportador").hide();
+ //Oculta la caja de texto que contiene el nombre del proveedor+
+ if($("#razonsocialtransportador").val() == ""){
+ 	$("#razonsocialtransportador").hide();
+ }
 
  $( function() {
  	function split( val ) {

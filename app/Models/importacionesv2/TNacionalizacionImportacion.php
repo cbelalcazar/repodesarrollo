@@ -51,8 +51,13 @@ class TNacionalizacionImportacion extends Model
 
      protected $dates = ['deleted_at'];
 
-      public function importacion()
+    public function importacion()
     {
         return $this->hasOne('App\Models\Importacionesv2\TImportacion', 'id', 'naco_importacion');
+    }
+
+    public function tiponacionalizacion()
+    {
+        return $this->hasOne('App\Models\Importacionesv2\TTipoNacionalizacion', 'id', 'naco_tipo_nacionalizacion');
     }
 }

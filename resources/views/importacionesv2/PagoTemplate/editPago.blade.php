@@ -46,7 +46,7 @@
 <!-- Valor fecha del anticipo  -->
 <div class="col-sm-6">
   {{ Form::label('', "Fecha del anticipo : (*)") }}
-  {{ Form::text("pag_fecha_anticipo", $objeto->pag_fecha_anticipo, ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_anticipo', 'placeholder' =>  'Ingresar la fecha del anticipo','readonly' => 'readonly','required' => 'required']) }}
+  {{ Form::text("pag_fecha_anticipo", \Carbon\Carbon::parse($objeto->pag_fecha_anticipo)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_anticipo', 'placeholder' =>  'Ingresar la fecha del anticipo','readonly' => 'readonly','required' => 'required']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 
@@ -62,7 +62,7 @@
 <!-- Fecha del saldo  -->
 <div class="col-sm-6">
   {{ Form::label('', "Fecha del saldo : (*)") }}
-  {{ Form::text("pag_fecha_saldo", $objeto->pag_fecha_saldo, ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_saldo', 'placeholder' =>  'Ingresar la fecha del saldo','readonly' => 'readonly','required' => 'required']) }}
+  {{ Form::text("pag_fecha_saldo", \Carbon\Carbon::parse($objeto->pag_fecha_saldo)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_saldo', 'placeholder' =>  'Ingresar la fecha del saldo','readonly' => 'readonly','required' => 'required']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Fecha del saldo    -->
@@ -110,7 +110,7 @@
 <!-- Valor fecha de la factura  -->
 <div class="col-sm-6">
   {{ Form::label('', "Fecha de la factura : (*)") }}
-  {{ Form::text("pag_fecha_factura", $objeto->pag_fecha_factura, ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_factura', 'placeholder' =>  'Ingresar la fecha de la factura','readonly' => 'readonly','required' => 'required']) }}
+  {{ Form::text("pag_fecha_factura", \Carbon\Carbon::parse($objeto->pag_fecha_factura)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_factura', 'placeholder' =>  'Ingresar la fecha de la factura','readonly' => 'readonly','required' => 'required']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha de la factura    -->
@@ -118,7 +118,7 @@
 <!-- Valor fecha envio a contabilidad  -->
 <div class="col-sm-6">
   {{ Form::label('', "Fecha de envio a contabilidad : (*)") }}
-  {{ Form::text("pag_fecha_envio_contabilidad", $objeto->pag_fecha_envio_contabilidad, ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_envio_contabilidad', 'placeholder' =>  'Ingresar la fecha de envio a contabilidad','readonly' => 'readonly','required' => 'required']) }}
+  {{ Form::text("pag_fecha_envio_contabilidad", \Carbon\Carbon::parse($objeto->pag_fecha_envio_contabilidad)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_envio_contabilidad', 'placeholder' =>  'Ingresar la fecha de envio a contabilidad','readonly' => 'readonly','required' => 'required']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->

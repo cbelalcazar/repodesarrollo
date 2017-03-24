@@ -60,7 +60,7 @@
       <div class="help-block error-help-block" id='error_embarcador'></div>
 
       {{ Form::label('', "") }}
-      {{ Form::text('razonsocialembarcador', '', ['class' => 'form-control', 'id' =>  'razonsocialembarcador', 'readonly' =>  'readonly'])}}
+      {{ Form::text('razonsocialembarcador', $objeto->embarcador->razonSocialTercero, ['class' => 'form-control', 'id' =>  'razonsocialembarcador', 'readonly' =>  'readonly'])}}
       <input type="hidden" id="route1" value="{{route('search')}}">
     </div>
     <!-- End Embarcador -->
@@ -73,7 +73,7 @@
       <div class="help-block error-help-block" id='error_lineamaritima'></div>
 
       {{ Form::label('', "") }}
-      {{ Form::text('razonsociallinea', '', ['class' => 'form-control', 'id' =>  'razonsociallinea', 'readonly' =>  'readonly'])}}
+      {{ Form::text('razonsociallinea', $objeto->lineamaritima->razonSocialTercero, ['class' => 'form-control', 'id' =>  'razonsociallinea', 'readonly' =>  'readonly'])}}
     </div>
     <!-- End Linea maritima -->
 
@@ -87,7 +87,7 @@
       <div class="help-block error-help-block" id='error_agencia'></div>
 
       {{ Form::label('', "") }}
-      {{ Form::text('razonsocialaduana', '', ['class' => 'form-control', 'id' =>  'razonsocialaduana', 'readonly' =>  'readonly'])}}
+      {{ Form::text('razonsocialaduana', $objeto->aduana->razonSocialTercero, ['class' => 'form-control', 'id' =>  'razonsocialaduana', 'readonly' =>  'readonly'])}}
     </div>
     <!-- End Agencia de aduanas -->
 
@@ -100,7 +100,7 @@
       <div class="help-block error-help-block" id='error_transportador'></div>
 
       {{ Form::label('', "") }}
-      {{ Form::text('razonsocialtransportador', '', ['class' => 'form-control', 'id' =>  'razonsocialtransportador', 'readonly' =>  'readonly'])}}
+      {{ Form::text('razonsocialtransportador', $objeto->transportador->razonSocialTercero, ['class' => 'form-control', 'id' =>  'razonsocialtransportador', 'readonly' =>  'readonly'])}}
     </div>
     <!-- End Embarcador -->
 
@@ -207,12 +207,12 @@
     <div class="row">
       <div class="col-sm-6" id="etd_div">
        <label  class="control-label">Fecha ETD: (*)</label>
-       {{ Form::text("emim_fecha_etd", $objeto->emim_fecha_etd, ['class' => 'form-control validemos', 'id' =>  'emim_fecha_etd', 'placeholder' =>  'Ingresar fecha del ETD', 'readonly' =>  'readonly']) }}
+       {{ Form::text("emim_fecha_etd", \Carbon\Carbon::parse($objeto->emim_fecha_etd)->format('d-m-Y'), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_etd', 'placeholder' =>  'Ingresar fecha del ETD', 'readonly' =>  'readonly']) }}
        <div class="help-block error-help-block" id='error_etd'></div>
      </div>     
      <div class="col-sm-6" id="eta_div">
       <label  class="control-label">Fecha ETA: (*)</label>
-      {{ Form::text("emim_fecha_eta", $objeto->emim_fecha_etd, ['class' => 'form-control validemos', 'id' =>  'emim_fecha_eta', 'placeholder' =>  'Ingresar fecha del ETA', 'readonly' =>  'readonly']) }}
+      {{ Form::text("emim_fecha_eta", \Carbon\Carbon::parse($objeto->emim_fecha_eta)->format('d-m-Y'), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_eta', 'placeholder' =>  'Ingresar fecha del ETA', 'readonly' =>  'readonly']) }}
       <div class="help-block error-help-block" id='error_eta'></div>
     </div>
   </div>
@@ -221,12 +221,12 @@
   <div class="row">
     <div class="col-sm-6" id="fechrecb_div">
       <label  class="control-label">Fecha de recibido de documentos originales: (*)</label>
-      {{ Form::text("emim_fecha_recibido_documentos_ori", $objeto->emim_fecha_recibido_documentos_ori, ['class' => 'form-control validemos', 'id' =>  'emim_fecha_recibido_documentos_ori', 'placeholder' =>  'Ingresar fecha de recibido documentos originales', 'readonly' =>  'readonly']) }}
+      {{ Form::text("emim_fecha_recibido_documentos_ori", \Carbon\Carbon::parse($objeto->emim_fecha_recibido_documentos_ori)->format('d-m-Y'), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_recibido_documentos_ori', 'placeholder' =>  'Ingresar fecha de recibido documentos originales', 'readonly' =>  'readonly']) }}
       <div class="help-block error-help-block" id='error_fechrecb'></div>
     </div>
     <div class="col-sm-6" id="fechenvadu_div">
       <label  class="control-label">Fecha de envio documentos a agencia de aduanas: (*)</label>
-      {{ Form::text("emim_fecha_envio_aduana", $objeto->emim_fecha_envio_aduana, ['class' => 'form-control validemos', 'id' =>  'emim_fecha_envio_aduana', 'placeholder' =>  'Ingresar fecha de envio documentos aduana', 'readonly' =>  'readonly']) }}
+      {{ Form::text("emim_fecha_envio_aduana", \Carbon\Carbon::parse($objeto->emim_fecha_envio_aduana)->format('d-m-Y'), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_envio_aduana', 'placeholder' =>  'Ingresar fecha de envio documentos aduana', 'readonly' =>  'readonly']) }}
       <div class="help-block error-help-block" id='error_fechrecb'></div>
     </div>
   </div>
@@ -236,12 +236,12 @@
   <div class="row" id="fechenvfich_div">
     <div class="col-sm-6">
       <label  class="control-label">Fecha de envio ficha tecnica: (*)</label>
-      {{ Form::text("emim_fecha_envio_ficha_tecnica", $objeto->emim_fecha_envio_ficha_tecnica, ['class' => 'form-control validemos', 'id' =>  'emim_fecha_envio_ficha_tecnica', 'placeholder' =>  'Ingresar fecha de envio ficha tecnica', 'readonly' =>  'readonly']) }}
+      {{ Form::text("emim_fecha_envio_ficha_tecnica", \Carbon\Carbon::parse($objeto->emim_fecha_envio_ficha_tecnica)->format('d-m-Y'), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_envio_ficha_tecnica', 'placeholder' =>  'Ingresar fecha de envio ficha tecnica', 'readonly' =>  'readonly']) }}
       <div class="help-block error-help-block" id='error_fechenvfich'></div>
     </div>
     <div class="col-sm-6" id="fechenvlistemp_div">
       <label  class="control-label">Fecha de envio lista de empaque: (*)</label>
-      {{ Form::text("emim_fecha_envio_lista_empaque", $objeto->emim_fecha_envio_lista_empaque, ['class' => 'form-control validemos', 'id' =>  'emim_fecha_envio_lista_empaque', 'placeholder' =>  'Ingresar fecha de envio ficha tecnica', 'readonly' =>  'readonly']) }}
+      {{ Form::text("emim_fecha_envio_lista_empaque", \Carbon\Carbon::parse($objeto->emim_fecha_envio_lista_empaque)->format('d-m-Y'), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_envio_lista_empaque', 'placeholder' =>  'Ingresar fecha de envio ficha tecnica', 'readonly' =>  'readonly']) }}
       <div class="help-block error-help-block" id='error_fechenvlistemp'></div>
     </div>
   </div>
@@ -252,12 +252,12 @@
   <div class="row">
     <div class="col-sm-6" id="fechsolicreser_div">
       <label  class="control-label">Fecha solicitud de la reserva: (*)</label>
-      {{ Form::text("emim_fecha_solicitud_reserva", $objeto->emim_fecha_solicitud_reserva, ['class' => 'form-control validemos', 'id' =>  'emim_fecha_solicitud_reserva', 'placeholder' =>  'Ingresar fecha solicitud de la reserva', 'readonly' =>  'readonly']) }}
+      {{ Form::text("emim_fecha_solicitud_reserva", \Carbon\Carbon::parse($objeto->emim_fecha_solicitud_reserva)->format('d-m-Y'), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_solicitud_reserva', 'placeholder' =>  'Ingresar fecha solicitud de la reserva', 'readonly' =>  'readonly']) }}
       <div class="help-block error-help-block" id='error_fechsolicreser'></div>
     </div>
     <div class="col-sm-6" id="fechconfirreser_div">
       <label  class="control-label">Fecha confirmación de la reserva: (*)</label>
-      {{ Form::text("emim_fecha_confirm_reserva", $objeto->emim_fecha_confirm_reserva, ['class' => 'form-control validemos', 'id' =>  'emim_fecha_confirm_reserva', 'placeholder' =>  'Ingresar fecha de confirmacion de la reserva
+      {{ Form::text("emim_fecha_confirm_reserva", \Carbon\Carbon::parse($objeto->emim_fecha_confirm_reserva)->format('d-m-Y'), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_confirm_reserva', 'placeholder' =>  'Ingresar fecha de confirmacion de la reserva
       ', 'readonly' =>  'readonly']) }}
       <div class="help-block error-help-block" id='error_fechconfirreser'></div>
     </div>

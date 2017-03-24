@@ -55,7 +55,7 @@
 <!-- Valor fecha envio a contabilidad  -->
 <div class="col-sm-6">
   {{ Form::label('', "Fecha de anticipo agencia de aduanas: (*)") }}
-  {{ Form::text("naco_fecha_anticipo_aduana", $objeto->naco_fecha_anticipo_aduana, ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_anticipo_aduana', 'placeholder' =>  'Ingresar la fecha de envio a contabilidad','readonly' => 'readonly','required' => 'required']) }}
+  {{ Form::text("naco_fecha_anticipo_aduana", \Carbon\Carbon::parse($objeto->naco_fecha_anticipo_aduana)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_anticipo_aduana', 'placeholder' =>  'Ingresar la fecha de envio a contabilidad','readonly' => 'readonly','required' => 'required']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
@@ -206,11 +206,11 @@
 
               <td class="campos" id="{{$key+1}}-decl_admin_dian">{{$value->admindianDeclaracion->descripcion}}<input type="hidden" name="{{$key+1}}-decl_admin_dian" value="{{$value->decl_admin_dian}}"></td>
 
-              <td class="campos" id="{{$key+1}}-decl_fecha_aceptacion">{{$value->decl_fecha_aceptacion}}<input type="hidden" name="{{$key+1}}-decl_fecha_aceptacion" value="{{$value->decl_fecha_aceptacion}}"></td>
+              <td class="campos" id="{{$key+1}}-decl_fecha_aceptacion">{{\Carbon\Carbon::parse($value->decl_fecha_aceptacion)->format('d-m-Y')}}<input type="hidden" name="{{$key+1}}-decl_fecha_aceptacion" value="{{$value->decl_fecha_aceptacion}}"></td>
 
-              <td class="campos" id="{{$key+1}}-decl_fecha_levante">{{$value->decl_fecha_levante}}<input type="hidden" name="{{$key+1}}-decl_fecha_levante" value="{{$value->decl_fecha_levante}}"></td>
+              <td class="campos" id="{{$key+1}}-decl_fecha_levante">{{\Carbon\Carbon::parse($value->decl_fecha_levante)->format('d-m-Y')}}<input type="hidden" name="{{$key+1}}-decl_fecha_levante" value="{{$value->decl_fecha_levante}}"></td>
 
-              <td class="campos" id="{{$key+1}}-decl_fecha_legaliza_giro">{{$value->decl_fecha_legaliza_giro}}<input type="hidden" name="{{$key+1}}-decl_fecha_legaliza_giro" value="{{$value->decl_fecha_legaliza_giro}}"></td>
+              <td class="campos" id="{{$key+1}}-decl_fecha_legaliza_giro">{{\Carbon\Carbon::parse($value->decl_fecha_legaliza_giro)->format('d-m-Y')}}<input type="hidden" name="{{$key+1}}-decl_fecha_legaliza_giro" value="{{$value->decl_fecha_legaliza_giro}}"></td>
 
               <td><span id="{{$value->id}}" onclick="" class="borrar glyphicon glyphicon-remove"></span><input type="hidden" name="{{$key+1}}-iddeclaracion" value="{{$value->id}}"></td>
             </tr>
@@ -227,7 +227,7 @@
 <!-- Valor fecha envio a contabilidad  -->
 <div class="col-sm-6">
   {{ Form::label('', "Fecha recibo facturas Belleza Express: (*)") }}
-  {{ Form::text("naco_fecha_recibo_fact_be", $objeto->naco_fecha_recibo_fact_be, ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_recibo_fact_be', 'placeholder' =>  'Ingresar la fecha de recibo facturas Belleza Express','readonly' => 'readonly','required' => 'required']) }}
+  {{ Form::text("naco_fecha_recibo_fact_be", \Carbon\Carbon::parse($objeto->naco_fecha_recibo_fact_be)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_recibo_fact_be', 'placeholder' =>  'Ingresar la fecha de recibo facturas Belleza Express','readonly' => 'readonly','required' => 'required']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
@@ -235,7 +235,7 @@
 <!-- Valor fecha envio a contabilidad  -->
 <div class="col-sm-6">
   {{ Form::label('', "Fecha entrega de facturas a contabilidad: (*)") }}
-  {{ Form::text("naco_fecha_entrega_fact_cont", $objeto->naco_fecha_entrega_fact_cont, ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_entrega_fact_cont', 'placeholder' =>  'Ingresar la fecha de envio de facturas a contabilidad','readonly' => 'readonly','required' => 'required']) }}
+  {{ Form::text("naco_fecha_entrega_fact_cont", \Carbon\Carbon::parse($objeto->naco_fecha_entrega_fact_cont)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_entrega_fact_cont', 'placeholder' =>  'Ingresar la fecha de envio de facturas a contabilidad','readonly' => 'readonly','required' => 'required']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
@@ -244,7 +244,7 @@
 <div class="col-sm-6">
   <br>
   {{ Form::label('', "Fecha de entrega documentos al transportador: (*)") }}
-  {{ Form::text("naco_fecha_entrega_docu_transp", $objeto->naco_fecha_entrega_docu_transp, ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_entrega_docu_transp', 'placeholder' =>  'Ingresar la fecha de entraga documentos al transportador','readonly' => 'readonly','required' => 'required']) }}
+  {{ Form::text("naco_fecha_entrega_docu_transp", \Carbon\Carbon::parse($objeto->naco_fecha_entrega_docu_transp)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_entrega_docu_transp', 'placeholder' =>  'Ingresar la fecha de entraga documentos al transportador','readonly' => 'readonly','required' => 'required']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
@@ -254,7 +254,7 @@
 <div class="col-sm-6">
   <br>
   {{ Form::label('', "Fecha retiro puerto / Aeropuerto: (*)") }}
-  {{ Form::text("naco_fecha_retiro_puert", $objeto->naco_fecha_retiro_puert, ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_retiro_puert', 'placeholder' =>  'Ingresar la fecha de retiro puerto / aeropuerto','readonly' => 'readonly']) }}
+  {{ Form::text("naco_fecha_retiro_puert", \Carbon\Carbon::parse($objeto->naco_fecha_retiro_puert)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_retiro_puert', 'placeholder' =>  'Ingresar la fecha de retiro puerto / aeropuerto','readonly' => 'readonly']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
@@ -263,7 +263,7 @@
 <div class="col-sm-6">
   <br>
   {{ Form::label('', "Fecha de envio a comex: (*)") }}
-  {{ Form::text("naco_fecha_envio_comex", $objeto->naco_fecha_envio_comex, ['class' => 'form-control  datepickerClass', 'id' =>  'naco_fecha_envio_comex', 'placeholder' =>  'Ingresar la fecha de entraga documentos al transportador','readonly' => 'readonly']) }}
+  {{ Form::text("naco_fecha_envio_comex", \Carbon\Carbon::parse($objeto->naco_fecha_envio_comex)->format('d-m-Y'), ['class' => 'form-control  datepickerClass', 'id' =>  'naco_fecha_envio_comex', 'placeholder' =>  'Ingresar la fecha de entraga documentos al transportador','readonly' => 'readonly']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
@@ -281,7 +281,7 @@
 <div class="col-sm-6">
   <br>
   {{ Form::label('', "Fecha de llegada a Belleza Express: (*)") }}
-  {{ Form::text("naco_fecha_llegada_be", $objeto->naco_fecha_llegada_be, ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_llegada_be', 'placeholder' =>  'Ingresar la fecha de llegada a Belleza Express','readonly' => 'readonly']) }}
+  {{ Form::text("naco_fecha_llegada_be", \Carbon\Carbon::parse($objeto->naco_fecha_llegada_be)->format('d-m-Y'), ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_llegada_be', 'placeholder' =>  'Ingresar la fecha de llegada a Belleza Express','readonly' => 'readonly']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
@@ -290,7 +290,7 @@
 <div class="col-sm-6">
   <br>
   {{ Form::label('', "Fecha de recepción lista de empaque + Ciego: (*)") }}
-  {{ Form::text("naco_fecha_recep_list_empaq", $objeto->naco_fecha_recep_list_empaq, ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_recep_list_empaq', 'placeholder' =>  'Ingresar la fecha de recepción lista de empaque','readonly' => 'readonly']) }}
+  {{ Form::text("naco_fecha_recep_list_empaq", \Carbon\Carbon::parse($objeto->naco_fecha_recep_list_empaq)->format('d-m-Y'), ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_recep_list_empaq', 'placeholder' =>  'Ingresar la fecha de recepción lista de empaque','readonly' => 'readonly']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
@@ -299,7 +299,7 @@
 <div class="col-sm-6">
   <br>
   {{ Form::label('', "Fecha de envio liquidación y costeo: (*)") }}
-  {{ Form::text("naco_fecha_envi_liqu_costeo", $objeto->naco_fecha_envi_liqu_costeo, ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_envi_liqu_costeo', 'placeholder' =>  'Ingresar la fecha de envio lista de empaque de empaque','readonly' => 'readonly']) }}
+  {{ Form::text("naco_fecha_envi_liqu_costeo", \Carbon\Carbon::parse($objeto->naco_fecha_envi_liqu_costeo)->format('d-m-Y'), ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_envi_liqu_costeo', 'placeholder' =>  'Ingresar la fecha de envio lista de empaque de empaque','readonly' => 'readonly']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
@@ -308,7 +308,7 @@
 <div class="col-sm-6">
   <br>
   {{ Form::label('', "Fecha de entrada al sistema: (*)") }}
-  {{ Form::text("naco_fecha_entrada_sistema", $objeto->naco_fecha_entrada_sistema, ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_entrada_sistema', 'placeholder' =>  'Ingresar la fecha de entrada al sistema','readonly' => 'readonly']) }}
+  {{ Form::text("naco_fecha_entrada_sistema", \Carbon\Carbon::parse($objeto->naco_fecha_entrada_sistema)->format('d-m-Y'), ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_entrada_sistema', 'placeholder' =>  'Ingresar la fecha de entrada al sistema','readonly' => 'readonly']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 

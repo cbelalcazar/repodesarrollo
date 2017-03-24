@@ -32,14 +32,10 @@
 <!-- ************************************ -->
 <!-- End General errors in form -->
 <!-- ************************************ -->
-
-
-
 <div class="panel panel-primary">
   <div class="panel-heading">Importacion:   {{$object->imp_consecutivo}} </div>
   <div class="panel-body">
-
-
+  
     <div class="row"> 
       <div class="col-sm-2">
         <label  class="control-label"><strong>Razon social proveedor: </strong>{{$object->proveedor->razonSocialTercero}}</label>
@@ -205,7 +201,6 @@
 </div>
 </div>
 
-
 <div class="panel panel-primary">
   <div class="panel-heading">Nacionalizacion y costeo:  {{$object->imp_consecutivo}}</div>
   <div class="panel-body">
@@ -276,23 +271,23 @@
   @endif
 </div> 
 <div class="col-sm-2">
-  <label  class="control-label"><strong>Factor dolar porcentaje: </strong><br>{{$objeto7[0]->naco_factor_dolar_porc}}%</label>
+  <label  class="control-label"><strong>Factor importacion porcentual: </strong><br>{{$objeto7[0]->naco_factor_dolar_porc}}%</label>
 </div> 
 <div class="col-sm-2">
-  <label  class="control-label"><strong>Factor dolar tasa: </strong><br>{{$objeto7[0]->naco_factor_dolar_tasa}}</label>
+  <label  class="control-label"><strong>Factor total: </strong><br>{{$objeto7[0]->naco_factor_dolar_tasa}}</label>
 </div> 
 <div class="col-sm-2">
-  <label  class="control-label"><strong>Factor logistico porcentaje: </strong><br>{{$objeto7[0]->naco_factor_logist_porc}}%</label>
+  <label  class="control-label"><strong>Factor logistico en pesos: </strong><br>{{$objeto7[0]->naco_factor_logist_porc}}</label>
 </div> 
 <div class="col-sm-2">
-  <label  class="control-label"><strong>Factor logistico tasa: </strong><br>{{$objeto7[0]->naco_factor_logist_tasa}}</label>
+  <label  class="control-label"><strong>Factor logistico: </strong><br>{{$objeto7[0]->naco_factor_logist_tasa}}</label>
 </div> 
 </div>
 <br>
 
 <div class="row"> 
  <div class="col-sm-2">
-  <label  class="control-label"><strong>Tipo nacionalización: </strong><br>{{$objeto7[0]->naco_tipo_nacionalizacion}}</label>
+  <label  class="control-label"><strong>Tipo nacionalización: </strong><br>{{$objeto7[0]->tiponacionalizacion->tnac_descripcion}}</label>
 </div> 
 
 </div>

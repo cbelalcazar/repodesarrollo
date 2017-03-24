@@ -19,7 +19,7 @@ class TPermisoImpmid
     public function handle($request, Closure $next)
     {
         $usuario = Auth::user();
-        $permisos = TPermisosImp::where('perm_cedula', '=',"$usuario->idTerceroUsuario")->first();
+        $permisos = TPermisosImp::where('perm_cedula', '=', "$usuario->idTerceroUsuario")->first();
         if($permisos == null || $permisos->perm_cargo == 2){
             return Redirect::to("importacionesv2/ConsultaFiltros")
             ->withErrors('No tienes permisos para realizar esta accion');

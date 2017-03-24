@@ -79,7 +79,7 @@
       {{ Form::text('imp_proveedor', old("imp_proveedor"), ['class' => 'form-control validemos', 'id' =>  'proveedor', 'placeholder' =>  'Ingresar nombre o nit del proveedor'])}}
       <div class="help-block error-help-block" id='error_proveedor'></div>
       {{ Form::label('', "") }}
-      {{ Form::text('razonSocialTercero', '', ['class' => 'form-control', 'id' =>  'razonSocialTercero', 'readonly' =>  'readonly'])}}
+      {{ Form::text('razonSocialTercero', $objeto->proveedor->razonSocialTercero, ['class' => 'form-control', 'id' =>  'razonSocialTercero', 'readonly' =>  'readonly'])}}
       <input type="hidden" id="route1" value="{{route('search')}}">
     </div>
     <!-- End Provider -->
@@ -323,9 +323,9 @@
              <tr>
               <td class="campos" id="{{$key1+1}}-prof">{{ $infoProforma[0] }}<input type="hidden" name="{{$key1+1}}-noprof" value='{{$infoProforma[0]}}'></td>
 
-              <td>{{ $infoProforma[1] }}<input type="hidden" name="{{$key1+1}}-creaprof" value='{{$infoProforma[1]}}'></td>
+              <td>{{ \Carbon\Carbon::parse($infoProforma[1])->format('d-m-Y') }}<input type="hidden" name="{{$key1+1}}-creaprof" value='{{$infoProforma[1]}}'></td>
 
-              <td>{{ $infoProforma[2] }}<input type="hidden" name="{{$key1+1}}-entregaprof" value='{{$infoProforma[2]}}'></td>
+              <td>{{  \Carbon\Carbon::parse($infoProforma[2])->format('d-m-Y') }}<input type="hidden" name="{{$key1+1}}-entregaprof" value='{{$infoProforma[2]}}'></td>
               <td>{{ $infoProforma[3] }}<input type="hidden" name="{{$key1+1}}-valorprof" value='{{$infoProforma[3]}}'></td>
               <td>{{ $infoProforma[4] }}<input type="hidden" name="{{$key1+1}}-princprof" value='{{$infoProforma[4]}}'></td>
               <td><span  id="{{$infoProforma[5]}}" onclick="borrarproforma(this);" class=" glyphicon glyphicon-remove"></span><input type="hidden" name="{{$key1+1}}-idproforma" value="{{$infoProforma[5]}}"></td>
@@ -366,10 +366,11 @@
   </div>
   <!-- End Observations -->
 
+  
   <!-- Delivery date total merchandise -->
   <div class="form-group">
     {{ Form::label('', "Fecha entrega total mercancia") }}
-    {{ Form::text("imp_fecha_entrega_total", old("imp_fecha_entrega_total"), ['class' => 'form-control', 'id' =>  'imp_fecha_entrega_total', 'placeholder' =>  'Ingresar fecha de entrega total de la mercancia', 'readonly' =>  'readonly']) }}
+    {{ Form::text("imp_fecha_entrega_total", \Carbon\Carbon::parse(old("imp_fecha_entrega_total"))->format('d-m-Y'), ['class' => 'form-control', 'id' =>  'imp_fecha_entrega_total', 'placeholder' =>  'Ingresar fecha de entrega total de la mercancia', 'readonly' =>  'readonly']) }}
   </div>
   <!-- End Delivery date total merchandise -->
 

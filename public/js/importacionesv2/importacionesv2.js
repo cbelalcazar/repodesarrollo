@@ -123,7 +123,10 @@ $(document).ready(function()
  $('#fech_crea_profor').datepicker();
  $('#fech_entreg_profor').datepicker();
  //Oculta la caja de texto que contiene el nombre del proveedor
- $("#razonSocialTercero").hide();
+ if($("#razonSocialTercero").val() == ""){
+   $("#razonSocialTercero").hide();
+ }
+
  //Funcion que se ejecuta cuando se pierde el foco del campo con id proveedor
  //Acomoda la informacion en dos cajas de texto para que se visualize mas correctamente
  $("#proveedor").blur(function(){

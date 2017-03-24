@@ -306,7 +306,7 @@ return Redirect::to($urlConsulta);
 
         $objeto5 = TEmbarqueImportacion::with('embarcador', 'lineamaritima', 'tipoCarga','aduana','transportador')->where('emim_importacion','=', intval($id))->get();
         $objeto6 = TPagoImportacion::where('pag_importacion', '=', "$id")->get();
-        $objeto7 = TNacionalizacionImportacion::where('naco_importacion', '=', "$id")->get();
+        $objeto7 = TNacionalizacionImportacion::with('tiponacionalizacion')->where('naco_importacion', '=', "$id")->get();
         #Crea un array con la informacion necesaria para mostrar en una tabla los productos asociados a la orden de importacion
         $tablaProductos = array();
         foreach ($objeto3 as $key => $value) {
@@ -345,7 +345,8 @@ return Redirect::to($urlConsulta);
         //Id del registro que deseamos editar
         $id = $id;
         //Consulto el registro que deseo editar
-        $objeto = TImportacion::find($id);
+        $objeto = TImportacion::with('proveedor')->find($id);
+        // dd($objeto);
         //Titulo de la pagina
         $titulo = "EDITAR PROCESO DE IMPORTACION";
         //url de redireccion para consultar
