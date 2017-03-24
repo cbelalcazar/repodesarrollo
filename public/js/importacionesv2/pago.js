@@ -13,8 +13,9 @@ jQuery(document).ready(function($) {
       $('#naco_factor_logist_tasa').focus();
       alert('El factor logistico debe ser menor al factor total');
 
-    }else if($('#naco_factor_logist_tasa').val() < $('#naco_factor_dolar_tasa').val()){
-      $('#naco_factor_arancel_porc').val($('#naco_factor_dolar_tasa').val() - $('#naco_factor_logist_tasa').val());
+    }else if($('#naco_factor_logist_tasa').val() <= $('#naco_factor_dolar_tasa').val()){
+      var prueba = $('#naco_factor_arancel_porc').val($('#naco_factor_dolar_tasa').val() - $('#naco_factor_logist_tasa').val());
+      
     }
     else{
       $('#naco_factor_logist_tasa').focus();
