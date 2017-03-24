@@ -11,21 +11,26 @@ use Session;
 use JsValidator;
 use \Cache;
 
+
 /**
- * Controlador TTipoLevanteController
+ * @resource TTipoLevanteController
+ *
+ * Controlador creado para el crud de producto
+ * 
  * Creado por Carlos Belalcazar
+ * 
  * Analista desarrollador de software Belleza Express
+ * 
  * 22/02/2017
  */
-
 class TTipoLevanteController extends Controller
 {
+  /**
+  *DEFINICION DE VARIABLES GLOBALES A LA CLASE
+  */
 
-    //---------------------------------------------------------------------------------------------------------
-    //DEFINICION DE VARIABLES GLOBALES A LA CLASE
-    //---------------------------------------------------------------------------------------------------------
-    // Variable titulo sirve para setear el titulo en el formulario generico
-    public $titulo = "TIPO DE LEVANTE";
+  #Variable titulo sirve para setear el titulo en el formulario generico
+  public $titulo = "TIPO DE LEVANTE";
     /**Array que representa los campos de la tabla, cada posicion corresponde a la siguiente informacion
     *[0]-> Nombre del campo en la tabla de la base de datos
     *[1]-> Tipo de dato del campo en la tabla de la base de datos
@@ -36,81 +41,84 @@ class TTipoLevanteController extends Controller
     public $id = array('id', 'int', 'hidden', 'Identificacion del tipo de importacion', '');
     public $tlev_nombre = array('tlev_nombre', 'string', 'text', 'Descripcion del tipo de levante', 'Ingresar el nombre del tipo de levante:');
 
-    //Strings urls
-    //Para diligenciar este campo debes en consola escribir php artisan route:list ya tienes que haber declarado
-    //la ruta en el archivo routes y debes buscar el method y uri correspondiente correspondiente a este controlador resource
-    //** method GET|HEAD
+    #Strings urls
+    #Para diligenciar este campo debes en consola escribir php artisan route:list ya tienes que haber declarado
+    #la ruta en el archivo routes y debes buscar el method y uri correspondiente correspondiente a este controlador resource
+    //method GET|HEAD
     public $strUrlConsulta = 'importacionesv2/TipoLevante';
 
-    //Defino las reglas de validacion para el formulario
+    #Defino las reglas de validacion para el formulario
     public $rules = array(
         'tlev_nombre'       => 'required',
-    );
+        );
 
-    //Defino los mensajes de alerta segun las reglas definidas en la variable rules
+    #Defino los mensajes de alerta segun las reglas definidas en la variable rules
     public $messages = array(
         'tlev_nombre.required'       => 'Favor ingresar la descripcion del tipo de levante',
-    );
-    //---------------------------------------------------------------------------------------------------------
-    //END DEFINICION DE VARIABLES GLOBALES A LA CLASE
-    //---------------------------------------------------------------------------------------------------------
+        );
+    /**
+  END DEFINICION DE VARIABLES GLOBALES A LA CLASE
+  */
 
 
     /**
-    * Display a listing of the resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-    public function index()
+  * index
+  * Funcion que consulta todos los tipos de levante y los retorna a la vista resource/views/importacionesv2/index.blade.php
+  *
+  * 1 -  Asigno la variable $titulo con que se definio en la variable global titulo <br>
+  * 2 -  Asigno variable $datos con la consulta de todos los registros de la tabla t_producto <br> 
+  * 3 -  Asigno la variable $titulosTabla con un array donde cada posicion hace referencia a un titulo de columna de la tabla a mostrar, siempre al final le pongo las acciones editar y eliminar los demas campos son los mismos del array $campos <br>
+  * 4 -  Asigno la variable campos con un array de arrays cada array contenido en cada posicion debe tener informacion del campo de la base de datos que quiero mostrar en la tabla lo realizo para que la vista ejecute la accion de mostrar solo los campos que yo le indico en este array <br>
+  * 5 -  Asigno la variable $url la cual tiene ulr completa de consulta <br>
+  * 
+  * Return: retornar una vista con una lista de todas los productos 
+  * @return \Illuminate\Http\Response $titulo, $datos, $titulosTabla, $campos, $url
+  */
+  public function index()
     {
-        //Seteo el titulo en la funcion para mostrar en la vista index
+        #1
         $titulo = $this->titulo;
-
-        /**
-        *Variable datos debe contener la informacion que se quiere mostrar en el formulario generico.
-        */
+        #2
         $datos = Cache::remember('tipolevante', 60, function()
         {
             return TTipoLevante::all();
         });
-
-        /**
-        *Variable titulosTabla debe contener un array con los titulos de la tabla.
-        *La cantidad de titulos debe corresponder a la cantidad de columnas que trae la consulta.
-        */
+        #3 
         $titulosTabla =  array('Id', 'Descripcion',  'Editar', 'Eliminar');
-
-        /**
-        *Campos con su tipo de dato.
-        *Variable que debe contener los campos de la tabla con su nombre real.
-        *De primero siempre debe ir el identificador de la tabla.
-        */
+        #4
         $campos =  array($this->id, $this->tlev_nombre);
-
-        //Genera url completa de consulta
+        #5
         $url = url($this->strUrlConsulta);
 
         return view('importacionesv2.index', compact('titulo',
-        'datos',
-        'titulosTabla',
-        'campos',
-        'url'));
+            'datos',
+            'titulosTabla',
+            'campos',
+            'url'));
     }
 
-    /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
+/**
+  * create
+  * Funcion que muestra el formulario de creacion resource/views/importacionesv2/create.blade.php
+  *
+  * 1 -  Asigno la variable campos con un array de arrays cada array contenido en cada posicion debe tener informacion del campo de la base de datos que quiero mostrar en el formulario lo realizo para que la vista ejecute la accion de mostrar solo los campos que yo le indico en este array y crear solo una vista <br>
+  * 2 -  Asigno la variable $url la cual tiene ulr completa de consulta <br>
+  * 3 -  Asigno la variable $titulo con que se definio en la variable global titulo <br>
+  * 4 -  Asigno la variable $validator la cual va a contener un script javascript que voy a pintar en la vista para realizar las rules de validacion que defino en el controlador
+  * 
+  * Return: Debe retornar una vista con un formulario de creacion con los campos para productos
+  * @return \Illuminate\Http\Response titulo, campos, url, validator
+  */
+  
     public function create()
     {
-        //Array que contiene los campos que deseo mostrar en el formulario no debes tiene en cuenta timestamps ni softdeletes
+        #1
         $campos =  array($this->id, $this->tlev_nombre);
-        //Genera url completa de consulta
+        #2
         $url = url($this->strUrlConsulta);
-        //Variable que contiene el titulo de la vista crear
+        #3
         $titulo = "CREAR ".$this->titulo;
-        //Libreria de validaciones con ajax
+        #4
         $validator = JsValidator::make($this->rules, $this->messages);
 
         return view('importacionesv2.create', compact('titulo','campos' ,'url', 'validator'));

@@ -255,53 +255,73 @@ class TProductoController extends Controller
     //
   }
 
-  /**
-  * Show the form for editing the specified resource.
+  
+/**
+  * edit
+  * Funcion que muestra el formulario de editar resource/views/importacionesv2/edit.blade.php
   *
-  * @param  int  $id
-  * @return \Illuminate\Http\Response
+  * 1 -  Asigno la variable id con el parametro id del modelo que deseo editar <br>
+  * 2 -  Consulto el objeto que deseo editar <br>
+  * 3 -  Creo un array donde cada posicion hace referencia a un campo de la tabla t_producto, el cual quiero mostrar en el formulario de creacion. <br>
+  * 4 -  Asigno la variable $titulo con que se definio en la variable global titulo <br>
+  * 5 -  Asigno la variable $url la cual tiene ulr completa de consulta <br>
+  * 6 -  Asigno la variable $validator la cual va a contener un script javascript que voy a pintar en la vista para realizar las rules de validacion que defino en el controlador <br>
+  * 7 -  Asigno el string que hace referencia al name de la ruta update <br>
+  * 
+  * Return: Debe retornar una vista con un formulario para editar un registro 
+  * @param $id
+  * @return \Illuminate\Http\Response id, objeto, campos, titulo, url, validator, route
   */
   public function edit($id)
   {
-    //Id del registro que deseamos editar
+    #1
     $id = $id;
-    //Consulto el registro que deseo editar
+    #2
     $objeto = TProducto::find($id);
-    //organizo el array que me sirve para mostrar el formulario de edicion
+    #3
     $campos =  array($this->id, $this->prod_referencia, $this->prod_req_declaracion_anticipado, $this->prod_req_registro_importacion);
-    //Titulo de la pagina
+    #4
     $titulo = "EDITAR ".$this->titulo;
-    //url de redireccion para consultar
+    #5
     $url = url($this->strUrlConsulta);
-    // Validaciones ajax
+    #6
     $validator = JsValidator::make($this->rules, $this->messages);
-    //url de redireccion para editar
+    #7
     $route = 'Producto.update';
-    //retorno a la vista
+
     return view('importacionesv2.edit', compact('campos', 'url', 'titulo', 'validator', 'route', 'id' ,'objeto'));
   }
 
   /**
-  * Update the specified resource in storage.
+  * update
+  * Funcion que actualiza el registro en la tabla origen mercancia
   *
+  * 1 -  Asigna a la variable $url la url de consulta <br>
+  * 2 -  Obtengo el objeto que deseo editar <br>
+  * 3 -  Consulto en la tabla si existe algun registro con el mismo prod_referencia, en caso de encontrar alguno redirecciona a la funcion edit y retorna el error <br>
+  * 4 -  Edita el registro de la tabla <br>
+  * 5 -  Borra la cache del string origenmercancia <br>
+  * 6 -  Redirecciona a vista de consulta <br>
+  * 
+  * Return: debe retornar exito en caso de haber hecho update sobre el registro, o error en caso de que el origen de la mercancia tenga el mismo ormer_nombre que otro
   * @param  \Illuminate\Http\Request  $request
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */
+  
   public function update(Request $request, $id)
   {
-     //Genera la url de consulta
+    #1
     $url = url($this->strUrlConsulta);
-    //Consulto el registro a editar
+    #2
     $ObjectUpdate = TProducto::find($id);
-    //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
+    #3
     $validarExistencia = TProducto::where('prod_referencia', '=', "$request->prod_referencia")->first();
     if(count($validarExistencia) > 0 && $validarExistencia != $ObjectUpdate){
-      //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
       return Redirect::to("$url/$id/edit")
       ->withErrors('El producto que intenta editar tiene el mismo nombre que un registro ya existente');
     }
-    //Edita el registro en la tabla
+    #4
     $ObjectUpdate->prod_referencia = strtoupper(Input::get('prod_referencia'));
 
     if ($request->prod_req_declaracion_anticipado == 1){
@@ -316,14 +336,24 @@ class TProductoController extends Controller
       $ObjectUpdate->prod_req_registro_importacion = 0;
     }
     $ObjectUpdate->save();
-    //Redirecciona a la pagina de consulta y muestra mensaje
+    #6
     Session::flash('message', 'El producto fue editado exitosamente!');
     return Redirect::to($url);
   }
 
-  /**
-  * Remove the specified resource from storage.
+
+ /**
+  * destroy
+  * 
+  * Hace un softdelete sobre el objeto de cuyo id coincida con el enviado a traves del parametro de la funcion
+  * 
+  * 1 -  Asigna el objeto cuyo $id coincida con el enviado a traves del parametro de la funcion a la variable $ObjectDestroy  <br>
+  * 2 -  Borra el objeto $ObjectDestroy <br>
+  * 3 -  Asigna la url completa a la variable $url <br>
+  * 4 -  Borra la cache del string <br>
+  * 5 -  Redirecciona a la url <br>
   *
+  * Return: Retorna mensaje de exito una ves elimina el origen de la mercancia
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */

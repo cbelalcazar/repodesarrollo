@@ -177,7 +177,7 @@ class TOrigenMercanciaController extends Controller
   }
 
 /**
-  * create
+  * edit
   * Funcion que muestra el formulario de editar resource/views/importacionesv2/edit.blade.php
   *
   * 1 -  Asigno la variable id con el parametro id del origen de la mercancia que deseo editar <br>

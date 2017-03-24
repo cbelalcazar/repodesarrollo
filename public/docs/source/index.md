@@ -210,7 +210,7 @@ $.ajax(settings).done(function (response) {
 
 <!-- END_d6f79c487473898c4722417cbaa3e43f -->
 <!-- START_c78d7bf890003c8fda8a46b2f4ee1f7b -->
-## create
+## edit
 Funcion que muestra el formulario de editar resource/views/importacionesv2/edit.blade.php
 
 1 -  Asigno la variable id con el parametro id del origen de la mercancia que deseo editar <br>
@@ -539,7 +539,18 @@ $.ajax(settings).done(function (response) {
 
 <!-- END_be05302ee46907bdd8d05914383ee7b1 -->
 <!-- START_7f937ee7b1b9c66e60141fd6e74fbf7a -->
-## Show the form for editing the specified resource.
+## edit
+Funcion que muestra el formulario de editar resource/views/importacionesv2/edit.blade.php
+
+1 -  Asigno la variable id con el parametro id del modelo que deseo editar <br>
+2 -  Consulto el objeto que deseo editar <br>
+3 -  Creo un array donde cada posicion hace referencia a un campo de la tabla t_producto, el cual quiero mostrar en el formulario de creacion. <br>
+4 -  Asigno la variable $titulo con que se definio en la variable global titulo <br>
+5 -  Asigno la variable $url la cual tiene ulr completa de consulta <br>
+6 -  Asigno la variable $validator la cual va a contener un script javascript que voy a pintar en la vista para realizar las rules de validacion que defino en el controlador <br>
+7 -  Asigno el string que hace referencia al name de la ruta update <br>
+
+Return: Debe retornar una vista con un formulario para editar un registro
 
 > Example request:
 
@@ -580,7 +591,17 @@ $.ajax(settings).done(function (response) {
 
 <!-- END_7f937ee7b1b9c66e60141fd6e74fbf7a -->
 <!-- START_811a3aff5b97883a2f618adaf520e316 -->
-## Update the specified resource in storage.
+## update
+Funcion que actualiza el registro en la tabla origen mercancia
+
+1 -  Asigna a la variable $url la url de consulta <br>
+2 -  Obtengo el objeto que deseo editar <br>
+3 -  Consulto en la tabla si existe algun registro con el mismo prod_referencia, en caso de encontrar alguno redirecciona a la funcion edit y retorna el error <br>
+4 -  Edita el registro de la tabla <br>
+5 -  Borra la cache del string origenmercancia <br>
+6 -  Redirecciona a vista de consulta <br>
+
+Return: debe retornar exito en caso de haber hecho update sobre el registro, o error en caso de que el origen de la mercancia tenga el mismo ormer_nombre que otro
 
 > Example request:
 
@@ -614,7 +635,17 @@ $.ajax(settings).done(function (response) {
 
 <!-- END_811a3aff5b97883a2f618adaf520e316 -->
 <!-- START_7d498611ed1d0336ad1420ceea148845 -->
-## Remove the specified resource from storage.
+## destroy
+
+Hace un softdelete sobre el objeto de cuyo id coincida con el enviado a traves del parametro de la funcion
+
+1 -  Asigna el objeto cuyo $id coincida con el enviado a traves del parametro de la funcion a la variable $ObjectDestroy  <br>
+2 -  Borra el objeto $ObjectDestroy <br>
+3 -  Asigna la url completa a la variable $url <br>
+4 -  Borra la cache del string <br>
+5 -  Redirecciona a la url <br>
+
+Return: Retorna mensaje de exito una ves elimina el origen de la mercancia
 
 > Example request:
 
@@ -735,6 +766,294 @@ $.ajax(settings).done(function (response) {
 
 
 <!-- END_42e252e6dd5b33cb779f9d2ec386eb6d -->
+#TTipoLevanteController
+
+Controlador creado para el crud de producto
+
+Creado por Carlos Belalcazar
+
+Analista desarrollador de software Belleza Express
+
+22/02/2017
+<!-- START_b6a987ef5cf2679fce59b277e48587e5 -->
+## index
+Funcion que consulta todos los tipos de levante y los retorna a la vista resource/views/importacionesv2/index.blade.php
+
+1 -  Asigno la variable $titulo con que se definio en la variable global titulo <br>
+2 -  Asigno variable $datos con la consulta de todos los registros de la tabla t_producto <br>
+3 -  Asigno la variable $titulosTabla con un array donde cada posicion hace referencia a un titulo de columna de la tabla a mostrar, siempre al final le pongo las acciones editar y eliminar los demas campos son los mismos del array $campos <br>
+4 -  Asigno la variable campos con un array de arrays cada array contenido en cada posicion debe tener informacion del campo de la base de datos que quiero mostrar en la tabla lo realizo para que la vista ejecute la accion de mostrar solo los campos que yo le indico en este array <br>
+5 -  Asigno la variable $url la cual tiene ulr completa de consulta <br>
+
+Return: retornar una vista con una lista de todas los productos
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/TipoLevante" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/TipoLevante",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/TipoLevante`
+
+`HEAD importacionesv2/TipoLevante`
+
+
+<!-- END_b6a987ef5cf2679fce59b277e48587e5 -->
+<!-- START_e06e5d0e0f785956fd9b5d27023bd62f -->
+## create
+Funcion que muestra el formulario de creacion resource/views/importacionesv2/create.blade.php
+
+1 -  Asigno la variable campos con un array de arrays cada array contenido en cada posicion debe tener informacion del campo de la base de datos que quiero mostrar en el formulario lo realizo para que la vista ejecute la accion de mostrar solo los campos que yo le indico en este array y crear solo una vista <br>
+2 -  Asigno la variable $url la cual tiene ulr completa de consulta <br>
+3 -  Asigno la variable $titulo con que se definio en la variable global titulo <br>
+4 -  Asigno la variable $validator la cual va a contener un script javascript que voy a pintar en la vista para realizar las rules de validacion que defino en el controlador
+
+Return: Debe retornar una vista con un formulario de creacion con los campos para productos
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/TipoLevante/create" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/TipoLevante/create",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/TipoLevante/create`
+
+`HEAD importacionesv2/TipoLevante/create`
+
+
+<!-- END_e06e5d0e0f785956fd9b5d27023bd62f -->
+<!-- START_16448db28ac465adcc94cd18eafc0643 -->
+## Store a newly created resource in storage.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/TipoLevante" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/TipoLevante",
+    "method": "POST",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+
+### HTTP Request
+`POST importacionesv2/TipoLevante`
+
+
+<!-- END_16448db28ac465adcc94cd18eafc0643 -->
+<!-- START_14af31d468f7301be6df837feccc0b57 -->
+## Display the specified resource.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/TipoLevante/{TipoLevante}" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/TipoLevante/{TipoLevante}",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/TipoLevante/{TipoLevante}`
+
+`HEAD importacionesv2/TipoLevante/{TipoLevante}`
+
+
+<!-- END_14af31d468f7301be6df837feccc0b57 -->
+<!-- START_dd681450152a857e7a5af87d79e81e02 -->
+## Show the form for editing the specified resource.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/TipoLevante/{TipoLevante}/edit" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/TipoLevante/{TipoLevante}/edit",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/TipoLevante/{TipoLevante}/edit`
+
+`HEAD importacionesv2/TipoLevante/{TipoLevante}/edit`
+
+
+<!-- END_dd681450152a857e7a5af87d79e81e02 -->
+<!-- START_8a195a0f4d0d6a8e352e2069d5597f5f -->
+## Update the specified resource in storage.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/TipoLevante/{TipoLevante}" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/TipoLevante/{TipoLevante}",
+    "method": "PUT",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+
+### HTTP Request
+`PUT importacionesv2/TipoLevante/{TipoLevante}`
+
+`PATCH importacionesv2/TipoLevante/{TipoLevante}`
+
+
+<!-- END_8a195a0f4d0d6a8e352e2069d5597f5f -->
+<!-- START_6a21c62a0f8883fa2a5790770e17a452 -->
+## Remove the specified resource from storage.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/TipoLevante/{TipoLevante}" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/TipoLevante/{TipoLevante}",
+    "method": "DELETE",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+
+### HTTP Request
+`DELETE importacionesv2/TipoLevante/{TipoLevante}`
+
+
+<!-- END_6a21c62a0f8883fa2a5790770e17a452 -->
 #general
 <!-- START_ceb36ae56f80374a589930ba70d382c2 -->
 ## Display a listing of the resource.
@@ -1260,268 +1579,6 @@ $.ajax(settings).done(function (response) {
 
 
 <!-- END_3e6609b0d63b3a6438f8a7fb54039f05 -->
-<!-- START_b6a987ef5cf2679fce59b277e48587e5 -->
-## Display a listing of the resource.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/TipoLevante" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/TipoLevante",
-    "method": "GET",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
-
-### HTTP Request
-`GET importacionesv2/TipoLevante`
-
-`HEAD importacionesv2/TipoLevante`
-
-
-<!-- END_b6a987ef5cf2679fce59b277e48587e5 -->
-<!-- START_e06e5d0e0f785956fd9b5d27023bd62f -->
-## Show the form for creating a new resource.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/TipoLevante/create" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/TipoLevante/create",
-    "method": "GET",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
-
-### HTTP Request
-`GET importacionesv2/TipoLevante/create`
-
-`HEAD importacionesv2/TipoLevante/create`
-
-
-<!-- END_e06e5d0e0f785956fd9b5d27023bd62f -->
-<!-- START_16448db28ac465adcc94cd18eafc0643 -->
-## Store a newly created resource in storage.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/TipoLevante" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/TipoLevante",
-    "method": "POST",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-
-### HTTP Request
-`POST importacionesv2/TipoLevante`
-
-
-<!-- END_16448db28ac465adcc94cd18eafc0643 -->
-<!-- START_14af31d468f7301be6df837feccc0b57 -->
-## Display the specified resource.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/TipoLevante/{TipoLevante}" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/TipoLevante/{TipoLevante}",
-    "method": "GET",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
-
-### HTTP Request
-`GET importacionesv2/TipoLevante/{TipoLevante}`
-
-`HEAD importacionesv2/TipoLevante/{TipoLevante}`
-
-
-<!-- END_14af31d468f7301be6df837feccc0b57 -->
-<!-- START_dd681450152a857e7a5af87d79e81e02 -->
-## Show the form for editing the specified resource.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/TipoLevante/{TipoLevante}/edit" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/TipoLevante/{TipoLevante}/edit",
-    "method": "GET",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
-
-### HTTP Request
-`GET importacionesv2/TipoLevante/{TipoLevante}/edit`
-
-`HEAD importacionesv2/TipoLevante/{TipoLevante}/edit`
-
-
-<!-- END_dd681450152a857e7a5af87d79e81e02 -->
-<!-- START_8a195a0f4d0d6a8e352e2069d5597f5f -->
-## Update the specified resource in storage.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/TipoLevante/{TipoLevante}" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/TipoLevante/{TipoLevante}",
-    "method": "PUT",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-
-### HTTP Request
-`PUT importacionesv2/TipoLevante/{TipoLevante}`
-
-`PATCH importacionesv2/TipoLevante/{TipoLevante}`
-
-
-<!-- END_8a195a0f4d0d6a8e352e2069d5597f5f -->
-<!-- START_6a21c62a0f8883fa2a5790770e17a452 -->
-## Remove the specified resource from storage.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/TipoLevante/{TipoLevante}" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/TipoLevante/{TipoLevante}",
-    "method": "DELETE",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-
-### HTTP Request
-`DELETE importacionesv2/TipoLevante/{TipoLevante}`
-
-
-<!-- END_6a21c62a0f8883fa2a5790770e17a452 -->
 <!-- START_9e459e0e63b0734dcf30b4a675283ba8 -->
 ## Display a listing of the resource.
 
