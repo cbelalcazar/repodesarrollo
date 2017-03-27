@@ -19,20 +19,20 @@
 <br>
 <link href="{{url('/css/importacionesv2.css')}}" type="text/css" rel="stylesheet"/>
 
- <div class="form-group">
-   @if ($errors->all())
-   <div class="alert alert-danger" id="mensajealerta">
-    @foreach($errors->all() as $key => $value)
-    <span class="glyphicon glyphicon-remove red"></span>  {{$value}} <br>
-    @endforeach
-    <script> setTimeout(function(){ 
-      $( "#mensajealerta" ).fadeToggle("slow");
-    }, 5000);</script>
-  </div>
-  @endif
-  @if (Session::has('message'))
-  <div class="alert alert-info">{{ Session::get('message') }}</div>
-  @endif
+<div class="form-group">
+ @if ($errors->all())
+ <div class="alert alert-danger" id="mensajealerta">
+  @foreach($errors->all() as $key => $value)
+  <span class="glyphicon glyphicon-remove red"></span>  {{$value}} <br>
+  @endforeach
+  <script> setTimeout(function(){ 
+    $( "#mensajealerta" ).fadeToggle("slow");
+  }, 5000);</script>
+</div>
+@endif
+@if (Session::has('message'))
+<div class="alert alert-info">{{ Session::get('message') }}</div>
+@endif
 </div>
 
 
@@ -55,11 +55,12 @@
       @if($value['importacion'][0]->embarqueimportacion != null)
       <br>
       <tr class="warning">
-      <td>{{$value->producto->prod_referencia}}</td>
-      <td>{{$value->importacion[0]->imp_consecutivo}}</td>
-      <td>{{$value->pdim_fech_req_declaracion_anticipado}}</td>      
-      <td>{{$value->pdim_fech_requ_registro_importacion}}</td>
-      <td>{{$value->pdim_alerta}}</td>
+        <td>{{$value->producto->prod_referencia}}</td>
+        <td>{{$value->importacion[0]->imp_consecutivo}}</td>
+        <td>{{$value->pdim_fech_req_declaracion_anticipado}}</td>      
+        <td>{{$value->pdim_fech_requ_registro_importacion}}</td>
+        <td> <a class="btn btn-small btn-danger glyphicon glyphicon-plus" href="{{route('ProductoImportacion.edit',['id' => $value->id])}}"'></a></td>
+
       </tr>
       @endif
       @endforeach
