@@ -804,19 +804,24 @@ return "error";
     public function alertasImportacion(Request $request){
     //Seteo el titulo en la funcion para mostrar en la vista index
         $titulo = "CERRAR ALERTAS DE PRODUCTO IMPORTACION";
+
      /**
         *Variable titulosTabla debe contener un array con los titulos de la tabla.
         *La cantidad de titulos debe corresponder a la cantidad de columnas que trae la consulta.
         */
-     $titulosTabla =  array('Referencia', 'Consecutivo importacion', 'Fecha declaracion anticipada', 'Fecha registro importacion',  'Alerta activa', 'Cerrar alertas');
+     $titulosTabla =  array('Referencia', 'Consecutivo importacion', 'Fecha declaracion anticipada', 'Fecha registro importacion', 'Cerrar alertas');
 
         //Genera url completa de consulta
      $url = route("consultaAlertas");
         #Retorna la informacion a la vista
+
      $datos = TProductoImportacion::with('importacion.embarqueimportacion')->with('producto')->where('pdim_alerta','=','1')->get();
-
-     $embarque = TEmbarqueImportacion::where('emim_importacion', $datos[0]->pdim_importacion)->first();
-
+      if(count($datos) > 0){
+            $embarque = TEmbarqueImportacion::where('emim_importacion', $datos[0]->pdim_importacion)->first();
+      }else{
+        $embarque = [];
+      }
+     
      return view('importacionesv2.importacionTemplate.consultaAlertas', compact('titulo',
         'datos',
         'titulosTabla',
