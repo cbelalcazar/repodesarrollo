@@ -808,13 +808,14 @@ return "error";
         *Variable titulosTabla debe contener un array con los titulos de la tabla.
         *La cantidad de titulos debe corresponder a la cantidad de columnas que trae la consulta.
         */
-     $titulosTabla =  array('Referencia', 'Consecutivo importacion', 'Fecha declaracion anticipada', 'Fecha registro importacion',  'Alerta activa', 'Dias desde apertura', 'Cerrar alertas');
+     $titulosTabla =  array('Referencia', 'Consecutivo importacion', 'Fecha declaracion anticipada', 'Fecha registro importacion',  'Alerta activa', 'Cerrar alertas');
 
         //Genera url completa de consulta
      $url = route("consultaAlertas");
         #Retorna la informacion a la vista
-     $datos = TProductoImportacion::with('importacion.embarqueimportacion')->with('producto')->where('pdim_alerta','=','1')->get();
 
+     $datos = TProductoImportacion::with('importacion.embarqueimportacion')->with('producto')->where('pdim_alerta','=','1')->get();
+     
      $embarque = TEmbarqueImportacion::where('emim_importacion', $datos[0]->pdim_importacion)->first();
 
      return view('importacionesv2.importacionTemplate.consultaAlertas', compact('titulo',
