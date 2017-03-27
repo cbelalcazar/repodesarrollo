@@ -61,7 +61,7 @@ class TImportacionController extends Controller
 
     public function __construct()
     {
-        $this->middleware('ImpMid')->only(['store', 'update', 'cerrarOrden']);
+        $this->middleware('ImpMid')->only(['update', 'cerrarOrden']);
     }
     /**
     * Display a listing of the resource.
@@ -589,6 +589,13 @@ return Redirect::to($urlConsulta);
     public function destroy($id)
     {
         //
+        $importacion = TImportacion::find($id);
+        $importacion->imp_estado_proceso = 7;
+        $importacion->save();
+        $url = route('consultaFiltros');
+        Session::flash('message', 'La orden fue anulada exitosamente');
+        return redirect($url);
+
     }
 
 
@@ -785,6 +792,7 @@ return "error";
         $url3 = route("Embarque.store");
         $url4 = route("Pagos.store");
         $url5 = route("NacionalizacionCosteo.store");
+        $hasPerm = $this->permisos();
         #Retorna la informacion a la vista
         return view('importacionesv2.importacionTemplate.consultaImportacion', compact('titulo',
             'datos',
@@ -796,7 +804,8 @@ return "error";
             'url4',
             'url5',
             'puertos',
-            'estados'));
+            'estados',
+            'hasPerm'));
 
     }
 
@@ -809,7 +818,7 @@ return "error";
         *Variable titulosTabla debe contener un array con los titulos de la tabla.
         *La cantidad de titulos debe corresponder a la cantidad de columnas que trae la consulta.
         */
-     $titulosTabla =  array('Referencia', 'Consecutivo importacion', 'Fecha declaracion anticipada', 'Fecha registro importacion', 'Cerrar alertas');
+     $titulosTabla =  array('Referencia', 'Consecutivo importacion', 'Fecha declaracion anticipada', 'Fecha registro importacion', 'Dias', 'Cerrar alertas');
 
         //Genera url completa de consulta
      $url = route("consultaAlertas");

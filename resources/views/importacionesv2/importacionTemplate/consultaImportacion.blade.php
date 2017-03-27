@@ -70,9 +70,6 @@
      }, 5000);</script>
   </div>
   @endif
-  @if (Session::has('message'))
-  <div class="alert alert-info">{{ Session::get('message') }}</div>
-  @endif
 </div>
 <!-- ************************************ -->
 <!-- End General errors in form -->
@@ -87,6 +84,9 @@
         @foreach($titulosTabla as $key => $value)
         <td>{{$value}}</td>
         @endforeach
+        @if($hasPerm == 1)
+        <td>Anular</td>
+        @endif
       </tr>
     </thead>
     <tbody>
@@ -97,20 +97,33 @@
         <td>{{$value->imp_proveedor}} -- {{$value->proveedor->razonSocialTercero}}</td>
         <td>{{$value->estado->est_nombre}}</td>
         <td>{{$value->puerto_embarque->puem_nombre}}</td>
+        <!-- Importacion -->
+        @if($value->estado->est_nombre == 'ANULADA')
+        <td> <a class="btn btn-small btn-default glyphicon glyphicon-remove-sign disabled" href="#"></a></td>
+        @else
         <td> <a class="btn btn-small btn-success glyphicon glyphicon-pencil" href="{{ URL::to("$url2/" . $value->id . '/edit') }}"></a></td>
-        @if($value->embarqueimportacion == null)
+        @endif
+
+        <!-- embarque -->
+        @if($value->estado->est_nombre == 'ANULADA')
+        <td> <a class="btn btn-small btn-default glyphicon glyphicon-remove-sign disabled" href="#"></a></td>
+        @elseif($value->embarqueimportacion == null)
         <td> <a class="btn btn-small btn-danger glyphicon glyphicon-plus" href="{{route('createEmbarque1',['id' => $value->id])}}"'></a></td>
         @elseif($value->embarqueimportacion != null)
         <td> <a class="btn btn-small btn-success glyphicon glyphicon-pencil" href="{{ URL::to("$url3/" . $value->embarqueimportacion->id . '/edit') }}"></a></td>
         @endif
 
-        @if($value->pagosimportacion == null)
+        <!-- pagos -->
+        @if($value->estado->est_nombre == 'ANULADA')
+        <td> <a class="btn btn-small btn-default glyphicon glyphicon-remove-sign disabled" href="#"></a></td>
+        @elseif($value->pagosimportacion == null)
         <td> <a class="btn btn-small btn-danger glyphicon glyphicon-plus" href="{{route('createPagos',['id' => $value->id])}}"'></a></td>
         @elseif($value->pagosimportacion != null)
         <td> <a class="btn btn-small btn-success glyphicon glyphicon-pencil" href="{{ URL::to("$url4/" . $value->pagosimportacion->id . '/edit') }}"></a></td>
         @endif
       
-        @if($value['nacionalizacionimportacion'] == null && $value['embarqueimportacion'] == null)
+      <!-- nacionalizacion y costeo -->
+        @if($value['nacionalizacionimportacion'] == null && $value['embarqueimportacion'] == null || $value->estado->est_nombre == 'ANULADA')
         <td> <a class="btn btn-small btn-default glyphicon glyphicon-remove-sign disabled" href="#"></a></td>
         @elseif($value->nacionalizacionimportacion == null && $value->embarqueimportacion != null && $value->pagosimportacion != null)
         <td> <a class="btn btn-small btn-danger glyphicon glyphicon-plus" href="{{route('createNC',['id' => $value->id])}}"'></a></td>
@@ -118,7 +131,7 @@
         <td> <a class="btn btn-small btn-success glyphicon glyphicon-pencil" href="{{ URL::to("$url5/" . $value->nacionalizacionimportacion->id . '/edit') }}"></a></td>
         @endif  
 
-
+        <!-- cerrar orden -->
         @if($value->nacionalizacionimportacion == null || $value->embarqueimportacion == null || $value->pagosimportacion == null)
         <td> <a class="btn btn-small btn-default glyphicon glyphicon-remove-sign disabled" href="#"></a></td>
         @elseif($value->nacionalizacionimportacion != null && $value->estado->est_nombre != 'CERRADA')
@@ -126,6 +139,19 @@
         @elseif($value->nacionalizacionimportacion != null && $value->estado->est_nombre == 'CERRADA')
         <td> <a class="btn btn-small btn-success glyphicon glyphicon-pencil" href="{{route('Importacion.show',['id' => $value->id])}}"></a></td>
         @endif  
+
+
+        <!-- anular -->
+         @if($value->nacionalizacionimportacion != null || $value->embarqueimportacion != null || $value->pagosimportacion != null || $value->estado->est_nombre == 'ANULADA')      
+         <td> <a class="btn btn-small btn-default glyphicon glyphicon-remove-sign disabled" href="#"></a></td>
+        @elseif($value->nacionalizacionimportacion == null || $value->embarqueimportacion == null || $value->pagosimportacion == null && $value->estado->est_nombre == 'ORIGEN')
+        <td>          
+          {{ Form::open(array('url' => route('Importacion.destroy',['id' => $value->id]), 'class' => '')) }}
+          {{ Form::hidden('_method', 'DELETE') }}
+          {{ Form::submit('Anular', array('class' => 'btn btn-small btn-danger')) }}
+          {{ Form::close() }}
+        </td>
+        @endif
 
       </tr>
       @endforeach

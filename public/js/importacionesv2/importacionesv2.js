@@ -110,11 +110,7 @@ $( function() {
 //Javascript para hacer calendarios y otros eventos que se ejecutan al momento que carga la pagina
 $(document).ready(function()
 {
- //sessionStorage.setItem('tabla', '');
- //Funcion jquery para que una caja de texto no permita letras
- $('.solo-numero').keyup(function (){
-  this.value = (this.value + '').replace(/[^0-9]/g, '');
-});
+
  //Oculta la tabla productos y proformas
  $('#ocultar2').hide();
  $('#ocultar3').hide();

@@ -60,8 +60,8 @@
         <td>{{$value->importacion[0]->imp_consecutivo}}</td>
         <td>{{$value->pdim_fech_req_declaracion_anticipado}}</td>      
         <td>{{$value->pdim_fech_requ_registro_importacion}}</td>
+        <td>{{\Carbon\Carbon::parse($embarque->emim_fecha_eta)->subDays(13)->diffInDays(\Carbon\Carbon::now())}}</td>
         <td> <a class="btn btn-small btn-danger glyphicon glyphicon-plus" href="{{route('ProductoImportacion.edit',['id' => $value->id])}}"'></a></td>
-
       </tr>
       @endif
       @endforeach

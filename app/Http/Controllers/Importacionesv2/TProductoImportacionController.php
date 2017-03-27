@@ -97,6 +97,7 @@ class TProductoImportacionController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $urlErrorReturn = route('ProductoImportacion.edit', ['ProductoImportacion' => $id]);
         $producto = TProductoImportacion::find($id);
         $declaracion = false;
         $registroImportacion = false;        
@@ -112,11 +113,17 @@ class TProductoImportacionController extends Controller
         if($request->pdim_fecha_anticipado != "" && $declaracion){
             $producto->pdim_fecha_anticipado =  Carbon::parse($request->pdim_fecha_anticipado)->format('Y-m-d');
             $producto->pdim_fech_cierre_declaracion_anticipado =  Carbon::now()->format('Y-m-d');
+        }elseif($request->pdim_fecha_anticipado == "" && $declaracion){
+            return redirect($urlErrorReturn)->withErrors('Debe ingresar la fecha de declaracion anticipada')->withInput(); 
         }
+
         if($request->pdim_numero_licencia_importacion != "" && $registroImportacion){
             $producto->pdim_numero_licencia_importacion = $request->pdim_numero_licencia_importacion;
             $producto->pdim_fech_cierre_registro_importacion =  Carbon::now()->format('Y-m-d');
-        }   
+        }elseif($request->pdim_numero_licencia_importacion == "" && $registroImportacion){
+             return redirect($urlErrorReturn)->withErrors('Debe ingresar el numero de registro de importacion')->withInput(); 
+        }
+
         $producto->pdim_alerta = 0;
         $producto->save();
 
