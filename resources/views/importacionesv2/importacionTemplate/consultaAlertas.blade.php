@@ -51,6 +51,7 @@
     </thead>
     <tbody>
       <!-- Aqui se generan los registros de la tabla-->
+      @if(isset($datos))
       @foreach($datos as $key => $value)
       @if($value['importacion'][0]->embarqueimportacion != null)
       <br>
@@ -63,6 +64,7 @@
       </tr>
       @endif
       @endforeach
+      @endif
     </tbody>
   </table>
 </div>
