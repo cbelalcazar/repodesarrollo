@@ -55,7 +55,11 @@
       @if($value['importacion'][0]->embarqueimportacion != null)
       <br>
       <tr class="warning">
-      {{$value}}
+      <td>{{$value->producto->prod_referencia}}</td>
+      <td>{{$value->importacion[0]->imp_consecutivo}}</td>
+      <td>{{$value->pdim_fech_req_declaracion_anticipado}}</td>      
+      <td>{{$value->pdim_fech_requ_registro_importacion}}</td>
+      <td>{{$value->pdim_alerta}}</td>
       </tr>
       @endif
       @endforeach
