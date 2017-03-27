@@ -808,7 +808,7 @@ return "error";
         *Variable titulosTabla debe contener un array con los titulos de la tabla.
         *La cantidad de titulos debe corresponder a la cantidad de columnas que trae la consulta.
         */
-     $titulosTabla =  array('Referencia', 'Consecutivo importacion', 'Fecha declaracion anticipada', 'Fecha registro importacion',  'Alerta activa', 'Dias desde apertura', 'Cerrar alertas');
+     $titulosTabla =  array('Referencia', 'Consecutivo importacion', 'Fecha declaracion anticipada', 'Fecha registro importacion',  'Alerta activa', 'Cerrar alertas');
 
         //Genera url completa de consulta
      $url = route("consultaAlertas");
