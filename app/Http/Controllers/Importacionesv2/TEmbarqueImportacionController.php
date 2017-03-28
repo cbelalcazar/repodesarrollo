@@ -9,6 +9,7 @@ use App\Models\Importacionesv2\TTipoContenedor;
 use App\Models\Importacionesv2\TEmbarqueImportacion;
 use App\Models\Importacionesv2\TContenedorEmbarque;
 use App\Models\Importacionesv2\TProductoImportacion;
+use App\Models\Importacionesv2\TLineaMaritima;
 use \Cache;
 use Validator;
 use Carbon\Carbon;
@@ -117,7 +118,7 @@ class TEmbarqueImportacionController extends Controller
         #String que hace referencia al URI del route que se le pasa al formulario y genere la url de post
         $url = "importacionesv2/Embarque";
         #Crea los array de las consultas para mostrar en los combobox en el formulario
-        $consulta = array(1,2);
+        $consulta = array(1,2,3);
         $combos = $this->consultas($consulta);
         #Convierte cada posicion del array en variables independientes
         extract($combos);
@@ -128,7 +129,8 @@ class TEmbarqueImportacionController extends Controller
                 'tipocarga',
                 'contenedores',
                 'idImportacion',
-                'imp_fechaentregatotal'));
+                'imp_fechaentregatotal',
+                'lineasMaritimas'));
     }
 
     /**
@@ -304,7 +306,7 @@ class TEmbarqueImportacionController extends Controller
         $contenedoresArray = TContenedorEmbarque::where('cont_embarque','=', "$objeto->id" )->get();
         $cantidadContenedores = count($contenedoresArray);
         #Crea los array de las consultas para mostrar en los combobox en el formulario
-        $consulta = array(1,2);
+        $consulta = array(1,2,3);
         $combos = $this->consultas($consulta);
         extract($combos);
         $urlBorrar = "";
@@ -320,7 +322,8 @@ class TEmbarqueImportacionController extends Controller
              'contenedoresArray',
              'cantidadContenedores',
              'urlBorrar',
-             'hasPerm'));
+             'hasPerm',
+             'lineasMaritimas'));
     }
 
     /**
@@ -436,6 +439,14 @@ class TEmbarqueImportacionController extends Controller
         $contenedores = array();
         foreach ($array as $key => $value) {$contenedores["$value->id"] = $value->tcont_descripcion;}
         $combos['contenedores'] = json_encode($contenedores);
+    }
+
+    // Combobox contenedores
+    if(in_array(3, $consulta)){
+        $array = Cache::remember('lineamaritima', 60, function() {return TLineaMaritima::all();});
+        $lineasMaritimas = array();
+        foreach ($array as $key => $value) {$lineasMaritimas["$value->id"] = $value->lmar_descripcion;}
+        $combos['lineasMaritimas'] = $lineasMaritimas;
     }
 
     return $combos;

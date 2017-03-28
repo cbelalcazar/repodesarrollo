@@ -130,13 +130,13 @@
         @elseif($value->nacionalizacionimportacion != null)
         <td> <a class="btn btn-small btn-success glyphicon glyphicon-pencil" href="{{ URL::to("$url5/" . $value->nacionalizacionimportacion->id . '/edit') }}"></a></td>
         @endif  
-
+  
         <!-- cerrar orden -->
-        @if($value->nacionalizacionimportacion == null || $value->embarqueimportacion == null || $value->pagosimportacion == null)
-        <td> <a class="btn btn-small btn-default glyphicon glyphicon-remove-sign disabled" href="#"></a></td>
-        @elseif($value->nacionalizacionimportacion != null && $value->estado->est_nombre != 'CERRADA')
+        @if(($value->nacionalizacionimportacion == null || $value->embarqueimportacion == null || $value->pagosimportacion == null) && $hasPerm == 1)
+        <td><a class="btn btn-small btn-default glyphicon glyphicon-remove-sign disabled" href="#"></a></td>
+        @elseif($value->nacionalizacionimportacion != null && $value->estado->est_nombre != 'CERRADA' && $hasPerm == 1)
         <td> <a class="btn btn-small btn-danger glyphicon glyphicon-plus" href="{{route('Importacion.show',['id' => $value->id])}}"'></a></td>
-        @elseif($value->nacionalizacionimportacion != null && $value->estado->est_nombre == 'CERRADA')
+        @elseif($value->nacionalizacionimportacion != null && $value->estado->est_nombre == 'CERRADA' && $hasPerm == 1)
         <td> <a class="btn btn-small btn-success glyphicon glyphicon-pencil" href="{{route('Importacion.show',['id' => $value->id])}}"></a></td>
         @endif  
 
@@ -167,10 +167,7 @@
   } );
 
 function crearEmbarque(id, url){
-  alert(url);
-  alert(id);
   $( "#mostrar2" ).load(url, id);
-  alert('holis');
 }
 
 </script>

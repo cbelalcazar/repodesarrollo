@@ -16,9 +16,6 @@ class TPagoImportacionController extends Controller
 
      //REGLAS DE VALIDACION EJECUTADOS ANTES DE GRABAR EL OBJETO 
   public $rules = array('pag_importacion'=>'required',
-    'pag_valor_anticipo'=>'required',
-    'pag_valor_saldo'=>'required',
-    'pag_valor_comision'=>'required',
     'pag_valor_total'=>'required',
     'pag_valor_fob'=>'required',
     'trm_liquidacion_factura'=>'required',
@@ -27,19 +24,16 @@ class TPagoImportacionController extends Controller
 
   //MENSAJES DE VALIDACION EJECUTADOS ANTES DE GRABAR EL OBJETO 
   public $messages = array('pag_importacion.required' => 'El proceso de pagos debe estar asociado a una importacion',
-    'pag_valor_anticipo.required' => 'Favor ingresar el valor del anticipo',
-    'pag_valor_saldo.required' => 'Favor ingresar el valor del saldo',
-    'pag_valor_comision.required' => 'Favor ingresar el valor de la comision',
     'pag_valor_total.required' => 'Favor ingresar el valor total',
     'pag_valor_fob.required' => 'Favor ingresar el valor FOB',
     'trm_liquidacion_factura.required' => 'Favor ingresar el valor trm liquidacion factura',
     'pag_fecha_factura.required' => 'Favor ingresar la fecha de la factura',
     'pag_fecha_envio_contabilidad.required' => 'Favor ingresar la fecha de envio a contabilidad');
 
-    public function __construct()
-    {
-        $this->middleware('ImpMid')->only([ 'update']);
-    }
+  public function __construct()
+  {
+    $this->middleware('ImpMid')->only([ 'update']);
+}
 
     /**
      * Display a listing of the resource.
@@ -81,7 +75,7 @@ class TPagoImportacionController extends Controller
         //  
         $urlConsulta = route('consultaFiltros'); 
 
-       
+
         $url = url("importacionesv2/Pagos/create");
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
@@ -109,15 +103,28 @@ class TPagoImportacionController extends Controller
         $ObjectCrear->pag_valor_fob = round($request->pag_valor_fob,2);
         $ObjectCrear->trm_liquidacion_factura = round($request->trm_liquidacion_factura,2);
         $ObjectCrear->pag_fecha_factura = Carbon::parse($request->pag_fecha_factura)->format('Y-m-d');
-        $ObjectCrear->pag_fecha_envio_contabilidad = Carbon::parse($request->pag_fecha_envio_contabilidad)->format('Y-m-d');        
-        $ObjectCrear->pag_fecha_anticipo = Carbon::parse($request->pag_fecha_anticipo)->format('Y-m-d');
-        $ObjectCrear->pag_fecha_saldo = Carbon::parse($request->pag_fecha_saldo)->format('Y-m-d');        
-        $ObjectCrear->pag_numero_factura = strtoupper($request->pag_numero_factura);
-        $ObjectCrear->save();
-
-        Session::flash('message', 'El proceso de pago fue creado exitosamente!');
-        return Redirect::to($urlConsulta);
+        $ObjectCrear->pag_fecha_envio_contabilidad = Carbon::parse($request->pag_fecha_envio_contabilidad)->format('Y-m-d');      
+        
+        if($request->pag_fecha_anticipo != ""){
+         $ObjectCrear->pag_fecha_anticipo = Carbon::parse($request->pag_fecha_anticipo)->format('Y-m-d');
+     }elseif ($request->pag_fecha_anticipo == "") {
+        $ObjectCrear->pag_fecha_anticipo = null;
     }
+
+
+    if($request->pag_fecha_saldo != ""){
+      $ObjectCrear->pag_fecha_saldo = Carbon::parse($request->pag_fecha_saldo)->format('Y-m-d');       
+  }elseif ($request->pag_fecha_saldo == "") {
+      $ObjectCrear->pag_fecha_saldo = null;
+  }
+
+  $ObjectCrear->pag_numero_factura = strtoupper($request->pag_numero_factura);
+
+  $ObjectCrear->save();
+
+  Session::flash('message', 'El proceso de pago fue creado exitosamente!');
+  return Redirect::to($urlConsulta);
+}
 
     /**
      * Display the specified resource.
@@ -171,8 +178,8 @@ class TPagoImportacionController extends Controller
             return 0;
         }elseif($permisos->perm_cargo == 1){
            return 1;
-        }
-    }
+       }
+   }
 
     /**
      * Update the specified resource in storage.

@@ -108,8 +108,7 @@ class TTipoLevanteController extends Controller
   * 
   * Return: Debe retornar una vista con un formulario de creacion con los campos para productos
   * @return \Illuminate\Http\Response titulo, campos, url, validator
-  */
-  
+  */  
     public function create()
     {
         #1

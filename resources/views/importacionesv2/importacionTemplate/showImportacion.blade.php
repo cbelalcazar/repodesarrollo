@@ -35,7 +35,7 @@
 <div class="panel panel-primary">
   <div class="panel-heading">Importacion:   {{$object->imp_consecutivo}} </div>
   <div class="panel-body">
-  
+
     <div class="row"> 
       <div class="col-sm-2">
         <label  class="control-label"><strong>Razon social proveedor: </strong>{{$object->proveedor->razonSocialTercero}}</label>
@@ -78,16 +78,20 @@
         <label  class="control-label"><strong>Origenes: </strong>
           <ul class="list-group">
             @foreach($objeto2 as $key => $value)
-            <li class="">{{$value->origenes[0]->ormer_nombre}}</li>
+            @if($value->origenes[0]->ormer_requ_cert_origen == 1)
+            <li class="">{{$value->origenes[0]->ormer_nombre}} Req. Certificado origen: SI</li>
+            @elseif($value->origenes[0]->ormer_requ_cert_origen == 0)
+            <li class="">{{$value->origenes[0]->ormer_nombre}} Req. Certificado origen: NO</li>
+            @endif
             @endforeach
           </ul>
         </label>
       </div>  
-      <div class="col-sm-2">
+      <div class="col-sm-4">
         <label  class="control-label"><strong>Proformas: </strong>
           <ul class="list-group">
             @foreach($objeto4 as $key => $value)
-            <li class="">{{$value->prof_numero}}</li>
+            <li class="">{{$value->prof_numero}} - F.creacion:{{\Carbon\Carbon::parse($value->prof_fecha_creacion)->format('d-m-Y')}} - F.entrega: {{\Carbon\Carbon::parse($value->prof_fecha_entrega)->format('d-m-Y')}} - Valor: {{$value->prof_valor_proforma}} - Principal: {{$value->prof_principal}}</li>
             @endforeach
           </ul>
         </label>
@@ -106,16 +110,16 @@
         <label  class="control-label"><strong>Embarcador: </strong>{{$objeto5[0]->embarcador->razonSocialTercero}} -- {{$objeto5[0]->embarcador->nitTercero}}</label>
       </div>   
       <div class="col-sm-2">
-        <label  class="control-label"><strong>Linea maritima: </strong>{{$objeto5[0]->lineamaritima->razonSocialTercero}} -- {{$objeto5[0]->lineamaritima->nitTercero}}</label>
+        <label  class="control-label"><strong>Linea maritima: </strong>{{$objeto5[0]->lineamaritima->razonSocialTercero}} -- {{$objeto5[0]->lineamaritima->lmar_descripcion}}</label>
       </div>    
       <div class="col-sm-2">
         <label  class="control-label"><strong>Tipo carga: </strong><br>{{$objeto5[0]->tipoCarga->tcar_descripcion}}</label>
       </div>
       <div class="col-sm-2">
-        <label  class="control-label"><strong>Fecha ETD: </strong><br>{{$objeto5[0]->emim_fecha_etd}}</label>
+        <label  class="control-label"><strong>Fecha ETD: </strong><br>{{\Carbon\Carbon::parse($objeto5[0]->emim_fecha_etd)->format('d-m-Y')}}</label>
       </div>    
       <div class="col-sm-2">
-        <label  class="control-label"><strong>Fecha ETA: </strong><br>{{$objeto5[0]->emim_fecha_eta}}</label>
+        <label  class="control-label"><strong>Fecha ETA: </strong><br>{{\Carbon\Carbon::parse($objeto5[0]->emim_fecha_eta)->format('d-m-Y')}}</label>
       </div>      
       <div class="col-sm-2">
         <label  class="control-label"><strong>No. documento transporte: </strong><br>{{$objeto5[0]->emim_documento_transporte}}</label>
@@ -129,15 +133,15 @@
     </div>    
 
     <div class="col-sm-2">
-      <label  class="control-label"><strong>Fecha recibido documentos originales: </strong><br>{{$objeto5[0]->emim_fecha_recibido_documentos_ori}}</label>
+      <label  class="control-label"><strong>Fecha recibido documentos originales: </strong><br>{{\Carbon\Carbon::parse($objeto5[0]->emim_fecha_recibido_documentos_ori)->format('d-m-Y') }}</label>
     </div>   
 
     <div class="col-sm-2">
-      <label  class="control-label"><strong>Fecha de envio a la aduana: </strong><br>{{$objeto5[0]->emim_fecha_envio_aduana}}</label>
+      <label  class="control-label"><strong>Fecha de envio a la aduana: </strong><br>{{\Carbon\Carbon::parse($objeto5[0]->emim_fecha_envio_aduana)->format('d-m-Y') }}</label>
     </div>   
 
     <div class="col-sm-2">
-      <label  class="control-label"><strong>Fecha de envio ficha tecnica: </strong><br>{{$objeto5[0]->emim_fecha_envio_ficha_tecnica}}</label>
+      <label  class="control-label"><strong>Fecha de envio ficha tecnica: </strong><br>{{\Carbon\Carbon::parse($objeto5[0]->emim_fecha_envio_ficha_tecnica)->format('d-m-Y') }}</label>
     </div> 
     <div class="col-sm-2">
       <label  class="control-label"><strong>Aduana: </strong><br>{{$objeto5[0]->aduana->razonSocialTercero}} -- {{$objeto5[0]->aduana->nitTercero}}</label>
@@ -151,11 +155,32 @@
 
   <div class="row"> 
    <div class="col-sm-2">
-    <label  class="control-label"><strong>Fecha de solicitud de la reserva: </strong><br>{{$objeto5[0]->emim_fecha_solicitud_reserva}}</label>
+    <label  class="control-label"><strong>Fecha de solicitud de la reserva: </strong><br>{{\Carbon\Carbon::parse($objeto5[0]->emim_fecha_solicitud_reserva)->format('d-m-Y')}}</label>
   </div> 
   <div class="col-sm-2">
-    <label  class="control-label"><strong>Fecha de confirmacion de la reserva: </strong><br>{{$objeto5[0]->emim_fecha_confirm_reserva}}</label>
+    <label  class="control-label"><strong>Fecha de confirmacion de la reserva: </strong><br>{{\Carbon\Carbon::parse($objeto5[0]->emim_fecha_confirm_reserva)->format('d-m-Y') }}</label>
   </div> 
+  @if($objeto5[0]->contenedor[0]->cont_cajas == null)
+  <div class="col-sm-6">
+    <label  class="control-label"><strong>Contenedores: </strong>
+      <ul class="list-group">
+        @foreach($objeto5[0]->contenedor as $key => $value)
+        <li class="">Tipo Contenedor {{$value->tipo->tcont_descripcion}} - Cantidad:{{$value->cont_cantidad}} - Numero: {{$value->cont_numero_contenedor}} - Cubicaje: {{$value->cont_cubicaje}} - Peso: {{$value->cont_peso}}</li>
+        @endforeach
+      </ul>
+    </label>
+  </div>  
+  @elseif($objeto5[0]->contenedor[0]->cont_cajas != null)
+  <div class="col-sm-6">
+    <label  class="control-label"><strong></strong>
+      <ul class="list-group">
+        @foreach($objeto5[0]->contenedor as $key => $value)
+        <li class=""> Cubicaje: {{$value->cont_cubicaje}} - Peso: {{$value->cont_peso}} - Cajas: {{$value->cont_cajas}}</li>
+        @endforeach
+      </ul>
+    </label>
+  </div>  
+  @endif
 </div>
 
 <br>
@@ -173,30 +198,40 @@
       <label  class="control-label"><strong>Valor anticipo: </strong><br>{{$objeto6[0]->pag_valor_anticipo}}</label>
     </div> 
     <div class="col-sm-2">
+      <label  class="control-label"><strong>Fecha del anticipo: </strong><br>{{\Carbon\Carbon::parse($objeto6[0]->pag_fecha_anticipo)->format('d-m-Y')}}</label>
+    </div> 
+    <div class="col-sm-2">
       <label  class="control-label"><strong>Valor saldo: </strong><br>{{$objeto6[0]->pag_valor_saldo}}</label>
+    </div> 
+    <div class="col-sm-2">
+      <label  class="control-label"><strong>Fecha del saldo: </strong><br>{{\Carbon\Carbon::parse($objeto6[0]->pag_fecha_saldo)->format('d-m-Y')}}</label>
     </div> 
     <div class="col-sm-2">
       <label  class="control-label"><strong>Valor comision: </strong><br>{{$objeto6[0]->pag_valor_comision}}</label>
     </div> 
     <div class="col-sm-2">
-      <label  class="control-label"><strong>valor total: </strong><br>{{$objeto6[0]->pag_valor_total}}</label>
-    </div> 
-    <div class="col-sm-2">
-      <label  class="control-label"><strong>valor FOB: </strong><br>{{$objeto6[0]->pag_valor_fob}}</label>
-    </div> 
-    <div class="col-sm-2">
-      <label  class="control-label"><strong>fecha factura: </strong><br>{{$objeto6[0]->pag_fecha_factura}}</label>
+      <label  class="control-label"><strong>Valor total: </strong><br>{{$objeto6[0]->pag_valor_total}}</label>
     </div> 
   </div>
   <br>
   <div class="row"> 
-   <div class="col-sm-2">
-    <label  class="control-label"><strong>trm liquidacion factura: </strong><br>{{$objeto6[0]->trm_liquidacion_factura}}</label>
-  </div> 
-  <div class="col-sm-2">
-    <label  class="control-label"><strong>Fecha envio a contabilidad: </strong><br>{{$objeto6[0]->pag_fecha_envio_contabilidad}}</label>
-  </div> 
-</div>
+
+    <div class="col-sm-2">
+      <label  class="control-label"><strong>Valor FOB: </strong><br>{{$objeto6[0]->pag_valor_fob}}</label>
+    </div> 
+    <div class="col-sm-2">
+      <label  class="control-label"><strong>No. factura: </strong><br>{{$objeto6[0]->pag_numero_factura}}</label>
+    </div> 
+    <div class="col-sm-2">
+      <label  class="control-label"><strong>Fecha factura: </strong><br>{{\Carbon\Carbon::parse($objeto6[0]->pag_fecha_factura)->format('d-m-Y')}}</label>
+    </div> 
+    <div class="col-sm-2">
+      <label  class="control-label"><strong>Trm liquidacion factura: </strong><br>{{$objeto6[0]->trm_liquidacion_factura}}</label>
+    </div> 
+    <div class="col-sm-2">
+      <label  class="control-label"><strong>Fecha envio a contabilidad: </strong><br>{{\Carbon\Carbon::parse($objeto6[0]->pag_fecha_envio_contabilidad)->format('d-m-Y')}}</label>
+    </div> 
+  </div>
 
 </div>
 </div>
@@ -289,6 +324,15 @@
  <div class="col-sm-2">
   <label  class="control-label"><strong>Tipo nacionalización: </strong><br>{{$objeto7[0]->tiponacionalizacion->tnac_descripcion}}</label>
 </div> 
+<div class="col-sm-10">
+<label  class="control-label"><strong>Declaración de importación: </strong>
+    <ul class="list-group">
+      @foreach($objeto7[0]->declaracion as $key => $value)
+      <li class="">No. declaracion: {{$value->decl_numero}} - Sticker: {{$value->decl_sticker}} - Arancel: {{$value->decl_arancel}} - Iva: {{$value->decl_iva}} - Valor: {{$value->decl_valor_otros}} - Trm: {{$value->decl_trm}} - Levante: {{$value->levanteDeclaracion->tlev_nombre}} - Fecha aceptacion: {{$value->decl_fecha_aceptacion}} - Fecha de levante: {{$value->decl_fecha_levante}} - Fecha legaliza giro: {{$value->decl_fecha_legaliza_giro}} - Administracion dian: {{$value->admindianDeclaracion->descripcion}}</li>
+      @endforeach
+    </ul>
+  </label>
+</div>  
 
 </div>
 

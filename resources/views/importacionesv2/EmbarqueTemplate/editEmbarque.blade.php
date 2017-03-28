@@ -65,20 +65,6 @@
     </div>
     <!-- End Embarcador -->
 
-    <!-- Linea maritima -->
-    <div class="form-group" id="linea_div">
-      {{ Form::open(['action' => ['Importacionesv2\TImportacionController@autocomplete'], 'method' => 'post']) }}
-      {{ Form::label('', "Linea maritima: (*)") }}
-      {{ Form::text('emim_linea_maritima', $objeto->emim_linea_maritima, ['class' => 'form-control validemos', 'id' =>  'emim_linea_maritima', 'placeholder' =>  'Ingresar nombre o nit de la linea maritima'])}}
-      <div class="help-block error-help-block" id='error_lineamaritima'></div>
-
-      {{ Form::label('', "") }}
-      {{ Form::text('razonsociallinea', $objeto->lineamaritima->razonSocialTercero, ['class' => 'form-control', 'id' =>  'razonsociallinea', 'readonly' =>  'readonly'])}}
-    </div>
-    <!-- End Linea maritima -->
-
-
-
     <!-- Agencia de aduanas -->
     <div class="form-group" id="agencia_div">
       {{ Form::open(['action' => ['Importacionesv2\TImportacionController@autocomplete'], 'method' => 'post']) }}
@@ -103,6 +89,15 @@
       {{ Form::text('razonsocialtransportador', $objeto->transportador->razonSocialTercero, ['class' => 'form-control', 'id' =>  'razonsocialtransportador', 'readonly' =>  'readonly'])}}
     </div>
     <!-- End Embarcador -->
+
+     <!-- Linea maritima -->
+    <div class="form-group" id="tipo_carga_div">
+      <label>Linea maritima: (*)</label>
+      {{ Form::select('emim_linea_maritima', $lineasMaritimas, $objeto->emim_linea_maritima, ['placeholder' => 'Selecciona una linea maritima...', 'class' => 'form-control validemos', 'id' => 'emim_linea_maritima']) }} 
+      <div class="help-block error-help-block" id='error_tipocarga'></div>
+      <div class="help-block error-help-block has-error" id='errorgenerado'></div>
+    </div>
+    <!-- End Linea maritima -->
 
     <div class="form-group">
       <a class="btn btn-default pull-right" id="siguiente1" role="button">Siguiente   <span class="glyphicon glyphicon-chevron-right"></span></a>

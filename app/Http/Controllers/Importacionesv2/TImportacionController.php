@@ -304,9 +304,10 @@ return Redirect::to($urlConsulta);
         $objeto3 = TProductoImportacion::select('pdim_producto', 'id')->where('pdim_importacion','=',"$id")->get();
         $objeto4 = TProforma::where('prof_importacion','=', intval($id))->get();
 
-        $objeto5 = TEmbarqueImportacion::with('embarcador', 'lineamaritima', 'tipoCarga','aduana','transportador')->where('emim_importacion','=', intval($id))->get();
+        $objeto5 = TEmbarqueImportacion::with('embarcador', 'lineamaritima', 'tipoCarga','aduana','transportador', 'contenedor.tipo')->where('emim_importacion','=', intval($id))->get();
         $objeto6 = TPagoImportacion::where('pag_importacion', '=', "$id")->get();
-        $objeto7 = TNacionalizacionImportacion::with('tiponacionalizacion')->where('naco_importacion', '=', "$id")->get();
+        $objeto7 = TNacionalizacionImportacion::with('tiponacionalizacion', 'declaracion.levanteDeclaracion', 'declaracion.admindianDeclaracion')->where('naco_importacion', '=', "$id")->get();
+        // dd($objeto7);
         #Crea un array con la informacion necesaria para mostrar en una tabla los productos asociados a la orden de importacion
         $tablaProductos = array();
         foreach ($objeto3 as $key => $value) {
@@ -770,9 +771,9 @@ return "error";
         *Variable datos debe contener la informacion que se quiere mostrar en el formulario
         */
         if($where == [] && $request->consulto == 1){
-            $datos = TImportacion::with('estado','puerto_embarque','embarqueimportacion','proveedor','pagosimportacion')->orderBy('t_importacion.imp_consecutivo', 'desc')->get();
+            $datos = TImportacion::with('estado','puerto_embarque','embarqueimportacion','proveedor','pagosimportacion')->orderBy('t_importacion.id', 'desc')->get();
         }elseif($where != [] && $request->consulto == 1){
-            $datos = TImportacion::with('estado')->with('puerto_embarque')->orWhere($where)->get();
+            $datos = TImportacion::with('estado')->with('puerto_embarque')->orWhere($where)->orderBy('t_importacion.id', 'asc')->get();
         }else{
             $datos = array();
         }

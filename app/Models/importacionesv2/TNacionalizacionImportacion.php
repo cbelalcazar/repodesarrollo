@@ -60,4 +60,9 @@ class TNacionalizacionImportacion extends Model
     {
         return $this->hasOne('App\Models\Importacionesv2\TTipoNacionalizacion', 'id', 'naco_tipo_nacionalizacion');
     }
+
+    public function declaracion()
+    {
+        return $this->hasMany('App\Models\Importacionesv2\TDeclaracion', 'decl_nacionalizacion', 'id');
+    }
 }

@@ -307,8 +307,7 @@ class TProductoController extends Controller
   * @param  \Illuminate\Http\Request  $request
   * @param  int  $id
   * @return \Illuminate\Http\Response
-  */
-  
+  */ 
   public function update(Request $request, $id)
   {
     #1
@@ -359,13 +358,13 @@ class TProductoController extends Controller
   */
   public function destroy($id)
   {
-     //Consulto objeto a borrar
+    #1
     $ObjectDestroy = TProducto::find($id);
-    //Borro el objeto
+    #2
     $ObjectDestroy->delete();
-    //Obtengo url de redireccion
+    #3
     $url = url($this->strUrlConsulta);
-    // redirect
+    #4
     Session::flash('message', 'El producto fue borrado exitosamente!');
     return Redirect::to($url);
   }

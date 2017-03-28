@@ -39,14 +39,19 @@
 <div class="col-sm-6">
   {{ Form::label('', "Valor anticipo: (*)") }}
   {{ Form::number("pag_valor_anticipo", $objeto->pag_valor_anticipo, ['class' => 'form-control validemosText', 'id' =>  'pag_valor_anticipo', 'placeholder' =>  'Ingresar el valor del anticipo','min' => '0','max' => '999999999','step' => '0.01','required' => 'required']) }}
-<div class="help-block error-help-block" id='error'></div>
+  <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor anticipo    -->
 
 <!-- Valor fecha del anticipo  -->
 <div class="col-sm-6">
   {{ Form::label('', "Fecha del anticipo : (*)") }}
+  @if($objeto->pag_fecha_anticipo == "")
+  {{ Form::text("pag_fecha_anticipo","", ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_anticipo', 'placeholder' =>  'Ingresar la fecha del anticipo','readonly' => 'readonly','required' => 'required']) }}
+  @else
   {{ Form::text("pag_fecha_anticipo", \Carbon\Carbon::parse($objeto->pag_fecha_anticipo)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_anticipo', 'placeholder' =>  'Ingresar la fecha del anticipo','readonly' => 'readonly','required' => 'required']) }}
+  @endif
+  
   <div class="help-block error-help-block" id='error'></div>
 </div>
 
@@ -62,7 +67,15 @@
 <!-- Fecha del saldo  -->
 <div class="col-sm-6">
   {{ Form::label('', "Fecha del saldo : (*)") }}
-  {{ Form::text("pag_fecha_saldo", \Carbon\Carbon::parse($objeto->pag_fecha_saldo)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_saldo', 'placeholder' =>  'Ingresar la fecha del saldo','readonly' => 'readonly','required' => 'required']) }}
+  
+
+@if($objeto->pag_fecha_saldo == "")
+  {{ Form::text("pag_fecha_saldo", "", ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_saldo', 'placeholder' =>  'Ingresar la fecha del saldo','readonly' => 'readonly','required' => 'required']) }}
+  @else
+ {{ Form::text("pag_fecha_saldo", \Carbon\Carbon::parse($objeto->pag_fecha_saldo)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_saldo', 'placeholder' =>  'Ingresar la fecha del saldo','readonly' => 'readonly','required' => 'required']) }}
+  @endif
+
+
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Fecha del saldo    -->
@@ -94,7 +107,7 @@
 <!-- Numero factura  -->
 <div class="col-sm-6">
   {{ Form::label('', "No. Factura: (*)") }}
-  {{ Form::number("pag_numero_factura", $objeto->pag_numero_factura, ['class' => 'form-control validemosText', 'id' =>  'pag_numero_factura', 'placeholder' =>  'Ingresar el numero de la factura','required' => 'required']) }}
+  {{ Form::text("pag_numero_factura", $objeto->pag_numero_factura, ['class' => 'form-control validemosText', 'id' =>  'pag_numero_factura', 'placeholder' =>  'Ingresar el numero de la factura','required' => 'required']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Numero factura    -->
@@ -124,10 +137,10 @@
 <!-- End Valor fecha envio a contabilidad     -->
 
 <div class="col-sm-12">
-<br>
-@if($hasPerm == 1)
-{{ Form::submit('Actualizar', array('class' => 'btn btn-primary pull-right', 'id' => 'finalizar1')) }}
-@endif
+  <br>
+  @if($hasPerm == 1)
+  {{ Form::submit('Actualizar', array('class' => 'btn btn-primary pull-right', 'id' => 'finalizar1')) }}
+  @endif
 </div>
 {{ Form::close() }}
 @endsection

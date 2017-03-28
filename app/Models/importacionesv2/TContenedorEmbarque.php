@@ -35,4 +35,9 @@ class TContenedorEmbarque extends Model
 
      protected $dates = ['deleted_at'];
 
+     public function tipo()
+    {
+        return $this->hasOne('App\Models\Importacionesv2\TTipoContenedor', 'id', 'cont_tipo_contenedor');
+    }
+
 }
