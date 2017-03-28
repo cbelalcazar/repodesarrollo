@@ -69,7 +69,7 @@ class TNacionalizacionImportacionController extends Controller
     public function create(Request $request, $id)
     {
       $idImportacion=$id;
-
+      $importacion = TImportacion::find($idImportacion);
      
       $productos = TProductoImportacion::where(array(array('pdim_importacion','=', "$idImportacion"), array('pdim_alerta','=','1')))->get();
 
@@ -80,7 +80,7 @@ class TNacionalizacionImportacionController extends Controller
       }
 
         #Contiene el titulo de formulario
-      $titulo = "CREAR NACIONALIZACION Y COSTEO DE IMPORTACION";
+      $titulo = "CREAR NACIONALIZACION Y COSTEO DE IMPORTACION - ". $importacion->imp_consecutivo;
         #String que hace referencia al URI del route que se le pasa al formulario y genere la url de post
       $url = "importacionesv2/NacionalizacionCosteo";
         #crea los array de las consultas para mostrar en los combobox en el formulario
@@ -119,7 +119,7 @@ class TNacionalizacionImportacionController extends Controller
 
         //Valida la existencia del registro que se intenta crear en la tabla de la bd 
       $validarExistencia = TNacionalizacionImportacion::where('naco_importacion', '=', "$request->naco_importacion")->get();
-      if(count($validarExistencia) > 0){
+      if(count($validarExistencia) > 0 ){
             //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
         return redirect()->action(
           'Importacionesv2\TNacionalizacionImportacionController@create', ['id' => $request->naco_importacion]
@@ -296,9 +296,9 @@ return Redirect::to($urlConsulta);
          //Id del registro que deseamos editar
       $id = $id;
         //Consulto el registro que deseo editar
-      $objeto = TNacionalizacionImportacion::find($id);
+      $objeto = TNacionalizacionImportacion::with('importacion')->find($id);
         //Titulo de la pagina
-      $titulo = "EDITAR PROCESO DE NACIONALIZACIÓN Y COSTEO";
+      $titulo = "EDITAR PROCESO DE NACIONALIZACIÓN Y COSTEO - ". $objeto->importacion->imp_consecutivo;
         //url de redireccion para consultar
       $url = route('Importacion.store');
         //url de redireccion para editar -- Name url correspondiente a method PUT|PATCH en comando route.list
@@ -340,9 +340,9 @@ return Redirect::to($urlConsulta);
       $hasPerm = $this->permisos();  
 
       $ordenimportacion = TImportacion::where('id', '=', "$objeto->naco_importacion")->first();
-      if($ordenimportacion->imp_estado_proceso == 6 || $ordenimportacion->imp_estado_proceso == 5 ||$ordenimportacion->imp_estado_proceso == 7){
-        $hasPerm = 0;
-      }
+      // if($ordenimportacion->imp_estado_proceso == 6 || $ordenimportacion->imp_estado_proceso == 5 ||$ordenimportacion->imp_estado_proceso == 7){
+      //   $hasPerm = 0;
+      // }
         #Retorna la informacion a la vista editar       
       return view('importacionesv2.NacionalizacionCosteoTemplate.editNacionalizacionCosteo', 
         compact('url',
@@ -388,6 +388,20 @@ return Redirect::to($urlConsulta);
         //Genera la url de consulta
       $url = route('consultaFiltros');
         //Consulto el registro a editar
+
+       $validator = Validator::make($request->all(), $this->rules, $this->messages);
+      if ($validator->fails()) {
+        return redirect()->action(
+          'Importacionesv2\TNacionalizacionImportacionController@create', ['id' => $request->naco_importacion]
+          )->withErrors($validator)->withInput();
+      }
+
+       if($request->tabladeclaracionguardar == ""){
+            //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
+        return redirect()->action(
+          'Importacionesv2\TNacionalizacionImportacionController@create', ['id' => $request->naco_importacion]
+          )->withErrors('Debe ingresar al menos una declaración de importación')->withInput();  
+      }
 
       $ObjectEditar = TNacionalizacionImportacion::find($id);
       $ObjectEditar->naco_importacion = $request->naco_importacion;

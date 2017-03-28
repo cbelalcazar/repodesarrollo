@@ -349,7 +349,7 @@ return Redirect::to($urlConsulta);
         $objeto = TImportacion::with('proveedor')->find($id);
         // dd($objeto);
         //Titulo de la pagina
-        $titulo = "EDITAR PROCESO DE IMPORTACION";
+        $titulo = "EDITAR PROCESO DE IMPORTACION -". $objeto->imp_consecutivo;
         //url de redireccion para consultar
         $url = route('Importacion.store');
         // Validaciones ajax

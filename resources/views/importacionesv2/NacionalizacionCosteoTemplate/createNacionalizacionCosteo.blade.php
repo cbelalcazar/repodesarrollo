@@ -38,7 +38,7 @@
 <!-- Currency trading -->
 <div class="col-sm-12">
   {{ Form::label('', "Tipo de importación: (*)") }}
-  {{ Form::select('naco_tipo_importacion', $naco_tipo_importacion, null, ['placeholder' => 'Selecciona una tipo  de importacion...', 'class' => 'form-control validemosText', 'id' => 'naco_tipo_importacion']) }}
+  {{ Form::select('naco_tipo_importacion', $naco_tipo_importacion, null, ['placeholder' => 'Selecciona un tipo  de importación...', 'class' => 'form-control validemosText', 'id' => 'naco_tipo_importacion']) }}
   <div class="help-block error-help-block" id='error'></div><br>
 </div>   
 
@@ -234,7 +234,7 @@
 <div class="col-sm-6">
   <br>
   {{ Form::label('', "No. Comex: (*)") }}
-  {{ Form::number("naco_numero_comex", old("naco_numero_comex"), ['class' => 'form-control validemosText', 'id' =>  'naco_numero_comex', 'placeholder' =>  'Ingresar el numero de comex','min' => '0','max' => '999999999','step' => '1']) }}
+  {{ Form::text("naco_numero_comex", old("naco_numero_comex"), ['class' => 'form-control', 'id' =>  'naco_numero_comex', 'placeholder' =>  'Ingresar el numero de comex']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <br><br>
@@ -243,7 +243,7 @@
 <div class="col-sm-6">
   <br>
   {{ Form::label('', "Fecha de envio a comex: (*)") }}
-  {{ Form::text("naco_fecha_envio_comex", old("naco_fecha_envio_comex"), ['class' => 'form-control  datepickerClass', 'id' =>  'naco_fecha_envio_comex', 'placeholder' =>  'Ingresar la fecha de entraga documentos al transportador','readonly' => 'readonly']) }}
+  {{ Form::text("naco_fecha_envio_comex", old("naco_fecha_envio_comex"), ['class' => 'form-control  datepickerClass', 'id' =>  'naco_fecha_envio_comex', 'placeholder' =>  'Ingresar fecha de envio comex','readonly' => 'readonly']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
@@ -379,7 +379,7 @@
 <!-- End Valor fecha envio a contabilidad     -->
 <div class="col-sm-12">
   <br>
-  {{ Form::submit('Crear Nueva', array('class' => 'btn btn-primary pull-right', 'id' => 'finalizar1')) }}
+  {{ Form::submit('Crear', array('class' => 'btn btn-primary pull-right', 'id' => 'finalizar1')) }}
 </div>
 {{ Form::close() }}
 @endsection

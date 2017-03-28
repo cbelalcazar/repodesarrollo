@@ -7,6 +7,7 @@ use Session;
 use Redirect;
 use Carbon\Carbon;
 use App\Models\Importacionesv2\TPagoImportacion;
+use App\Models\Importacionesv2\TImportacion;
 use Illuminate\Http\Request;
 use Auth;
 use App\Models\Importacionesv2\TPermisosImp;
@@ -53,8 +54,10 @@ class TPagoImportacionController extends Controller
     public function create(Request $request, $id)
     {
       $idImportacion=$id;
+
+      $importacion = TImportacion::find($idImportacion);
         #Contiene el titulo de formulario
-      $titulo = "CREAR PAGO DE IMPORTACION";
+      $titulo = "CREAR PAGO DE IMPORTACION - ". $importacion->imp_consecutivo;
         #String que hace referencia al URI del route que se le pasa al formulario y genere la url de post
       $url = "importacionesv2/Pagos";
         #Envia la informacion a la vista

@@ -39,7 +39,7 @@
 <!-- Currency trading -->
 <div class="col-sm-12">
   {{ Form::label('', "Tipo de importación: (*)") }}
-  {{ Form::select('naco_tipo_importacion', $naco_tipo_importacion, $objeto->naco_tipo_importacion, ['placeholder' => 'Selecciona una tipo  de importacion...', 'class' => 'form-control validemosText', 'id' => 'naco_tipo_importacion']) }}
+  {{ Form::select('naco_tipo_importacion', $naco_tipo_importacion, $objeto->naco_tipo_importacion, ['placeholder' => 'Selecciona un tipo  de importación...', 'class' => 'form-control validemosText', 'id' => 'naco_tipo_importacion']) }}
   <div class="help-block error-help-block" id='error'></div><br>
 </div>   
 
@@ -62,7 +62,7 @@
 
 <div class="col-sm-6">
   <div class="col-sm-6">
-    <br>{{ Form::label('', "Preinscripcion: (*)") }}<br>
+    <br>{{ Form::label('', "Preinspección: (*)") }}<br>
     {{ Form::checkbox("naco_preinscripcion", '1', $objeto->naco_preinscripcion,['data-toggle' => 'toggle']) }}  
   </div>
 
@@ -263,7 +263,7 @@
 <div class="col-sm-6">
   <br>
   {{ Form::label('', "Fecha de envio a comex: (*)") }}
-  {{ Form::text("naco_fecha_envio_comex", \Carbon\Carbon::parse($objeto->naco_fecha_envio_comex)->format('d-m-Y'), ['class' => 'form-control  datepickerClass', 'id' =>  'naco_fecha_envio_comex', 'placeholder' =>  'Ingresar la fecha de entraga documentos al transportador','readonly' => 'readonly']) }}
+  {{ Form::text("naco_fecha_envio_comex", \Carbon\Carbon::parse($objeto->naco_fecha_envio_comex)->format('d-m-Y'), ['class' => 'form-control  datepickerClass', 'id' =>  'naco_fecha_envio_comex', 'placeholder' =>  'Ingresar fecha de envio comex','readonly' => 'readonly']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
@@ -272,7 +272,7 @@
 <div class="col-sm-6">
   <br>
   {{ Form::label('', "No. Comex: (*)") }}
-  {{ Form::number("naco_numero_comex", $objeto->naco_numero_comex, ['class' => 'form-control validemosText', 'id' =>  'naco_numero_comex', 'placeholder' =>  'Ingresar el numero de comex','min' => '0','max' => '999999999','step' => '1']) }}
+  {{ Form::text("naco_numero_comex", $objeto->naco_numero_comex, ['class' => 'form-control validemosText', 'id' =>  'naco_numero_comex', 'placeholder' =>  'Ingresar el numero de comex']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <br><br>
@@ -406,7 +406,7 @@
 <div class="col-sm-12">
   <br>
   @if($hasPerm == 1)
-  {{ Form::submit('Guardar', array('class' => 'btn btn-primary pull-right', 'id' => 'finalizar1')) }}
+  {{ Form::submit('Actualizar', array('class' => 'btn btn-primary pull-right', 'id' => 'finalizar1')) }}
   @endif
 </div>
 {{ Form::close() }}

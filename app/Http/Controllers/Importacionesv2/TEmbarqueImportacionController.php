@@ -114,7 +114,7 @@ class TEmbarqueImportacionController extends Controller
         $imp_fechaentregatotal = Carbon::parse($ObtenerFecha->imp_fecha_entrega_total);
         $imp_fechaentregatotal =  $imp_fechaentregatotal->addDays(8)->format('Y-m-d');
         #Contiene el titulo de formulario
-        $titulo = "CREAR EMBARQUE DE IMPORTACION";
+        $titulo = "CREAR EMBARQUE DE - ". $ObtenerFecha->imp_consecutivo;
         #String que hace referencia al URI del route que se le pasa al formulario y genere la url de post
         $url = "importacionesv2/Embarque";
         #Crea los array de las consultas para mostrar en los combobox en el formulario
