@@ -65,10 +65,6 @@
     @foreach($errors->all() as $key => $value)
     <span class="glyphicon glyphicon-remove red"></span>  {{$value}} <br>
     @endforeach
-    <script> setTimeout(function(){ 
-      $( "#mensajealerta" ).fadeToggle("slow");
-     }, 5000);</script>
-  </div>
   @endif
 </div>
 <!-- ************************************ -->
@@ -132,19 +128,19 @@
         @endif  
   
         <!-- cerrar orden -->
-        @if(($value->nacionalizacionimportacion == null || $value->embarqueimportacion == null || $value->pagosimportacion == null) && $hasPerm == 1)
+        @if(($value->nacionalizacionimportacion == null || $value->embarqueimportacion == null || $value->pagosimportacion == null))
         <td><a class="btn btn-small btn-default glyphicon glyphicon-remove-sign disabled" href="#"></a></td>
-        @elseif($value->nacionalizacionimportacion != null && $value->estado->est_nombre != 'CERRADA' && $hasPerm == 1)
+        @elseif($value->nacionalizacionimportacion != null && $value->estado->est_nombre != 'CERRADA')
         <td> <a class="btn btn-small btn-danger glyphicon glyphicon-plus" href="{{route('Importacion.show',['id' => $value->id])}}"'></a></td>
-        @elseif($value->nacionalizacionimportacion != null && $value->estado->est_nombre == 'CERRADA' && $hasPerm == 1)
+        @elseif($value->nacionalizacionimportacion != null && $value->estado->est_nombre == 'CERRADA')
         <td> <a class="btn btn-small btn-success glyphicon glyphicon-pencil" href="{{route('Importacion.show',['id' => $value->id])}}"></a></td>
         @endif  
 
 
         <!-- anular -->
-         @if($value->nacionalizacionimportacion != null || $value->embarqueimportacion != null || $value->pagosimportacion != null || $value->estado->est_nombre == 'ANULADA')      
+         @if(($value->nacionalizacionimportacion != null || $value->embarqueimportacion != null || $value->pagosimportacion != null || $value->estado->est_nombre == 'ANULADA') && $hasPerm == 1)      
          <td> <a class="btn btn-small btn-default glyphicon glyphicon-remove-sign disabled" href="#"></a></td>
-        @elseif($value->nacionalizacionimportacion == null || $value->embarqueimportacion == null || $value->pagosimportacion == null && $value->estado->est_nombre == 'ORIGEN')
+        @elseif(($value->nacionalizacionimportacion == null || $value->embarqueimportacion == null || $value->pagosimportacion == null && $value->estado->est_nombre == 'ORIGEN') && $hasPerm == 1)
         <td>          
           {{ Form::open(array('url' => route('Importacion.destroy',['id' => $value->id]), 'class' => '')) }}
           {{ Form::hidden('_method', 'DELETE') }}

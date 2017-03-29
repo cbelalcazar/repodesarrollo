@@ -83,10 +83,10 @@
 
 <!-- Submit proforma -->
 
-  <div class="form-group col-sm-12 panel panel-default" id="declaracion-div">
+<div class="form-group col-sm-12 panel panel-default" id="declaracion-div">
   <h4>Asociar declaraciones de importación</h4>
   <br>
-   <div class="row">
+  <div class="row">
     <div class="col-sm-3">
       <label  class="control-label">No de declaracion: (*)</label>
       {{ Form::text('decl_numero', '', ['class' => 'form-control', 'id' =>  'decl_numero', 'placeholder' =>  'Ingresar el numero de declaracion de importacion'])}}
@@ -188,41 +188,41 @@
         </thead>
         <tbody id="añadir2">
          @if(is_object($objeto2))
-            @foreach($objeto2 as $key => $value)
-            <tr>
-              <td class="campos" id="{{$key+1}}-decl_numero">{{$value->decl_numero}}<input type="hidden" name="{{$key+1}}-decl_numero" value="{{$value->decl_numero}}"></td>
+         @foreach($objeto2 as $key => $value)
+         <tr>
+          <td class="campos" id="{{$key+1}}-decl_numero">{{$value->decl_numero}}<input type="hidden" name="{{$key+1}}-decl_numero" value="{{$value->decl_numero}}"></td>
 
-              <td class="campos" id="{{$key+1}}-decl_sticker">{{$value->decl_sticker}}<input type="hidden" name="{{$key+1}}-decl_sticker" value="{{$value->decl_sticker}}"></td>
+          <td class="campos" id="{{$key+1}}-decl_sticker">{{$value->decl_sticker}}<input type="hidden" name="{{$key+1}}-decl_sticker" value="{{$value->decl_sticker}}"></td>
 
-              <td class="campos" id="{{$key+1}}-decl_arancel">{{$value->decl_arancel}}<input type="hidden" name="{{$key+1}}-decl_arancel" value="{{$value->decl_arancel}}"></td>
+          <td class="campos" id="{{$key+1}}-decl_arancel">{{$value->decl_arancel}}<input type="hidden" name="{{$key+1}}-decl_arancel" value="{{$value->decl_arancel}}"></td>
 
-              <td class="campos" id="{{$key+1}}-decl_iva">{{$value->decl_iva}}<input type="hidden" name="{{$key+1}}-decl_iva" value="{{$value->decl_iva}}"></td>
+          <td class="campos" id="{{$key+1}}-decl_iva">{{$value->decl_iva}}<input type="hidden" name="{{$key+1}}-decl_iva" value="{{$value->decl_iva}}"></td>
 
-              <td class="campos" id="{{$key+1}}-decl_valor_otros">{{$value->decl_valor_otros}}<input type="hidden" name="{{$key+1}}-decl_valor_otros" value="{{$value->decl_valor_otros}}"></td>
+          <td class="campos" id="{{$key+1}}-decl_valor_otros">{{$value->decl_valor_otros}}<input type="hidden" name="{{$key+1}}-decl_valor_otros" value="{{$value->decl_valor_otros}}"></td>
 
-              <td class="campos" id="{{$key+1}}-decl_trm">{{$value->decl_trm}}<input type="hidden" name="{{$key+1}}-decl_trm" value="{{$value->decl_trm}}"></td>
+          <td class="campos" id="{{$key+1}}-decl_trm">{{$value->decl_trm}}<input type="hidden" name="{{$key+1}}-decl_trm" value="{{$value->decl_trm}}"></td>
 
-              <td class="campos" id="{{$key+1}}-decl_tipo_levante">{{$value->levanteDeclaracion->tlev_nombre}}<input type="hidden" name="{{$key+1}}-decl_tipo_levante" value="{{$value->decl_tipo_levante}}"></td>
+          <td class="campos" id="{{$key+1}}-decl_tipo_levante">{{$value->levanteDeclaracion->tlev_nombre}}<input type="hidden" name="{{$key+1}}-decl_tipo_levante" value="{{$value->decl_tipo_levante}}"></td>
 
-              <td class="campos" id="{{$key+1}}-decl_admin_dian">{{$value->admindianDeclaracion->descripcion}}<input type="hidden" name="{{$key+1}}-decl_admin_dian" value="{{$value->decl_admin_dian}}"></td>
+          <td class="campos" id="{{$key+1}}-decl_admin_dian">{{$value->admindianDeclaracion->descripcion}}<input type="hidden" name="{{$key+1}}-decl_admin_dian" value="{{$value->decl_admin_dian}}"></td>
 
-              <td class="campos" id="{{$key+1}}-decl_fecha_aceptacion">{{\Carbon\Carbon::parse($value->decl_fecha_aceptacion)->format('d-m-Y')}}<input type="hidden" name="{{$key+1}}-decl_fecha_aceptacion" value="{{$value->decl_fecha_aceptacion}}"></td>
+          <td class="campos" id="{{$key+1}}-decl_fecha_aceptacion">{{\Carbon\Carbon::parse($value->decl_fecha_aceptacion)->format('d-m-Y')}}<input type="hidden" name="{{$key+1}}-decl_fecha_aceptacion" value="{{$value->decl_fecha_aceptacion}}"></td>
 
-              <td class="campos" id="{{$key+1}}-decl_fecha_levante">{{\Carbon\Carbon::parse($value->decl_fecha_levante)->format('d-m-Y')}}<input type="hidden" name="{{$key+1}}-decl_fecha_levante" value="{{$value->decl_fecha_levante}}"></td>
+          <td class="campos" id="{{$key+1}}-decl_fecha_levante">{{\Carbon\Carbon::parse($value->decl_fecha_levante)->format('d-m-Y')}}<input type="hidden" name="{{$key+1}}-decl_fecha_levante" value="{{$value->decl_fecha_levante}}"></td>
 
-              <td class="campos" id="{{$key+1}}-decl_fecha_legaliza_giro">{{\Carbon\Carbon::parse($value->decl_fecha_legaliza_giro)->format('d-m-Y')}}<input type="hidden" name="{{$key+1}}-decl_fecha_legaliza_giro" value="{{$value->decl_fecha_legaliza_giro}}"></td>
+          <td class="campos" id="{{$key+1}}-decl_fecha_legaliza_giro">{{\Carbon\Carbon::parse($value->decl_fecha_legaliza_giro)->format('d-m-Y')}}<input type="hidden" name="{{$key+1}}-decl_fecha_legaliza_giro" value="{{$value->decl_fecha_legaliza_giro}}"></td>
 
-              <td><span id="{{$value->id}}" onclick="" class="borrar glyphicon glyphicon-remove"></span><input type="hidden" name="{{$key+1}}-iddeclaracion" value="{{$value->id}}"></td>
-            </tr>
-            @endforeach
-            @endif
-        </tbody>
-      </table>
-    </div>
+          <td><span id="{{$value->id}}" onclick="" class="borrar glyphicon glyphicon-remove"></span><input type="hidden" name="{{$key+1}}-iddeclaracion" value="{{$value->id}}"></td>
+        </tr>
+        @endforeach
+        @endif
+      </tbody>
+    </table>
   </div>
-  <!-- End Table of proformas -->
 </div>
-<input type="hidden" name="tabladeclaracionguardar" id="tabladeclaracionguardar" value="">
+<!-- End Table of proformas -->
+</div>
+<input type="hidden" name="tabladeclaracionguardar" id="tabladeclaracionguardar" value="{{$cantidadDeclaraciones}}">
 
 <!-- Valor fecha envio a contabilidad  -->
 <div class="col-sm-6">
@@ -263,7 +263,12 @@
 <div class="col-sm-6">
   <br>
   {{ Form::label('', "Fecha de envio a comex: (*)") }}
+  @if($objeto->naco_fecha_envio_comex != null)
   {{ Form::text("naco_fecha_envio_comex", \Carbon\Carbon::parse($objeto->naco_fecha_envio_comex)->format('d-m-Y'), ['class' => 'form-control  datepickerClass', 'id' =>  'naco_fecha_envio_comex', 'placeholder' =>  'Ingresar fecha de envio comex','readonly' => 'readonly']) }}
+  @else
+  {{ Form::text("naco_fecha_envio_comex", "", ['class' => 'form-control  datepickerClass', 'id' =>  'naco_fecha_envio_comex', 'placeholder' =>  'Ingresar fecha de envio comex','readonly' => 'readonly']) }}
+  @endif
+  
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
@@ -280,8 +285,14 @@
 <!-- Valor fecha envio a contabilidad  -->
 <div class="col-sm-6">
   <br>
+  @if($objeto->naco_fecha_llegada_be != null)
   {{ Form::label('', "Fecha de llegada a Belleza Express: (*)") }}
   {{ Form::text("naco_fecha_llegada_be", \Carbon\Carbon::parse($objeto->naco_fecha_llegada_be)->format('d-m-Y'), ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_llegada_be', 'placeholder' =>  'Ingresar la fecha de llegada a Belleza Express','readonly' => 'readonly']) }}
+  @else
+  {{ Form::text("naco_fecha_llegada_be", "", ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_llegada_be', 'placeholder' =>  'Ingresar la fecha de llegada a Belleza Express','readonly' => 'readonly']) }}
+  @endif
+
+  
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
@@ -289,8 +300,12 @@
 <!-- Valor fecha envio a contabilidad  -->
 <div class="col-sm-6">
   <br>
+  @if($objeto->naco_fecha_recep_list_empaq != null)
   {{ Form::label('', "Fecha de recepción lista de empaque + Ciego: (*)") }}
   {{ Form::text("naco_fecha_recep_list_empaq", \Carbon\Carbon::parse($objeto->naco_fecha_recep_list_empaq)->format('d-m-Y'), ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_recep_list_empaq', 'placeholder' =>  'Ingresar la fecha de recepción lista de empaque','readonly' => 'readonly']) }}
+  @else
+  {{ Form::text("naco_fecha_recep_list_empaq", "", ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_recep_list_empaq', 'placeholder' =>  'Ingresar la fecha de recepción lista de empaque','readonly' => 'readonly']) }}
+  @endif  
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
@@ -298,8 +313,13 @@
 <!-- Valor fecha envio a contabilidad  -->
 <div class="col-sm-6">
   <br>
-  {{ Form::label('', "Fecha de envio liquidación y costeo: (*)") }}
+
+  @if($objeto->naco_fecha_envi_liqu_costeo != null)
+   {{ Form::label('', "Fecha de envio liquidación y costeo: (*)") }}
   {{ Form::text("naco_fecha_envi_liqu_costeo", \Carbon\Carbon::parse($objeto->naco_fecha_envi_liqu_costeo)->format('d-m-Y'), ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_envi_liqu_costeo', 'placeholder' =>  'Ingresar la fecha de envio lista de empaque de empaque','readonly' => 'readonly']) }}
+  @else
+   {{ Form::text("naco_fecha_envi_liqu_costeo", "", ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_envi_liqu_costeo', 'placeholder' =>  'Ingresar la fecha de envio lista de empaque de empaque','readonly' => 'readonly']) }}
+  @endif 
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
@@ -307,8 +327,17 @@
 <!-- Valor fecha envio a contabilidad  -->
 <div class="col-sm-6">
   <br>
-  {{ Form::label('', "Fecha de entrada al sistema: (*)") }}
+
+  
+  @if($objeto->naco_fecha_entrada_sistema != null)
+   {{ Form::label('', "Fecha de entrada al sistema: (*)") }}
   {{ Form::text("naco_fecha_entrada_sistema", \Carbon\Carbon::parse($objeto->naco_fecha_entrada_sistema)->format('d-m-Y'), ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_entrada_sistema', 'placeholder' =>  'Ingresar la fecha de entrada al sistema','readonly' => 'readonly']) }}
+  @else
+  {{ Form::text("naco_fecha_entrada_sistema", "", ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_entrada_sistema', 'placeholder' =>  'Ingresar la fecha de entrada al sistema','readonly' => 'readonly']) }}
+  @endif
+
+
+ 
   <div class="help-block error-help-block" id='error'></div>
 </div>
 
@@ -324,29 +353,29 @@
   <script>
    setTimeout(function(){
      $('.radios1').removeClass('hide');
-        }, 200)
-  </script>
-  @endif
-  @if($sobrante || $faltante)
-  <script>
-     setTimeout(function(){
+   }, 200)
+ </script>
+ @endif
+ @if($sobrante || $faltante)
+ <script>
+   setTimeout(function(){
      $('.cajas1').removeClass('hide');
-        }, 200)  
-  </script>
-  @endif
-  <div class="col-sm-3 hide radios1">
-    <br>
-    {{ Form::radio("naco_opcion", 'sobrante', $sobrante , ['id' => 'sobrante']) }}
-    {{ Form::label('', "Sobrante") }}  
-  </div>
-  <div class="col-sm-3 hide radios1">
-    <br>
-    {{ Form::radio("naco_opcion", 'faltante', $faltante , ['id' => 'faltante']) }}
-    {{ Form::label('', "Faltante") }} 
-  </div>
+   }, 200)  
+ </script>
+ @endif
+ <div class="col-sm-3 hide radios1">
+  <br>
+  {{ Form::radio("naco_opcion", 'sobrante', $sobrante , ['id' => 'sobrante']) }}
+  {{ Form::label('', "Sobrante") }}  
+</div>
+<div class="col-sm-3 hide radios1">
+  <br>
+  {{ Form::radio("naco_opcion", 'faltante', $faltante , ['id' => 'faltante']) }}
+  {{ Form::label('', "Faltante") }} 
+</div>
 </div>
 <script>
- 
+
 
 </script>
 

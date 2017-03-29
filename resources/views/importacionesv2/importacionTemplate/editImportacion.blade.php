@@ -370,7 +370,11 @@
   <!-- Delivery date total merchandise -->
   <div class="form-group">
     {{ Form::label('', "Fecha entrega total mercancia") }}
+    @if($objeto->imp_fecha_entrega_total != null)
     {{ Form::text("imp_fecha_entrega_total", \Carbon\Carbon::parse(old("imp_fecha_entrega_total"))->format('d-m-Y'), ['class' => 'form-control', 'id' =>  'imp_fecha_entrega_total', 'placeholder' =>  'Ingresar fecha de entrega total de la mercancia', 'readonly' =>  'readonly']) }}
+    @else
+    {{ Form::text("imp_fecha_entrega_total", "", ['class' => 'form-control', 'id' =>  'imp_fecha_entrega_total', 'placeholder' =>  'Ingresar fecha de entrega total de la mercancia', 'readonly' =>  'readonly']) }}
+    @endif
   </div>
   <!-- End Delivery date total merchandise -->
 

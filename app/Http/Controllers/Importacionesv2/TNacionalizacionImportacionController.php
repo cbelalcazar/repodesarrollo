@@ -119,7 +119,7 @@ class TNacionalizacionImportacionController extends Controller
 
         //Valida la existencia del registro que se intenta crear en la tabla de la bd 
       $validarExistencia = TNacionalizacionImportacion::where('naco_importacion', '=', "$request->naco_importacion")->get();
-      if(count($validarExistencia) > 0 ){
+      if(count($validarExistencia) > 0){
             //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
         return redirect()->action(
           'Importacionesv2\TNacionalizacionImportacionController@create', ['id' => $request->naco_importacion]
@@ -154,21 +154,37 @@ class TNacionalizacionImportacionController extends Controller
     $ObjectCrear->naco_fecha_entrega_fact_cont = Carbon::parse($request->naco_fecha_entrega_fact_cont)->format('Y-m-d');
     $ObjectCrear->naco_fecha_entrega_docu_transp = Carbon::parse($request->naco_fecha_entrega_docu_transp)->format('Y-m-d');
     $ObjectCrear->naco_fecha_retiro_puert = Carbon::parse($request->naco_fecha_retiro_puert)->format('Y-m-d');
-    if ($request->naco_fecha_envio_comex) {
+    if ($request->naco_fecha_envio_comex != "") {
       $ObjectCrear->naco_fecha_envio_comex = Carbon::parse($request->naco_fecha_envio_comex)->format('Y-m-d');
+    }elseif($request->naco_fecha_envio_comex == ""){
+      $ObjectCrear->naco_fecha_envio_comex = null;
     }
-    if ($request->naco_fecha_llegada_be) {
+
+    if ($request->naco_fecha_llegada_be != "") {
      $ObjectCrear->naco_fecha_llegada_be = Carbon::parse($request->naco_fecha_llegada_be)->format('Y-m-d');
-   }
-   if ($request->naco_fecha_recep_list_empaq) {
+   }elseif($request->naco_fecha_llegada_be == ""){
+      $ObjectCrear->naco_fecha_llegada_be = null;
+    }
+
+
+   if ($request->naco_fecha_recep_list_empaq != "") {
     $ObjectCrear->naco_fecha_recep_list_empaq = Carbon::parse($request->naco_fecha_recep_list_empaq)->format('Y-m-d');
-  }
-  if ($request->naco_fecha_envi_liqu_costeo) {
+  }elseif($request->naco_fecha_recep_list_empaq == ""){
+      $ObjectCrear->naco_fecha_recep_list_empaq = null;
+    }
+
+  if ($request->naco_fecha_envi_liqu_costeo != "") {
     $ObjectCrear->naco_fecha_envi_liqu_costeo = Carbon::parse($request->naco_fecha_envi_liqu_costeo)->format('Y-m-d');
-  }
-  if ($request->naco_fecha_entrada_sistema) {
+  }elseif($request->naco_fecha_envi_liqu_costeo == ""){
+      $ObjectCrear->naco_fecha_envi_liqu_costeo = null;
+    }
+
+  if ($request->naco_fecha_entrada_sistema != "") {
     $ObjectCrear->naco_fecha_entrada_sistema = Carbon::parse($request->naco_fecha_entrada_sistema)->format('Y-m-d');
-  }
+  }elseif($request->naco_fecha_entrada_sistema == ""){
+      $ObjectCrear->naco_fecha_entrada_sistema = null;
+    }
+
   if ($request->naco_ajuste && $request->naco_opcion && $request->naco_valorseleccion){
     if ($request->naco_opcion == "sobrante") {
       $ObjectCrear->naco_sobrante = $request->naco_valorseleccion;
@@ -186,23 +202,36 @@ class TNacionalizacionImportacionController extends Controller
     }
 
   }
-  if ($request->naco_factor_dolar_tasa) {
+  if ($request->naco_factor_dolar_tasa != "") {
    $ObjectCrear->naco_factor_dolar_tasa =  round($request->naco_factor_dolar_tasa,2);
- }
- if ($request->naco_factor_dolar_porc) {
+ }elseif($request->naco_factor_dolar_tasa == ""){
+      $ObjectCrear->naco_factor_dolar_tasa = null;
+    }
+
+
+ if ($request->naco_factor_dolar_porc != "") {
   $ObjectCrear->naco_factor_dolar_porc = round($request->naco_factor_dolar_porc,2);
-}
+}elseif($request->naco_factor_dolar_porc == ""){
+      $ObjectCrear->naco_factor_dolar_porc = null;
+    }
 
-if ($request->naco_factor_logist_tasa) {
+if ($request->naco_factor_logist_tasa != "") {
   $ObjectCrear->naco_factor_logist_tasa =  round($request->naco_factor_logist_tasa,2);
-}  
-if ($request->naco_factor_logist_porc) {
-  $ObjectCrear->naco_factor_logist_porc =  round($request->naco_factor_logist_porc,2);
-}     
-if ($request->naco_factor_arancel_porc) {
-  $ObjectCrear->naco_factor_arancel_porc =  round($request->naco_factor_arancel_porc,2);
-}    
+}elseif($request->naco_factor_logist_tasa == ""){
+      $ObjectCrear->naco_factor_logist_tasa = null;
+    }
 
+if ($request->naco_factor_logist_porc != "") {
+  $ObjectCrear->naco_factor_logist_porc =  round($request->naco_factor_logist_porc,2);
+}elseif($request->naco_factor_logist_porc == ""){
+      $ObjectCrear->naco_factor_logist_porc = null;
+    }
+
+if ($request->naco_factor_arancel_porc != "") {
+  $ObjectCrear->naco_factor_arancel_porc =  round($request->naco_factor_arancel_porc,2);
+}elseif($request->naco_factor_arancel_porc == ""){
+      $ObjectCrear->naco_factor_arancel_porc = null;
+    }    
 
 
 $ObjectCrear->save();
@@ -424,21 +453,35 @@ return Redirect::to($urlConsulta);
     $ObjectEditar->naco_fecha_entrega_fact_cont = Carbon::parse($request->naco_fecha_entrega_fact_cont)->format('Y-m-d');
     $ObjectEditar->naco_fecha_entrega_docu_transp = Carbon::parse($request->naco_fecha_entrega_docu_transp)->format('Y-m-d');
     $ObjectEditar->naco_fecha_retiro_puert = Carbon::parse($request->naco_fecha_retiro_puert)->format('Y-m-d');
-    if ($request->naco_fecha_envio_comex) {
+   if ($request->naco_fecha_envio_comex != "") {
       $ObjectEditar->naco_fecha_envio_comex = Carbon::parse($request->naco_fecha_envio_comex)->format('Y-m-d');
+    }elseif($request->naco_fecha_envio_comex == ""){
+      $ObjectEditar->naco_fecha_envio_comex = null;
     }
-    if ($request->naco_fecha_llegada_be) {
+    if ($request->naco_fecha_llegada_be != "") {
      $ObjectEditar->naco_fecha_llegada_be = Carbon::parse($request->naco_fecha_llegada_be)->format('Y-m-d');
-   }
-   if ($request->naco_fecha_recep_list_empaq) {
+   }elseif($request->naco_fecha_llegada_be == ""){
+      $ObjectEditar->naco_fecha_llegada_be = null;
+    }
+
+
+   if ($request->naco_fecha_recep_list_empaq != "") {
     $ObjectEditar->naco_fecha_recep_list_empaq = Carbon::parse($request->naco_fecha_recep_list_empaq)->format('Y-m-d');
-  }
-  if ($request->naco_fecha_envi_liqu_costeo) {
+  }elseif($request->naco_fecha_recep_list_empaq == ""){
+      $ObjectEditar->naco_fecha_recep_list_empaq = null;
+    }
+
+  if ($request->naco_fecha_envi_liqu_costeo != "") {
     $ObjectEditar->naco_fecha_envi_liqu_costeo = Carbon::parse($request->naco_fecha_envi_liqu_costeo)->format('Y-m-d');
-  }
-  if ($request->naco_fecha_entrada_sistema) {
+  }elseif($request->naco_fecha_envi_liqu_costeo == ""){
+      $ObjectEditar->naco_fecha_envi_liqu_costeo = null;
+    }
+
+  if ($request->naco_fecha_entrada_sistema != "") {
     $ObjectEditar->naco_fecha_entrada_sistema = Carbon::parse($request->naco_fecha_entrada_sistema)->format('Y-m-d');
-  }
+  }elseif($request->naco_fecha_entrada_sistema == ""){
+      $ObjectEditar->naco_fecha_entrada_sistema = null;
+    }
   $ObjectEditar->naco_sobrante = null;
   $ObjectEditar->naco_faltante = null;
   $ObjectEditar->naco_sobrante_euro = null;
@@ -459,22 +502,36 @@ return Redirect::to($urlConsulta);
     }
 
   }
-  if ($request->naco_factor_dolar_tasa) {
+  if ($request->naco_factor_dolar_tasa != "") {
    $ObjectEditar->naco_factor_dolar_tasa =  round($request->naco_factor_dolar_tasa,2);
- }
- if ($request->naco_factor_dolar_porc) {
-  $ObjectEditar->naco_factor_dolar_porc = round($request->naco_factor_dolar_porc,2);
-}
+ }elseif($request->naco_factor_dolar_tasa == ""){
+      $ObjectCrear->naco_factor_dolar_tasa = null;
+    }
 
-if ($request->naco_factor_logist_tasa) {
+ if ($request->naco_factor_dolar_porc != "") {
+  $ObjectEditar->naco_factor_dolar_porc = round($request->naco_factor_dolar_porc,2);
+}elseif($request->naco_factor_dolar_porc == ""){
+      $ObjectCrear->naco_factor_dolar_porc = null;
+    }
+
+
+if ($request->naco_factor_logist_tasa != "") {
   $ObjectEditar->naco_factor_logist_tasa =  round($request->naco_factor_logist_tasa,2);
-}  
-if ($request->naco_factor_logist_porc) {
+}elseif($request->naco_factor_logist_tasa == ""){
+      $ObjectCrear->naco_factor_logist_tasa = null;
+    }
+
+if ($request->naco_factor_logist_porc != "") {
   $ObjectEditar->naco_factor_logist_porc =  round($request->naco_factor_logist_porc,2);
-}     
-if ($request->naco_factor_arancel_porc) {
+}elseif($request->naco_factor_logist_porc == ""){
+      $ObjectCrear->naco_factor_logist_porc = null;
+    }
+
+if ($request->naco_factor_arancel_porc != "") {
   $ObjectEditar->naco_factor_arancel_porc =  round($request->naco_factor_arancel_porc,2);
-}    
+}elseif($request->naco_factor_arancel_porc == ""){
+      $ObjectCrear->naco_factor_arancel_porc = null;
+    } 
 
 $ObjectEditar->save();
 

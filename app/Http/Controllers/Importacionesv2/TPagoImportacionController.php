@@ -99,9 +99,24 @@ class TPagoImportacionController extends Controller
         //Crea el registro en la tabla importación
         $ObjectCrear = new TPagoImportacion;
         $ObjectCrear->pag_importacion = $request->pag_importacion;
-        $ObjectCrear->pag_valor_anticipo = round($request->pag_valor_anticipo,2);
-        $ObjectCrear->pag_valor_saldo = round($request->pag_valor_saldo,2);
-        $ObjectCrear->pag_valor_comision = round($request->pag_valor_comision,2);
+        if ($request->pag_valor_anticipo != "") {
+             $ObjectCrear->pag_valor_anticipo = round($request->pag_valor_anticipo,2);
+        } else {
+            $ObjectCrear->pag_valor_anticipo = null;
+        }
+
+        if ($request->pag_valor_saldo != "") {
+             $ObjectCrear->pag_valor_saldo = round($request->pag_valor_saldo,2);
+        } else {
+            $ObjectCrear->pag_valor_saldo = null;
+        }
+ 
+        if ($request->pag_valor_comision != "") {
+             $ObjectCrear->pag_valor_comision = round($request->pag_valor_comision,2);
+        } else {
+            $ObjectCrear->pag_valor_comision = null;
+        }
+       
         $ObjectCrear->pag_valor_total = round($request->pag_valor_total,2);
         $ObjectCrear->pag_valor_fob = round($request->pag_valor_fob,2);
         $ObjectCrear->trm_liquidacion_factura = round($request->trm_liquidacion_factura,2);
@@ -206,17 +221,41 @@ class TPagoImportacionController extends Controller
         }
 
         $ObjectUpdate = TPagoImportacion::find($id);
-        $ObjectUpdate->pag_valor_anticipo = round($request->pag_valor_anticipo,2);
-        $ObjectUpdate->pag_valor_saldo = round($request->pag_valor_saldo,2);
-        $ObjectUpdate->pag_valor_comision = round($request->pag_valor_comision,2);
+        if ($request->pag_valor_anticipo != "") {
+             $ObjectUpdate->pag_valor_anticipo = round($request->pag_valor_anticipo,2);
+        } else {
+            $ObjectUpdate->pag_valor_anticipo = null;
+        }
+
+        if ($request->pag_valor_saldo != "") {
+             $ObjectUpdate->pag_valor_saldo = round($request->pag_valor_saldo,2);
+        } else {
+            $ObjectUpdate->pag_valor_saldo = null;
+        }
+ 
+        if ($request->pag_valor_comision != "") {
+             $ObjectUpdate->pag_valor_comision = round($request->pag_valor_comision,2);
+        } else {
+            $ObjectUpdate->pag_valor_comision = null;
+        }
         $ObjectUpdate->pag_valor_total = round($request->pag_valor_total,2);
         $ObjectUpdate->pag_valor_fob = round($request->pag_valor_fob,2);
         $ObjectUpdate->trm_liquidacion_factura = round($request->trm_liquidacion_factura,2);
         $ObjectUpdate->pag_fecha_factura = Carbon::parse($request->pag_fecha_factura)->format('Y-m-d');
         $ObjectUpdate->pag_fecha_envio_contabilidad = Carbon::parse($request->pag_fecha_envio_contabilidad)->format('Y-m-d');
         $ObjectUpdate->pag_numero_factura = strtoupper($request->pag_numero_factura);
-        $ObjectUpdate->pag_fecha_anticipo = Carbon::parse($request->pag_fecha_anticipo)->format('Y-m-d');
-        $ObjectUpdate->pag_fecha_saldo = Carbon::parse($request->pag_fecha_saldo)->format('Y-m-d');
+         if($request->pag_fecha_anticipo != ""){
+         $ObjectUpdate->pag_fecha_anticipo = Carbon::parse($request->pag_fecha_anticipo)->format('Y-m-d');
+     }elseif ($request->pag_fecha_anticipo == "") {
+        $ObjectUpdate->pag_fecha_anticipo = null;
+    }
+
+
+    if($request->pag_fecha_saldo != ""){
+      $ObjectUpdate->pag_fecha_saldo = Carbon::parse($request->pag_fecha_saldo)->format('Y-m-d');       
+  }elseif ($request->pag_fecha_saldo == "") {
+      $ObjectUpdate->pag_fecha_saldo = null;
+  }
         $ObjectUpdate->save();
 
          //Redirecciona a la pagina de consulta y muestra mensaje

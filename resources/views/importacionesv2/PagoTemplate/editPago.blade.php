@@ -38,7 +38,7 @@
 <!-- Valor anticipo  -->
 <div class="col-sm-6">
   {{ Form::label('', "Valor anticipo: (*)") }}
-  {{ Form::number("pag_valor_anticipo", $objeto->pag_valor_anticipo, ['class' => 'form-control validemosText', 'id' =>  'pag_valor_anticipo', 'placeholder' =>  'Ingresar el valor del anticipo','min' => '0','max' => '999999999','step' => '0.01','required' => 'required']) }}
+  {{ Form::number("pag_valor_anticipo", $objeto->pag_valor_anticipo, ['class' => 'form-control', 'id' =>  'pag_valor_anticipo', 'placeholder' =>  'Ingresar el valor del anticipo','min' => '0','max' => '999999999','step' => '0.01']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor anticipo    -->
@@ -47,9 +47,9 @@
 <div class="col-sm-6">
   {{ Form::label('', "Fecha del anticipo : (*)") }}
   @if($objeto->pag_fecha_anticipo == "")
-  {{ Form::text("pag_fecha_anticipo","", ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_anticipo', 'placeholder' =>  'Ingresar la fecha del anticipo','readonly' => 'readonly','required' => 'required']) }}
+  {{ Form::text("pag_fecha_anticipo","", ['class' => 'form-control datepickerClass', 'id' =>  'pag_fecha_anticipo', 'placeholder' =>  'Ingresar la fecha del anticipo','readonly' => 'readonly']) }}
   @else
-  {{ Form::text("pag_fecha_anticipo", \Carbon\Carbon::parse($objeto->pag_fecha_anticipo)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_anticipo', 'placeholder' =>  'Ingresar la fecha del anticipo','readonly' => 'readonly','required' => 'required']) }}
+  {{ Form::text("pag_fecha_anticipo", \Carbon\Carbon::parse($objeto->pag_fecha_anticipo)->format('d-m-Y'), ['class' => 'form-control  datepickerClass', 'id' =>  'pag_fecha_anticipo', 'placeholder' =>  'Ingresar la fecha del anticipo','readonly' => 'readonly']) }}
   @endif
   
   <div class="help-block error-help-block" id='error'></div>
@@ -58,7 +58,7 @@
 <!-- Valor saldo  -->
 <div class="col-sm-6">
   {{ Form::label('', "Valor saldo: (*)") }}
-  {{ Form::number("pag_valor_saldo", $objeto->pag_valor_saldo, ['class' => 'form-control validemosText', 'id' =>  'pag_valor_saldo', 'placeholder' =>  'Ingresar el valor del saldo','min' => '0','max' => '999999999','step' => '0.01','required' => 'required']) }}
+  {{ Form::number("pag_valor_saldo", $objeto->pag_valor_saldo, ['class' => 'form-control', 'id' =>  'pag_valor_saldo', 'placeholder' =>  'Ingresar el valor del saldo','min' => '0','max' => '999999999','step' => '0.01']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor saldo -->
@@ -70,9 +70,9 @@
   
 
 @if($objeto->pag_fecha_saldo == "")
-  {{ Form::text("pag_fecha_saldo", "", ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_saldo', 'placeholder' =>  'Ingresar la fecha del saldo','readonly' => 'readonly','required' => 'required']) }}
+  {{ Form::text("pag_fecha_saldo", "", ['class' => 'form-control datepickerClass', 'id' =>  'pag_fecha_saldo', 'placeholder' =>  'Ingresar la fecha del saldo','readonly' => 'readonly']) }}
   @else
- {{ Form::text("pag_fecha_saldo", \Carbon\Carbon::parse($objeto->pag_fecha_saldo)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'pag_fecha_saldo', 'placeholder' =>  'Ingresar la fecha del saldo','readonly' => 'readonly','required' => 'required']) }}
+ {{ Form::text("pag_fecha_saldo", \Carbon\Carbon::parse($objeto->pag_fecha_saldo)->format('d-m-Y'), ['class' => 'form-control  datepickerClass', 'id' =>  'pag_fecha_saldo', 'placeholder' =>  'Ingresar la fecha del saldo','readonly' => 'readonly']) }}
   @endif
 
 
@@ -83,7 +83,7 @@
 <!-- Valor comision  -->
 <div class="col-sm-6">
   {{ Form::label('', "Valor comisión: (*)") }}
-  {{ Form::number("pag_valor_comision", $objeto->pag_valor_comision, ['class' => 'form-control validemosText', 'id' =>  'pag_valor_comision', 'placeholder' =>  'Ingresar el valor de la comisión','min' => '0','max' => '999999999','step' => '0.01','required' => 'required']) }}
+  {{ Form::number("pag_valor_comision", $objeto->pag_valor_comision, ['class' => 'form-control', 'id' =>  'pag_valor_comision', 'placeholder' =>  'Ingresar el valor de la comisión','min' => '0','max' => '999999999','step' => '0.01']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor comision    -->

@@ -20,10 +20,6 @@
     @foreach($errors->all() as $key => $value)
     <span class="glyphicon glyphicon-remove red"></span>  {{$value}} <br>
     @endforeach
-    <script> setTimeout(function(){ 
-      $( "#mensajealerta" ).fadeToggle("slow");
-    }, 5000);</script>
-  </div>
   @endif
   @if (Session::has('message'))
   <div class="alert alert-info">{{ Session::get('message') }}</div>
@@ -37,13 +33,13 @@
   <div class="panel-body">
 
     <div class="row"> 
-      <div class="col-sm-2">
+      <div class="col-sm-3">
         <label  class="control-label"><strong>Razon social proveedor: </strong>{{$object->proveedor->razonSocialTercero}}</label>
       </div>  
       <div class="col-sm-2">
         <label  class="control-label"><strong>Nit proveedor: </strong>{{$object->proveedor->nitTercero}}</label>
       </div> 
-      <div class="col-sm-2">
+      <div class="col-sm-3">
         <label  class="control-label"><strong>Puerto de embarque: </strong>{{$object->puerto_embarque->puem_nombre}}</label>
       </div> 
       <div class="col-sm-2">
@@ -52,29 +48,22 @@
       <div class="col-sm-2">
         <label  class="control-label"><strong>Moneda negociación: </strong>{{$object->imp_moneda_negociacion}}</label>
       </div> 
-      <div class="col-sm-2">
-        <label  class="control-label"><strong>Fecha entrega total: </strong>{{$object->imp_fecha_entrega_total}}</label>
-      </div> 
+
     </div>
     <br>
 
     <div class="row"> 
-      <div class="col-sm-2">
+
+      <div class="col-sm-3">
+        <label  class="control-label"><strong>Fecha entrega total: </strong>{{$object->imp_fecha_entrega_total}}</label>
+      </div> 
+      <div class="col-sm-3">
         <label  class="control-label"><strong>Observaciones: </strong>{{$object->imp_observaciones}}</label>
       </div>  
-      <div class="col-sm-2">
+      <div class="col-sm-3">
         <label  class="control-label"><strong>Estado: </strong><br>{{$object->estado->est_nombre}}</label>
       </div>
-      <div class="col-sm-2">
-        <label  class="control-label"><strong>Productos: </strong>
-          <ul class="list-group">
-            @foreach($tablaProductos as $key => $value)
-            <li class="">{{$value[0]}}</li>
-            @endforeach
-          </ul>
-        </label>
-      </div>  
-      <div class="col-sm-2">
+      <div class="col-sm-3">
         <label  class="control-label"><strong>Origenes: </strong>
           <ul class="list-group">
             @foreach($objeto2 as $key => $value)
@@ -87,18 +76,30 @@
           </ul>
         </label>
       </div>  
-      <div class="col-sm-4">
-        <label  class="control-label"><strong>Proformas: </strong>
-          <ul class="list-group">
-            @foreach($objeto4 as $key => $value)
-            <li class="">{{$value->prof_numero}} - F.creacion:{{\Carbon\Carbon::parse($value->prof_fecha_creacion)->format('d-m-Y')}} - F.entrega: {{\Carbon\Carbon::parse($value->prof_fecha_entrega)->format('d-m-Y')}} - Valor: {{$value->prof_valor_proforma}} - Principal: {{$value->prof_principal}}</li>
-            @endforeach
-          </ul>
-        </label>
-      </div>  
-    </div>
 
+    </div>
+    <div class="row">
+     <div class="col-sm-12">
+      <label  class="control-label"><strong>Proformas: </strong>
+        <ul class="list-group">
+          @foreach($objeto4 as $key => $value)
+          <pre><li class="">{{$value->prof_numero}} - F.creacion:{{\Carbon\Carbon::parse($value->prof_fecha_creacion)->format('d-m-Y')}} - F.entrega: {{\Carbon\Carbon::parse($value->prof_fecha_entrega)->format('d-m-Y')}} - Valor: {{$value->prof_valor_proforma}} - Principal: {{$value->prof_principal}}</li></pre>
+          @endforeach
+        </ul>
+      </label>
+    </div>  
+    <div class="col-sm-12">
+      <label  class="control-label"><strong>Productos: </strong>
+        <ul class="list-group">
+          @foreach($tablaProductos as $key => $value)
+          <pre>  <li class="">{{$value[0]}}</li></pre>
+          @endforeach
+        </ul>
+      </label>
+    </div>  
   </div>
+
+</div>
 </div>
 
 
@@ -161,11 +162,12 @@
     <label  class="control-label"><strong>Fecha de confirmacion de la reserva: </strong><br>{{\Carbon\Carbon::parse($objeto5[0]->emim_fecha_confirm_reserva)->format('d-m-Y') }}</label>
   </div> 
   @if($objeto5[0]->contenedor[0]->cont_cajas == null)
-  <div class="col-sm-6">
+  <div class="col-sm-12">
+  <br>
     <label  class="control-label"><strong>Contenedores: </strong>
       <ul class="list-group">
         @foreach($objeto5[0]->contenedor as $key => $value)
-        <li class="">Tipo Contenedor {{$value->tipo->tcont_descripcion}} - Cantidad:{{$value->cont_cantidad}} - Numero: {{$value->cont_numero_contenedor}} - Cubicaje: {{$value->cont_cubicaje}} - Peso: {{$value->cont_peso}}</li>
+        <pre><li class="">Tipo Contenedor {{$value->tipo->tcont_descripcion}} - Cantidad:{{$value->cont_cantidad}} - Numero: {{$value->cont_numero_contenedor}} - Cubicaje: {{$value->cont_cubicaje}} - Peso: {{$value->cont_peso}}</li></pre>
         @endforeach
       </ul>
     </label>
@@ -325,7 +327,7 @@
   <label  class="control-label"><strong>Tipo nacionalización: </strong><br>{{$objeto7[0]->tiponacionalizacion->tnac_descripcion}}</label>
 </div> 
 <div class="col-sm-10">
-<label  class="control-label"><strong>Declaración de importación: </strong>
+  <label  class="control-label"><strong>Declaración de importación: </strong>
     <ul class="list-group">
       @foreach($objeto7[0]->declaracion as $key => $value)
       <li class="">No. declaracion: {{$value->decl_numero}} - Sticker: {{$value->decl_sticker}} - Arancel: {{$value->decl_arancel}} - Iva: {{$value->decl_iva}} - Valor: {{$value->decl_valor_otros}} - Trm: {{$value->decl_trm}} - Levante: {{$value->levanteDeclaracion->tlev_nombre}} - Fecha aceptacion: {{$value->decl_fecha_aceptacion}} - Fecha de levante: {{$value->decl_fecha_levante}} - Fecha legaliza giro: {{$value->decl_fecha_legaliza_giro}} - Administracion dian: {{$value->admindianDeclaracion->descripcion}}</li>
@@ -340,7 +342,7 @@
 
 </div>
 </div>
-@if($object->imp_estado_proceso != 6)
+@if($object->imp_estado_proceso != 6 && $hasPerm == 1)
 {{ Form::open(array('url' => route('cerrarImportacion'))) }}
 <input type="hidden" name="OrdenId" value="{{$object->id}}">
 <div class="form-group">
