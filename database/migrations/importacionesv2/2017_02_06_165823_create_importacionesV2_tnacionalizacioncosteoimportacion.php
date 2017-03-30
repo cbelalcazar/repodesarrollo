@@ -40,12 +40,6 @@ class CreateImportacionesV2Tnacionalizacioncosteoimportacion extends Migration
         $table->boolean('naco_control_posterior')
         ->comment('¿la nacionalizacion requiere control posterior? True / False');
 
-        $table->date('naco_fecha_recibo_fact_be')
-        ->comment('Fecha de recibido facturas en Belleza Express');
-
-        $table->date('naco_fecha_entrega_fact_cont')
-        ->comment('Fecha de entrega de facturas a contabilidad');
-
         $table->date('naco_fecha_entrega_docu_transp')
         ->comment('Fecha de entrega de documentos transportador');
 
