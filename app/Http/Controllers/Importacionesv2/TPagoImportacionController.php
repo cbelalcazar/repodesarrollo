@@ -31,10 +31,6 @@ class TPagoImportacionController extends Controller
     'pag_fecha_factura.required' => 'Favor ingresar la fecha de la factura',
     'pag_fecha_envio_contabilidad.required' => 'Favor ingresar la fecha de envio a contabilidad');
 
-  public function __construct()
-  {
-    $this->middleware('ImpMid')->only([ 'update']);
-}
 
     /**
      * Display a listing of the resource.

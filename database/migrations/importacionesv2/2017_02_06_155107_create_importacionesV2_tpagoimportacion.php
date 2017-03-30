@@ -25,6 +25,7 @@ class CreateImportacionesV2Tpagoimportacion extends Migration
                   ->comment('Campo que relaciona esta tabla con la tabla t_importacion');
 
             $table->float('pag_valor_anticipo', 10, 2)
+                  ->nullable()
                   ->comment('pago valor anticipo');
 
             $table->date('pag_fecha_anticipo')
@@ -32,6 +33,7 @@ class CreateImportacionesV2Tpagoimportacion extends Migration
                   ->comment('Fecha del anticipo');
 
             $table->float('pag_valor_saldo', 10, 2)
+                  ->nullable()
                   ->comment('pago valor saldo');
 
             $table->date('pag_fecha_saldo')
@@ -39,12 +41,15 @@ class CreateImportacionesV2Tpagoimportacion extends Migration
                   ->comment('Fecha del saldo');
 
             $table->float('pag_valor_comision', 10, 2)
+                  ->nullable()
                   ->comment('pago valor comision');
 
             $table->float('pag_valor_total', 10, 2)
+                  ->nullable()
                   ->comment('pago valor total');
 
             $table->float('pag_valor_fob', 10, 2)
+                  ->nullable()
                   ->comment('pago valor fob');
 
             $table->string('pag_numero_factura')
@@ -52,6 +57,7 @@ class CreateImportacionesV2Tpagoimportacion extends Migration
                   ->comment('Numero de la factura');
 
             $table->date('pag_fecha_factura')
+                  ->nullable()
                   ->comment('Fecha de la factura');
 
             $table->float('trm_liquidacion_factura', 10, 2)

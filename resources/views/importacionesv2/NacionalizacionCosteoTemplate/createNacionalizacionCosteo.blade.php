@@ -61,7 +61,7 @@
 
 <div class="col-sm-6">
   <div class="col-sm-6">
-    <br>{{ Form::label('', "Preinscripcion: (*)") }}<br>
+    <br>{{ Form::label('', "Preinspeccion: (*)") }}<br>
     {{ Form::checkbox("naco_preinscripcion", '1', null,['data-toggle' => 'toggle']) }}  
   </div>
 
@@ -196,22 +196,6 @@
 
 <!-- Valor fecha envio a contabilidad  -->
 <div class="col-sm-6">
-  {{ Form::label('', "Fecha recibo facturas Belleza Express: (*)") }}
-  {{ Form::text("naco_fecha_recibo_fact_be", old("naco_fecha_recibo_fact_be"), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_recibo_fact_be', 'placeholder' =>  'Ingresar la fecha de recibo facturas Belleza Express','readonly' => 'readonly','required' => 'required']) }}
-  <div class="help-block error-help-block" id='error'></div>
-</div>
-<!-- End Valor fecha envio a contabilidad     -->
-
-<!-- Valor fecha envio a contabilidad  -->
-<div class="col-sm-6">
-  {{ Form::label('', "Fecha entrega de facturas a contabilidad: (*)") }}
-  {{ Form::text("naco_fecha_entrega_fact_cont", old("naco_fecha_entrega_fact_cont"), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_entrega_fact_cont', 'placeholder' =>  'Ingresar la fecha de envio de facturas a contabilidad','readonly' => 'readonly','required' => 'required']) }}
-  <div class="help-block error-help-block" id='error'></div>
-</div>
-<!-- End Valor fecha envio a contabilidad     -->
-
-<!-- Valor fecha envio a contabilidad  -->
-<div class="col-sm-6">
   <br>
   {{ Form::label('', "Fecha de entrega documentos al transportador: (*)") }}
   {{ Form::text("naco_fecha_entrega_docu_transp", old("naco_fecha_entrega_docu_transp"), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_entrega_docu_transp', 'placeholder' =>  'Ingresar la fecha de entraga documentos al transportador','readonly' => 'readonly','required' => 'required']) }}
@@ -242,7 +226,7 @@
 <!-- Valor fecha envio a contabilidad  -->
 <div class="col-sm-6">
   <br>
-  {{ Form::label('', "Fecha de envio a comex: (*)") }}
+  {{ Form::label('', "Fecha de envio comex: (*)") }}
   {{ Form::text("naco_fecha_envio_comex", old("naco_fecha_envio_comex"), ['class' => 'form-control  datepickerClass', 'id' =>  'naco_fecha_envio_comex', 'placeholder' =>  'Ingresar fecha de envio comex','readonly' => 'readonly']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>

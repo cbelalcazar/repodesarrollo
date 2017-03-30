@@ -110,7 +110,7 @@ class CreateImportacionesV2Tnacionalizacioncosteoimportacion extends Migration
         ->nullable()
         ->comment('Valor factor arancel porcentaje resta de los dos anteriores');
 
-         $table->integer('naco_numero_comex')
+         $table->string('naco_numero_comex')
         ->nullable()
         ->comment('Numero de comex');
 

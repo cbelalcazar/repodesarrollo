@@ -37,6 +37,7 @@
     <script src="{{url('/js/jquery.dataTables.min.js')}}" type="text/javascript" language="javascript"></script>
 
 
+
     
 
     <script type="text/javascript">

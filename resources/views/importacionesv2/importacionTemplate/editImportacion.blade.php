@@ -18,7 +18,10 @@
  <!-- General errors in form -->
  <!-- ************************************ -->
 
+<div id="cargandogif" class="cargando" style="display:none;">
+<img style="margin-left: 5%;margin-top: 15%" alt="Espere..." src="{{url('/images/loading.gif')}}" />
 
+</div>
 
  <div class="form-group">
    @if ($errors->all())
@@ -379,9 +382,7 @@
   <!-- End Delivery date total merchandise -->
 
   <div class="form-group">
-    @if($hasPerm == 1)
     {{ Form::submit('Editar', array('class' => 'btn btn-primary  pull-right' )) }}
-    @endif
     <a class="btn btn-default pull-left" id="atras5" role="button"><span class="glyphicon glyphicon-chevron-left">   Atras</span></a>
   </div>  
   <br><br>  

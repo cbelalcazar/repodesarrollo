@@ -39,14 +39,14 @@ class TEmbarqueImportacionController extends Controller
     'emim_tipo_carga'                             => 'required',
     'emim_fecha_etd'                              => 'required|date',
     'emim_fecha_eta'                              => 'required|date',
-    'emim_fecha_recibido_documentos_ori'          => 'required|date',
-    'emim_fecha_envio_aduana'                     => 'required|date',
-    'emim_fecha_envio_ficha_tecnica'              => 'required|date',
-    'emim_fecha_envio_lista_empaque'              => 'required|date',
+    'emim_fecha_recibido_documentos_ori'          => 'date',
+    'emim_fecha_envio_aduana'                     => 'date',
+    'emim_fecha_envio_ficha_tecnica'              => 'date',
+    'emim_fecha_envio_lista_empaque'              => 'date',
     'emim_fecha_solicitud_reserva'                => 'required|date',
     'emim_fecha_confirm_reserva'                  => 'required|date',
     'emim_documento_transporte'                   => 'required|',
-    'emim_valor_flete'                            => 'required|numeric');
+    'emim_valor_flete'                            => 'numeric');
 
   //MENSAJES DE VALIDACION EJECUTADOS ANTES DE GRABAR EL OBJETO 
   public $messages = array(
@@ -59,29 +59,20 @@ class TEmbarqueImportacionController extends Controller
     'emim_fecha_etd.date'       => 'El campo fecha del etd debe tener formato fecha',
     'emim_fecha_eta.required'       => 'Favor ingresar la fecha del ETA',
     'emim_fecha_eta.date'       => 'El campo fecha del ETA debe tener formato fecha',
-    'emim_fecha_recibido_documentos_ori.required'       => 'Favor ingresar la fecha de recibido de documentos originales',
     'emim_fecha_recibido_documentos_ori.date'       => 'El campo fecha de recibido documentos originales debe tener formato fecha',
-    'emim_fecha_envio_aduana.required'       => 'Favor ingresar la fecha de envio a la aduana',
     'emim_fecha_envio_aduana.date'       => 'El campo fecha de envio a la aduana debe tener formato fecha',
-    'emim_fecha_envio_ficha_tecnica.required'       => 'Favor ingresar la fecha de envio ficha tecnica',
     'emim_fecha_envio_ficha_tecnica.date'       => 'El campo fecha de envio ficha tecnica debe tener formato fecha',
-    'emim_fecha_envio_lista_empaque.required'       => 'Favor ingresar la fecha de envio lista de empaque',
     'emim_fecha_envio_lista_empaque.date'       => 'El campo fecha de envio lista de empaque debe tener formato fecha',
     'emim_fecha_solicitud_reserva.required'       => 'Favor ingresar la fecha de la solicitud de la reserva',
     'emim_fecha_solicitud_reserva.date'       => 'El campo fecha de la solicitud de la reserva debe tener formato fecha',
     'emim_fecha_confirm_reserva.required'       => 'Favor ingresar la fecha de confirmación de la reserva',
     'emim_fecha_confirm_reserva.date'       => 'El campo fecha de confirmacion de la reserva debe tener formato fecha',
     'emim_documento_transporte.required'       => 'Favor ingresar el numero del documento de transporte',
-    'emim_valor_flete.required'       => 'Favor ingresar el valor del flete',
     'emim_valor_flete.integer'       => 'El campo valor del flete debe tener formato numerico');
   //Name de la url de consulta la uso para no redundar este string en mis funciones
   public $strUrlConsulta = 'importacionesv2/Embarque';
 
 
-    public function __construct()
-    {
-        $this->middleware('ImpMid')->only(['update']);
-    }
     /**
      * Display a listing of the resource.
      *
@@ -99,8 +90,8 @@ class TEmbarqueImportacionController extends Controller
             return 0;
         }elseif($permisos->perm_cargo == 1){
            return 1;
-        }
-    }
+       }
+   }
 
     /**
      * Show the form for creating a new resource.
@@ -191,85 +182,101 @@ class TEmbarqueImportacionController extends Controller
 
         $ObjectCrear->emim_fecha_etd = Carbon::parse($request->emim_fecha_etd)->format('Y-m-d');
         $ObjectCrear->emim_fecha_eta = Carbon::parse($request->emim_fecha_eta)->format('Y-m-d');
-        $ObjectCrear->emim_fecha_recibido_documentos_ori = Carbon::parse($request->emim_fecha_recibido_documentos_ori)->format('Y-m-d');
-        $ObjectCrear->emim_fecha_envio_aduana = Carbon::parse($request->emim_fecha_envio_aduana)->format('Y-m-d');
-        $ObjectCrear->emim_fecha_envio_ficha_tecnica = Carbon::parse($request->emim_fecha_envio_ficha_tecnica)->format('Y-m-d');
-        $ObjectCrear->emim_fecha_envio_lista_empaque = Carbon::parse($request->emim_fecha_envio_lista_empaque)->format('Y-m-d');
-        $ObjectCrear->emim_fecha_solicitud_reserva = Carbon::parse($request->emim_fecha_solicitud_reserva)->format('Y-m-d');
-        $ObjectCrear->emim_fecha_confirm_reserva = Carbon::parse($request->emim_fecha_confirm_reserva)->format('Y-m-d');
-        $ObjectCrear->emim_fecha_confirm_reserva = Carbon::parse($request->emim_fecha_confirm_reserva)->format('Y-m-d');
-        $ObjectCrear->emim_documento_transporte = strtoupper($request->emim_documento_transporte);
-        $ObjectCrear->emim_valor_flete =$request->emim_valor_flete;
-        $ObjectCrear->save();
 
-        if(!$ObjectCrear->id){
-         DB::rollBack();
-         App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema [error 201]');        
-     }else{
+        if ($request->emim_fecha_recibido_documentos_ori != "") {
+            $ObjectCrear->emim_fecha_recibido_documentos_ori == Carbon::parse($request->emim_fecha_recibido_documentos_ori)->format('Y-m-d');
+        }
 
-        if($request->emim_tipo_carga == 1 || $request->emim_tipo_carga == 2){
-            $objContenedor = new TContenedorEmbarque;
-            $objContenedor->cont_embarque = $ObjectCrear->id;
-            $objContenedor->cont_cubicaje = $request->cubicaje;
-            $objContenedor->cont_peso     = $request->peso;
-            $objContenedor->cont_cajas    = $request->cajas;
-            $objContenedor->save();
-            if(!$objContenedor->id){                    
-                DB::rollBack();
-                App::abort(500, 'La importacion no fue creada, se genero un problema en la creacion de la carga [error 204]');
-            }   
-        }elseif($request->emim_tipo_carga == 3){
+     if ($request->emim_fecha_envio_aduana != "") {
+            $ObjectCrear->emim_fecha_envio_aduana = Carbon::parse($request->emim_fecha_envio_aduana)->format('Y-m-d');
+    }
+
+ if ($request->emim_fecha_envio_ficha_tecnica != "") {
+    $ObjectCrear->emim_fecha_envio_ficha_tecnica = Carbon::parse($request->emim_fecha_envio_ficha_tecnica)->format('Y-m-d');
+} 
+
+if ($request->emim_fecha_envio_lista_empaque != "") {
+     $ObjectCrear->emim_fecha_envio_lista_empaque = Carbon::parse($request->emim_fecha_envio_lista_empaque)->format('Y-m-d');
+} 
+
+$ObjectCrear->emim_fecha_solicitud_reserva = Carbon::parse($request->emim_fecha_solicitud_reserva)->format('Y-m-d');
+$ObjectCrear->emim_fecha_confirm_reserva = Carbon::parse($request->emim_fecha_confirm_reserva)->format('Y-m-d');
+$ObjectCrear->emim_fecha_confirm_reserva = Carbon::parse($request->emim_fecha_confirm_reserva)->format('Y-m-d');
+$ObjectCrear->emim_documento_transporte = strtoupper($request->emim_documento_transporte);
+
+if ($request->emim_valor_flete != "") {
+     $ObjectCrear->emim_valor_flete = $request->emim_valor_flete;
+} 
+$ObjectCrear->save();
+
+if(!$ObjectCrear->id){
+ DB::rollBack();
+ App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema [error 201]');        
+}else{
+
+    if($request->emim_tipo_carga == 1 || $request->emim_tipo_carga == 2){
+        $objContenedor = new TContenedorEmbarque;
+        $objContenedor->cont_embarque = $ObjectCrear->id;
+        $objContenedor->cont_cubicaje = $request->cubicaje;
+        $objContenedor->cont_peso     = $request->peso;
+        $objContenedor->cont_cajas    = $request->cajas;
+        $objContenedor->save();
+        if(!$objContenedor->id){                    
+            DB::rollBack();
+            App::abort(500, 'La importacion no fue creada, se genero un problema en la creacion de la carga [error 204]');
+        }   
+    }elseif($request->emim_tipo_carga == 3){
             #Crea todas las proformas asociadas en la tabla
-            $cantidad = intval($request->tablaContenedorGuardar);
-            $contador = 1;
-            do {
-                $objContenedor1 = new TContenedorEmbarque;
-                $objContenedor1->cont_embarque = $ObjectCrear->id;
+        $cantidad = intval($request->tablaContenedorGuardar);
+        $contador = 1;
+        do {
+            $objContenedor1 = new TContenedorEmbarque;
+            $objContenedor1->cont_embarque = $ObjectCrear->id;
 
-                $tipoContenedor1 = "$contador"."-tipocont";
-                $objContenedor1->cont_tipo_contenedor = $request->$tipoContenedor1;
+            $tipoContenedor1 = "$contador"."-tipocont";
+            $objContenedor1->cont_tipo_contenedor = $request->$tipoContenedor1;
 
-                $cantidad1 = "$contador"."-cantidad";
-                $objContenedor1->cont_cantidad = $request->$cantidad1;
+            $cantidad1 = "$contador"."-cantidad";
+            $objContenedor1->cont_cantidad = $request->$cantidad1;
 
-                $numeroImportacion1 = "$contador"."-numeroImportacion";
-                $objContenedor1->cont_numero_contenedor = $request->$numeroImportacion1;
+            $numeroImportacion1 = "$contador"."-numeroImportacion";
+            $objContenedor1->cont_numero_contenedor = $request->$numeroImportacion1;
 
-                $cubicaje1 = "$contador"."-cubicaje";
-                $objContenedor1->cont_cubicaje = $request->$cubicaje1;
+            $cubicaje1 = "$contador"."-cubicaje";
+            $objContenedor1->cont_cubicaje = $request->$cubicaje1;
 
-                $peso1 = "$contador"."-peso";
-                $objContenedor1->cont_peso = $request->$peso1;
+            $peso1 = "$contador"."-peso";
+            $objContenedor1->cont_peso = $request->$peso1;
 
-                $objContenedor1->save();
-                $contador++;
-            } while ($contador <= $cantidad);
+            $objContenedor1->save();
+            $contador++;
+        } while ($contador <= $cantidad);
 
-        }else{
-           DB::rollBack();
-           App::abort(500, 'Favor validar el tipo de carga seleccionado [error 202]');     
-       }
-
-       DB::commit();
-           #Cambia el estado de la orden de importacion a transito
-       $objImportacion = TImportacion::find($request->emim_importacion);
-       $objImportacion->imp_estado_proceso = 2;
-       $objImportacion->save();
-
-         $objProductosImportacion = TProductoImportacion::where('pdim_importacion','=', $request->emim_importacion)->get();
-         foreach ($objProductosImportacion as $key => $value) {
-           if($value->pdim_fech_req_declaracion_anticipado != null){
-            $value->pdim_fech_req_declaracion_anticipado = Carbon::now()->format('Y-m-d');
-           }
-           if($value->pdim_fech_requ_registro_importacion != null){
-            $value->pdim_fech_requ_registro_importacion = Carbon::now()->format('Y-m-d');
-           }
-           $value->save();
-         }
+    }else{
+       DB::rollBack();
+       App::abort(500, 'Favor validar el tipo de carga seleccionado [error 202]');     
    }
 
-   Session::flash('message', 'El proceso de embarque fue creado exitosamente!');
-   return Redirect::to($urlConsulta);
+   DB::commit();
+           #Cambia el estado de la orden de importacion a transito
+   $objImportacion = TImportacion::find($request->emim_importacion);
+   $objImportacion->imp_estado_proceso = 2;
+   $objImportacion->save();
+
+   $objProductosImportacion = TProductoImportacion::where('pdim_importacion','=', $request->emim_importacion)->get();
+   foreach ($objProductosImportacion as $key => $value) {
+       if($value->pdim_fech_req_declaracion_anticipado != null){
+        $value->pdim_fech_req_declaracion_anticipado = Carbon::now()->format('Y-m-d');
+    }
+    if($value->pdim_fech_requ_registro_importacion != null){
+        $value->pdim_fech_requ_registro_importacion = Carbon::now()->format('Y-m-d');
+    }
+    $value->save();
+}
+}
+
+Session::flash('message', 'El proceso de embarque fue creado exitosamente!');
+return Redirect::to($urlConsulta);
 }
 
     /**

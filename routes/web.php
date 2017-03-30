@@ -59,7 +59,7 @@ Route::post('StoreAjaxInconterm', 'Importacionesv2\TIcontermController@storeAjax
 Route::get('ProductoAjax', 'Importacionesv2\TProductoController@Productoajax')->name('createproductoajax');
 Route::post('StoreAjaxProducto', 'Importacionesv2\TProductoController@storeAjax')->name('storeajaxproducto');
 Route::get('ConsultaFiltros', 'Importacionesv2\TImportacionController@consultaFiltrada')->name('consultaFiltros');
-Route::get('BorrarProductoImportacion', 'Importacionesv2\TImportacionController@borrar')->name('borrarProductoImportacion');
+Route::post('BorrarProductoImportacion', 'Importacionesv2\TImportacionController@borrar')->name('borrarProductoImportacion');
 Route::get('BorrarProformaImportacion', 'Importacionesv2\TImportacionController@borrarProforma')->name('borrarProformaImportacion');
 Route::get('AlertasImportacion', 'Importacionesv2\TImportacionController@alertasImportacion')->name('consultaAlertas');
   //Rutas para proceso de embarque de importacion 

@@ -347,6 +347,7 @@ $(document).on('click', '.borrar', function (event) {
 });
 
 //end
+
 //Funcion para el llenado de la tabla de productos
 function autocompleteprod(obj){
  var tablaconteo = $('#tablaGuardar').val();
@@ -408,6 +409,7 @@ if($('#imp_producto').val() == ""){
         var str4 = res[0].split(" -- ");
         setTimeout(function(){
           $('#prod_referencia').val(str4[0]);
+          $('#ref_producto').html(str4[1]);
           $('#prod_referencia').attr("readonly","readonly");
           $('#imp_producto').val("");
           $this.button('reset');
@@ -520,19 +522,29 @@ if($('#imp_proforma').val() == "" || $('#fech_crea_profor').val() == "" || $('#f
 
 }
 
-//Funcion que ejecuta el ajax para borrar el producto de importacion cuando ya se encuentra creado
+/**
+*borrarpordimp
+*
+* Obtiene la url a la cual le voy a hacer la peticion ajax // var urlborrar
+* Obtiene el token de seguridad de laravel // var token
+* Obtiene el id del producto importacion a borrar // var id
+* Crea la url con todos los parametros // var datos
+*
+*/
 function borrarprodimp(obj){
   var urlBorrar = $('#urlborrar').val();
-  var formulario =  $('#Formularioupdate1').serialize();
+  var token = document.getElementsByName('_token');
+  var formulario =  $(token).serialize();
   var id = obj.id;
   var ordenimportacion = $('#identificador').val();
-  var datos = formulario+'&obj='+id+'&identificador='+ordenimportacion;
-  var posteo =  $.get(urlBorrar,datos,function(res){
-    alert(res);
+  var datos = formulario+'&obj='+id+'&identificador='+ordenimportacion; 
+  $('#cargandogif').show();
+  $.post(urlBorrar,datos,function(res){
+    alert(res);    
+    $('#cargandogif').hide();
     if (res == "Producto borrado exitosamente") {
-
      event.preventDefault();
-     $(obj).closest('tr').remove();
+     $(obj).closest('tr').remove();    
    }
  });
 

@@ -27,8 +27,9 @@ class CreateImportacionesV2Tembarqueimportacion extends Migration
             $table->string('emim_embarcador')
                   ->comment('Campo que relacion el nit del proveedor en el ERP al sistema de importaciones');
 
-            $table->string('emim_linea_maritima')
-                  ->comment('Campo que relacion el nit de la linea maritima en el ERP al sistema de importaciones');
+            $table->integer('emim_linea_maritima')
+                  ->unsigned()
+                  ->comment('Campo que relacion las lineas maritimas de la tabla t_linea_maritima');
 
             $table->integer('emim_tipo_carga')
                   ->unsigned()
@@ -44,19 +45,24 @@ class CreateImportacionesV2Tembarqueimportacion extends Migration
                   ->comment('Numero documento transporte');
 
             $table->float('emim_valor_flete', 15, 2)
+                  ->nullable()
                   ->comment('Valor del flete de embarque');
 
             $table->date('emim_fecha_recibido_documentos_ori')
+                  ->nullable()
                   ->comment('Fecha recibido documentos originales');
 
             $table->date('emim_fecha_envio_aduana')
+                  ->nullable()
                   ->comment('Fecha envio documentos a la aduana');
 
             $table->date('emim_fecha_envio_ficha_tecnica')
+                  ->nullable()
                   ->comment('Fecha envio ficha tecnica');
 
             $table->date('emim_fecha_envio_lista_empaque')
-                        ->comment('Fecha envio lista de empaque');
+                  ->nullable()
+                  ->comment('Fecha envio lista de empaque');
 
             $table->string('emim_aduana')
                   ->comment('Campo que relacion el nit de la aduana en el ERP al sistema de importaciones');
@@ -80,6 +86,8 @@ class CreateImportacionesV2Tembarqueimportacion extends Migration
             $table->foreign('emim_importacion')->references('id')->on('t_importacion');
 
             $table->foreign('emim_tipo_carga')->references('id')->on('t_tipo_carga');
+
+            $table->foreign('emim_linea_maritima')->references('id')->on('t_linea_maritima');
 
          });
     }

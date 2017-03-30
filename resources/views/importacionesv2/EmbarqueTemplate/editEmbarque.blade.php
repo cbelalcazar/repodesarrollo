@@ -90,7 +90,7 @@
     </div>
     <!-- End Embarcador -->
 
-     <!-- Linea maritima -->
+    <!-- Linea maritima -->
     <div class="form-group" id="tipo_carga_div">
       <label>Linea maritima: (*)</label>
       {{ Form::select('emim_linea_maritima', $lineasMaritimas, $objeto->emim_linea_maritima, ['placeholder' => 'Selecciona una linea maritima...', 'class' => 'form-control validemos', 'id' => 'emim_linea_maritima']) }} 
@@ -216,12 +216,23 @@
   <div class="row">
     <div class="col-sm-6" id="fechrecb_div">
       <label  class="control-label">Fecha de recibido de documentos originales: (*)</label>
-      {{ Form::text("emim_fecha_recibido_documentos_ori", \Carbon\Carbon::parse($objeto->emim_fecha_recibido_documentos_ori)->format('d-m-Y'), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_recibido_documentos_ori', 'placeholder' =>  'Ingresar fecha de recibido documentos originales', 'readonly' =>  'readonly']) }}
+      @if($objeto->emim_fecha_recibido_documentos_ori == "")
+      {{ Form::text("emim_fecha_recibido_documentos_ori", "", ['class' => 'form-control', 'id' =>  'emim_fecha_recibido_documentos_ori', 'placeholder' =>  'Ingresar fecha de recibido documentos originales', 'readonly' =>  'readonly']) }}
+      @else
+      {{ Form::text("emim_fecha_recibido_documentos_ori", \Carbon\Carbon::parse($objeto->emim_fecha_recibido_documentos_ori)->format('d-m-Y'), ['class' => 'form-control', 'id' =>  'emim_fecha_recibido_documentos_ori', 'placeholder' =>  'Ingresar fecha de recibido documentos originales', 'readonly' =>  'readonly']) }}
+      @endif
+      
       <div class="help-block error-help-block" id='error_fechrecb'></div>
     </div>
     <div class="col-sm-6" id="fechenvadu_div">
       <label  class="control-label">Fecha de envio documentos a agencia de aduanas: (*)</label>
-      {{ Form::text("emim_fecha_envio_aduana", \Carbon\Carbon::parse($objeto->emim_fecha_envio_aduana)->format('d-m-Y'), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_envio_aduana', 'placeholder' =>  'Ingresar fecha de envio documentos aduana', 'readonly' =>  'readonly']) }}
+
+      @if($objeto->emim_fecha_recibido_documentos_ori == "")
+      {{ Form::text("emim_fecha_envio_aduana", "", ['class' => 'form-control', 'id' =>  'emim_fecha_envio_aduana', 'placeholder' =>  'Ingresar fecha de envio documentos aduana', 'readonly' =>  'readonly']) }}
+      @else
+      {{ Form::text("emim_fecha_envio_aduana", \Carbon\Carbon::parse($objeto->emim_fecha_envio_aduana)->format('d-m-Y'), ['class' => 'form-control', 'id' =>  'emim_fecha_envio_aduana', 'placeholder' =>  'Ingresar fecha de envio documentos aduana', 'readonly' =>  'readonly']) }}
+      @endif
+      
       <div class="help-block error-help-block" id='error_fechrecb'></div>
     </div>
   </div>
@@ -231,12 +242,24 @@
   <div class="row" id="fechenvfich_div">
     <div class="col-sm-6">
       <label  class="control-label">Fecha de envio ficha tecnica: (*)</label>
-      {{ Form::text("emim_fecha_envio_ficha_tecnica", \Carbon\Carbon::parse($objeto->emim_fecha_envio_ficha_tecnica)->format('d-m-Y'), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_envio_ficha_tecnica', 'placeholder' =>  'Ingresar fecha de envio ficha tecnica', 'readonly' =>  'readonly']) }}
+
+      @if($objeto->emim_fecha_recibido_documentos_ori == "")
+      {{ Form::text("emim_fecha_envio_ficha_tecnica", "", ['class' => 'form-control', 'id' =>  'emim_fecha_envio_ficha_tecnica', 'placeholder' =>  'Ingresar fecha de envio ficha tecnica', 'readonly' =>  'readonly']) }}
+      @else
+      {{ Form::text("emim_fecha_envio_ficha_tecnica", \Carbon\Carbon::parse($objeto->emim_fecha_envio_ficha_tecnica)->format('d-m-Y'), ['class' => 'form-control', 'id' =>  'emim_fecha_envio_ficha_tecnica', 'placeholder' =>  'Ingresar fecha de envio ficha tecnica', 'readonly' =>  'readonly']) }}
+      @endif
+
+      
       <div class="help-block error-help-block" id='error_fechenvfich'></div>
     </div>
     <div class="col-sm-6" id="fechenvlistemp_div">
       <label  class="control-label">Fecha de envio lista de empaque: (*)</label>
-      {{ Form::text("emim_fecha_envio_lista_empaque", \Carbon\Carbon::parse($objeto->emim_fecha_envio_lista_empaque)->format('d-m-Y'), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_envio_lista_empaque', 'placeholder' =>  'Ingresar fecha de envio ficha tecnica', 'readonly' =>  'readonly']) }}
+
+      @if($objeto->emim_fecha_recibido_documentos_ori == "")
+      {{ Form::text("emim_fecha_envio_lista_empaque", "", ['class' => 'form-control', 'id' =>  'emim_fecha_envio_lista_empaque', 'placeholder' =>  'Ingresar fecha de envio ficha tecnica', 'readonly' =>  'readonly']) }}
+      @else
+      {{ Form::text("emim_fecha_envio_lista_empaque", \Carbon\Carbon::parse($objeto->emim_fecha_envio_lista_empaque)->format('d-m-Y'), ['class' => 'form-control', 'id' =>  'emim_fecha_envio_lista_empaque', 'placeholder' =>  'Ingresar fecha de envio ficha tecnica', 'readonly' =>  'readonly']) }}
+      @endif
       <div class="help-block error-help-block" id='error_fechenvlistemp'></div>
     </div>
   </div>
@@ -285,7 +308,7 @@
   <!-- Consecutive import  -->
   <div class="form-group" id="valorflete_div">
     {{ Form::label('', "Valor de flete: (*)") }}
-    {{ Form::text("emim_valor_flete", $objeto->emim_valor_flete, ['class' => 'form-control validemos', 'id' =>  'emim_valor_flete', 'placeholder' =>  'Ingresar el valor del flete','maxlength' => '10']) }}
+    {{ Form::text("emim_valor_flete", $objeto->emim_valor_flete, ['class' => 'form-control', 'id' =>  'emim_valor_flete', 'placeholder' =>  'Ingresar el valor del flete','maxlength' => '10']) }}
     <div class="help-block error-help-block" id='error_valorflete'></div>
   </div>
   <!-- End Consecutive import    -->
@@ -293,9 +316,7 @@
   <input type="hidden" name="infoTipoContenedor" id="infoTipoContenedor" value="{{ $contenedores }}">
   <input type="hidden" name="tablaContenedorGuardar" id="tablaContenedorGuardar" value="{{$cantidadContenedores}}">
   <div class="form-group">
-  @if($hasPerm == 1)
     {{ Form::submit('Editar', array('class' => 'btn btn-primary pull-right', 'id' => 'finalizar1')) }}
-  @endif
     <a class="btn btn-default pull-left" id="atras4" role="button"><span class="glyphicon glyphicon-chevron-left">   Atras</span></a>
   </div>
   <br><br>

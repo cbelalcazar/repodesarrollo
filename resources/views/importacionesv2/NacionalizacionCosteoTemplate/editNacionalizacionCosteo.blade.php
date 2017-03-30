@@ -224,21 +224,6 @@
 </div>
 <input type="hidden" name="tabladeclaracionguardar" id="tabladeclaracionguardar" value="{{$cantidadDeclaraciones}}">
 
-<!-- Valor fecha envio a contabilidad  -->
-<div class="col-sm-6">
-  {{ Form::label('', "Fecha recibo facturas Belleza Express: (*)") }}
-  {{ Form::text("naco_fecha_recibo_fact_be", \Carbon\Carbon::parse($objeto->naco_fecha_recibo_fact_be)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_recibo_fact_be', 'placeholder' =>  'Ingresar la fecha de recibo facturas Belleza Express','readonly' => 'readonly','required' => 'required']) }}
-  <div class="help-block error-help-block" id='error'></div>
-</div>
-<!-- End Valor fecha envio a contabilidad     -->
-
-<!-- Valor fecha envio a contabilidad  -->
-<div class="col-sm-6">
-  {{ Form::label('', "Fecha entrega de facturas a contabilidad: (*)") }}
-  {{ Form::text("naco_fecha_entrega_fact_cont", \Carbon\Carbon::parse($objeto->naco_fecha_entrega_fact_cont)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_entrega_fact_cont', 'placeholder' =>  'Ingresar la fecha de envio de facturas a contabilidad','readonly' => 'readonly','required' => 'required']) }}
-  <div class="help-block error-help-block" id='error'></div>
-</div>
-<!-- End Valor fecha envio a contabilidad     -->
 
 <!-- Valor fecha envio a contabilidad  -->
 <div class="col-sm-6">
@@ -262,7 +247,7 @@
 <!-- Valor fecha envio a contabilidad  -->
 <div class="col-sm-6">
   <br>
-  {{ Form::label('', "Fecha de envio a comex: (*)") }}
+  {{ Form::label('', "Fecha de envio comex: (*)") }}
   @if($objeto->naco_fecha_envio_comex != null)
   {{ Form::text("naco_fecha_envio_comex", \Carbon\Carbon::parse($objeto->naco_fecha_envio_comex)->format('d-m-Y'), ['class' => 'form-control  datepickerClass', 'id' =>  'naco_fecha_envio_comex', 'placeholder' =>  'Ingresar fecha de envio comex','readonly' => 'readonly']) }}
   @else
@@ -434,9 +419,8 @@
 <!-- End Valor fecha envio a contabilidad     -->
 <div class="col-sm-12">
   <br>
-  @if($hasPerm == 1)
-  {{ Form::submit('Actualizar', array('class' => 'btn btn-primary pull-right', 'id' => 'finalizar1')) }}
-  @endif
+  {{ Form::submit('Actualizar', array('class' => 'btn btn-primary pull-right', 'id' => 'finalizar1'))}} 
+
 </div>
 {{ Form::close() }}
 @endsection

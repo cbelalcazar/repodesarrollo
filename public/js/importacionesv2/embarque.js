@@ -128,31 +128,8 @@ $('#siguiente3').click(function() {
 		$('#eta_div').addClass('has-error');
 		continuar = false;
 	}
-
-	if ($('#emim_fecha_recibido_documentos_ori').val() == ""){
-		$('#error_fechrecb').html('Favor ingresar la fecha de recibido de los documentos originales');
-		$('#fechrecb_div').addClass('has-error');
-		continuar = false;
-	}
-
-	if ($('#emim_fecha_envio_aduana').val() == ""){
-		$('#error_fechrecb').html('Favor ingresar la fecha de envio a la aduana');
-		$('#fechenvadu_div').addClass('has-error');
-		continuar = false;
-	}
-
-	if ($('#emim_fecha_envio_ficha_tecnica').val() == ""){
-		$('#error_fechenvfich').html('Favor ingresar la fecha de envio de la ficha tecnica');
-		$('#fechenvfich_div').addClass('has-error');
-		continuar = false;
-	}
-
-	if ($('#emim_fecha_envio_lista_empaque').val() == ""){
-		$('#error_fechenvlistemp').html('Favor ingresar la fecha de envio de la lista de empaque');
-		$('#fechenvlistemp_div').addClass('has-error');
-		continuar = false;
-	}
-
+	
+	
 	if ($('#emim_fecha_solicitud_reserva').val() == ""){
 		$('#error_fechsolicreser').html('Favor ingresar la fecha de solicitud de la reserva');
 		$('#fechsolicreser_div').addClass('has-error');
@@ -190,11 +167,6 @@ $('#siguiente3').click(function() {
   		continuar = false;
   	}
 
-  	if ($('#emim_valor_flete').val() == ""){
-  		$('#error_valorflete').html('Favor ingresar el valor del flete');
-  		$('#valorflete_div').addClass('has-error');
-  		continuar = false;
-  	}
   	if (continuar) {
   		return true;
   	}else{
@@ -301,42 +273,8 @@ $('.validemos').blur(function() {
 		$('#eta_div').addClass('has-success');
 	}
 
-	if ($('#emim_fecha_recibido_documentos_ori').val() == ""){
-		$('#error_fechrecb').html('Favor ingresar la fecha de recibido de los documentos originales');
-		$('#fechrecb_div').addClass('has-error');
-	}else if ($('#emim_fecha_recibido_documentos_ori').val() != ""){
-		$('#error_fechrecb').html('');
-		$('#fechrecb_div').removeClass('has-error');
-		$('#fechrecb_div').addClass('has-success');
-	}
-
-	if ($('#emim_fecha_envio_aduana').val() == ""){
-		$('#error_fechrecb').html('Favor ingresar la fecha de envio a la aduana');
-		$('#fechenvadu_div').addClass('has-error');
-	}else if ($('#emim_fecha_envio_aduana').val() != ""){
-		$('#error_fechrecb').html('');
-		$('#fechenvadu_div').removeClass('has-error');
-		$('#fechenvadu_div').addClass('has-success');
-	}
 
 
-	if ($('#emim_fecha_envio_ficha_tecnica').val() == ""){
-		$('#error_fechenvfich').html('Favor ingresar la fecha de envio de la ficha tecnica');
-		$('#fechenvfich_div').addClass('has-error');
-	}else if ($('#emim_fecha_envio_ficha_tecnica').val() != ""){
-		$('#error_fechenvfich').html('');
-		$('#fechenvfich_div').removeClass('has-error');
-		$('#fechenvfich_div').addClass('has-success');
-	}
-
-	if ($('#emim_fecha_envio_lista_empaque').val() == ""){
-		$('#error_fechenvlistemp').html('Favor ingresar la fecha de envio de la lista de empaque');
-		$('#fechenvlistemp_div').addClass('has-error');
-	}else if ($('#emim_fecha_envio_lista_empaque').val() != ""){
-		$('#error_fechenvlistemp').html('');
-		$('#fechenvlistemp_div').removeClass('has-error');
-		$('#fechenvlistemp_div').addClass('has-success');
-	}
 
 	if ($('#emim_fecha_solicitud_reserva').val() == ""){
 		$('#error_fechsolicreser').html('Favor ingresar la fecha de solicitud de la reserva');
@@ -363,15 +301,6 @@ $('.validemos').blur(function() {
 		$('#error_doctranspor').html('');
 		$('#doctranspor_div').removeClass('has-error');
 		$('#doctranspor_div').addClass('has-success');
-	}
-
-	if ($('#emim_valor_flete').val() == ""){
-		$('#error_valorflete').html('Favor ingresar el valor del flete');
-		$('#valorflete_div').addClass('has-error');
-	}else if ($('#emim_valor_flete').val() != ""){
-		$('#error_valorflete').html('');
-		$('#valorflete_div').removeClass('has-error');
-		$('#valorflete_div').addClass('has-success');
 	}
 
 

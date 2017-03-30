@@ -7,7 +7,10 @@
  * 22/02/2017
  */ -->
 <br><br><br>
-
+<div class="form-group">
+<label for="">Descripcion del producto:</label>
+<br>
+<label id="ref_producto"></label></div>
 @foreach($errors->all() as $key => $value)
 <div class="alert alert-danger">{{$value}}</div>
 @endforeach
@@ -35,6 +38,8 @@
 </div>
 @endif
 @endforeach
+
+
 <input type="text" style='display: none;' disabled="disabled" size="1">
 <input type="button" class="btn btn-primary" value="Crear Nueva" onclick="storeajax(document.getElementById('formajax').action, $('#formajax').serialize());">
 {{ Form::close() }}

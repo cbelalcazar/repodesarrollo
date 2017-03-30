@@ -186,12 +186,12 @@
   <div class="row">
     <div class="col-sm-6" id="fechrecb_div">
       <label  class="control-label">Fecha de recibido de documentos originales: (*)</label>
-      {{ Form::text("emim_fecha_recibido_documentos_ori", old("emim_fecha_recibido_documentos_ori"), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_recibido_documentos_ori', 'placeholder' =>  'Ingresar fecha de recibido documentos originales', 'readonly' =>  'readonly']) }}
+      {{ Form::text("emim_fecha_recibido_documentos_ori", old("emim_fecha_recibido_documentos_ori"), ['class' => 'form-control', 'id' =>  'emim_fecha_recibido_documentos_ori', 'placeholder' =>  'Ingresar fecha de recibido documentos originales', 'readonly' =>  'readonly']) }}
       <div class="help-block error-help-block" id='error_fechrecb'></div>
     </div>
     <div class="col-sm-6" id="fechenvadu_div">
       <label  class="control-label">Fecha de envio documentos a agencia de aduanas: (*)</label>
-      {{ Form::text("emim_fecha_envio_aduana", old("emim_fecha_envio_aduana"), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_envio_aduana', 'placeholder' =>  'Ingresar fecha de envio documentos aduana', 'readonly' =>  'readonly']) }}
+      {{ Form::text("emim_fecha_envio_aduana", old("emim_fecha_envio_aduana"), ['class' => 'form-control', 'id' =>  'emim_fecha_envio_aduana', 'placeholder' =>  'Ingresar fecha de envio documentos aduana', 'readonly' =>  'readonly']) }}
       <div class="help-block error-help-block" id='error_fechrecb'></div>
     </div>
   </div>
@@ -201,12 +201,12 @@
   <div class="row" id="fechenvfich_div">
     <div class="col-sm-6">
       <label  class="control-label">Fecha de envio ficha tecnica: (*)</label>
-      {{ Form::text("emim_fecha_envio_ficha_tecnica", old("emim_fecha_envio_ficha_tecnica"), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_envio_ficha_tecnica', 'placeholder' =>  'Ingresar fecha de envio ficha tecnica', 'readonly' =>  'readonly']) }}
+      {{ Form::text("emim_fecha_envio_ficha_tecnica", old("emim_fecha_envio_ficha_tecnica"), ['class' => 'form-control', 'id' =>  'emim_fecha_envio_ficha_tecnica', 'placeholder' =>  'Ingresar fecha de envio ficha tecnica', 'readonly' =>  'readonly']) }}
       <div class="help-block error-help-block" id='error_fechenvfich'></div>
     </div>
     <div class="col-sm-6" id="fechenvlistemp_div">
       <label  class="control-label">Fecha de envio lista de empaque: (*)</label>
-      {{ Form::text("emim_fecha_envio_lista_empaque", old("emim_fecha_envio_lista_empaque"), ['class' => 'form-control validemos', 'id' =>  'emim_fecha_envio_lista_empaque', 'placeholder' =>  'Ingresar fecha de envio ficha tecnica', 'readonly' =>  'readonly']) }}
+      {{ Form::text("emim_fecha_envio_lista_empaque", old("emim_fecha_envio_lista_empaque"), ['class' => 'form-control', 'id' =>  'emim_fecha_envio_lista_empaque', 'placeholder' =>  'Ingresar fecha de envio ficha tecnica', 'readonly' =>  'readonly']) }}
       <div class="help-block error-help-block" id='error_fechenvlistemp'></div>
     </div>
   </div>
@@ -255,7 +255,7 @@
   <!-- Consecutive import  -->
   <div class="form-group" id="valorflete_div">
     {{ Form::label('', "Valor de flete: (*)") }}
-    {{ Form::text("emim_valor_flete", old("emim_valor_flete"), ['class' => 'form-control validemos', 'id' =>  'emim_valor_flete', 'placeholder' =>  'Ingresar el valor del flete','maxlength' => '10']) }}
+    {{ Form::text("emim_valor_flete", old("emim_valor_flete"), ['class' => 'form-control', 'id' =>  'emim_valor_flete', 'placeholder' =>  'Ingresar el valor del flete','maxlength' => '10']) }}
     <div class="help-block error-help-block" id='error_valorflete'></div>
   </div>
   <!-- End Consecutive import    -->

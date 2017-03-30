@@ -185,7 +185,7 @@
         <div class="col-sm-10">
           {{ Form::text('imp_producto', '', ['class' => 'form-control', 'id' =>  'imp_producto', 'placeholder' =>  'Ingresar la referencia del producto'])}}
         </div>        
-        <button type="button" class="btn btn-primary " id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Procesando orden" onclick="autocompleteprod(this);">Agregar
+        <button type="button" class="btn btn-primary " id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Procesando orden" onclick="autocompleteprod(this);">Consultar
         </button>      
       </div>
       <div class="help-block error-help-block has-error" id='error_producto'></div>

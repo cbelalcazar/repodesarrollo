@@ -61,7 +61,7 @@ class TImportacionController extends Controller
 
   public function __construct()
   {
-    $this->middleware('ImpMid')->only(['update', 'cerrarOrden']);
+    $this->middleware('ImpMid')->only(['cerrarOrden']);
 }
     /**
     * Display a listing of the resource.
@@ -185,13 +185,13 @@ class TImportacionController extends Controller
         if($request->imp_fecha_entrega_total == ""){
             $ObjectCrear->imp_fecha_entrega_total = null;
         }else{
-           $date = Carbon::parse(Input::get('imp_fecha_entrega_total'))->format('Y-m-d');
-           $ObjectCrear->imp_fecha_entrega_total = $date ;
-       }
-       $ObjectCrear->imp_estado_proceso = 1;
-       $ObjectCrear->save();
+         $date = Carbon::parse(Input::get('imp_fecha_entrega_total'))->format('Y-m-d');
+         $ObjectCrear->imp_fecha_entrega_total = $date ;
+     }
+     $ObjectCrear->imp_estado_proceso = 1;
+     $ObjectCrear->save();
        #Si la creacion de la importacion genera error lo retorna
-       if(!$ObjectCrear->id){
+     if(!$ObjectCrear->id){
         DB::rollBack();
         App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema [error 201]');
     }else{
@@ -236,12 +236,12 @@ class TImportacionController extends Controller
         #Crea todos los origenes de la mercancia asociados en la tabla
         $cantidadOrigenes = count($request->origenMercancia);
         for ($i=0; $i < $cantidadOrigenes ; $i++) {
-         $strorimerc = $i."variable";
-         $strorimerc = new TOrigenMercanciaImportacion;
-         $strorimerc->omeim_origen_mercancia = $request->origenMercancia[$i];
-         $strorimerc->omeim_importacion = $ObjectCrear->id;
-         $strorimerc->save();
-         if(!$strorimerc->id){
+           $strorimerc = $i."variable";
+           $strorimerc = new TOrigenMercanciaImportacion;
+           $strorimerc->omeim_origen_mercancia = $request->origenMercancia[$i];
+           $strorimerc->omeim_importacion = $ObjectCrear->id;
+           $strorimerc->save();
+           if(!$strorimerc->id){
             DB::rollBack();
             App::abort(500, 'La importacion no fue creada, consultar con el administrador del sistema [error 203]');
         }
@@ -348,6 +348,7 @@ return Redirect::to($urlConsulta);
     {
         //Id del registro que deseamos editar
         $id = $id;
+
         //Consulto el registro que deseo editar
         $objeto = TImportacion::with('proveedor')->find($id);
         // dd($objeto);
@@ -369,20 +370,26 @@ return Redirect::to($urlConsulta);
         }
         #Obtiene los productos asociados a la orden de importacion
         $objeto3 = TProductoImportacion::select('pdim_producto', 'id')->where('pdim_importacion','=',"$id")->get();
+
         #Crea un array con la informacion necesaria para mostrar en una tabla los productos asociados a la orden de importacion
         $tablaProductos = array();
+
         foreach ($objeto3 as $key => $value) {
             $unProducto = array();
             $prodLocal = TProducto::find($value->pdim_producto);
             $referenciaProd = $prodLocal->prod_referencia;
-            $queries = DB::connection('genericas')
-            ->table('item')
-            ->select('referenciaItem', 'descripcionItem')
-            ->where('referenciaItem', 'LIKE', "%".$referenciaProd."%")
-            ->get();
-            $descripcion = $queries[0]->referenciaItem." -- ".$queries[0]->descripcionItem;
-            array_push($unProducto, $descripcion);
-            if($prodLocal->prod_req_declaracion_anticipado == 1){
+
+            $queries = DB::connection('besa_UNOEEREAL')->table('t124_mc_items_referencias as a')
+                        ->join('t120_mc_items as b', 'a.f124_rowid_item','=','b.f120_rowid')
+                        ->select('a.f124_referencia', 'b.f120_referencia', 'b.f120_descripcion')
+                        ->where('a.f124_referencia', 'LIKE', "%$referenciaProd%")
+                        ->get();
+
+            if ($queries->all() != []) {
+             $descripcion = $queries[0]->f120_referencia." -- ".$queries[0]->f120_descripcion;
+             array_push($unProducto, $descripcion);
+
+             if($prodLocal->prod_req_declaracion_anticipado == 1){
                 array_push($unProducto, "SI");
             }else{
                 array_push($unProducto, "NO");
@@ -392,74 +399,82 @@ return Redirect::to($urlConsulta);
             }else{
                 array_push($unProducto, "NO");
             }
+
+
             array_push($unProducto, $value->id);
             array_push($tablaProductos, $unProducto);
-
         }
-        $cantidadProductos = count($tablaProductos);
 
-        #Consulta las proformas asociadas a la importacion
-        $objeto4 = TProforma::where('prof_importacion','=', intval($id))->get();
-        #Crea un array con las proformas asociadas a la importacion para mostrarlas en una tabla
-        $tablaProformas = array();
-        foreach ($objeto4 as $key => $value) {
-            $unaProforma = array();
-            array_push($unaProforma, $value->prof_numero);
-            array_push($unaProforma, $value->prof_fecha_creacion);
-            array_push($unaProforma, $value->prof_fecha_entrega);
-            array_push($unaProforma, $value->prof_valor_proforma);
 
-            if($value->prof_principal == 1){
-                array_push($unaProforma, "SI");
-            }else{
-                array_push($unaProforma, "NO");
-            }
-            array_push($unaProforma, $value->id);
-            array_push($tablaProformas, $unaProforma);
 
-        }
-        $cantidadProformas = count($tablaProductos);
 
-         #Crea los array de las consultas para mostrar en los Combobox
-        $consulta = array(1,2,5,3);
-        $combos = $this->consultas($consulta);
-        extract($combos);
-        #Crea las urls de borrar producto y borrar proforma por ajax basado en el name de la ruta
-        $urlBorrar = route('borrarProductoImportacion');
-        $urlBorrarProforma = route('borrarProformaImportacion');
-        #Retorna la informacion a la vista editar
-        $hasPerm = $this->permisos();
-        return view('importacionesv2.importacionTemplate.editImportacion',
-            compact('campos',
-               'url',
-               'titulo',
-               'validator',
-               'route',
-               'id',
-               'objeto',
-               'seleccionados',
-               'puertos',
-               'inconterm',
-               'origenMercancia',
-               'tablaProductos',
-               'cantidadProductos',
-               'tablaProformas',
-               'cantidadProformas',
-               'urlBorrar',
-               'urlBorrarProforma',
-               'moneda',
-               'hasPerm'));
+
     }
 
-    public function permisos(){
-        $usuario = Auth::user();
-        $permisos = TPermisosImp::where('perm_cedula', '=',"$usuario->idTerceroUsuario")->first();
-        if($permisos == null || $permisos->perm_cargo == 2){
-            return 0;
-        }elseif($permisos->perm_cargo == 1){
-         return 1;
-     }
- }
+    $cantidadProductos = count($tablaProductos);
+
+        #Consulta las proformas asociadas a la importacion
+    $objeto4 = TProforma::where('prof_importacion','=', intval($id))->get();
+        #Crea un array con las proformas asociadas a la importacion para mostrarlas en una tabla
+    $tablaProformas = array();
+    foreach ($objeto4 as $key => $value) {
+        $unaProforma = array();
+        array_push($unaProforma, $value->prof_numero);
+        array_push($unaProforma, $value->prof_fecha_creacion);
+        array_push($unaProforma, $value->prof_fecha_entrega);
+        array_push($unaProforma, $value->prof_valor_proforma);
+
+        if($value->prof_principal == 1){
+            array_push($unaProforma, "SI");
+        }else{
+            array_push($unaProforma, "NO");
+        }
+        array_push($unaProforma, $value->id);
+        array_push($tablaProformas, $unaProforma);
+
+    }
+    $cantidadProformas = count($tablaProductos);
+
+         #Crea los array de las consultas para mostrar en los Combobox
+    $consulta = array(1,2,5,3);
+    $combos = $this->consultas($consulta);
+    extract($combos);
+        #Crea las urls de borrar producto y borrar proforma por ajax basado en el name de la ruta
+    $urlBorrar = route('borrarProductoImportacion');
+    $urlBorrarProforma = route('borrarProformaImportacion');
+        #Retorna la informacion a la vista editar
+    $hasPerm = $this->permisos();
+    return view('importacionesv2.importacionTemplate.editImportacion',
+        compact('campos',
+         'url',
+         'titulo',
+         'validator',
+         'route',
+         'id',
+         'objeto',
+         'seleccionados',
+         'puertos',
+         'inconterm',
+         'origenMercancia',
+         'tablaProductos',
+         'cantidadProductos',
+         'tablaProformas',
+         'cantidadProformas',
+         'urlBorrar',
+         'urlBorrarProforma',
+         'moneda',
+         'hasPerm'));
+}
+
+public function permisos(){
+    $usuario = Auth::user();
+    $permisos = TPermisosImp::where('perm_cedula', '=',"$usuario->idTerceroUsuario")->first();
+    if($permisos == null || $permisos->perm_cargo == 2){
+        return 0;
+    }elseif($permisos->perm_cargo == 1){
+       return 1;
+   }
+}
 
 
     /**
@@ -543,32 +558,32 @@ return Redirect::to($urlConsulta);
                 $noprof = $i."-noprof";
                 if($request->$str5 == "" && $request->$noprof != "")
                 {
-                   $strproforma = $i."objproforma";
-                   $strproforma = new TProforma;
-                   $strproforma->prof_importacion = $id;
-                   $creaprof = $i."-creaprof";
-                   $entregaprof = $i."-entregaprof";
-                   $valorprof = $i."-valorprof";
-                   $princprof = $i."-princprof";
-                   $strproforma->prof_numero = $request->$noprof;
-                   $date1 = Carbon::parse($request->$creaprof)->format('Y-m-d');
-                   $strproforma->prof_fecha_creacion = $date1;
-                   $date2 = Carbon::parse($request->$entregaprof)->format('Y-m-d');
-                   $strproforma->prof_fecha_entrega = $date2;
-                   $strproforma->prof_valor_proforma = $request->$valorprof;
-                   $strproforma->prof_principal = intval($request->$princprof);
-                   $strproforma->save();
-               }
+                 $strproforma = $i."objproforma";
+                 $strproforma = new TProforma;
+                 $strproforma->prof_importacion = $id;
+                 $creaprof = $i."-creaprof";
+                 $entregaprof = $i."-entregaprof";
+                 $valorprof = $i."-valorprof";
+                 $princprof = $i."-princprof";
+                 $strproforma->prof_numero = $request->$noprof;
+                 $date1 = Carbon::parse($request->$creaprof)->format('Y-m-d');
+                 $strproforma->prof_fecha_creacion = $date1;
+                 $date2 = Carbon::parse($request->$entregaprof)->format('Y-m-d');
+                 $strproforma->prof_fecha_entrega = $date2;
+                 $strproforma->prof_valor_proforma = $request->$valorprof;
+                 $strproforma->prof_principal = intval($request->$princprof);
+                 $strproforma->save();
+             }
 
-           }
+         }
 
-       }
+     }
        #Obtiene los origenes de la mercancia asociados a la importacion
-       $origenesExistentes = TOrigenMercanciaImportacion::where('omeim_importacion','=',intval($id))->get();
+     $origenesExistentes = TOrigenMercanciaImportacion::where('omeim_importacion','=',intval($id))->get();
        #Valida cuales de los origenes de la mercancia de la bd fueron quitados del multiselect y los borra
-       foreach ($origenesExistentes as $key => $value) {
-           $buscar = in_array($value->omeim_origen_mercancia, $request->origenMercancia);
-           if(!$buscar){
+     foreach ($origenesExistentes as $key => $value) {
+         $buscar = in_array($value->omeim_origen_mercancia, $request->origenMercancia);
+         if(!$buscar){
             $value->id;
             $ObjectDestroy = TOrigenMercanciaImportacion::find($value->id);
             $ObjectDestroy->delete();
@@ -604,21 +619,29 @@ return Redirect::to($urlConsulta);
 
 
     /**
-    * Funcion creada para el borrado de productos por ajax en el formulario importacion
+    * borrar
+    * 
+    * ** Esta funcion se llama a traves de ajax usando la libreria jquery en el archivo importacionesV2.js 
+    * ** Su objetivo es validar si existen mas de un producto asociados a la importacion, y si si existen borrar el que 
+    * ** le indican por medio del request.
+    * 
+    * 1 -  Consulta la cantidad de productos asociados a la orden de importacion ya existente
+    * 2 -  si la cantidad es mayor que 1 permite borrar el producto importacion cuyo id corresponda a lo que viene en request->obj
+    * 3 -  si la cantidad es <= 1 entonces retorna mensaje que indica que no se puede borrar el producto.
     *
-    * @param  int  $id
+    * @param  int  request->obj -> objeto a borrar * String _token -> token de seguridad
     * @return \Illuminate\Http\Response
     */
     public function borrar(Request $request)
     {
-        #Consulto los productos asociados a la importacion y valido que exista almenos un registro en la base de datos, si hay mas de un registro el sistema debe permitir borrar
-       $contador = TProductoImportacion::where('pdim_importacion', '=', intval($request->identificador))->get()->count();
-       if($contador > 1){
+
+     $contador = TProductoImportacion::where('pdim_importacion', '=', intval($request->identificador))->get()->count();
+     if($contador > 1){
             //Consulto objeto a borrar
-        $ObjectDestroy = TProductoImportacion::find($request->obj);
+        $ObjectDestroy = TProductoImportacion::where('id', $request->obj)->first();
+
         //Borro el objeto
         $ObjectDestroy->delete();
-
         return "Producto borrado exitosamente";
     }else{
         return "Debe existir almenos un producto asociado a la orden de importacion";
@@ -634,8 +657,8 @@ return Redirect::to($urlConsulta);
     */
     public function borrarProforma(Request $request)
     {
-       $contador = TProforma::where('prof_importacion', '=', intval($request->identificador))->get()->count();
-       if($contador > 1){
+     $contador = TProforma::where('prof_importacion', '=', intval($request->identificador))->get()->count();
+     if($contador > 1){
             //Consulto objeto a borrar
         $ObjectDestroy = TProforma::find($request->obj);
         //Borro el objeto
@@ -672,13 +695,19 @@ public function autocompleteProducto(Request $request){
     #Funcion de consulta de productos para el formulario de importaciones
   $referencia = strtoupper($request->obj);
   $referencia = str_replace("¬¬¬°°°", "+", $referencia);
-  $queries = DB::connection('genericas')
-  ->table('item')
-  ->where('referenciaItem', 'LIKE', "%$referencia%")
+  // $queries = DB::connection('genericas')
+  // ->table('item')
+  // ->where('referenciaItem', 'LIKE', "%$referencia%")
+  // ->get();
+
+  $queries = DB::connection('besa_UNOEEREAL')->table('t124_mc_items_referencias as a')
+  ->join('t120_mc_items as b', 'a.f124_rowid_item','=','b.f120_rowid')
+  ->select('a.f124_referencia', 'b.f120_referencia', 'b.f120_descripcion')
+  ->where('a.f124_referencia', 'LIKE', "%$referencia%")
   ->get();
 
   if($queries->all() != []){
-    $string = $queries[0]->referenciaItem . " -- " . $queries[0]->descripcionItem;
+    $string = $queries[0]->f120_referencia . " -- " . $queries[0]->f120_descripcion;
     $producto = TProducto::where('prod_referencia','LIKE', "%$referencia%")
     ->get();
     if($producto->all() == []){
@@ -847,6 +876,7 @@ public function cerrarOrden(Request $request){
     $objectImportacion = TImportacion::find($request->OrdenId);
     $objectPagos = TPagoImportacion::where('pag_importacion', $request->OrdenId)->first();
     $objectNacionalizacion = TNacionalizacionImportacion::where('naco_importacion', $request->OrdenId)->first();
+    $objectEmbarque = TEmbarqueImportacion::where('emim_importacion', $request->OrdenId)->first();
 
     $mensaje = [];
     if($objectImportacion->imp_fecha_entrega_total == null){
@@ -858,66 +888,92 @@ public function cerrarOrden(Request $request){
     }
 
     if($objectPagos->pag_fecha_saldo == null){
-         array_push($mensaje ,  "Favor ingresar la fecha del saldo - Modulo pagos");
-    }
+       array_push($mensaje ,  "Favor ingresar la fecha del saldo - Modulo pagos");
+   }
 
-    if($objectPagos->pag_valor_anticipo === null){
-         array_push($mensaje ,  "Favor ingresar el valor del anticipo - Modulo pagos");
-    }
-    if($objectPagos->pag_valor_saldo === null){
-         array_push($mensaje ,  "Favor ingresar el valor del saldo - Modulo pagos");
-    }
+   if($objectPagos->pag_valor_anticipo === null){
+       array_push($mensaje ,  "Favor ingresar el valor del anticipo - Modulo pagos");
+   }
+   if($objectPagos->pag_valor_saldo === null){
+       array_push($mensaje ,  "Favor ingresar el valor del saldo - Modulo pagos");
+   }
 
-    if($objectPagos->pag_valor_comision === null){
-         array_push($mensaje ,  "Favor ingresar el valor de la comision - Modulo pagos");
-    }
+   if($objectPagos->pag_valor_comision === null){
+       array_push($mensaje ,  "Favor ingresar el valor de la comision - Modulo pagos");
+   }
 
-    if($objectNacionalizacion->naco_fecha_envio_comex == null){
-         array_push($mensaje ,  "Favor ingresar fecha envio comex - Modulo nacionalizacion y costeo");
-    }
-    if($objectNacionalizacion->naco_fecha_llegada_be == null){
-         array_push($mensaje ,  "Favor ingresar fecha de llegada a Belleza Express - Modulo nacionalizacion y costeo");
-    }
-    if($objectNacionalizacion->naco_fecha_recep_list_empaq == null){
-         array_push($mensaje ,  "Favor ingresar fecha de recepcion lista de empaque - Modulo nacionalizacion y costeo ");
-    }
-    if($objectNacionalizacion->naco_fecha_envi_liqu_costeo == null){
-         array_push($mensaje ,  "Favor ingresar fecha envio liquidacion y costeo - Modulo nacionalizacion y costeo");
-    }
-    if($objectNacionalizacion->naco_fecha_entrada_sistema == null){
-         array_push($mensaje ,  "Favor ingresar fecha entrada al sistema - Modulo nacionalizacion y costeo");
-    }
-    if($objectNacionalizacion->naco_factor_dolar_porc == null){
-         array_push($mensaje ,  "Favor ingresar el factor total - Modulo nacionalizacion y costeo ");
-    }
-    if($objectNacionalizacion->naco_factor_dolar_tasa == null){
-         array_push($mensaje ,  "Favor ingresar el factor importacion porcentual - Modulo nacionalizacion y costeo");
-    }
-    if($objectNacionalizacion->naco_factor_logist_porc == null){
-         array_push($mensaje ,  "Favor ingresar el factor logistico - Modulo nacionalizacion y costeo");
-    }
-    if($objectNacionalizacion->naco_factor_logist_tasa == null){
-         array_push($mensaje ,  "Favor ingresar el factor logistico en pesos - Modulo nacionalizacion y costeo");
-    }
-    if($objectNacionalizacion->naco_factor_arancel_porc == null){
-         array_push($mensaje ,  "Favor ingresar el factor arancel - Modulo nacionalizacion y costeo ");
-    }
-
-    if($mensaje == []){
-        $objectImportacion->imp_estado_proceso = 6;
-        $objectImportacion->save();
-        $urlConsulta = route('consultaFiltros');
-        return Redirect::to($urlConsulta);
-    }else{
-        $url = route('cerrarImportacion');
-        return redirect()->action(
-            'Importacionesv2\TImportacionController@show', ['id' => $request->OrdenId]
-            )->withErrors($mensaje);      
-    }
+   if($objectNacionalizacion->naco_fecha_envio_comex == null){
+       array_push($mensaje ,  "Favor ingresar fecha envio comex - Modulo nacionalizacion y costeo");
+   }
+   if($objectNacionalizacion->naco_fecha_llegada_be == null){
+       array_push($mensaje ,  "Favor ingresar fecha de llegada a Belleza Express - Modulo nacionalizacion y costeo");
+   }
+   if($objectNacionalizacion->naco_fecha_recep_list_empaq == null){
+       array_push($mensaje ,  "Favor ingresar fecha de recepcion lista de empaque - Modulo nacionalizacion y costeo ");
+   }
+   if($objectNacionalizacion->naco_fecha_envi_liqu_costeo == null){
+       array_push($mensaje ,  "Favor ingresar fecha envio liquidacion y costeo - Modulo nacionalizacion y costeo");
+   }
+   if($objectNacionalizacion->naco_fecha_entrada_sistema == null){
+       array_push($mensaje ,  "Favor ingresar fecha entrada al sistema - Modulo nacionalizacion y costeo");
+   }
+   if($objectNacionalizacion->naco_factor_dolar_porc == null){
+       array_push($mensaje ,  "Favor ingresar el factor total - Modulo nacionalizacion y costeo ");
+   }
+   if($objectNacionalizacion->naco_factor_dolar_tasa == null){
+       array_push($mensaje ,  "Favor ingresar el factor importacion porcentual - Modulo nacionalizacion y costeo");
+   }
+   if($objectNacionalizacion->naco_factor_logist_porc == null){
+       array_push($mensaje ,  "Favor ingresar el factor logistico - Modulo nacionalizacion y costeo");
+   }
+   if($objectNacionalizacion->naco_factor_logist_tasa == null){
+       array_push($mensaje ,  "Favor ingresar el factor logistico en pesos - Modulo nacionalizacion y costeo");
+   }
+   if($objectNacionalizacion->naco_factor_arancel_porc == null){
+       array_push($mensaje ,  "Favor ingresar el factor arancel - Modulo nacionalizacion y costeo ");
+   }
 
 
+   if($objectEmbarque->emim_valor_flete == null){
+       array_push($mensaje ,  "Favor ingresar el valor del flete - Modulo Embarque importacion");
+   }
 
-    
+
+   if($objectEmbarque->emim_fecha_recibido_documentos_ori == null){
+       array_push($mensaje ,  "Favor ingresar la fecha recibo documentos originales - Modulo Embarque importacion");
+   }
+
+   if($objectEmbarque->emim_fecha_envio_aduana == null){
+       array_push($mensaje ,  "Favor ingresar la fecha envio agencia de aduanas - Modulo Embarque importacion");
+   }
+
+   if($objectEmbarque->emim_fecha_envio_ficha_tecnica == null){
+       array_push($mensaje ,  "Favor ingresar la fecha de envio ficha tecnica - Modulo Embarque importacion");
+   }
+
+
+   if($objectEmbarque->emim_fecha_envio_lista_empaque == null){
+       array_push($mensaje ,  "Favor ingresar la fecha envio lista de empaque - Modulo Embarque importacion");
+   }
+
+
+
+
+   if($mensaje == []){
+    $objectImportacion->imp_estado_proceso = 6;
+    $objectImportacion->save();
+    $urlConsulta = route('consultaFiltros');
+    return Redirect::to($urlConsulta);
+}else{
+    $url = route('cerrarImportacion');
+    return redirect()->action(
+        'Importacionesv2\TImportacionController@show', ['id' => $request->OrdenId]
+        )->withErrors($mensaje);      
+}
+
+
+
+
 }
 
 

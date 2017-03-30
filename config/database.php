@@ -131,6 +131,16 @@ return [
             'engine' => 'InnoDB',
         ],
 
+         'besa_UNOEEREAL' => [
+            'driver' => 'sqlsrv',
+            'host' => env('DB_SQL_HOST_UNOEEREAL', 'localhost'),
+            'database' => env('DB_SQL_DATABASE_UNOEEREAL', 'forge'),
+            'username' => env('DB_SQL_USERNAME_UNOEEREAL', 'forge'),
+            'password' => env('DB_SQL_PASSWORD_UNOEEREAL', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+        ],
+
     ],
 
     /*

@@ -29,8 +29,6 @@ class TNacionalizacionImportacionController extends Controller
     'naco_anticipo_aduana'=>'required',
     'naco_fecha_anticipo_aduana'=>'required',
     'naco_tipo_nacionalizacion'=>'required',
-    'naco_fecha_recibo_fact_be'=>'required',
-    'naco_fecha_entrega_fact_cont'=>'required',
     'naco_fecha_entrega_docu_transp'=>'required',
     'naco_fecha_retiro_puert'=>'required');
 
@@ -40,16 +38,11 @@ class TNacionalizacionImportacionController extends Controller
     'naco_anticipo_aduana.required'=>'Favor ingresar el anticipo de la aduana',
     'naco_fecha_anticipo_aduana.required'=>'Favor ingresar la fecha del anticipo de la aduana',
     'naco_tipo_nacionalizacion.required'=>'Favor ingresar el tipo de nacionalizacion',
-    'naco_fecha_recibo_fact_be.required'=>'Favor ingresar la fecha de recibo de la factura en belleza express',
-    'naco_fecha_entrega_fact_cont.required'=>'Favor ingresar la fecha de entrega de la factura a contabilidad',
     'naco_fecha_entrega_docu_transp.required'=>'Favor ingresar la fecha de entrega documentos al transportador',
     'naco_fecha_retiro_puert.required'=>'Favor ingresar la fecha de retiro del puerto');
 
 
-    public function __construct()
-    {
-        $this->middleware('ImpMid')->only(['update']);
-    }
+  
 
     /**
      * Display a listing of the resource.
@@ -150,8 +143,6 @@ class TNacionalizacionImportacionController extends Controller
       $ObjectCrear->naco_control_posterior = 0;
     }      
     $ObjectCrear->naco_tipo_nacionalizacion = $request->naco_tipo_nacionalizacion;
-    $ObjectCrear->naco_fecha_recibo_fact_be = Carbon::parse($request->naco_fecha_recibo_fact_be)->format('Y-m-d');
-    $ObjectCrear->naco_fecha_entrega_fact_cont = Carbon::parse($request->naco_fecha_entrega_fact_cont)->format('Y-m-d');
     $ObjectCrear->naco_fecha_entrega_docu_transp = Carbon::parse($request->naco_fecha_entrega_docu_transp)->format('Y-m-d');
     $ObjectCrear->naco_fecha_retiro_puert = Carbon::parse($request->naco_fecha_retiro_puert)->format('Y-m-d');
     if ($request->naco_fecha_envio_comex != "") {
@@ -449,8 +440,6 @@ return Redirect::to($urlConsulta);
     }      
     $ObjectEditar->naco_tipo_nacionalizacion = $request->naco_tipo_nacionalizacion;
     $ObjectEditar->naco_numero_comex = intval($request->naco_numero_comex);
-    $ObjectEditar->naco_fecha_recibo_fact_be = Carbon::parse($request->naco_fecha_recibo_fact_be)->format('Y-m-d');
-    $ObjectEditar->naco_fecha_entrega_fact_cont = Carbon::parse($request->naco_fecha_entrega_fact_cont)->format('Y-m-d');
     $ObjectEditar->naco_fecha_entrega_docu_transp = Carbon::parse($request->naco_fecha_entrega_docu_transp)->format('Y-m-d');
     $ObjectEditar->naco_fecha_retiro_puert = Carbon::parse($request->naco_fecha_retiro_puert)->format('Y-m-d');
    if ($request->naco_fecha_envio_comex != "") {
