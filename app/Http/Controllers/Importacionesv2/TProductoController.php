@@ -149,7 +149,7 @@ class TProductoController extends Controller
     #5
     $validator = JsValidator::make($this->rules, $this->messages);
 
-    return view('importacionesv2.ImportacionTemplate.createajax', compact('titulo','campos' ,'url', 'validator', 'route'));
+    return view('importacionesv2.importacionTemplate.createajax', compact('titulo','campos' ,'url', 'validator', 'route'));
 
   }
 
