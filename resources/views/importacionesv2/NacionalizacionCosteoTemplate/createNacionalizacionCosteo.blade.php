@@ -54,7 +54,7 @@
 <!-- Valor fecha envio a contabilidad  -->
 <div class="col-sm-6">
   {{ Form::label('', "Fecha de anticipo agencia de aduanas: (*)") }}
-  {{ Form::text("naco_fecha_anticipo_aduana", old("naco_fecha_anticipo_aduana"), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_anticipo_aduana', 'placeholder' =>  'Ingresar la fecha de envio a contabilidad','readonly' => 'readonly','required' => 'required']) }}
+  {{ Form::text("naco_fecha_anticipo_aduana", old("naco_fecha_anticipo_aduana"), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_anticipo_aduana', 'placeholder' =>  'Ingresar fecha del anticipo agencia de aduanas','readonly' => 'readonly','required' => 'required']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <!-- End Valor fecha envio a contabilidad     -->

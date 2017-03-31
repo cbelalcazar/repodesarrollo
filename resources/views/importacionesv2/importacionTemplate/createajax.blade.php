@@ -8,9 +8,11 @@
  */ -->
 <br><br><br>
 <div class="form-group">
+@if(isset($descripcionProd))
 <label for="">Descripcion del producto:</label>
 <br>
 <label id="ref_producto"></label></div>
+@endif
 @foreach($errors->all() as $key => $value)
 <div class="alert alert-danger">{{$value}}</div>
 @endforeach

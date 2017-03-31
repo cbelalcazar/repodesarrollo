@@ -121,7 +121,7 @@
       <!-- nacionalizacion y costeo -->
         @if($value['nacionalizacionimportacion'] == null && $value['embarqueimportacion'] == null || $value->estado->est_nombre == 'ANULADA')
         <td> <a class="btn btn-small btn-default glyphicon glyphicon-remove-sign disabled" href="#"></a></td>
-        @elseif($value->nacionalizacionimportacion == null && $value->embarqueimportacion != null && $value->pagosimportacion != null)
+        @elseif($value->nacionalizacionimportacion == null && $value->embarqueimportacion != null)
         <td> <a class="btn btn-small btn-danger glyphicon glyphicon-plus" href="{{route('createNC',['id' => $value->id])}}"'></a></td>
         @elseif($value->nacionalizacionimportacion != null)
         <td> <a class="btn btn-small btn-success glyphicon glyphicon-pencil" href="{{ URL::to("$url5/" . $value->nacionalizacionimportacion->id . '/edit') }}"></a></td>
