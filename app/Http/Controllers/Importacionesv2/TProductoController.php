@@ -40,7 +40,7 @@ class TProductoController extends Controller
   *[4]-> Place holder que debe aparecer en el formulario
   */
   public $id = array('id', 'int', 'hidden', 'Identificacion del producto', '');
-  public $prod_referencia = array('prod_referencia', 'string', 'text', 'Descripcion del origen de la mercancia', '');
+  public $prod_referencia = array('prod_referencia', 'string', 'text', 'Referencia del producto:', '');
   public $prod_req_declaracion_anticipado = array('prod_req_declaracion_anticipado', 'boolean', 'checkbox', 'Requiere declaracion anticipada', '','','');
   public $prod_req_registro_importacion = array('prod_req_registro_importacion', 'boolean', 'checkbox', 'Requiere registro de importacion', '','','');
 
@@ -132,6 +132,7 @@ class TProductoController extends Controller
   * 3 -  Asigno a la variable $route la ruta de la funcion que recibe la peticion ajax de creacion <br>
   * 4 -  Asigno la variable $titulo con que se definio en la variable global titulo <br>
   * 5 -  Asigno la variable $validator la cual va a contener un script javascript que voy a pintar en la vista para realizar las rules de validacion que defino en el controlador
+  * 6 -  Asigno la variable descripcionProd como true para mostrar en el formulario la descripcion del producto dependiendo de un condicional if
   * 
   * Return: Debe retornar una vista con un formulario de creacion con los campos para productos en resource/views/importacioensv2/ImportacionTemplate/createajax
   * @return \Illuminate\Http\Response titulo, campos, url, validator
@@ -148,8 +149,10 @@ class TProductoController extends Controller
     $titulo = "CREAR ".$this->titulo;
     #5
     $validator = JsValidator::make($this->rules, $this->messages);
+    #6
+    $descripcionProd = true;
 
-    return view('importacionesv2.importacionTemplate.createajax', compact('titulo','campos' ,'url', 'validator', 'route'));
+    return view('importacionesv2.importacionTemplate.createajax', compact('titulo','campos' ,'url', 'validator', 'route','descripcionProd'));
 
   }
 
