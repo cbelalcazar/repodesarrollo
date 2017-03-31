@@ -138,8 +138,7 @@
 
 <div class="col-sm-12">
   <br>
-  {{ Form::submit('Actualizar', array('class' => 'btn btn-primary pull-right', 'id' => 'finalizar1')) 
-  @endif
+  {{ Form::submit('Actualizar', array('class' => 'btn btn-primary pull-right', 'id' => 'finalizar1')) }}
 </div>
 {{ Form::close() }}
 @endsection
