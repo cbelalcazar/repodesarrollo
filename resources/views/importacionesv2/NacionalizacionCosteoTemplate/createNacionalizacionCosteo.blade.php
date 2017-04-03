@@ -44,20 +44,6 @@
 
 <!-- Currency trading -->
 
-<!-- Valor anticipo  -->
-<div class="col-sm-6">
-  {{ Form::label('', "Valor anticipo a la agencia de aduanas: (*)") }}
-  {{ Form::number("naco_anticipo_aduana", old("naco_anticipo_aduana"), ['class' => 'form-control validemosText', 'id' =>  'naco_anticipo_aduana', 'placeholder' =>  'Ingresar el valor del anticipo a la agencia de aduanas','min' => '0','max' => '999999999','step' => '0.01','required' => 'required']) }}
-  <div class="help-block error-help-block" id='error'></div>
-</div>
-<!-- End Valor anticipo    -->
-<!-- Valor fecha envio a contabilidad  -->
-<div class="col-sm-6">
-  {{ Form::label('', "Fecha de anticipo agencia de aduanas: (*)") }}
-  {{ Form::text("naco_fecha_anticipo_aduana", old("naco_fecha_anticipo_aduana"), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_anticipo_aduana', 'placeholder' =>  'Ingresar fecha del anticipo agencia de aduanas','readonly' => 'readonly','required' => 'required']) }}
-  <div class="help-block error-help-block" id='error'></div>
-</div>
-<!-- End Valor fecha envio a contabilidad     -->
 
 <div class="col-sm-6">
   <div class="col-sm-6">
@@ -92,7 +78,7 @@
     </div>
     <div class="col-sm-3">
       <label  class="control-label">Numero de sticker: (*)</label>
-      {{ Form::text("decl_sticker", old("decl_sticker"), ['class' => 'form-control', 'id' =>  'decl_sticker', 'placeholder' =>  'Ingresar el numero de stiker']) }}
+      {{ Form::text("decl_sticker", old("decl_sticker"), ['class' => 'form-control', 'id' =>  'decl_sticker', 'placeholder' =>  'Ingresar el numero de sticker']) }}
     </div>
     <div class="col-sm-3">
       <label  class="control-label">Arancel: (*)</label>
@@ -183,6 +169,7 @@
             <td>Fecha levante</td>
             <td>Fecha legalizacion</td>
             <td>Borrar</td>
+            <td>Actualizar</td>
           </tr>
         </thead>
         <tbody id="añadir2">
@@ -214,6 +201,22 @@
 <!-- End Valor fecha envio a contabilidad     -->
 
 <!-- Valor fecha envio a contabilidad  -->
+
+
+<!-- Valor anticipo  -->
+<div class="col-sm-6">
+  {{ Form::label('', "Valor anticipo a la agencia de aduanas: (*)") }}
+  {{ Form::number("naco_anticipo_aduana", old("naco_anticipo_aduana"), ['class' => 'form-control', 'id' =>  'naco_anticipo_aduana', 'placeholder' =>  'Ingresar el valor del anticipo a la agencia de aduanas','min' => '0','max' => '999999999','step' => '0.01']) }}
+  <div class="help-block error-help-block" id='error'></div>
+</div>
+<!-- End Valor anticipo    -->
+<!-- Valor fecha envio a contabilidad  -->
+<div class="col-sm-6">
+  {{ Form::label('', "Fecha de anticipo agencia de aduanas: (*)") }}
+  {{ Form::text("naco_fecha_anticipo_aduana", old("naco_fecha_anticipo_aduana"), ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_anticipo_aduana', 'placeholder' =>  'Ingresar fecha del anticipo agencia de aduanas','readonly' => 'readonly']) }}
+  <div class="help-block error-help-block" id='error'></div>
+</div>
+<!-- End Valor fecha envio a contabilidad     -->
 <!-- numero comex  -->
 <div class="col-sm-6">
   <br>

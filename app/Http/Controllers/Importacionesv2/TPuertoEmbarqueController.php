@@ -35,6 +35,9 @@ class TPuertoEmbarqueController extends Controller
     public $id = array('id', 'int', 'hidden', 'Identificacion del puerto de embarque', '');
     public $puem_nombre = array('puem_nombre', 'string', 'text', 'Descripcion del puerto de embarque', 'Ingresar el nombre del puerto de embarque:');
 
+    public $puem_itime = array('puem_itime', 'string', 'text', 'Ingresar el I time del puerto de embarque', 'Ingresar el I time del puerto de embarque:');
+
+
     //Strings urls
     //Para diligenciar este campo debes en consola escribir php artisan route:list ya tienes que haber declarado
     //la ruta en el archivo routes y debes buscar el method y uri correspondiente correspondiente a este controlador resource
@@ -44,11 +47,13 @@ class TPuertoEmbarqueController extends Controller
     //Defino las reglas de validacion para el formulario
     public $rules = array(
         'puem_nombre'       => 'required',
+        'puem_itime'       => 'required'
         );
 
     //Defino los mensajes de alerta segun las reglas definidas en la variable rules
     public $messages = array(
         'puem_nombre.required'       => 'Favor ingresar el nombre del puerto de embarque',
+         'puem_itime.required'       => 'Favor ingresar el I time del puerto de embarque'
         );
 
 
@@ -84,14 +89,14 @@ class TPuertoEmbarqueController extends Controller
         *Variable titulosTabla debe contener un array con los titulos de la tabla.
         *La cantidad de titulos debe corresponder a la cantidad de columnas que trae la consulta.
         */
-        $titulosTabla =  array('Id', 'Descripcion',  'Editar', 'Eliminar');
+        $titulosTabla =  array('Id', 'Descripcion', 'I time',  'Editar', 'Eliminar');
 
         /**
         *Campos con su tipo de dato.
         *Variable que debe contener los campos de la tabla con su nombre real.
         *De primero siempre debe ir el identificador de la tabla.
         */
-        $campos =  array($this->id, $this->puem_nombre);
+        $campos =  array($this->id, $this->puem_nombre, $this->puem_itime);
 
         //Genera url completa de consulta
         $url = url($this->strUrlConsulta);
@@ -111,7 +116,7 @@ class TPuertoEmbarqueController extends Controller
     public function create()
     {
         //Array que contiene los campos que deseo mostrar en el formulario no debes tiene en cuenta timestamps ni softdeletes
-        $campos =  array($this->id, $this->puem_nombre);
+        $campos =  array($this->id, $this->puem_nombre, $this->puem_itime);
         //Genera url completa de consulta
         $url = url($this->strUrlConsulta);
         //Variable que contiene el titulo de la vista crear
@@ -126,7 +131,7 @@ class TPuertoEmbarqueController extends Controller
     public function Puertoajax()
     {
         //Array que contiene los campos que deseo mostrar en el formulario no debes tiene en cuenta timestamps ni softdeletes
-        $campos =  array($this->id, $this->puem_nombre);
+        $campos =  array($this->id, $this->puem_nombre, $this->puem_itime);
         //Genera url completa de consulta
         $url = url($this->strUrlConsulta);
 
@@ -160,6 +165,7 @@ class TPuertoEmbarqueController extends Controller
         //Crea el registro en la tabla origen mercancia
         $ObjectCrear = new TPuertoEmbarque;
         $ObjectCrear->puem_nombre = strtoupper(Input::get('puem_nombre'));
+        $ObjectCrear->puem_itime = strtoupper(Input::get('puem_itime'));
         $ObjectCrear->save();
         Cache::forget('puertoembarque');
         //Redirecciona a la pagina de consulta y muestra mensaje
@@ -193,6 +199,7 @@ class TPuertoEmbarqueController extends Controller
         //Crea el registro en la tabla origen mercancia
             $ObjectCrear = new TPuertoEmbarque;
             $ObjectCrear->puem_nombre = strtoupper(Input::get('puem_nombre'));
+            $ObjectCrear->puem_itime = strtoupper(Input::get('puem_itime'));
             $ObjectCrear->save();
             Cache::forget('puertoembarque');
         //Redirecciona a la pagina de consulta y muestra mensaje
@@ -225,7 +232,7 @@ class TPuertoEmbarqueController extends Controller
         //Consulto el registro que deseo editar
         $objeto = TPuertoEmbarque::find($id);
         //organizo el array que me sirve para mostrar el formulario de edicion
-        $campos =  array($this->id, $this->puem_nombre);
+        $campos =  array($this->id, $this->puem_nombre, $this->puem_itime);
         //Titulo de la pagina
         $titulo = "EDITAR ".$this->titulo;
         //url de redireccion para consultar
@@ -261,6 +268,7 @@ class TPuertoEmbarqueController extends Controller
         }
         //Edita el registro en la tabla
         $ObjectUpdate->puem_nombre = strtoupper(Input::get('puem_nombre'));
+        $ObjectUpdate->puem_itime = strtoupper(Input::get('puem_itime'));
         $ObjectUpdate->save();
         Cache::forget('puertoembarque');
         //Redirecciona a la pagina de consulta y muestra mensaje

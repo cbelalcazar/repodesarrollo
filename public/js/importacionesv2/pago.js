@@ -136,7 +136,7 @@ function tabladeclaracion(obj){
   }
 
 //Valido que los campos tengan informacion diligenciada
-if($('#decl_numero').val() == "" || $('#decl_sticker').val() == "" || $('#decl_arancel').val() == "" || $('#decl_iva').val() == ""|| $('#decl_valor_otros').val() == ""|| $('#decl_trm').val() == ""|| $('#decl_tipo_levante').val() == ""|| $('#decl_admin_dian').val() == ""|| $('#decl_fecha_aceptacion').val() == ""|| $('#decl_fecha_levante').val() == ""|| $('#decl_fecha_legaliza_giro').val() == ""){
+if($('#decl_numero').val() == "" || $('#decl_sticker').val() == "" || $('#decl_arancel').val() == "" || $('#decl_iva').val() == ""|| $('#decl_valor_otros').val() == ""|| $('#decl_trm').val() == ""|| $('#decl_tipo_levante').val() == ""|| $('#decl_admin_dian').val() == ""|| $('#decl_fecha_aceptacion').val() == ""|| $('#decl_fecha_levante').val() == ""){
 	alert('Favor diligenciar toda la informacion de la declaracion de importacion');
 }else if(encontrar == 1){
 	alert('la declaracion de importacion ingresada ya fue digitada');
@@ -164,6 +164,7 @@ if($('#decl_numero').val() == "" || $('#decl_sticker').val() == "" || $('#decl_a
   	var id1 = ++tabla;
   }
   var borrar = '<td><span class="borrar glyphicon glyphicon-remove"><input type="hidden" name="'+ id1 +'-iddeclaracion" value=""></span></td>';
+  var actualizar = '<td><span class="glyphicon glyphicon-pencil" onclick="editarFila(this)" value="'+id1+'"><input type="hidden" name="'+ id1 +'-iddeclaracion" value=""></span></td>';
   var decl_numero = '<td class="campos" id="'+ id1 +'-decl_numero">'+$('#decl_numero').val()+'<input type="hidden" name="'+ id1 +'-decl_numero" value='+$('#decl_numero').val()+'></td>';
   var decl_sticker = '<td>'+$('#decl_sticker').val()+'<input type="hidden" name="'+ id1 +'-decl_sticker" value='+$('#decl_sticker').val()+'></td>';
   var decl_arancel = '<td>'+$('#decl_arancel').val()+'<input type="hidden" name="'+ id1 +'-decl_arancel" value='+$('#decl_arancel').val()+'></td>';
@@ -176,7 +177,7 @@ if($('#decl_numero').val() == "" || $('#decl_sticker').val() == "" || $('#decl_a
   var decl_fecha_levante = '<td>'+$('#decl_fecha_levante').val()+'<input type="hidden" name="'+ id1 +'-decl_fecha_levante" value='+$('#decl_fecha_levante').val()+'></td>';
   var decl_fecha_legaliza_giro = '<td>'+$('#decl_fecha_legaliza_giro').val()+'<input type="hidden" name="'+ id1 +'-decl_fecha_legaliza_giro" value='+$('#decl_fecha_legaliza_giro').val()+'></td>';
 
-  $('#añadir2').append('<tr>'+decl_numero+decl_sticker+decl_arancel+decl_iva+decl_valor_otros+decl_trm+decl_tipo_levante+decl_admin_dian+decl_fecha_aceptacion+decl_fecha_levante+decl_fecha_legaliza_giro+borrar+'</tr>');
+  $('#añadir2').append('<tr>'+decl_numero+decl_sticker+decl_arancel+decl_iva+decl_valor_otros+decl_trm+decl_tipo_levante+decl_admin_dian+decl_fecha_aceptacion+decl_fecha_levante+decl_fecha_legaliza_giro+borrar+actualizar+'</tr>');
    if (bandera) {
   }
   $('#tabladeclaracionguardar').val(id1);
@@ -197,4 +198,30 @@ if($('#decl_numero').val() == "" || $('#decl_sticker').val() == "" || $('#decl_a
 
 
 }
+}
+
+function editarFila(obj1){
+  var tr = $(obj1).parent().parent().children().children(1);
+  console.log();
+
+  $('#decl_numero').val(tr[0].value);
+  $('#decl_sticker').val(tr[1].value);
+  $('#decl_arancel').val(tr[2].value) ;
+  $('#decl_iva').val(tr[3].value);
+  $('#decl_valor_otros').val(tr[4].value);
+  $('#decl_trm').val(tr[5].value);
+  $('#decl_tipo_levante').val(tr[6].value);
+  $('#decl_admin_dian').val(tr[7].value);
+  $('#decl_fecha_aceptacion').val(tr[8].value);
+  $('#decl_fecha_levante').val(tr[9].value);
+  $('#decl_fecha_legaliza_giro').val(tr[10].value);
+  $('#load').html("Actualizar");
+
+  $(obj1).closest('tr').remove();
+  if(document.getElementById('tabladeclaracion').rows.length == 1){   
+    $('#ocultar3').hide();
+    $('#tabladeclaracionguardar').val("");  
+
+  }
+
 }

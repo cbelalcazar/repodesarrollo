@@ -24,6 +24,9 @@ class CreateImportacionesV2Tpuertoembarque extends Migration
             $table->string('puem_nombre')
                   ->comment('Nombre del puerto de embarque');
 
+            $table->string('puem_itime')
+                  ->comment('I time del puerto de embarque');
+
             $table->softDeletes();
 
             $table->timestamps();

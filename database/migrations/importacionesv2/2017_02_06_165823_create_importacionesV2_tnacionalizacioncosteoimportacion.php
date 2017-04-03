@@ -29,9 +29,11 @@ class CreateImportacionesV2Tnacionalizacioncosteoimportacion extends Migration
         ->comment('Campo que relaciona esta tabla con la tabla t_tipo_importacion');
 
         $table->float('naco_anticipo_aduana', 10, 2)
+        ->nullable()
         ->comment('Valor anticipo aduana');
 
         $table->date('naco_fecha_anticipo_aduana')
+        ->nullable()
         ->comment('Fecha de anticipo a la aduana');
 
         $table->boolean('naco_preinscripcion')

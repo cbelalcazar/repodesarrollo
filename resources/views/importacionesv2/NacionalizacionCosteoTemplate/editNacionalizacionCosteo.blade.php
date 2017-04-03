@@ -45,21 +45,6 @@
 
 <!-- Currency trading -->
 
-<!-- Valor anticipo  -->
-<div class="col-sm-6">
-  {{ Form::label('', "Valor anticipo a la agencia de aduanas: (*)") }}
-  {{ Form::number("naco_anticipo_aduana", $objeto->naco_anticipo_aduana, ['class' => 'form-control validemosText', 'id' =>  'naco_anticipo_aduana', 'placeholder' =>  'Ingresar el valor del anticipo a la agencia de aduanas','min' => '0','max' => '999999999','step' => '0.01','required' => 'required']) }}
-  <div class="help-block error-help-block" id='error'></div>
-</div>
-<!-- End Valor anticipo    -->
-<!-- Valor fecha envio a contabilidad  -->
-<div class="col-sm-6">
-  {{ Form::label('', "Fecha de anticipo agencia de aduanas: (*)") }}
-  {{ Form::text("naco_fecha_anticipo_aduana", \Carbon\Carbon::parse($objeto->naco_fecha_anticipo_aduana)->format('d-m-Y'), ['class' => 'form-control validemosText validemosDate datepickerClass', 'id' =>  'naco_fecha_anticipo_aduana', 'placeholder' =>  
-  'Favor ingresar la fecha del anticipo agencia de aduanas','readonly' => 'readonly','required' => 'required']) }}
-  <div class="help-block error-help-block" id='error'></div>
-</div>
-<!-- End Valor fecha envio a contabilidad     -->
 
 <div class="col-sm-6">
   <div class="col-sm-6">
@@ -185,6 +170,7 @@
             <td>Fecha levante</td>
             <td>Fecha legalizacion</td>
             <td>Borrar</td>
+            <td>Actualizar</td>
           </tr>
         </thead>
         <tbody id="añadir2">
@@ -209,19 +195,29 @@
 
           <td class="campos" id="{{$key+1}}-decl_fecha_aceptacion">{{\Carbon\Carbon::parse($value->decl_fecha_aceptacion)->format('d-m-Y')}}<input type="hidden" name="{{$key+1}}-decl_fecha_aceptacion" value="{{$value->decl_fecha_aceptacion}}"></td>
 
-          <td class="campos" id="{{$key+1}}-decl_fecha_levante">{{\Carbon\Carbon::parse($value->decl_fecha_levante)->format('d-m-Y')}}<input type="hidden" name="{{$key+1}}-decl_fecha_levante" value="{{$value->decl_fecha_levante}}"></td>
+          <td class="campos" id="{{$key+1}}-decl_fecha_levante">
+           {{\Carbon\Carbon::parse($value->decl_fecha_levante)->format('d-m-Y')}}<input type="hidden" name="{{$key+1}}-decl_fecha_levante" value="{{$value->decl_fecha_levante}}"></td>
 
-          <td class="campos" id="{{$key+1}}-decl_fecha_legaliza_giro">{{\Carbon\Carbon::parse($value->decl_fecha_legaliza_giro)->format('d-m-Y')}}<input type="hidden" name="{{$key+1}}-decl_fecha_legaliza_giro" value="{{$value->decl_fecha_legaliza_giro}}"></td>
 
-          <td><span id="{{$value->id}}" onclick="" class="borrar glyphicon glyphicon-remove"></span><input type="hidden" name="{{$key+1}}-iddeclaracion" value="{{$value->id}}"></td>
-        </tr>
-        @endforeach
-        @endif
-      </tbody>
-    </table>
+           <td class="campos" id="{{$key+1}}-decl_fecha_legaliza_giro">
+            @if($value->decl_fecha_legaliza_giro == null)
+            <input type="hidden" name="{{$key+1}}-decl_fecha_legaliza_giro" value=""></td>
+            @else
+            {{\Carbon\Carbon::parse($value->decl_fecha_legaliza_giro)->format('d-m-Y')}}<input type="hidden" name="{{$key+1}}-decl_fecha_legaliza_giro" value="{{$value->decl_fecha_legaliza_giro}}"></td>
+
+            @endif
+
+            <td><span id="{{$value->id}}" onclick="" class="borrar glyphicon glyphicon-remove"></span><input type="hidden" name="{{$key+1}}-iddeclaracion" value="{{$value->id}}"></td>
+
+            <td><span class="glyphicon glyphicon-pencil" onclick="editarFila(this)" value="{{$key+1}}"><input type="hidden" name="{{$key+1}}-iddeclaracion" value=""></span></td>
+          </tr>
+          @endforeach
+          @endif
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
-<!-- End Table of proformas -->
+  <!-- End Table of proformas -->
 </div>
 <input type="hidden" name="tabladeclaracionguardar" id="tabladeclaracionguardar" value="{{$cantidadDeclaraciones}}">
 
@@ -245,6 +241,38 @@
 </div>
 <!-- End Valor fecha envio a contabilidad     -->
 
+
+
+<!-- Valor anticipo  -->
+<div class="col-sm-6">
+  {{ Form::label('', "Valor anticipo a la agencia de aduanas: (*)") }}
+  @if($objeto->naco_anticipo_aduana == null ||  $objeto->naco_anticipo_aduana == "")
+  {{ Form::number("naco_anticipo_aduana", "", ['class' => 'form-control', 'id' =>  'naco_anticipo_aduana', 'placeholder' =>  'Ingresar el valor del anticipo a la agencia de aduanas','min' => '0','max' => '999999999','step' => '0.01']) }}
+  @else
+  {{ Form::number("naco_anticipo_aduana", $objeto->naco_anticipo_aduana, ['class' => 'form-control', 'id' =>  'naco_anticipo_aduana', 'placeholder' =>  'Ingresar el valor del anticipo a la agencia de aduanas','min' => '0','max' => '999999999','step' => '0.01']) }}
+  @endif
+  <div class="help-block error-help-block" id='error'></div>
+</div>
+<!-- End Valor anticipo    -->
+<!-- Valor fecha envio a contabilidad  -->
+<div class="col-sm-6">
+  {{ Form::label('', "Fecha de anticipo agencia de aduanas: (*)") }}
+
+ @if($objeto->naco_fecha_anticipo_aduana == null ||  $objeto->naco_fecha_anticipo_aduana == "")
+  {{ Form::text("naco_fecha_anticipo_aduana", "", ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_anticipo_aduana', 'placeholder' =>  
+  'Favor ingresar la fecha del anticipo agencia de aduanas','readonly' => 'readonly']) }}
+  @else
+   {{ Form::text("naco_fecha_anticipo_aduana", \Carbon\Carbon::parse($objeto->naco_fecha_anticipo_aduana)->format('d-m-Y'), ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_anticipo_aduana', 'placeholder' =>  
+  'Favor ingresar la fecha del anticipo agencia de aduanas','readonly' => 'readonly']) }}
+  @endif
+
+  <div class="help-block error-help-block" id='error'></div>
+</div>
+<!-- End Valor fecha envio a contabilidad     -->
+
+
+
+
 <!-- Valor fecha envio a contabilidad  -->
 <div class="col-sm-6">
   <br>
@@ -263,7 +291,7 @@
 <div class="col-sm-6">
   <br>
   {{ Form::label('', "No. Comex: (*)") }}
-  {{ Form::text("naco_numero_comex", $objeto->naco_numero_comex, ['class' => 'form-control validemosText', 'id' =>  'naco_numero_comex', 'placeholder' =>  'Ingresar el numero de comex']) }}
+  {{ Form::text("naco_numero_comex", $objeto->naco_numero_comex, ['class' => 'form-control', 'id' =>  'naco_numero_comex', 'placeholder' =>  'Ingresar el numero de comex']) }}
   <div class="help-block error-help-block" id='error'></div>
 </div>
 <br><br>
@@ -301,10 +329,10 @@
   <br>
 
   @if($objeto->naco_fecha_envi_liqu_costeo != null)
-   {{ Form::label('', "Fecha de envio liquidación y costeo: (*)") }}
+  {{ Form::label('', "Fecha de envio liquidación y costeo: (*)") }}
   {{ Form::text("naco_fecha_envi_liqu_costeo", \Carbon\Carbon::parse($objeto->naco_fecha_envi_liqu_costeo)->format('d-m-Y'), ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_envi_liqu_costeo', 'placeholder' =>  'Ingresar la fecha de envio lista de empaque de empaque','readonly' => 'readonly']) }}
   @else
-   {{ Form::text("naco_fecha_envi_liqu_costeo", "", ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_envi_liqu_costeo', 'placeholder' =>  'Ingresar la fecha de envio lista de empaque de empaque','readonly' => 'readonly']) }}
+  {{ Form::text("naco_fecha_envi_liqu_costeo", "", ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_envi_liqu_costeo', 'placeholder' =>  'Ingresar la fecha de envio lista de empaque de empaque','readonly' => 'readonly']) }}
   @endif 
   <div class="help-block error-help-block" id='error'></div>
 </div>
@@ -316,14 +344,14 @@
 
   
   @if($objeto->naco_fecha_entrada_sistema != null)
-   {{ Form::label('', "Fecha de entrada al sistema: (*)") }}
+  {{ Form::label('', "Fecha de entrada al sistema: (*)") }}
   {{ Form::text("naco_fecha_entrada_sistema", \Carbon\Carbon::parse($objeto->naco_fecha_entrada_sistema)->format('d-m-Y'), ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_entrada_sistema', 'placeholder' =>  'Ingresar la fecha de entrada al sistema','readonly' => 'readonly']) }}
   @else
   {{ Form::text("naco_fecha_entrada_sistema", "", ['class' => 'form-control datepickerClass', 'id' =>  'naco_fecha_entrada_sistema', 'placeholder' =>  'Ingresar la fecha de entrada al sistema','readonly' => 'readonly']) }}
   @endif
 
 
- 
+
   <div class="help-block error-help-block" id='error'></div>
 </div>
 
