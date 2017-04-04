@@ -4,7 +4,8 @@
  **************************************
  */
  //Oculta la caja de texto que contiene el nombre del proveedor
- $("#razonsocialtran_embarcador").hide();
+ if ($("#razonsocialtran_embarcador").val() == "") {$("#razonsocialtran_embarcador").hide();}
+ 
 
  $( function() {
  	function split( val ) {

@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Importacionesv2\TTiemposTransito;
 use App\Models\Importacionesv2\TPuertoEmbarque;
 use App\Models\Importacionesv2\TTipoCarga;
+use App\Models\Importacionesv2\TLineaMaritima;
 use \Cache;
 use JsValidator;
 use Session;
@@ -30,9 +31,10 @@ class TTiemposTransitoController extends Controller
   *[5]-> Consulta para llenar combobox si es el caso - se setea en la funcion respectiva debe siempre declararse vacia ('')
   */
   public $id = array('id', 'int', 'hidden', 'Identificacion la metrica', '','');
-  public $tran_embarcador = array('tran_embarcador', 'string', 'autocomplete', 'Favor ingresar el embarcador', 'Favor ingresar el embarcador','','');
+  public $tran_embarcador = array('tran_embarcador', 'autocomplete', 'autocomplete', 'Favor ingresar el embarcador', 'Favor ingresar el embarcador','',array('embarcador','razonSocialTercero'));
   public $tran_puerto_embarque = array('tran_puerto_embarque', 'relation', 'select', 'Seleccionar el puerto de embarque', 'Seleccionar el puerto de embarque...','',array('puerto_embarque','puem_nombre'));
-  public $tran_linea_maritima = array('tran_linea_maritima', 'string', 'autocomplete', 'Favor ingresar la linea maritima', 'Favor ingresar la linea maritima','','');
+
+  public $tran_linea_maritima = array('tran_linea_maritima', 'relation', 'select', 'Seleccionar la linea maritima', 'Seleccionar la linea maritima...','',array('lineaMaritima','lmar_descripcion'));
   public $tran_tipo_carga = array('tran_tipo_carga', 'relation', 'select', 'Seleccionar el tipo de carga', 'Seleccionar el tipo de carga...','',array('tipoCarga','tcar_descripcion'));
   public $tran_numero_dias = array('tran_numero_dias', 'string', 'text', 'Favor ingresar el numero de dias de transito', 'Favor ingresar el numero de dias de transito','','');
 
@@ -127,10 +129,25 @@ class TTiemposTransitoController extends Controller
         return TTipoCarga::all();
       });
 
+
+
         //Se crea array con dos posiciones para llenar el combobox
       $combobox1 = array();
       foreach ($array1 as $key => $value) {
         $combobox1["$value->id"] = $value->tcar_descripcion;
+      }
+
+      //Consulta para mostrar combobox y guarda la consulta en cache para ser reutilizada en max 60 minutos
+      $array3 = Cache::remember('lineamaritima', 60, function()
+      {
+        return TLineaMaritima::all();
+      });
+
+
+        //Se crea array con dos posiciones para llenar el combobox
+      $combobox2 = array();
+      foreach ($array3 as $key => $value) {
+        $combobox2["$value->id"] = $value->lmar_descripcion;
       }
 
 
@@ -139,8 +156,11 @@ class TTiemposTransitoController extends Controller
 
       $tran_tipo_carga = $this->tran_tipo_carga;
       $tran_tipo_carga[5] = $combobox1;
+
+      $tran_linea_maritima = $this->tran_linea_maritima;
+      $tran_linea_maritima[5] = $combobox2;
     //Array que contiene los campos que deseo mostrar en el formulario no debes tiene en cuenta timestamps ni softdeletes
-      $campos =  array($this->id, $this->tran_embarcador, $tran_puerto_embarque, $this->tran_linea_maritima, $tran_tipo_carga, $this->tran_numero_dias);
+      $campos =  array($this->id, $this->tran_embarcador, $tran_puerto_embarque, $tran_linea_maritima, $tran_tipo_carga, $this->tran_numero_dias);
     //Genera url completa de consulta
       $url = url($this->strUrlConsulta);
     //Variable que contiene el titulo de la vista crear
@@ -210,8 +230,7 @@ class TTiemposTransitoController extends Controller
     //Id del registro que deseamos editar
       $id = $id;
     //Consulto el registro que deseo editar
-      $objeto = TTiemposTransito::find($id);
-
+      $objeto = TTiemposTransito::with('embarcador')->find($id);
          //Consulta para mostrar combobox y guarda la consulta en cache para ser reutilizada en max 60 minutos
       $array = Cache::remember('puertoembarque', 60, function()
       {
@@ -237,14 +256,31 @@ class TTiemposTransitoController extends Controller
       }
 
 
+      //Consulta para mostrar combobox y guarda la consulta en cache para ser reutilizada en max 60 minutos
+      $array3 = Cache::remember('lineamaritima', 60, function()
+      {
+        return TLineaMaritima::all();
+      });
+
+
+        //Se crea array con dos posiciones para llenar el combobox
+      $combobox2 = array();
+      foreach ($array3 as $key => $value) {
+        $combobox2["$value->id"] = $value->lmar_descripcion;
+      }
+
+
       $tran_puerto_embarque = $this->tran_puerto_embarque;
       $tran_puerto_embarque[5] = $combobox;
 
       $tran_tipo_carga = $this->tran_tipo_carga;
       $tran_tipo_carga[5] = $combobox1;
 
+      $tran_linea_maritima = $this->tran_linea_maritima;
+      $tran_linea_maritima[5] = $combobox2;
+
        //Array que contiene los campos que deseo mostrar en el formulario no debes tiene en cuenta timestamps ni softdeletes
-      $campos =  array($this->id, $this->tran_embarcador, $tran_puerto_embarque, $this->tran_linea_maritima, $tran_tipo_carga, $this->tran_numero_dias);
+      $campos =  array($this->id, $this->tran_embarcador, $tran_puerto_embarque, $tran_linea_maritima, $tran_tipo_carga, $this->tran_numero_dias);
     //Titulo de la pagina
       $titulo = "EDITAR ".$this->titulo;
     //url de redireccion para consultar

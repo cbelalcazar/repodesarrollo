@@ -34,7 +34,7 @@ class TCausalesDemoraController extends Controller
   *[2]-> Elemento de html que puede representarlo en un formulario
   *[3]-> Label que debe aparecer el el formulario
   *[4]-> Placeholder que debe aparecer en el formulario
-  *[5]-> Consulta para llenar combobox si es el caso - se setea en la funcion respectiva debe siempre declararse vacia ('')
+  *[5]-> Consulta para llenar combobox si es el caso - se setea en la funcion respectiva debe siempre declararse vacia ('') si no se compone array('nombre de la relacion', 'nombre del campo')
   */
   public $id = array('id', 'int', 'hidden', 'Identificacion la metrica', '','');
   public $cdem_nombre = array('cdem_nombre', 'string', 'text', 'Descripcion de la causal de demora', 'Ingresar la descripcion de la causal de demora','','');

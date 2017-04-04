@@ -43,4 +43,15 @@ class TTiemposTransito extends Model
         return $this->hasOne('App\Models\Importacionesv2\TTipoCarga', 'id', 'tran_tipo_carga');
     }
 
+    public function lineaMaritima()
+    {
+        return $this->hasOne('App\Models\Importacionesv2\TLineaMaritima', 'id', 'tran_linea_maritima');
+    }
+
+    public function embarcador()
+    {
+        return $this->hasOne('App\Models\Genericas\Tercero', 'nitTercero', 'tran_embarcador');
+    }
+
+
 }

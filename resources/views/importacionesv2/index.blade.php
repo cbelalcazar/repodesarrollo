@@ -26,6 +26,8 @@
         @foreach($campos as $nombre => $campo)
         @if($campo[1] == '' || $campo[1] == 'string' || $campo[1] == 'int')
         <td>{{$value[$campo[0]]}}</td>
+        @elseif($campo[1] == 'autocomplete')
+        <td>{{$value[$campo[6][0]][$campo[6][1]]}}</td>
         @elseif($campo[1] == 'relation')
         <td>{{$value[$campo[6][0]][$campo[6][1]]}}</td>
         @elseif($campo[1] == 'boolean')
@@ -37,13 +39,15 @@
         @endif
         @endforeach
         <td>
-          <a class="btn btn-small btn-info" href="{{ URL::to("$url/" . $value[$campos[0][0]] . '/edit') }}">Editar</a>
+          <a class="btn btn-small btn-info glyphicon glyphicon-pencil" href="{{ URL::to("$url/" . $value[$campos[0][0]] . '/edit') }}"></a>
         </td>
         <td>
           {{ Form::open(array('url' => "$url/" . $value[$campos[0][0]], 'class' => 'btn btn-small ')) }}
           {{ Form::hidden('_method', 'DELETE') }}
           @if(!isset($metrica))
-          {{ Form::submit('Borrar', array('class' => 'btn btn-small red-mint')) }}
+          <button type="submit" class="btn btn-danger btn-small">
+            <i class="glyphicon glyphicon-trash"></i>
+          </button>
           @endif
           {{ Form::close() }}
         </td>

@@ -25,8 +25,13 @@
       {{ Form::label('', "$value[3]:") }}
       {{ Form::text("$value[0]", old("value[0]"), ['class' => 'form-control', 'id' =>  "$value[0]"])}}
 
+
       {{ Form::label('', "") }}
-      {{ Form::text("razonsocial$value[0]", '', ['class' => 'form-control', 'id' =>  "razonsocial$value[0]", 'readonly' =>  'readonly'])}}
+      @if(is_array($value[6]))
+      {{ Form::text("razonsocial$value[0]", $objeto[$value[6][0]][$value[6][1]], ['class' => 'form-control', 'id' =>  "razonsocial$value[0]", 'readonly' =>  'readonly'])}}
+      @else
+      {{ Form::text("razonsocial$value[0]", "", ['class' => 'form-control', 'id' =>  "razonsocial$value[0]", 'readonly' =>  'readonly'])}}
+      @endif
     </div>
     <!-- End Linea maritima -->
 @elseif($value[2] == 'select')

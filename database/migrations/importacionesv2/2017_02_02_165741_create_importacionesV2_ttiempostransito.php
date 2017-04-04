@@ -25,10 +25,10 @@ class CreateImportacionesV2Ttiempostransito extends Migration
 
             $table->integer('tran_puerto_embarque')
                   ->unsigned()
-                  ->comment('Campo que relaciona con la tabla t_puerto_embarque');
+                  ->comment('Campo que relaciona con la tabla bd_importacionesv2.t_puerto_embarque');
 
-            $table->string('tran_linea_maritima')
-                  ->comment('Nit de la linea maritima en el ERP de siesa');
+            $table->integer('tran_linea_maritima')
+                  ->comment('Id de la tabla bd_importacionesv2.t_linea_maritima');
 
             $table->integer('tran_tipo_carga')
                   ->unsigned()

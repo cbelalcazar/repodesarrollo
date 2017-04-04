@@ -38,7 +38,7 @@ class TTipoLevanteController extends Controller
     *[3]-> Label que debe aparecer el el formulario
     *[4]-> Place holder que debe aparecer en el formulario
     */
-    public $id = array('id', 'int', 'hidden', 'Identificacion del tipo de importacion', '');
+    public $id = array('id', 'int', 'hidden', 'Identificacion del tipo de levante', '');
     public $tlev_nombre = array('tlev_nombre', 'string', 'text', 'Descripcion del tipo de levante', 'Ingresar el nombre del tipo de levante:');
 
     #Strings urls
@@ -206,7 +206,7 @@ class TTipoLevanteController extends Controller
         if(count($validarExistencia) > 0 && $validarExistencia != $ObjectUpdate){
             //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
             return Redirect::to("$url/$id/edit")
-            ->withErrors('El tipo de importacion que intenta editar tiene el mismo nombre que un registro ya existente');
+            ->withErrors('El tipo de levante que intenta editar tiene el mismo nombre que un registro ya existente');
         }
         //Edita el registro en la tabla
         $ObjectUpdate->tlev_nombre = strtoupper(Input::get('tlev_nombre'));
@@ -233,7 +233,7 @@ class TTipoLevanteController extends Controller
         $url = url($this->strUrlConsulta);
         Cache::forget('tipolevante');
         // redirect
-        Session::flash('message', 'El tipo de importacion fue borrado exitosamente!');
+        Session::flash('message', 'El tipo de levante fue borrado exitosamente!');
         return Redirect::to($url);
     }
 }

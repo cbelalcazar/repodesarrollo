@@ -162,7 +162,7 @@ class TPuertoEmbarqueController extends Controller
             return Redirect::to("$url/create")
             ->withErrors('El puerto de embarque que intenta crear tiene el mismo nombre que un registro ya existente');
         }
-        //Crea el registro en la tabla origen mercancia
+        //Crea el registro en la tabla puerto de embarque
         $ObjectCrear = new TPuertoEmbarque;
         $ObjectCrear->puem_nombre = strtoupper(Input::get('puem_nombre'));
         $ObjectCrear->puem_itime = strtoupper(Input::get('puem_itime'));
@@ -292,7 +292,7 @@ class TPuertoEmbarqueController extends Controller
         $url = url($this->strUrlConsulta);
         Cache::forget('puertoembarque');
         // redirect
-        Session::flash('message', 'El origen de la mercancia fue borrado exitosamente!');
+        Session::flash('message', 'El puerto de embarque fue borrado exitosamente!');
         return Redirect::to($url);
     }
 
