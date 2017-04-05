@@ -196,7 +196,7 @@ class TPuertoEmbarqueController extends Controller
         if ($validator->fails()) {
             return array('error', 'Favor validar la integridad de los campos', '');
         } else {
-        //Crea el registro en la tabla origen mercancia
+        //Crea el registro en la tabla puerto de embarque
             $ObjectCrear = new TPuertoEmbarque;
             $ObjectCrear->puem_nombre = strtoupper(Input::get('puem_nombre'));
             $ObjectCrear->puem_itime = strtoupper(Input::get('puem_itime'));
