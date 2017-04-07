@@ -10,8 +10,11 @@ use App\Models\Importacionesv2\TDeclaracion;
 use App\Models\Importacionesv2\TContenedorEmbarque;
 use App\Models\Importacionesv2\TTipoContenedor;
 use App\Models\Importacionesv2\TEstado;
+use App\Models\Importacionesv2\TTiemposTransito;
+use App\Models\Importacionesv2\TPuertoEmbarque;
 use Excel;
 use \Cache;
+use Carbon\Carbon;
 
 class ReportesImportacionesController extends Controller
 {
@@ -28,16 +31,21 @@ class ReportesImportacionesController extends Controller
         }
 
         if($where == [] ){
-            $importacionConsulta =  TImportacion::with('estado', 'proveedor', 'puerto_embarque', 'inconterm', 'embarqueimportacion.tipoCarga', 'pagosimportacion', 'nacionalizacionimportacion', 'origenMercancia.origenes')->orderBy('t_importacion.imp_consecutivo', 'desc')->get();
+            $importacionConsulta =  TImportacion::with('estado', 'proveedor', 'puerto_embarque', 'inconterm', 'embarqueimportacion.tipoCarga', 'embarqueimportacion.lineamaritima','pagosimportacion', 'nacionalizacionimportacion', 'origenMercancia.origenes')->orderBy('t_importacion.imp_consecutivo', 'desc')->get();
         }elseif($where != [] ){
             $importacionConsulta = TImportacion::with('estado', 'proveedor', 'puerto_embarque', 'inconterm', 'embarqueimportacion.tipoCarga', 'pagosimportacion', 'nacionalizacionimportacion', 'origenMercancia.origenes')->orWhere($where)->get();
         }else{
             $importacionConsulta = array();
         }
 
+  
         $this->titulosTabla = array ('Estado', 'Consecutivo', 'Proveedor', 'Productos', 'Orden proveedor', 'Valor USD', 'Factura No.', 'Valor FOB USD', 'Doc. transporte', 'ETD', 'ETA', 'Puerto de embarque', 'Valor euros', 'Giro anticipo', 'Fecha anticipo', 'Giro saldo total', 'Fecha saldo total', 'Fecha legalizacion', 'Licencia importacion No.', 'Fecha factura', 'TRM liquidacion factura', 'Factura en contabilidad', 'Recibo doc. originales', 'Envio dctos A.A', 'Envio ficha tecnica A.A', 'Envio lista empaque', 'levante', 'Retiro puerto', 'Envio ASN - WMS', 'Llegada BESA', 'Recibo lista emp', 'Envio liquidacion y costeo', 'No. Comex', 'Fecha entrada al sistema', 'Origen de la mercancia', 'Tipo de carga (FCL / LCL)', 'Numero de contenedor', 'Volumen (CBM)', 'Cantidad de CTNS', 'Puerto de embarque', 'Embarcador', 'Linea maritima', 'Agencia de aduanas', 'Transporte Terrestre', 'No. declaracion', 'Vr. arancel', 'Vr. iva', 'Tasa dec imp', 'Factor importacion total', 'Factor importacion logistico', 'Solicitud de booking', 'Confirmacion de booking', 'Entrega del proveedor', 'Pre-inspeccion', 'Tipo de levante', 'Control posterior (Pto - planta)', 'Indicador transito internacional', 'Dias transito', 'Dias NAC SIA', 'Dias retiro de puerto', 'Dias para (ETD)', 'Dias legalizacion', 'Dias ficha tec. antes eta', 'Datos', 'Observaciones');
         $contenidoTabla = array();
+
         foreach ($importacionConsulta as $key => $value) {
+        $fechaBase = $value->imp_fecha_entrega_total;
+        $puertoEmbarque = $value->imp_puerto_embarque;
+        $estimacion = $this->estimacionFechas($fechaBase, $puertoEmbarque);
           $contenidoFila = array();
     		//ingreso al array la informacion de la consulta de importacion
           array_push($contenidoFila, $value);
@@ -74,12 +82,13 @@ class ReportesImportacionesController extends Controller
         }
         array_push($contenidoFila, $embarque);
         array_push($contenidoFila, $contenedores);
+        array_push($contenidoFila, $estimacion);
 
     		//Agrego todo al array principal
         array_push($contenidoTabla, $contenidoFila);
     }
     $this->tabla = $contenidoTabla;
-
+     // return view('importacionesv2.reportesImportaciones.reporteOrdenes', array('tabla' => $this->tabla, 'titulosTabla' => $this->titulosTabla));
 
     Excel::create('Archivoprueba', function($excel) {
 
@@ -129,6 +138,15 @@ class ReportesImportacionesController extends Controller
     return $combos;
 }
 
+
+public function estimacionFechas($fechaBase, $puertoEmbarque){
+  $estimacion = [];
+  $estimacion['fechaETD'] = Carbon::parse($fechaBase)->subDays(8)->format('d-m-Y');
+  $puertoEmbarque = TPuertoEmbarque::where('id', $puertoEmbarque)->first();
+  $estimacion['fechaETA'] = Carbon::parse($estimacion['fechaETD'])->addDays($puertoEmbarque->puem_itime)->format('d-m-Y');
+
+  return $estimacion;
+}
 
 
 

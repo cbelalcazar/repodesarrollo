@@ -222,7 +222,7 @@ class TProductoController extends Controller
    }else {
      #4
      $ObjectCrear = new TProducto;
-     $ObjectCrear->prod_referencia = strtoupper(Input::get('prod_referencia'));
+     $ObjectCrear->prod_referencia = strtoupper(str_replace(" ", "", $request->prod_referencia));
 
       if ($request->prod_req_declaracion_anticipado == 1){
         $ObjectCrear->prod_req_declaracion_anticipado = 1;

@@ -171,25 +171,10 @@ class TImportacionController extends Controller
         }
         DB::beginTransaction();
         //Crea el registro en la tabla importacion
-        $ObjectCrear = new TImportacion;
-        $ObjectCrear->imp_consecutivo = strtoupper(Input::get('imp_consecutivo'));
-        $ObjectCrear->imp_proveedor = Input::get('imp_proveedor');
-        $ObjectCrear->imp_puerto_embarque = Input::get('imp_puerto_embarque');
-        $ObjectCrear->imp_iconterm = Input::get('imp_iconterm');
-        $ObjectCrear->imp_moneda_negociacion = Input::get('imp_moneda_negociacion');
-        if($request->imp_observaciones == ""){
-            $ObjectCrear->imp_observaciones = null;
-        }else{
-            $ObjectCrear->imp_observaciones = strtoupper(Input::get('imp_observaciones'));
-        }
-        if($request->imp_fecha_entrega_total == ""){
-            $ObjectCrear->imp_fecha_entrega_total = null;
-        }else{
-           $date = Carbon::parse(Input::get('imp_fecha_entrega_total'))->format('Y-m-d');
-           $ObjectCrear->imp_fecha_entrega_total = $date ;
-       }
-       $ObjectCrear->imp_estado_proceso = 1;
-       $ObjectCrear->save();
+        $objeto = new TImportacion;
+        $ObjectCrear = $this->objectoImportacion($objeto, $request);       
+        $ObjectCrear->imp_estado_proceso = 1;
+        $ObjectCrear->save();
        #Si la creacion de la importacion genera error lo retorna
        if(!$ObjectCrear->id){
         DB::rollBack();
@@ -309,7 +294,6 @@ return Redirect::to($urlConsulta);
         $objeto5 = TEmbarqueImportacion::with('embarcador', 'lineamaritima', 'tipoCarga','aduana','transportador', 'contenedor.tipo')->where('emim_importacion','=', intval($id))->get();
         $objeto6 = TPagoImportacion::where('pag_importacion', '=', "$id")->get();
         $objeto7 = TNacionalizacionImportacion::with('tiponacionalizacion', 'declaracion.levanteDeclaracion', 'declaracion.admindianDeclaracion')->where('naco_importacion', '=', "$id")->get();
-        // dd($objeto7);
         #Crea un array con la informacion necesaria para mostrar en una tabla los productos asociados a la orden de importacion
 
         $tablaProductos = array();
@@ -318,13 +302,7 @@ return Redirect::to($urlConsulta);
             $prodLocal = TProducto::find(intval($value->pdim_producto));
 
             $referenciaProd = $prodLocal->prod_referencia;
-
-            $queries = DB::connection('besa_UNOEEREAL')->table('t124_mc_items_referencias as a')
-            ->join('t120_mc_items as b', 'a.f124_rowid_item','=','b.f120_rowid')
-            ->select('a.f124_referencia', 'b.f120_referencia', 'b.f120_descripcion')
-            ->where('a.f124_referencia', 'LIKE', "%$referenciaProd%")
-            ->get();
-
+            $queries = $this->consultaProductosUnoee($referenciaProd);
             $descripcion = $queries[0]->f120_referencia." -- ".$queries[0]->f120_descripcion;
             array_push($unProducto, $descripcion);
             array_push($tablaProductos, $unProducto);
@@ -344,6 +322,23 @@ return Redirect::to($urlConsulta);
                 'objeto7',
                 'hasPerm'));
     }
+
+    /**
+    * consultaProductosUnoee
+    * 
+    * Esta funcion retorna la informacion del uno ee para una referencia en especifico
+    *
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
+    public function consultaProductosUnoee($referenciaProd){
+     return DB::connection('besa_UNOEEREAL')->table('t124_mc_items_referencias as a')
+     ->join('t120_mc_items as b', 'a.f124_rowid_item','=','b.f120_rowid')
+     ->select('a.f124_referencia', 'b.f120_referencia', 'b.f120_descripcion')
+     ->where('a.f124_referencia', 'LIKE', "%$referenciaProd%")
+     ->get();
+ }
+
 
     /**
     * Muestra el formulario para editar un proceso de importacion en especifico
@@ -386,12 +381,7 @@ return Redirect::to($urlConsulta);
             $prodLocal = TProducto::find($value->pdim_producto);
             $referenciaProd = $prodLocal->prod_referencia;
 
-            $queries = DB::connection('besa_UNOEEREAL')->table('t124_mc_items_referencias as a')
-            ->join('t120_mc_items as b', 'a.f124_rowid_item','=','b.f120_rowid')
-            ->select('a.f124_referencia', 'b.f120_referencia', 'b.f120_descripcion')
-            ->where('a.f124_referencia', 'LIKE', "%$referenciaProd%")
-            ->get();
-
+            $queries = $this->consultaProductosUnoee($referenciaProd);
             if ($queries->all() != []) {
                $descripcion = $queries[0]->f120_referencia." -- ".$queries[0]->f120_descripcion;
                array_push($unProducto, $descripcion);
@@ -484,6 +474,45 @@ public function permisos(){
 }
 
 
+
+
+ /**
+    * objectoImportacion
+    * 
+    * Funcion que recibe un objeto del modelo importacion y le agrega la informacion que viene en el request
+    * debe retornar el objeto nuevamente.
+    * 
+    * la uso para no escribir este codigo dos veces en las funciones store y update
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
+public function objectoImportacion($objeto, $request){
+
+            //Edita el registro en la tabla importacion
+    $objeto->imp_consecutivo = $request->imp_consecutivo;
+    $objeto->imp_proveedor = $request->imp_proveedor;
+    $objeto->imp_puerto_embarque = $request->imp_puerto_embarque;
+    $objeto->imp_iconterm = $request->imp_iconterm;
+    $objeto->imp_moneda_negociacion = $request->imp_moneda_negociacion;
+    
+    if($request->imp_observaciones == ""){
+        $objeto->imp_observaciones = null;
+    }else{
+        $objeto->imp_observaciones = strtoupper($request->imp_observaciones);
+    }
+
+    if($request->imp_fecha_entrega_total == ""){
+        $objeto->imp_fecha_entrega_total = null;
+    }else{
+       $date = Carbon::parse($request->imp_fecha_entrega_total)->format('Y-m-d');
+       $objeto->imp_fecha_entrega_total = $date ;
+    }
+   return $objeto;
+}
+
+
     /**
     * Update the specified resource in storage.
     *
@@ -514,16 +543,8 @@ public function permisos(){
         //Genera la url de consulta
         $url = route('consultaFiltros');
         //Consulto el registro a editar
-        $ObjectUpdate = TImportacion::find($id);
-        //Edita el registro en la tabla importacion
-        $ObjectUpdate->imp_consecutivo = $request->imp_consecutivo;
-        $ObjectUpdate->imp_proveedor = $request->imp_proveedor;
-        $ObjectUpdate->imp_puerto_embarque = $request->imp_puerto_embarque;
-        $ObjectUpdate->imp_iconterm = $request->imp_iconterm;
-        $ObjectUpdate->imp_moneda_negociacion = $request->imp_moneda_negociacion;
-        $date4 = Carbon::parse($request->imp_fecha_entrega_total)->format('Y-m-d');
-        $ObjectUpdate->imp_fecha_entrega_total = $date4;
-        $ObjectUpdate->imp_observaciones = $request->imp_observaciones;
+        $objeto = TImportacion::find($id);
+        $ObjectUpdate = $this->objectoImportacion($objeto, $request);  
         $ObjectUpdate->save();
 
         #Obtiene los productos que debe guardar de la tabla productos
@@ -702,28 +723,16 @@ public function autocompleteProducto(Request $request){
     #Funcion de consulta de productos para el formulario de importaciones
   $referencia = strtoupper($request->obj);
   $referencia = str_replace("¬¬¬°°°", "+", $referencia);
-  // $queries = DB::connection('genericas')
-  // ->table('item')
-  // ->where('referenciaItem', 'LIKE', "%$referencia%")
-  // ->get();
-
-  $queries = DB::connection('besa_UNOEEREAL')->table('t124_mc_items_referencias as a')
-  ->join('t120_mc_items as b', 'a.f124_rowid_item','=','b.f120_rowid')
-  ->select('a.f124_referencia', 'b.f120_referencia', 'b.f120_descripcion')
-  ->where('a.f124_referencia', 'LIKE', "%$referencia%")
-  ->get();
-
+  $queries = $this->consultaProductosUnoee($referencia);
   if($queries->all() != []){
     $string = $queries[0]->f120_referencia . " -- " . $queries[0]->f120_descripcion;
-    $producto = TProducto::where('prod_referencia','LIKE', "%$referencia%")
+    $producto = TProducto::where('prod_referencia','=', $queries[0]->f120_referencia)
     ->get();
     if($producto->all() == []){
         return array($string, array(), '1');
     }else{
         return array($string, array($producto[0]->prod_req_declaracion_anticipado, $producto[0]->prod_req_registro_importacion), '0');
     }
-
-
 }
 return "error";
 }
@@ -896,92 +905,90 @@ public function cerrarOrden(Request $request){
 
     if($objectPagos->pag_fecha_saldo == null){
      array_push($mensaje ,  "Favor ingresar la fecha del saldo - Modulo pagos");
- }
+    }
 
- if($objectPagos->pag_valor_anticipo === null){
-     array_push($mensaje ,  "Favor ingresar el valor del anticipo - Modulo pagos");
- }
- if($objectPagos->pag_valor_saldo === null){
-     array_push($mensaje ,  "Favor ingresar el valor del saldo - Modulo pagos");
- }
+     if($objectPagos->pag_valor_anticipo === null){
+         array_push($mensaje ,  "Favor ingresar el valor del anticipo - Modulo pagos");
+     }
+     if($objectPagos->pag_valor_saldo === null){
+         array_push($mensaje ,  "Favor ingresar el valor del saldo - Modulo pagos");
+     }
 
- if($objectPagos->pag_valor_comision === null){
-     array_push($mensaje ,  "Favor ingresar el valor de la comision - Modulo pagos");
- }
+     if($objectPagos->pag_valor_comision === null){
+         array_push($mensaje ,  "Favor ingresar el valor de la comision - Modulo pagos");
+     }
 
- if($objectNacionalizacion->naco_fecha_envio_comex == null){
-     array_push($mensaje ,  "Favor ingresar fecha envio comex - Modulo nacionalizacion y costeo");
- }
- if($objectNacionalizacion->naco_fecha_llegada_be == null){
-     array_push($mensaje ,  "Favor ingresar fecha de llegada a Belleza Express - Modulo nacionalizacion y costeo");
- }
- if($objectNacionalizacion->naco_fecha_recep_list_empaq == null){
-     array_push($mensaje ,  "Favor ingresar fecha de recepcion lista de empaque - Modulo nacionalizacion y costeo ");
- }
- if($objectNacionalizacion->naco_fecha_envi_liqu_costeo == null){
-     array_push($mensaje ,  "Favor ingresar fecha envio liquidacion y costeo - Modulo nacionalizacion y costeo");
- }
- if($objectNacionalizacion->naco_fecha_entrada_sistema == null){
-     array_push($mensaje ,  "Favor ingresar fecha entrada al sistema - Modulo nacionalizacion y costeo");
- }
- if($objectNacionalizacion->naco_factor_dolar_porc == null){
-     array_push($mensaje ,  "Favor ingresar el factor total - Modulo nacionalizacion y costeo ");
- }
- if($objectNacionalizacion->naco_factor_dolar_tasa == null){
-     array_push($mensaje ,  "Favor ingresar el factor importacion porcentual - Modulo nacionalizacion y costeo");
- }
- if($objectNacionalizacion->naco_factor_logist_porc == null){
-     array_push($mensaje ,  "Favor ingresar el factor logistico - Modulo nacionalizacion y costeo");
- }
- if($objectNacionalizacion->naco_factor_logist_tasa == null){
-     array_push($mensaje ,  "Favor ingresar el factor logistico en pesos - Modulo nacionalizacion y costeo");
- }
- if($objectNacionalizacion->naco_factor_arancel_porc == null){
-     array_push($mensaje ,  "Favor ingresar el factor arancel - Modulo nacionalizacion y costeo ");
- }
-
-
- if($objectEmbarque->emim_valor_flete == null){
-     array_push($mensaje ,  "Favor ingresar el valor del flete - Modulo Embarque importacion");
- }
+     if($objectNacionalizacion->naco_fecha_envio_comex == null){
+         array_push($mensaje ,  "Favor ingresar fecha envio comex - Modulo nacionalizacion y costeo");
+     }
+     if($objectNacionalizacion->naco_fecha_llegada_be == null){
+         array_push($mensaje ,  "Favor ingresar fecha de llegada a Belleza Express - Modulo nacionalizacion y costeo");
+     }
+     if($objectNacionalizacion->naco_fecha_recep_list_empaq == null){
+         array_push($mensaje ,  "Favor ingresar fecha de recepcion lista de empaque - Modulo nacionalizacion y costeo ");
+     }
+     if($objectNacionalizacion->naco_fecha_envi_liqu_costeo == null){
+         array_push($mensaje ,  "Favor ingresar fecha envio liquidacion y costeo - Modulo nacionalizacion y costeo");
+     }
+     if($objectNacionalizacion->naco_fecha_entrada_sistema == null){
+         array_push($mensaje ,  "Favor ingresar fecha entrada al sistema - Modulo nacionalizacion y costeo");
+     }
+     if($objectNacionalizacion->naco_factor_dolar_porc == null){
+         array_push($mensaje ,  "Favor ingresar el factor total - Modulo nacionalizacion y costeo ");
+     }
+     if($objectNacionalizacion->naco_factor_dolar_tasa == null){
+         array_push($mensaje ,  "Favor ingresar el factor importacion porcentual - Modulo nacionalizacion y costeo");
+     }
+     if($objectNacionalizacion->naco_factor_logist_porc == null){
+         array_push($mensaje ,  "Favor ingresar el factor logistico - Modulo nacionalizacion y costeo");
+     }
+     if($objectNacionalizacion->naco_factor_logist_tasa == null){
+         array_push($mensaje ,  "Favor ingresar el factor logistico en pesos - Modulo nacionalizacion y costeo");
+     }
+     if($objectNacionalizacion->naco_factor_arancel_porc == null){
+         array_push($mensaje ,  "Favor ingresar el factor arancel - Modulo nacionalizacion y costeo ");
+     }
 
 
- if($objectEmbarque->emim_fecha_recibido_documentos_ori == null){
-     array_push($mensaje ,  "Favor ingresar la fecha recibo documentos originales - Modulo Embarque importacion");
- }
-
- if($objectEmbarque->emim_fecha_envio_aduana == null){
-     array_push($mensaje ,  "Favor ingresar la fecha envio agencia de aduanas - Modulo Embarque importacion");
- }
-
- if($objectEmbarque->emim_fecha_envio_ficha_tecnica == null){
-     array_push($mensaje ,  "Favor ingresar la fecha de envio ficha tecnica - Modulo Embarque importacion");
- }
+     if($objectEmbarque->emim_valor_flete == null){
+         array_push($mensaje ,  "Favor ingresar el valor del flete - Modulo Embarque importacion");
+     }
 
 
- if($objectEmbarque->emim_fecha_envio_lista_empaque == null){
-     array_push($mensaje ,  "Favor ingresar la fecha envio lista de empaque - Modulo Embarque importacion");
- }
+     if($objectEmbarque->emim_fecha_recibido_documentos_ori == null){
+         array_push($mensaje ,  "Favor ingresar la fecha recibo documentos originales - Modulo Embarque importacion");
+     }
+
+     if($objectEmbarque->emim_fecha_envio_aduana == null){
+         array_push($mensaje ,  "Favor ingresar la fecha envio agencia de aduanas - Modulo Embarque importacion");
+     }
+
+     if($objectEmbarque->emim_fecha_envio_ficha_tecnica == null){
+         array_push($mensaje ,  "Favor ingresar la fecha de envio ficha tecnica - Modulo Embarque importacion");
+     }
 
 
-
-
- if($mensaje == []){
-    $objectImportacion->imp_estado_proceso = 6;
-    $objectImportacion->save();
-    $urlConsulta = route('consultaFiltros');
-    return Redirect::to($urlConsulta);
-}else{
-    $url = route('cerrarImportacion');
-    return redirect()->action(
-        'Importacionesv2\TImportacionController@show', ['id' => $request->OrdenId]
-        )->withErrors($mensaje);      
-}
+     if($objectEmbarque->emim_fecha_envio_lista_empaque == null){
+         array_push($mensaje ,  "Favor ingresar la fecha envio lista de empaque - Modulo Embarque importacion");
+     }
 
 
 
 
-}
+        if($mensaje == []){
+        $objectImportacion->imp_estado_proceso = 6;
+        $objectImportacion->save();
+        $urlConsulta = route('consultaFiltros');
+        return Redirect::to($urlConsulta);
+        }else{
+            $url = route('cerrarImportacion');
+            return redirect()->action(
+                'Importacionesv2\TImportacionController@show', ['id' => $request->OrdenId]
+                )->withErrors($mensaje);      
+        }
+
+    }
+
 
 
 }

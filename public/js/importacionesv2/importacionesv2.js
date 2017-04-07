@@ -365,7 +365,7 @@ for (var i = 1; i < conteo; i++)
   var dato = $(string).html();
   if(typeof(dato) !== 'undefined'){
     var arreglo3 = dato.split(" -- ");
-    if(arreglo3[0] == $('#imp_producto').val().toUpperCase()){
+    if(arreglo3[0].trim() == $('#imp_producto').val().toUpperCase()){
       encontrar = 1;
     }
   }
