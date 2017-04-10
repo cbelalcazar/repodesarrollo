@@ -74,6 +74,9 @@ Route::get('NCCreate/{id}', 'Importacionesv2\TNacionalizacionImportacionControll
 //End importacionesv2
 //Rutas para reportes importacionesv2
 Route::post('ExcelOrdenesGeneral', 'Importacionesv2\ReportesImportacionesController@ExcelOrdenesGeneral')->name('ExcelOrdenesGeneral');
+Route::get('GenerarExcelUAP', 'Importacionesv2\ReportesImportacionesController@GenerarExcelUAP')->name('GenerarExcelUAP');
+Route::post('ReporteUAP', 'Importacionesv2\ReportesImportacionesController@ReporteUAP')->name('ReporteUAP');
+
 Route::get('ConsultaImportacionesExportar', 'Importacionesv2\ReportesImportacionesController@ConsultaImportacionesExportar')->name('ConsultaImportacionesExportar');
 });
 

@@ -3,7 +3,7 @@
 	<thead>
 		<tr>
 			@foreach($titulosTabla as $key => $value)
-			<th>{{ $value }}</th>
+			<th style="font-size:12px;font-weight:bold;">{{ $value }}</th>
 			@endforeach
 		</tr>
 	</thead>
@@ -45,14 +45,14 @@
 			@if($value[0]->embarqueimportacion['emim_fecha_etd'] != "")
 			<td>{{ $value[0]->embarqueimportacion['emim_fecha_etd'] }}</td>
 			@elseif($value[0]->embarqueimportacion['emim_fecha_etd'] == "")
-			<td style="color:red;">{{$value[6]['fechaETD']}}</td>
+			<td style="color:#FF0000;">{{$value[6]['fechaETD']}}</td>
 			@endif
 			
 			<!-- Fecha ETA-->
 			@if($value[0]->embarqueimportacion['emim_fecha_eta'] != "")
 			<td>{{ $value[0]->embarqueimportacion['emim_fecha_eta'] }}</td>
 			@elseif($value[0]->embarqueimportacion['emim_fecha_eta'] == "")
-			<td style="color:red;">{{$value[6]['fechaETA']}}</td>
+			<td style="color:#FF0000;">{{$value[6]['fechaETA']}}</td>
 			@endif
 			<!-- Puerto de embarque -->
 			<td>{{ $value[0]->puerto_embarque->puem_nombre }}</td>
@@ -65,7 +65,7 @@
 			<!-- Giro saldo total -->
 			<td>{{$value[0]->pagosimportacion['pag_valor_saldo']}}</td>
 			<!-- Giro saldo total -->
-			<td style="color:red;">{{ \Carbon\Carbon::parse($value[6]['fechaETD'])->addDays(10)->format('d-m-Y') }}</td>
+			<td style="color:#FF0000;">{{ \Carbon\Carbon::parse($value[6]['fechaETD'])->addDays(10)->format('d-m-Y') }}</td>
 			<!-- Fecha legalización -->
 			<td>
 				<ul>
@@ -97,21 +97,21 @@
 			<td>{{ $value[0]->embarqueimportacion['emim_fecha_envio_aduana'] }}</td>
 			<!-- fecha envio ficha tecnica agencia de aduanas -->
 			@if($value[0]->embarqueimportacion['emim_fecha_envio_ficha_tecnica'] == "")
-			<td style="color:red;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->subDays(15)->format('d-m-Y') }}</td>
+			<td style="color:#FF0000;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->subDays(15)->format('d-m-Y') }}</td>
 			@else
 			<td>{{ $value[0]->embarqueimportacion['emim_fecha_envio_ficha_tecnica'] }}</td>
 			@endif
 			
 			<!-- fecha envio lista de empaque -->
 			@if($value[0]->embarqueimportacion['emim_fecha_envio_lista_empaque'] == "")
-			<td style="color:red;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->subDays(7)->format('d-m-Y') }}</td>
+			<td style="color:#FF0000;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->subDays(7)->format('d-m-Y') }}</td>
 			@else
 			<td>{{ $value[0]->embarqueimportacion['emim_fecha_envio_lista_empaque'] }}</td>
 			@endif
 
 			<!-- fecha levante -->
 			@if(count($value[3]) == 0)
-			<td style="color:red;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->addDays(3)->format('d-m-Y') }}</td>
+			<td style="color:#FF0000;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->addDays(3)->format('d-m-Y') }}</td>
 			@else
 			<td>
 				<ul>
@@ -124,31 +124,31 @@
 			
 			<!-- fecha retiro puerto -->
 			@if($value[0]->nacionalizacionimportacion['naco_fecha_retiro_puert'] == "")
-			<td style="color:red;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->addDays(5)->format('d-m-Y') }}</td>
+			<td style="color:#FF0000;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->addDays(5)->format('d-m-Y') }}</td>
 			@else
 			<td>{{ $value[0]->nacionalizacionimportacion['naco_fecha_retiro_puert'] }}</td>
 			@endif
 			<!-- fecha envio ASN WMS -->
 			@if($value[0]->nacionalizacionimportacion['naco_fecha_envio_comex'] == "")
-			<td style="color:red;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->addDays(5)->format('d-m-Y') }}</td>
+			<td style="color:#FF0000;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->addDays(5)->format('d-m-Y') }}</td>
 			@else
 			<td>{{ $value[0]->nacionalizacionimportacion['naco_fecha_envio_comex'] }}</td>
 			@endif
 			<!-- fecha llegada a besa -->
 			@if($value[0]->nacionalizacionimportacion['naco_fecha_llegada_be'] == "")
-			<td style="color:red;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->addDays(6)->format('d-m-Y') }}</td>
+			<td style="color:#FF0000;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->addDays(6)->format('d-m-Y') }}</td>
 			@else
 			<td>{{ $value[0]->nacionalizacionimportacion['naco_fecha_llegada_be'] }}</td>
 			@endif
 			<!-- fecha recibo lista de empaque -->
 			@if($value[0]->nacionalizacionimportacion['naco_fecha_recep_list_empaq'] == "")
-			<td style="color:red;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->addDays(8)->format('d-m-Y') }}</td>
+			<td style="color:#FF0000;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->addDays(8)->format('d-m-Y') }}</td>
 			@else
 			<td>{{ $value[0]->nacionalizacionimportacion['naco_fecha_recep_list_empaq'] }}</td>
 			@endif
 			<!-- fecha envio liquidacion y costeo -->
 			@if($value[0]->nacionalizacionimportacion['naco_fecha_envi_liqu_costeo'] == "")
-			<td style="color:red;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->addDays(9)->format('d-m-Y') }}</td>
+			<td style="color:#FF0000;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->addDays(9)->format('d-m-Y') }}</td>
 			@else
 			<td>{{ $value[0]->nacionalizacionimportacion['naco_fecha_envi_liqu_costeo'] }}</td>
 			@endif
@@ -156,7 +156,7 @@
 			<td>Numero comex</td>		
 			<!-- Fecha entrada al sistema -->
 			@if($value[0]->nacionalizacionimportacion['naco_fecha_entrada_sistema'] == "")
-			<td style="color:red;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->addDays(11)->format('d-m-Y') }}</td>
+			<td style="color:#FF0000;">{{ \Carbon\Carbon::parse($value[6]['fechaETA'])->addDays(11)->format('d-m-Y') }}</td>
 			@else
 			<td>{{ $value[0]->nacionalizacionimportacion['naco_fecha_entrada_sistema'] }}</td>
 			@endif

@@ -542,7 +542,7 @@ if ($request->naco_factor_logist_porc != "") {
 if ($request->naco_factor_arancel_porc != "") {
   $ObjectEditar->naco_factor_arancel_porc =  round($request->naco_factor_arancel_porc,2);
 }elseif($request->naco_factor_arancel_porc == ""){
-  $ObjectCrear->naco_factor_arancel_porc = null;
+  $ObjectEditar->naco_factor_arancel_porc = null;
 } 
 
 $ObjectEditar->save();

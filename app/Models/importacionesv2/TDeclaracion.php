@@ -50,6 +50,11 @@ class TDeclaracion extends Model
         return $this->hasOne('App\Models\Importacionesv2\TAdministracionDian', 'id', 'decl_admin_dian');
     }
 
+     public function nacionalizacion()
+    {
+        return $this->belongsTo('App\Models\Importacionesv2\TNacionalizacionImportacion', 'decl_nacionalizacion', 'id');
+    }
+
 
 
 

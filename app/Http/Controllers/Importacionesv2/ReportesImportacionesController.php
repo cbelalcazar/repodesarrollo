@@ -21,6 +21,7 @@ class ReportesImportacionesController extends Controller
     //
     public $tabla;
     public $titulosTabla;
+    public $variables;
 
     public function ExcelOrdenesGeneral(Request $request){
          #Genero los where para la consulta dependiendo de los filtros enviados por la vista
@@ -88,9 +89,9 @@ class ReportesImportacionesController extends Controller
         array_push($contenidoTabla, $contenidoFila);
     }
     $this->tabla = $contenidoTabla;
-     // return view('importacionesv2.reportesImportaciones.reporteOrdenes', array('tabla' => $this->tabla, 'titulosTabla' => $this->titulosTabla));
+     return view('importacionesv2.reportesImportaciones.reporteOrdenes', array('tabla' => $this->tabla, 'titulosTabla' => $this->titulosTabla));
 
-    Excel::create('Archivoprueba', function($excel) {
+    Excel::create('ReporteImportacion', function($excel) {
 
         $excel->sheet('Hoja 1', function($sheet) {
 
@@ -149,8 +150,119 @@ public function estimacionFechas($fechaBase, $puertoEmbarque){
 }
 
 
+public function GenerarExcelUAP(){
+  $url = route('ReporteUAP');
+  $titulo = "GENERAR REPORTE UAP POR FECHAS";
+  return view('importacionesv2.reportesImportaciones.consultaUAP', 
+        compact('url', 'titulo'));
+}
 
 
+public function ReporteUAP(Request $request){
+  $from = Carbon::parse($request->desde)->format('Y-m-d');
+  $to = Carbon::parse($request->hasta)->format('Y-m-d');
+  $declaracion = TDeclaracion::with('nacionalizacion.importacion.proveedor', 'nacionalizacion.tiponacionalizacion', 'admindianDeclaracion')->whereBetween('decl_fecha_legaliza_giro', array($from, $to))->get();
+
+  $groupDeclaraciones = array();
+  $array = array();
+  $numero = 0;
+  foreach ($declaracion as $key => $value) {    
+    if($numero == 0){
+      array_push($array, $value);
+      $numero = $value->decl_nacionalizacion; 
+    }elseif($numero == $value->decl_nacionalizacion){
+      array_push($array, $value);
+    }elseif($numero != $value->decl_nacionalizacion){
+      array_push($groupDeclaraciones, $array);
+      $array = array();
+      array_push($array, $value);
+      $numero = $value->decl_nacionalizacion; 
+    }
+    if($key == count($declaracion)-1){
+      array_push($groupDeclaraciones, $array);
+    }
+  }
+
+  $arancelesTotal = [];
+  $ivaTotal = [];
+  $otrosTotal = [];
+  $totalArray = [];
+
+  $manualesIva = 0;
+  $automaticasIva = 0;
+  $sumatodasIva = 0;
+
+  $manualesArancel = 0;
+  $automaticasArancel = 0;
+  $sumatodasArancel = 0;
+
+  $manualesOtros = 0;
+  $automaticasOtros = 0;
+  $sumatodasOtros = 0;
+
+  $manualesTotal = 0;
+  $automaticasTotal = 0;
+  $sumatodasTotal = 0;
+
+
+  foreach ($groupDeclaraciones as $key => $value) {
+    $valorArancelTotal = 0;
+    $valorIvaTotal = 0;
+    $valorOtrosTotal = 0;
+    $valorTotales = 0;
+    foreach ($value as $key => $valor) {
+
+      $valorArancelTotal = $valorArancelTotal + $valor->decl_arancel;
+      $valorIvaTotal = $valorIvaTotal + $valor->decl_iva;
+      $valorOtrosTotal = $valorOtrosTotal + $valor->decl_valor_otros;
+      $valorTotales = $valorTotales + $valor->decl_arancel + $valor->decl_iva + $valor->decl_valor_otros;
+
+      $sumatodasArancel = $sumatodasArancel + $valor->decl_arancel;
+      $sumatodasIva = $sumatodasIva + $valor->decl_iva;
+      $sumatodasOtros = $sumatodasOtros + $valor->decl_valor_otros;
+      $sumatodasTotal = $sumatodasTotal + $valor->decl_arancel + $valor->decl_iva + $valor->decl_valor_otros;
+
+      if ($valor->nacionalizacion->naco_tipo_nacionalizacion == 1) {
+        $automaticasArancel = $automaticasArancel + $valor->decl_arancel;
+      } elseif($valor->nacionalizacion->naco_tipo_nacionalizacion == 2) {
+        $manualesArancel = $manualesArancel + $valor->decl_arancel;
+      }
+
+      if ($valor->nacionalizacion->naco_tipo_nacionalizacion == 1) {
+        $automaticasIva = $automaticasIva + $valor->decl_iva;
+      } elseif($valor->nacionalizacion->naco_tipo_nacionalizacion == 2) {
+        $manualesIva = $manualesIva + $valor->decl_iva;
+      }
+
+      if ($valor->nacionalizacion->naco_tipo_nacionalizacion == 1) {
+        $automaticasOtros = $automaticasOtros + $valor->decl_valor_otros;
+      } elseif($valor->nacionalizacion->naco_tipo_nacionalizacion == 2) {
+        $manualesOtros = $manualesOtros + $valor->decl_valor_otros;
+      }
+
+      if ($valor->nacionalizacion->naco_tipo_nacionalizacion == 1) {
+        $automaticasTotal = $automaticasTotal + $valor->decl_arancel + $valor->decl_iva + $valor->decl_valor_otros;
+      } elseif($valor->nacionalizacion->naco_tipo_nacionalizacion == 2) {
+        $manualesTotal = $manualesTotal + $valor->decl_arancel + $valor->decl_iva + $valor->decl_valor_otros;
+      }
+    }
+    array_push($arancelesTotal, $valorArancelTotal);
+    array_push($ivaTotal, $valorIvaTotal);
+    array_push($otrosTotal, $valorOtrosTotal);
+    array_push($totalArray, $valorTotales);
+  }
+
+   $this->variables =  compact('groupDeclaraciones','arancelesTotal','ivaTotal','otrosTotal','totalArray','manualesIva','automaticasIva','sumatodasIva','manualesArancel','automaticasArancel','sumatodasArancel','manualesOtros','automaticasOtros','sumatodasOtros','manualesTotal','automaticasTotal','sumatodasTotal');
+
+  Excel::create('ReporteUAP', function($excel) {
+
+        $excel->sheet('Hoja 1', function($sheet) {
+
+            $sheet->loadView('importacionesv2.reportesImportaciones.reporteUAP', $this->variables);
+        });
+
+    })->download('xls');
+}
 
 
 }
