@@ -19,6 +19,333 @@ Welcome to the generated API reference.
 [Get Postman Collection](http://localhost/docs/collection.json)
 <!-- END_INFO -->
 
+#TLineaMaritimaController
+
+Controlador creado para el crud de linea maritima
+
+Creado por Carlos Belalcazar
+
+Analista desarrollador de software Belleza Express
+
+27/03/2017
+<!-- START_fd88141b40c91416d3b04391be5bdb55 -->
+## index
+Funcion que consulta todos las lineas maritimas y los retorna a la vista resource/views/importacionesv2/index.blade.php
+
+1 -  Asigno la variable $titulo con que se definio en la variable global titulo <br>
+2 -  Asigno variable $datos con la consulta de todos los registros de la tabla t_linea_maritima <br>
+3 -  Asigno la variable $titulosTabla con un array donde cada posicion hace referencia a un titulo de columna de la tabla a mostrar, siempre al final le pongo las acciones editar y eliminar los demas campos son los mismos del array $campos <br>
+4 -  Asigno la variable campos con un array de arrays cada array contenido en cada posicion debe tener informacion del campo de la base de datos que quiero mostrar en la tabla lo realizo para que la vista ejecute la accion de mostrar solo los campos que yo le indico en este array <br>
+5 -  Asigno la variable $url la cual tiene ulr completa de consulta <br>
+
+Return: retornar una vista con una lista de todas las lineas maritimas
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/LineaMaritima" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/LineaMaritima",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/LineaMaritima`
+
+`HEAD importacionesv2/LineaMaritima`
+
+
+<!-- END_fd88141b40c91416d3b04391be5bdb55 -->
+<!-- START_14b10d0356e5e8c68f7ae5cd146213fd -->
+## create
+Funcion que muestra el formulario de creacion resource/views/importacionesv2/create.blade.php
+
+1 -  Asigno la variable campos con un array de arrays cada array contenido en cada posicion debe tener informacion del campo de la base de datos que quiero mostrar en el formulario lo realizo para que la vista ejecute la accion de mostrar solo los campos que yo le indico en este array y crear solo una vista <br>
+2 -  Asigno la variable $url la cual tiene ulr completa de consulta <br>
+3 -  Asigno la variable $titulo con que se definio en la variable global titulo <br>
+4 -  Asigno la variable $validator la cual va a contener un script javascript que voy a pintar en la vista para realizar las rules de validacion que defino en el controlador
+
+Return: Debe retornar una vista con un formulario de creacion con los campos para linea maritima
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/LineaMaritima/create" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/LineaMaritima/create",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/LineaMaritima/create`
+
+`HEAD importacionesv2/LineaMaritima/create`
+
+
+<!-- END_14b10d0356e5e8c68f7ae5cd146213fd -->
+<!-- START_3ccff1e2b0b67c62add6bd923fc2bd12 -->
+## store
+Funcion que se encarga de guardar la informacion del formulario de creacion y redireccionar al index
+
+1 -  Asigno la variable $url la cual tiene ulr completa de consulta <br>
+2 -  Valida que no exista ningun registro con el mismo lmar_descripcion en la tabla t_linea_maritima, en caso de encontrar alguno retorna error a la vista create.blade.php <br>
+3 -  Crea un registro en la tabla t_linea_maritima <br>
+4 -  Redirecciona a la pagina de consulta y muestra un mensaje de exito <br>
+
+Return: Debe retornar un mensaje de exito en caso de que se cree correctamente o un mensaje e error si encuentra un registro con el mismo lmar_descripcion
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/LineaMaritima" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/LineaMaritima",
+    "method": "POST",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+
+### HTTP Request
+`POST importacionesv2/LineaMaritima`
+
+
+<!-- END_3ccff1e2b0b67c62add6bd923fc2bd12 -->
+<!-- START_67680870010dd6b184fa2c0ba69dcd1a -->
+## Display the specified resource.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/LineaMaritima/{LineaMaritima}" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/LineaMaritima/{LineaMaritima}",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/LineaMaritima/{LineaMaritima}`
+
+`HEAD importacionesv2/LineaMaritima/{LineaMaritima}`
+
+
+<!-- END_67680870010dd6b184fa2c0ba69dcd1a -->
+<!-- START_43ccbbca435a4daafdf5a4f627ed0c1e -->
+## edit
+Funcion que muestra el formulario de editar resource/views/importacionesv2/edit.blade.php
+
+1 -  Asigno la variable id con el parametro id del modelo que deseo editar <br>
+2 -  Consulto el objeto que deseo editar <br>
+3 -  Creo un array donde cada posicion hace referencia a un campo de la tabla t_producto, el cual quiero mostrar en el formulario de creacion. <br>
+4 -  Asigno la variable $titulo con que se definio en la variable global titulo <br>
+5 -  Asigno la variable $url la cual tiene ulr completa de consulta <br>
+6 -  Asigno la variable $validator la cual va a contener un script javascript que voy a pintar en la vista para realizar las rules de validacion que defino en el controlador <br>
+7 -  Asigno el string que hace referencia al name de la ruta update <br>
+
+Return: Debe retornar una vista con un formulario para editar un registro
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/LineaMaritima/{LineaMaritima}/edit" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/LineaMaritima/{LineaMaritima}/edit",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/LineaMaritima/{LineaMaritima}/edit`
+
+`HEAD importacionesv2/LineaMaritima/{LineaMaritima}/edit`
+
+
+<!-- END_43ccbbca435a4daafdf5a4f627ed0c1e -->
+<!-- START_178fbb316d3e9cfefb60d814ffddab58 -->
+## update
+Funcion que actualiza el registro en la tabla linea maritima
+
+1 -  Asigna a la variable $url la url de consulta <br>
+2 -  Obtengo el objeto que deseo editar <br>
+3 -  Consulto en la tabla si existe algun registro con el mismo lmar_descripcion, en caso de encontrar alguno redirecciona a la funcion edit y retorna el error <br>
+4 -  Edita el registro de la tabla <br>
+5 -  Borra la cache del string <br>
+6 -  Redirecciona a vista de consulta <br>
+
+Return: debe retornar exito en caso de haber hecho update sobre el registro, o error en caso de que la linea maritima tenga el mismo lmar_descripcion que otro
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/LineaMaritima/{LineaMaritima}" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/LineaMaritima/{LineaMaritima}",
+    "method": "PUT",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+
+### HTTP Request
+`PUT importacionesv2/LineaMaritima/{LineaMaritima}`
+
+`PATCH importacionesv2/LineaMaritima/{LineaMaritima}`
+
+
+<!-- END_178fbb316d3e9cfefb60d814ffddab58 -->
+<!-- START_7c66ccb64752950df354c254baf2085b -->
+## destroy
+
+Hace un softdelete sobre el objeto de cuyo id coincida con el enviado a traves del parametro de la funcion
+
+1 -  Asigna el objeto cuyo $id coincida con el enviado a traves del parametro de la funcion a la variable $ObjectDestroy  <br>
+2 -  Borra el objeto $ObjectDestroy <br>
+3 -  Asigna la url completa a la variable $url <br>
+4 -  Borra la cache del string <br>
+5 -  Redirecciona a la url <br>
+
+Return: Retorna mensaje de exito una ves elimina el origen de la mercancia
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/LineaMaritima/{LineaMaritima}" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/LineaMaritima/{LineaMaritima}",
+    "method": "DELETE",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+
+### HTTP Request
+`DELETE importacionesv2/LineaMaritima/{LineaMaritima}`
+
+
+<!-- END_7c66ccb64752950df354c254baf2085b -->
 #TOrigenMercanciaController
 
 Controlador creado para el crud de origen de la mercancia
@@ -685,6 +1012,7 @@ Funcion que muestra el formulario de creacion cargado a traves de ajax en un mod
 3 -  Asigno a la variable $route la ruta de la funcion que recibe la peticion ajax de creacion <br>
 4 -  Asigno la variable $titulo con que se definio en la variable global titulo <br>
 5 -  Asigno la variable $validator la cual va a contener un script javascript que voy a pintar en la vista para realizar las rules de validacion que defino en el controlador
+6 -  Asigno la variable descripcionProd como true para mostrar en el formulario la descripcion del producto dependiendo de un condicional if
 
 Return: Debe retornar una vista con un formulario de creacion con los campos para productos en resource/views/importacioensv2/ImportacionTemplate/createajax
 
@@ -875,7 +1203,20 @@ $.ajax(settings).done(function (response) {
 
 <!-- END_e06e5d0e0f785956fd9b5d27023bd62f -->
 <!-- START_16448db28ac465adcc94cd18eafc0643 -->
-## Store a newly created resource in storage.
+## store
+
+Esta funcion debe validar que no exista un registro con el mismo nombre de tipo de levante, y validar la obligatoriedad de los campos
+y en caso de no encontrar ningun problema debe crear un nuevo tipo de levante en la tabla t_tipo_levante, luego redireccionar a la vista
+de consulta y mostrar mensaje de exitoso.
+
+1 - Asigno a la variable url la ruta de la vista de consulta <br>
+2 - Asigno a la variable $validarExistencia la consulta a la tabla TTipoLevante donde el nombre del tipo de levante sea igual a uno ya
+existente <br>
+3 - Valido si la consulta trajo algun resultado, en caso de que si traiga resultado muestro mensaje de error <br>
+4 - Creo un objeto nuevo del tipo de levante <br>
+5 - Guardo la informacion que viene del formulario <br>
+6 - Borro la cache <br>
+7 - Genero mensaje de creacion exitosa y redirecciono a la vista de consulta <br>
 
 > Example request:
 
@@ -907,7 +1248,7 @@ $.ajax(settings).done(function (response) {
 
 <!-- END_16448db28ac465adcc94cd18eafc0643 -->
 <!-- START_14af31d468f7301be6df837feccc0b57 -->
-## Display the specified resource.
+## show
 
 > Example request:
 
@@ -948,7 +1289,18 @@ $.ajax(settings).done(function (response) {
 
 <!-- END_14af31d468f7301be6df837feccc0b57 -->
 <!-- START_dd681450152a857e7a5af87d79e81e02 -->
-## Show the form for editing the specified resource.
+## edit
+
+Retorna al usuario una vista con un formulario para editar un tipo de levante /resource/views/importacionesv2/edit.blade.php
+
+1 - Obtengo el id del tipo de levante que viene como parametro de la funcion y lo asigno a la variable $id <br>
+2 - Obtengo el objeto del tipo de levante segun el id y lo asigno a la variable $objeto <br>
+3 - Creo un array de arrays llamado $campos con los campos que voy a hacer render en el formulario <br>
+4 - Asigno el titulo del formulario a la variable $titulo <br>
+5 - Asigno la ruta de consulta a la variable de $url <br>
+6 - Asigno la validacion javascript de la libreria JSVALIDATOR a la variable $validator <br>
+7 - Asigno el name de la ruta de update a la variabe $route <br>
+8 - Retorno la vista importacionesv2.edit <br>
 
 > Example request:
 
@@ -989,7 +1341,16 @@ $.ajax(settings).done(function (response) {
 
 <!-- END_dd681450152a857e7a5af87d79e81e02 -->
 <!-- START_8a195a0f4d0d6a8e352e2069d5597f5f -->
-## Update the specified resource in storage.
+## update
+
+Su funcionalidad que actualizar un registro de la tabla t_tipo levante segun el id que se le entrege como parametro
+
+1 -  Asigna a la variable $url la ruta de consulta que apunta hacia el index de este crud <br>
+2 -  Obtiene el objeto de la tabla t_tipo_levante y lo asigna a la variable $ObjectUpdate <br>
+3 -  Valida que no exista otro registro con el mismo tlev_nombre, si existe alguno genera error y no permite editar el registro <br>
+4 -  Si no existe ningun registro igual actualiza los campos y graba <br>
+5 -  Borra la cache de esta tabla <br>
+6 -  Redirecciona a la url de consulta con mensaje de exito <br>
 
 > Example request:
 
@@ -1023,7 +1384,15 @@ $.ajax(settings).done(function (response) {
 
 <!-- END_8a195a0f4d0d6a8e352e2069d5597f5f -->
 <!-- START_6a21c62a0f8883fa2a5790770e17a452 -->
-## Remove the specified resource from storage.
+## destroy
+
+Su funcionalidad es borrar un registro de la tabla t_tipo_levante segun el id que le pases a la funcion
+
+1 -  Asigno a la variable $ObjectDestroy el objeto que deseo eliminar <br>
+2 -  Borro el objeto <br>
+3 -  Obtengo la url de consuta de tipo levante <br>
+4 -  Borro la cache <br>
+5 -  redirecciono a la vista de consulta <br>
 
 > Example request:
 
@@ -3675,6 +4044,792 @@ $.ajax(settings).done(function (response) {
 
 
 <!-- END_584d4d9ee97a54c8c714cc167bd2926a -->
+<!-- START_14131c19baef1c9a218042cae1e76bfb -->
+## Display a listing of the resource.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/Embarque" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/Embarque",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/Embarque`
+
+`HEAD importacionesv2/Embarque`
+
+
+<!-- END_14131c19baef1c9a218042cae1e76bfb -->
+<!-- START_3283a64a8ceeed622428d098d5fdc1f4 -->
+## Show the form for creating a new resource.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/Embarque/create" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/Embarque/create",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/Embarque/create`
+
+`HEAD importacionesv2/Embarque/create`
+
+
+<!-- END_3283a64a8ceeed622428d098d5fdc1f4 -->
+<!-- START_01efb4a1b5872b9bfd0fa53d26c7d60c -->
+## Store a newly created resource in storage.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/Embarque" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/Embarque",
+    "method": "POST",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+
+### HTTP Request
+`POST importacionesv2/Embarque`
+
+
+<!-- END_01efb4a1b5872b9bfd0fa53d26c7d60c -->
+<!-- START_1dfc0dcfacf45b509f07a134ef1f00cd -->
+## Display the specified resource.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/Embarque/{Embarque}" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/Embarque/{Embarque}",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/Embarque/{Embarque}`
+
+`HEAD importacionesv2/Embarque/{Embarque}`
+
+
+<!-- END_1dfc0dcfacf45b509f07a134ef1f00cd -->
+<!-- START_5190236c186eacd22453ff9c20299d0b -->
+## Show the form for editing the specified resource.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/Embarque/{Embarque}/edit" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/Embarque/{Embarque}/edit",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/Embarque/{Embarque}/edit`
+
+`HEAD importacionesv2/Embarque/{Embarque}/edit`
+
+
+<!-- END_5190236c186eacd22453ff9c20299d0b -->
+<!-- START_249226c98a8987cdfa1ad7160e1ed0b0 -->
+## Update the specified resource in storage.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/Embarque/{Embarque}" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/Embarque/{Embarque}",
+    "method": "PUT",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+
+### HTTP Request
+`PUT importacionesv2/Embarque/{Embarque}`
+
+`PATCH importacionesv2/Embarque/{Embarque}`
+
+
+<!-- END_249226c98a8987cdfa1ad7160e1ed0b0 -->
+<!-- START_d6c0a258fd034fe47918861adedb5b4a -->
+## Remove the specified resource from storage.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/Embarque/{Embarque}" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/Embarque/{Embarque}",
+    "method": "DELETE",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+
+### HTTP Request
+`DELETE importacionesv2/Embarque/{Embarque}`
+
+
+<!-- END_d6c0a258fd034fe47918861adedb5b4a -->
+<!-- START_bca548474dd6822c1bb40b708fa34c0c -->
+## Display a listing of the resource.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/Pagos" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/Pagos",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/Pagos`
+
+`HEAD importacionesv2/Pagos`
+
+
+<!-- END_bca548474dd6822c1bb40b708fa34c0c -->
+<!-- START_6b781e07415d8f2f4db387d28be530f7 -->
+## Show the form for creating a new resource.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/Pagos/create" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/Pagos/create",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/Pagos/create`
+
+`HEAD importacionesv2/Pagos/create`
+
+
+<!-- END_6b781e07415d8f2f4db387d28be530f7 -->
+<!-- START_a91fe6bae624b3550f95442c1dc27c02 -->
+## Store a newly created resource in storage.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/Pagos" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/Pagos",
+    "method": "POST",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+
+### HTTP Request
+`POST importacionesv2/Pagos`
+
+
+<!-- END_a91fe6bae624b3550f95442c1dc27c02 -->
+<!-- START_c88b1a1fd6966d005c2e398db1d5ea4c -->
+## Display the specified resource.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/Pagos/{Pago}" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/Pagos/{Pago}",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/Pagos/{Pago}`
+
+`HEAD importacionesv2/Pagos/{Pago}`
+
+
+<!-- END_c88b1a1fd6966d005c2e398db1d5ea4c -->
+<!-- START_92a73aa374c66511fe265af5a6f25e38 -->
+## Show the form for editing the specified resource.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/Pagos/{Pago}/edit" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/Pagos/{Pago}/edit",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/Pagos/{Pago}/edit`
+
+`HEAD importacionesv2/Pagos/{Pago}/edit`
+
+
+<!-- END_92a73aa374c66511fe265af5a6f25e38 -->
+<!-- START_30b19f91a477466e304de9d066705264 -->
+## Update the specified resource in storage.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/Pagos/{Pago}" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/Pagos/{Pago}",
+    "method": "PUT",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+
+### HTTP Request
+`PUT importacionesv2/Pagos/{Pago}`
+
+`PATCH importacionesv2/Pagos/{Pago}`
+
+
+<!-- END_30b19f91a477466e304de9d066705264 -->
+<!-- START_92240bdc47741289ef55f846b9f40174 -->
+## Remove the specified resource from storage.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/Pagos/{Pago}" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/Pagos/{Pago}",
+    "method": "DELETE",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+
+### HTTP Request
+`DELETE importacionesv2/Pagos/{Pago}`
+
+
+<!-- END_92240bdc47741289ef55f846b9f40174 -->
+<!-- START_3d34dcbad44eb3bc6a733d84a5458f9c -->
+## Display a listing of the resource.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/NacionalizacionCosteo" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/NacionalizacionCosteo",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/NacionalizacionCosteo`
+
+`HEAD importacionesv2/NacionalizacionCosteo`
+
+
+<!-- END_3d34dcbad44eb3bc6a733d84a5458f9c -->
+<!-- START_3a3af7518435748601ce120ff8aabc0f -->
+## Show the form for creating a new resource.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/NacionalizacionCosteo/create" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/NacionalizacionCosteo/create",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/NacionalizacionCosteo/create`
+
+`HEAD importacionesv2/NacionalizacionCosteo/create`
+
+
+<!-- END_3a3af7518435748601ce120ff8aabc0f -->
+<!-- START_a5e04544a01759ea8230e5ff722a23ea -->
+## Store a newly created resource in storage.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/NacionalizacionCosteo" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/NacionalizacionCosteo",
+    "method": "POST",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+
+### HTTP Request
+`POST importacionesv2/NacionalizacionCosteo`
+
+
+<!-- END_a5e04544a01759ea8230e5ff722a23ea -->
+<!-- START_cc1ec9eba23373df073a1e4dcc7989fa -->
+## Display the specified resource.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}`
+
+`HEAD importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}`
+
+
+<!-- END_cc1ec9eba23373df073a1e4dcc7989fa -->
+<!-- START_de0daa13a8f7ad8dd6573f93067379d7 -->
+## Show the form for editing the specified resource.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}/edit" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}/edit",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}/edit`
+
+`HEAD importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}/edit`
+
+
+<!-- END_de0daa13a8f7ad8dd6573f93067379d7 -->
+<!-- START_b48ed7da314a31ef5d054a0495d68e65 -->
+## Update the specified resource in storage.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}",
+    "method": "PUT",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+
+### HTTP Request
+`PUT importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}`
+
+`PATCH importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}`
+
+
+<!-- END_b48ed7da314a31ef5d054a0495d68e65 -->
+<!-- START_6760c0021576249cb9a33812268906ce -->
+## Remove the specified resource from storage.
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}",
+    "method": "DELETE",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+
+### HTTP Request
+`DELETE importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}`
+
+
+<!-- END_6760c0021576249cb9a33812268906ce -->
 <!-- START_041f1b0206e92e320cc5cfc02741add3 -->
 ## importacionesv2/search
 
@@ -3976,8 +5131,16 @@ $.ajax(settings).done(function (response) {
 
 
 <!-- END_afc14907478eea373e4f192712f43683 -->
-<!-- START_6ef00b6c5789cbf62faf87fc92b774ef -->
-## Funcion creada para el borrado de productos por ajax en el formulario importacion
+<!-- START_99d21afe70e24bd7e9f55554aee333b5 -->
+## borrar
+
+** Esta funcion se llama a traves de ajax usando la libreria jquery en el archivo importacionesV2.js
+** Su objetivo es validar si existen mas de un producto asociados a la importacion, y si si existen borrar el que
+** le indican por medio del request.
+
+1 -  Consulta la cantidad de productos asociados a la orden de importacion ya existente
+2 -  si la cantidad es mayor que 1 permite borrar el producto importacion cuyo id corresponda a lo que viene en request->obj
+3 -  si la cantidad es <= 1 entonces retorna mensaje que indica que no se puede borrar el producto.
 
 > Example request:
 
@@ -3991,7 +5154,7 @@ var settings = {
     "async": true,
     "crossDomain": true,
     "url": "http://localhost/importacionesv2/BorrarProductoImportacion",
-    "method": "GET",
+    "method": "POST",
     "headers": {
         "accept": "application/json"
     }
@@ -4002,21 +5165,12 @@ $.ajax(settings).done(function (response) {
 });
 ```
 
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
 
 ### HTTP Request
-`GET importacionesv2/BorrarProductoImportacion`
-
-`HEAD importacionesv2/BorrarProductoImportacion`
+`POST importacionesv2/BorrarProductoImportacion`
 
 
-<!-- END_6ef00b6c5789cbf62faf87fc92b774ef -->
+<!-- END_99d21afe70e24bd7e9f55554aee333b5 -->
 <!-- START_52b2e6ca8f58c150d7b270451434b419 -->
 ## Funcion creada para el borrado de la proforma asociada a la importacion por ajax
 
@@ -4099,268 +5253,6 @@ $.ajax(settings).done(function (response) {
 
 
 <!-- END_ea584b21249ec2ece806d77d35201ee9 -->
-<!-- START_14131c19baef1c9a218042cae1e76bfb -->
-## Display a listing of the resource.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/Embarque" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/Embarque",
-    "method": "GET",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
-
-### HTTP Request
-`GET importacionesv2/Embarque`
-
-`HEAD importacionesv2/Embarque`
-
-
-<!-- END_14131c19baef1c9a218042cae1e76bfb -->
-<!-- START_3283a64a8ceeed622428d098d5fdc1f4 -->
-## Show the form for creating a new resource.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/Embarque/create" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/Embarque/create",
-    "method": "GET",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
-
-### HTTP Request
-`GET importacionesv2/Embarque/create`
-
-`HEAD importacionesv2/Embarque/create`
-
-
-<!-- END_3283a64a8ceeed622428d098d5fdc1f4 -->
-<!-- START_01efb4a1b5872b9bfd0fa53d26c7d60c -->
-## Store a newly created resource in storage.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/Embarque" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/Embarque",
-    "method": "POST",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-
-### HTTP Request
-`POST importacionesv2/Embarque`
-
-
-<!-- END_01efb4a1b5872b9bfd0fa53d26c7d60c -->
-<!-- START_1dfc0dcfacf45b509f07a134ef1f00cd -->
-## Display the specified resource.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/Embarque/{Embarque}" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/Embarque/{Embarque}",
-    "method": "GET",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
-
-### HTTP Request
-`GET importacionesv2/Embarque/{Embarque}`
-
-`HEAD importacionesv2/Embarque/{Embarque}`
-
-
-<!-- END_1dfc0dcfacf45b509f07a134ef1f00cd -->
-<!-- START_5190236c186eacd22453ff9c20299d0b -->
-## Show the form for editing the specified resource.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/Embarque/{Embarque}/edit" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/Embarque/{Embarque}/edit",
-    "method": "GET",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
-
-### HTTP Request
-`GET importacionesv2/Embarque/{Embarque}/edit`
-
-`HEAD importacionesv2/Embarque/{Embarque}/edit`
-
-
-<!-- END_5190236c186eacd22453ff9c20299d0b -->
-<!-- START_249226c98a8987cdfa1ad7160e1ed0b0 -->
-## Update the specified resource in storage.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/Embarque/{Embarque}" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/Embarque/{Embarque}",
-    "method": "PUT",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-
-### HTTP Request
-`PUT importacionesv2/Embarque/{Embarque}`
-
-`PATCH importacionesv2/Embarque/{Embarque}`
-
-
-<!-- END_249226c98a8987cdfa1ad7160e1ed0b0 -->
-<!-- START_d6c0a258fd034fe47918861adedb5b4a -->
-## Remove the specified resource from storage.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/Embarque/{Embarque}" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/Embarque/{Embarque}",
-    "method": "DELETE",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-
-### HTTP Request
-`DELETE importacionesv2/Embarque/{Embarque}`
-
-
-<!-- END_d6c0a258fd034fe47918861adedb5b4a -->
 <!-- START_d4922deed3aac53059dfda0882158942 -->
 ## Show the form for creating a new resource.
 
@@ -4402,268 +5294,6 @@ $.ajax(settings).done(function (response) {
 
 
 <!-- END_d4922deed3aac53059dfda0882158942 -->
-<!-- START_bca548474dd6822c1bb40b708fa34c0c -->
-## Display a listing of the resource.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/Pagos" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/Pagos",
-    "method": "GET",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
-
-### HTTP Request
-`GET importacionesv2/Pagos`
-
-`HEAD importacionesv2/Pagos`
-
-
-<!-- END_bca548474dd6822c1bb40b708fa34c0c -->
-<!-- START_6b781e07415d8f2f4db387d28be530f7 -->
-## Show the form for creating a new resource.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/Pagos/create" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/Pagos/create",
-    "method": "GET",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
-
-### HTTP Request
-`GET importacionesv2/Pagos/create`
-
-`HEAD importacionesv2/Pagos/create`
-
-
-<!-- END_6b781e07415d8f2f4db387d28be530f7 -->
-<!-- START_a91fe6bae624b3550f95442c1dc27c02 -->
-## Store a newly created resource in storage.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/Pagos" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/Pagos",
-    "method": "POST",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-
-### HTTP Request
-`POST importacionesv2/Pagos`
-
-
-<!-- END_a91fe6bae624b3550f95442c1dc27c02 -->
-<!-- START_c88b1a1fd6966d005c2e398db1d5ea4c -->
-## Display the specified resource.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/Pagos/{Pago}" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/Pagos/{Pago}",
-    "method": "GET",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
-
-### HTTP Request
-`GET importacionesv2/Pagos/{Pago}`
-
-`HEAD importacionesv2/Pagos/{Pago}`
-
-
-<!-- END_c88b1a1fd6966d005c2e398db1d5ea4c -->
-<!-- START_92a73aa374c66511fe265af5a6f25e38 -->
-## Show the form for editing the specified resource.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/Pagos/{Pago}/edit" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/Pagos/{Pago}/edit",
-    "method": "GET",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
-
-### HTTP Request
-`GET importacionesv2/Pagos/{Pago}/edit`
-
-`HEAD importacionesv2/Pagos/{Pago}/edit`
-
-
-<!-- END_92a73aa374c66511fe265af5a6f25e38 -->
-<!-- START_30b19f91a477466e304de9d066705264 -->
-## Update the specified resource in storage.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/Pagos/{Pago}" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/Pagos/{Pago}",
-    "method": "PUT",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-
-### HTTP Request
-`PUT importacionesv2/Pagos/{Pago}`
-
-`PATCH importacionesv2/Pagos/{Pago}`
-
-
-<!-- END_30b19f91a477466e304de9d066705264 -->
-<!-- START_92240bdc47741289ef55f846b9f40174 -->
-## Remove the specified resource from storage.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/Pagos/{Pago}" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/Pagos/{Pago}",
-    "method": "DELETE",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-
-### HTTP Request
-`DELETE importacionesv2/Pagos/{Pago}`
-
-
-<!-- END_92240bdc47741289ef55f846b9f40174 -->
 <!-- START_ee7db095c69513443e57951338bf0d20 -->
 ## Show the form for creating a new resource.
 
@@ -4705,268 +5335,6 @@ $.ajax(settings).done(function (response) {
 
 
 <!-- END_ee7db095c69513443e57951338bf0d20 -->
-<!-- START_3d34dcbad44eb3bc6a733d84a5458f9c -->
-## Display a listing of the resource.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/NacionalizacionCosteo" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/NacionalizacionCosteo",
-    "method": "GET",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
-
-### HTTP Request
-`GET importacionesv2/NacionalizacionCosteo`
-
-`HEAD importacionesv2/NacionalizacionCosteo`
-
-
-<!-- END_3d34dcbad44eb3bc6a733d84a5458f9c -->
-<!-- START_3a3af7518435748601ce120ff8aabc0f -->
-## Show the form for creating a new resource.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/NacionalizacionCosteo/create" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/NacionalizacionCosteo/create",
-    "method": "GET",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
-
-### HTTP Request
-`GET importacionesv2/NacionalizacionCosteo/create`
-
-`HEAD importacionesv2/NacionalizacionCosteo/create`
-
-
-<!-- END_3a3af7518435748601ce120ff8aabc0f -->
-<!-- START_a5e04544a01759ea8230e5ff722a23ea -->
-## Store a newly created resource in storage.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/NacionalizacionCosteo" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/NacionalizacionCosteo",
-    "method": "POST",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-
-### HTTP Request
-`POST importacionesv2/NacionalizacionCosteo`
-
-
-<!-- END_a5e04544a01759ea8230e5ff722a23ea -->
-<!-- START_cc1ec9eba23373df073a1e4dcc7989fa -->
-## Display the specified resource.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}",
-    "method": "GET",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
-
-### HTTP Request
-`GET importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}`
-
-`HEAD importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}`
-
-
-<!-- END_cc1ec9eba23373df073a1e4dcc7989fa -->
-<!-- START_de0daa13a8f7ad8dd6573f93067379d7 -->
-## Show the form for editing the specified resource.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}/edit" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}/edit",
-    "method": "GET",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "error": "Unauthenticated."
-}
-```
-
-### HTTP Request
-`GET importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}/edit`
-
-`HEAD importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}/edit`
-
-
-<!-- END_de0daa13a8f7ad8dd6573f93067379d7 -->
-<!-- START_b48ed7da314a31ef5d054a0495d68e65 -->
-## Update the specified resource in storage.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}",
-    "method": "PUT",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-
-### HTTP Request
-`PUT importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}`
-
-`PATCH importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}`
-
-
-<!-- END_b48ed7da314a31ef5d054a0495d68e65 -->
-<!-- START_6760c0021576249cb9a33812268906ce -->
-## Remove the specified resource from storage.
-
-> Example request:
-
-```bash
-curl "http://localhost/importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}" \
--H "Accept: application/json"
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://localhost/importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}",
-    "method": "DELETE",
-    "headers": {
-        "accept": "application/json"
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-
-### HTTP Request
-`DELETE importacionesv2/NacionalizacionCosteo/{NacionalizacionCosteo}`
-
-
-<!-- END_6760c0021576249cb9a33812268906ce -->
 <!-- START_56b05d4e914f2a661f38d115023fc228 -->
 ## Show the form for creating a new resource.
 
@@ -5040,6 +5408,79 @@ $.ajax(settings).done(function (response) {
 
 
 <!-- END_2dba6f0ad9f6c3181bbd3055aafc52f4 -->
+<!-- START_0f19bc72ed4b30280c82a2a1bffde0ca -->
+## importacionesv2/GenerarExcelUAP
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/GenerarExcelUAP" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/GenerarExcelUAP",
+    "method": "GET",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "error": "Unauthenticated."
+}
+```
+
+### HTTP Request
+`GET importacionesv2/GenerarExcelUAP`
+
+`HEAD importacionesv2/GenerarExcelUAP`
+
+
+<!-- END_0f19bc72ed4b30280c82a2a1bffde0ca -->
+<!-- START_95a94cf063b9ec9b8b354563320d23ca -->
+## importacionesv2/ReporteUAP
+
+> Example request:
+
+```bash
+curl "http://localhost/importacionesv2/ReporteUAP" \
+-H "Accept: application/json"
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/importacionesv2/ReporteUAP",
+    "method": "POST",
+    "headers": {
+        "accept": "application/json"
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+
+### HTTP Request
+`POST importacionesv2/ReporteUAP`
+
+
+<!-- END_95a94cf063b9ec9b8b354563320d23ca -->
 <!-- START_1f64d87842e94ed2d0245b283a9f976c -->
 ## Show the form for creating a new resource.
 

@@ -25,12 +25,9 @@ use \Cache;
  */
 class TTipoLevanteController extends Controller
 {
-  /**
-  *DEFINICION DE VARIABLES GLOBALES A LA CLASE
-  */
+    #Variable titulo sirve para setear el titulo en el formulario generico
+    public $titulo = "TIPO DE LEVANTE";
 
-  #Variable titulo sirve para setear el titulo en el formulario generico
-  public $titulo = "TIPO DE LEVANTE";
     /**Array que representa los campos de la tabla, cada posicion corresponde a la siguiente informacion
     *[0]-> Nombre del campo en la tabla de la base de datos
     *[1]-> Tipo de dato del campo en la tabla de la base de datos
@@ -56,12 +53,9 @@ class TTipoLevanteController extends Controller
     public $messages = array(
         'tlev_nombre.required'       => 'Favor ingresar la descripcion del tipo de levante',
         );
-    /**
-  END DEFINICION DE VARIABLES GLOBALES A LA CLASE
-  */
 
 
-    /**
+  /**
   * index
   * Funcion que consulta todos los tipos de levante y los retorna a la vista resource/views/importacionesv2/index.blade.php
   *
@@ -124,34 +118,49 @@ class TTipoLevanteController extends Controller
     }
 
     /**
-    * Store a newly created resource in storage.
+    * store 
+    * 
+    * Esta funcion debe validar que no exista un registro con el mismo nombre de tipo de levante, y validar la obligatoriedad de los campos 
+    * y en caso de no encontrar ningun problema debe crear un nuevo tipo de levante en la tabla t_tipo_levante, luego redireccionar a la vista
+    * de consulta y mostrar mensaje de exitoso.
+    * 
+    * 1 - Asigno a la variable url la ruta de la vista de consulta <br>
+    * 2 - Asigno a la variable $validarExistencia la consulta a la tabla TTipoLevante donde el nombre del tipo de levante sea igual a uno ya 
+    * existente <br>
+    * 3 - Valido si la consulta trajo algun resultado, en caso de que si traiga resultado muestro mensaje de error <br>
+    * 4 - Creo un objeto nuevo del tipo de levante <br>
+    * 5 - Guardo la informacion que viene del formulario <br>
+    * 6 - Borro la cache <br>
+    * 7 - Genero mensaje de creacion exitosa y redirecciono a la vista de consulta <br>
     *
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
     */
     public function store(Request $request)
     {
-        //Genera la url de consulta
+        #1
         $url = url($this->strUrlConsulta);
-        //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
+        #2
         $validarExistencia = TTipoLevante::where('tlev_nombre', '=', "$request->tlev_nombre")->get();
+        #3
         if(count($validarExistencia) > 0){
-            //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
             return Redirect::to("$url/create")
             ->withErrors('El tipo de levante que intenta crear tiene la misma descripcion que un registro ya existente');
         }
-        //Crea el registro en la tabla origen mercancia
+        #4
         $ObjectCrear = new TTipoLevante;
         $ObjectCrear->tlev_nombre = strtoupper(Input::get('tlev_nombre'));
+        #5
         $ObjectCrear->save();
+        #6
         Cache::forget('tipolevante');
-        //Redirecciona a la pagina de consulta y muestra mensaje
+        #7
         Session::flash('message', 'El tipo de levante fue creada exitosamente!');
         return Redirect::to($url);
     }
 
     /**
-    * Display the specified resource.
+    * show
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
@@ -162,34 +171,53 @@ class TTipoLevanteController extends Controller
     }
 
     /**
-    * Show the form for editing the specified resource.
+    * edit
+    * 
+    * Retorna al usuario una vista con un formulario para editar un tipo de levante /resource/views/importacionesv2/edit.blade.php
+    * 
+    * 1 - Obtengo el id del tipo de levante que viene como parametro de la funcion y lo asigno a la variable $id <br>
+    * 2 - Obtengo el objeto del tipo de levante segun el id y lo asigno a la variable $objeto <br>
+    * 3 - Creo un array de arrays llamado $campos con los campos que voy a hacer render en el formulario <br>
+    * 4 - Asigno el titulo del formulario a la variable $titulo <br>
+    * 5 - Asigno la ruta de consulta a la variable de $url <br>
+    * 6 - Asigno la validacion javascript de la libreria JSVALIDATOR a la variable $validator <br>
+    * 7 - Asigno el name de la ruta de update a la variabe $route <br>
+    * 8 - Retorno la vista importacionesv2.edit <br>
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
     public function edit($id)
     {
-        //Id del registro que deseamos editar
+        #1
         $id = $id;
-        //Consulto el registro que deseo editar
+        #2
         $objeto = TTipoLevante::find($id);
-        //organizo el array que me sirve para mostrar el formulario de edicion
+        #3
         $campos =  array($this->id, $this->tlev_nombre);
-        //Titulo de la pagina
+        #4
         $titulo = "EDITAR ".$this->titulo;
-        //url de redireccion para consultar
+        #5
         $url = url($this->strUrlConsulta);
-        // Validaciones ajax
+        #6
         $validator = JsValidator::make($this->rules, $this->messages);
-        //url de redireccion para editar -- Name url correspondiente a method PUT|PATCH en comando route.list
-        //correspondiente a este controlador
+        #7
         $route = 'TipoLevante.update';
-
+        #8
         return view('importacionesv2.edit', compact('campos', 'url', 'titulo', 'validator', 'route', 'id' ,'objeto'));
     }
 
     /**
-    * Update the specified resource in storage.
+    * update
+    * 
+    * Su funcionalidad que actualizar un registro de la tabla t_tipo levante segun el id que se le entrege como parametro
+    * 
+    * 1 -  Asigna a la variable $url la ruta de consulta que apunta hacia el index de este crud <br>
+    * 2 -  Obtiene el objeto de la tabla t_tipo_levante y lo asigna a la variable $ObjectUpdate <br>
+    * 3 -  Valida que no exista otro registro con el mismo tlev_nombre, si existe alguno genera error y no permite editar el registro <br>
+    * 4 -  Si no existe ningun registro igual actualiza los campos y graba <br>
+    * 5 -  Borra la cache de esta tabla <br>
+    * 6 -  Redirecciona a la url de consulta con mensaje de exito <br>
     *
     * @param  \Illuminate\Http\Request  $request
     * @param  int  $id
@@ -197,42 +225,51 @@ class TTipoLevanteController extends Controller
     */
     public function update(Request $request, $id)
     {
-        //Genera la url de consulta
+        #1
         $url = url($this->strUrlConsulta);
-        //Consulto el registro a editar
+        #2
         $ObjectUpdate = TTipoLevante::find($id);
-        //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
+        #3
         $validarExistencia = TTipoLevante::where('tlev_nombre', '=', "$request->tlev_nombre")->first();
         if(count($validarExistencia) > 0 && $validarExistencia != $ObjectUpdate){
-            //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
             return Redirect::to("$url/$id/edit")
             ->withErrors('El tipo de levante que intenta editar tiene el mismo nombre que un registro ya existente');
         }
-        //Edita el registro en la tabla
+        #4
         $ObjectUpdate->tlev_nombre = strtoupper(Input::get('tlev_nombre'));
         $ObjectUpdate->save();
+        #5
         Cache::forget('tipolevante');
-        //Redirecciona a la pagina de consulta y muestra mensaje
+        #6
         Session::flash('message', 'El tipo de levante fue editado exitosamente!');
         return Redirect::to($url);
     }
 
     /**
-    * Remove the specified resource from storage.
+    * destroy
+    * 
+    * Su funcionalidad es borrar un registro de la tabla t_tipo_levante segun el id que le pases a la funcion
+    * 
+    * 1 -  Asigno a la variable $ObjectDestroy el objeto que deseo eliminar <br>
+    * 2 -  Borro el objeto <br>
+    * 3 -  Obtengo la url de consuta de tipo levante <br>
+    * 4 -  Borro la cache <br>
+    * 5 -  redirecciono a la vista de consulta <br>
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
     public function destroy($id)
     {
-        //Consulto objeto a borrar
+        #1
         $ObjectDestroy = TTipoLevante::find($id);
-        //Borro el objeto
+        #2
         $ObjectDestroy->delete();
-        //Obtengo url de redireccion
+        #3
         $url = url($this->strUrlConsulta);
+        #4
         Cache::forget('tipolevante');
-        // redirect
+        #5
         Session::flash('message', 'El tipo de levante fue borrado exitosamente!');
         return Redirect::to($url);
     }

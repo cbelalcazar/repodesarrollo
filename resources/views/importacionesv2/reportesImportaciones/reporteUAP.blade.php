@@ -11,12 +11,12 @@
 		</tr>
 		<tr>
 			<td align="center" colspan="2">Mes: </td>
-			<td align="center">Enero/2017</td>
+			<td align="center">{{$mes}}</td>
 			<td colspan="9"></td>
 		</tr>
 		<tr>
 			<td align="center" colspan="2">Semana: </td>
-			<td align="center">01-09 Enero</td>
+			<td align="center">{{$semana}}</td>
 			<td colspan="9"></td>
 		</tr>
 		<tr>

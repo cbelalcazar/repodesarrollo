@@ -10,7 +10,10 @@ use Redirect;
 class TPermisoImpmid
 {
     /**
-     * Handle an incoming request.
+     * Validar permisos de usuario
+     * 
+     * Revisa todos los request que se realizen hacia el grupo de rutas importacionesV2 y antes de dar acceso a la funcion validar que 
+     * tenga permisos en la tabla
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next

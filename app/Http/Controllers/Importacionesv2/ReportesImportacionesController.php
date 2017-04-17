@@ -41,6 +41,7 @@ class ReportesImportacionesController extends Controller
 
   
         $this->titulosTabla = array ('Estado', 'Consecutivo', 'Proveedor', 'Productos', 'Orden proveedor', 'Valor USD', 'Factura No.', 'Valor FOB USD', 'Doc. transporte', 'ETD', 'ETA', 'Puerto de embarque', 'Valor euros', 'Giro anticipo', 'Fecha anticipo', 'Giro saldo total', 'Fecha saldo total', 'Fecha legalizacion', 'Licencia importacion No.', 'Fecha factura', 'TRM liquidacion factura', 'Factura en contabilidad', 'Recibo doc. originales', 'Envio dctos A.A', 'Envio ficha tecnica A.A', 'Envio lista empaque', 'levante', 'Retiro puerto', 'Envio ASN - WMS', 'Llegada BESA', 'Recibo lista emp', 'Envio liquidacion y costeo', 'No. Comex', 'Fecha entrada al sistema', 'Origen de la mercancia', 'Tipo de carga (FCL / LCL)', 'Numero de contenedor', 'Volumen (CBM)', 'Cantidad de CTNS', 'Puerto de embarque', 'Embarcador', 'Linea maritima', 'Agencia de aduanas', 'Transporte Terrestre', 'No. declaracion', 'Vr. arancel', 'Vr. iva', 'Tasa dec imp', 'Factor importacion total', 'Factor importacion logistico', 'Solicitud de booking', 'Confirmacion de booking', 'Entrega del proveedor', 'Pre-inspeccion', 'Tipo de levante', 'Control posterior (Pto - planta)', 'Indicador transito internacional', 'Dias transito', 'Dias NAC SIA', 'Dias retiro de puerto', 'Dias para (ETD)', 'Dias legalizacion', 'Dias ficha tec. antes eta', 'Datos', 'Observaciones');
+        
         $contenidoTabla = array();
 
         foreach ($importacionConsulta as $key => $value) {
@@ -89,7 +90,7 @@ class ReportesImportacionesController extends Controller
         array_push($contenidoTabla, $contenidoFila);
     }
     $this->tabla = $contenidoTabla;
-     return view('importacionesv2.reportesImportaciones.reporteOrdenes', array('tabla' => $this->tabla, 'titulosTabla' => $this->titulosTabla));
+     // return view('importacionesv2.reportesImportaciones.reporteOrdenes', array('tabla' => $this->tabla, 'titulosTabla' => $this->titulosTabla));
 
     Excel::create('ReporteImportacion', function($excel) {
 
@@ -161,8 +162,9 @@ public function GenerarExcelUAP(){
 public function ReporteUAP(Request $request){
   $from = Carbon::parse($request->desde)->format('Y-m-d');
   $to = Carbon::parse($request->hasta)->format('Y-m-d');
-  $declaracion = TDeclaracion::with('nacionalizacion.importacion.proveedor', 'nacionalizacion.tiponacionalizacion', 'admindianDeclaracion')->whereBetween('decl_fecha_legaliza_giro', array($from, $to))->get();
-
+  $mes = Carbon::parse($request->desde)->format('m/Y');
+  $semana = Carbon::parse($request->desde)->format('d/m/Y') ." - ". Carbon::parse($request->hasta)->format('d/m/Y');
+  $declaracion = TDeclaracion::with('nacionalizacion.importacion.proveedor', 'nacionalizacion.tiponacionalizacion', 'admindianDeclaracion')->whereBetween('decl_fecha_levante', array($from, $to))->get();
   $groupDeclaraciones = array();
   $array = array();
   $numero = 0;
@@ -252,7 +254,7 @@ public function ReporteUAP(Request $request){
     array_push($totalArray, $valorTotales);
   }
 
-   $this->variables =  compact('groupDeclaraciones','arancelesTotal','ivaTotal','otrosTotal','totalArray','manualesIva','automaticasIva','sumatodasIva','manualesArancel','automaticasArancel','sumatodasArancel','manualesOtros','automaticasOtros','sumatodasOtros','manualesTotal','automaticasTotal','sumatodasTotal');
+   $this->variables =  compact('groupDeclaraciones','arancelesTotal','ivaTotal','otrosTotal','totalArray','manualesIva','automaticasIva','sumatodasIva','manualesArancel','automaticasArancel','sumatodasArancel','manualesOtros','automaticasOtros','sumatodasOtros','manualesTotal','automaticasTotal','sumatodasTotal', 'mes', 'semana');
 
   Excel::create('ReporteUAP', function($excel) {
 
