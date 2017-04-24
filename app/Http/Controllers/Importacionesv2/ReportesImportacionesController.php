@@ -189,7 +189,7 @@ class ReportesImportacionesController extends Controller
    /**
      * GenerarExcelUAP
      * 
-     * Su funcion es mostrar una vista que permita generar el reporte UAP en excel.
+     * Su funcion es mostrar una vista que permita generar el reporte UAP con un rango de fechas en excel.
      *
      * @return \Illuminate\Http\Response
      */
@@ -199,6 +199,21 @@ class ReportesImportacionesController extends Controller
     return view('importacionesv2.reportesImportaciones.consultaUAP', 
       compact('url', 'titulo'));
   }
+
+     /**
+     * GenerarReporteBimestral
+     * 
+     * Su funcion es mostrar una vista que permita generar el reporte bimestral con un rango de fechas en excel.
+     *
+     * @return \Illuminate\Http\Response
+     */
+   public function GenerarReporteBimestral(){
+    $url = route('ReporteBimestral');
+    $titulo = "GENERAR REPORTE BIMESTRAL POR FECHAS";
+    return view('importacionesv2.reportesImportaciones.consultaUAP', 
+      compact('url', 'titulo'));
+  }
+
 
   /**
      * ReporteUAP
@@ -313,6 +328,49 @@ class ReportesImportacionesController extends Controller
 
     })->download('xls');
   }
+
+
+   /**
+     * ReporteBimestral
+     * 
+     * Esta funcion debe retornar al usuario un excel que sirve como reporte bimestral de las declaraciones de importación
+     *
+     * @return \Illuminate\Http\Response
+     */
+  public function ReporteBimestral(Request $request){
+    # Captura las fechas que el usuario ingreso en el formulario
+    $from = Carbon::parse($request->desde)->format('Y-m-d');
+    $to = Carbon::parse($request->hasta)->format('Y-m-d');
+    //obtiene el mes de la fecha desde
+    $mes = Carbon::parse($request->desde)->format('m');
+
+    //Consulta las declaraciones de importacion
+    $declaracion = TDeclaracion::with('nacionalizacion.importacion.proveedor', 'nacionalizacion.tiponacionalizacion', 'admindianDeclaracion', 'nacionalizacion.importacion.pagosimportacion','nacionalizacion.importacion.estado')->whereBetween('decl_fecha_levante', array($from, $to))->get();
+
+    // pone la consulta y el mes en la variable global variables, para pasarsela a la libreria excel  
+    $this->variables =  compact('declaracion', 'mes');
+    // dd($this->variables);
+
+    // return view('importacionesv2.reportesImportaciones.ReporteBimestral', $this->variables);
+    // ejecuta la libreria de excel y le pasa la informacion
+    Excel::create('ReporteBimestral', function($excel) {
+
+      $excel->sheet('Hoja 1', function($sheet) {
+        //Acomoda todos las celdas combinadas
+        $sheet->mergeCells('A1:C4');
+        $sheet->mergeCells('D1:H2');
+        $sheet->mergeCells('D3:H4');
+        $sheet->mergeCells('I1:J1');
+        $sheet->mergeCells('I2:J2');
+        $sheet->mergeCells('I3:J3');
+        $sheet->mergeCells('I4:J4');
+
+        $sheet->loadView('importacionesv2.reportesImportaciones.ReporteBimestral', $this->variables);
+      });
+
+    })->download('xlsx');
+  }
+
 
 
 }
