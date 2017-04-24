@@ -6,6 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
 
+/**
+ * @resource TLineaMaritima
+ * 
+ * Creado por Carlos Belalcazar
+ * 
+ * Analista desarrollador de software Belleza Express
+ * 
+ * 24/04/2017
+ */
 class TLineaMaritima extends Model
 {
     use SoftDeletes;

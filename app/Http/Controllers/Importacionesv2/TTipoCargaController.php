@@ -11,13 +11,18 @@ use Session;
 use JsValidator;
 use \Cache;
 
-/**
- * Controlador TTipoCargaController
- * Creado por Carlos Belalcazar
- * Analista desarrollador de software Belleza Express
- * 22/02/2017
- */
 
+/**
+ * @resource TTipoCargaController
+ *
+ * Controlador creado para el crud de tipo de carga
+ * 
+ * Creado por Carlos Belalcazar
+ * 
+ * Analista desarrollador de software Belleza Express
+ * 
+ * 24/04/2017
+ */
 class TTipoCargaController extends Controller
 {
 
@@ -56,7 +61,9 @@ class TTipoCargaController extends Controller
   //---------------------------------------------------------------------------------------------------------
 
   /**
-  * Display a listing of the resource.
+  * index
+  * 
+  * Esta funcion debe retornar al usuario una vista de consulta de todos los tipos de carga existentes
   *
   * @return \Illuminate\Http\Response
   */
@@ -97,7 +104,11 @@ class TTipoCargaController extends Controller
   }
 
   /**
-  * Show the form for creating a new resource.
+  * create
+  * 
+  * Esta funcion debe retornar al usuario un formulario de creacion para la tabla t_tipo_carga
+  * 
+  * Esta funcion debe poner en el formulario de creacion la funcion javascript de la libreria jsvalidator para hacer las validaciones a traves de ajax
   *
   * @return \Illuminate\Http\Response
   */
@@ -116,7 +127,15 @@ class TTipoCargaController extends Controller
   }
 
   /**
-  * Store a newly created resource in storage.
+  * store
+  * 
+  * esta funcion recibe como parametro el request que tiene toda la informacion del formulario de creacion
+  * 
+  * debe validar que no exista ningun registro en la tabla t_tipo_carga con la misma tcar_descripcion
+  * 
+  * debe crear un registro en la tabla tcar_descripcion 
+  * 
+  * debe redireccionar a la funcion index y mostrar mensaje de exito
   *
   * @param  \Illuminate\Http\Request  $request
   * @return \Illuminate\Http\Response
@@ -143,7 +162,7 @@ class TTipoCargaController extends Controller
   }
 
   /**
-  * Display the specified resource.
+  * show
   *
   * @param  int  $id
   * @return \Illuminate\Http\Response
@@ -154,7 +173,13 @@ class TTipoCargaController extends Controller
   }
 
   /**
-  * Show the form for editing the specified resource.
+  * edit
+  * 
+  * esta funcion recibe como parametro el id del registro que deseo editar en la tabla t_tipo_carga
+  * 
+  * debe retornar al usuario un formulario para realizar la actualizacion de los datos de un registro de la tabla t_tipo_carga
+  * 
+  * 
   *
   * @param  int  $id
   * @return \Illuminate\Http\Response
@@ -181,7 +206,16 @@ class TTipoCargaController extends Controller
   }
 
   /**
-  * Update the specified resource in storage.
+  * update
+  * 
+  * esta funcion recibe como parametro el id del registro que deseo editar en la tabla t_tipo_carga
+  * y el request con la informacion 
+  * 
+  * debe actualizar un registro en la tabla t_tipo_carga 
+  * 
+  * debe validar que no exista un registr con la misma tcar_descripcion
+  * 
+  * debe redireccionar a la funcion index y mostrar mensaje de actualizacion exitosa
   *
   * @param  \Illuminate\Http\Request  $request
   * @param  int  $id
@@ -210,7 +244,11 @@ class TTipoCargaController extends Controller
   }
 
   /**
-  * Remove the specified resource from storage.
+  * destroy
+  * 
+  * esta funcion recibe como parametro el id de el registro que deseo eliminar de la tabla t_tipo_carga
+  * 
+  * debe borrar el registro usando softdeletes
   *
   * @param  int  $id
   * @return \Illuminate\Http\Response
@@ -223,6 +261,7 @@ class TTipoCargaController extends Controller
           $ObjectDestroy->delete();
           //Obtengo url de redireccion
           $url = url($this->strUrlConsulta);
+          //borro la cache del tipo de carga
           Cache::forget('tipocarga');
           // redirect
           Session::flash('message', 'El tipo de carga fue borrado exitosamente!');

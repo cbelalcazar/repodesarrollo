@@ -8,10 +8,22 @@ use Carbon\Carbon;
 use Session;
 use Redirect;
 
+
+/**
+ * @resource TProductoImportacionController
+ *
+ * Controlador creado para el proceso alertas de producto importacion
+ * 
+ * Creado por Carlos Belalcazar
+ * 
+ * Analista desarrollador de software Belleza Express
+ * 
+ * 24/04/2017
+ */
 class TProductoImportacionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * index
      *
      * @return \Illuminate\Http\Response
      */
@@ -21,7 +33,7 @@ class TProductoImportacionController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * create
      *
      * @return \Illuminate\Http\Response
      */
@@ -31,7 +43,7 @@ class TProductoImportacionController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * store
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -42,7 +54,7 @@ class TProductoImportacionController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * show
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -53,7 +65,7 @@ class TProductoImportacionController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * edit
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -88,7 +100,15 @@ class TProductoImportacionController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * update
+     * 
+     * Esta funcion recibe el request con la informacion del producto importacion y el id del producto importacion
+     * 
+     * Debe actualizar el producto importacion con la informacion que se ingresa en el sistema
+     * 
+     * Debe redireccionar a la pagina de consulta de alertas
+     * 
+     * 
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -134,7 +154,7 @@ class TProductoImportacionController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * destroy
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response

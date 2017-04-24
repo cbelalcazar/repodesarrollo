@@ -21,6 +21,18 @@ use Illuminate\Http\Request;
 use Auth;
 use App\Models\Importacionesv2\TPermisosImp;
 
+
+/**
+ * @resource TNacionalizacionImportacionController
+ *
+ * Controlador creado para el proceso de nacionalizacion y costeo
+ * 
+ * Creado por Carlos Belalcazar
+ * 
+ * Analista desarrollador de software Belleza Express
+ * 
+ * 24/04/2017
+ */
 class TNacionalizacionImportacionController extends Controller
 {
   //REGLAS DE VALIDACION EJECUTADOS ANTES DE GRABAR EL OBJETO 

@@ -11,13 +11,19 @@ use Session;
 use JsValidator;
 use \Cache;
 
-/**
- * Controlador TTipoContenedorController
- * Creado por Carlos Belalcazar
- * Analista desarrollador de software Belleza Express
- * 22/02/2017
- */
 
+
+/**
+ * @resource TTipoContenedorController
+ *
+ * Controlador creado para el crud de tipo de contenedor
+ * 
+ * Creado por Carlos Belalcazar
+ * 
+ * Analista desarrollador de software Belleza Express
+ * 
+ * 24/04/2017
+ */
 class TTipoContenedorController extends Controller
 {
 
@@ -57,7 +63,9 @@ class TTipoContenedorController extends Controller
 
 
     /**
-    * Display a listing of the resource.
+    * index
+    * 
+    * Esta funcion debe retornar al usuario una vista con todos los registros de la tabla t_tipo_contenedor
     *
     * @return \Illuminate\Http\Response
     */
@@ -98,7 +106,9 @@ class TTipoContenedorController extends Controller
     }
 
     /**
-    * Show the form for creating a new resource.
+    * create
+    * 
+    * esta funcio debe retornar al usuario un formulario de creacion para la tabla t_tipo_contenedor
     *
     * @return \Illuminate\Http\Response
     */
@@ -117,7 +127,15 @@ class TTipoContenedorController extends Controller
     }
 
     /**
-    * Store a newly created resource in storage.
+    * store
+    * 
+    * Esta funcion recibe como parametro el request el cual contiene toda la informacion diligenciada por el usuario en el formulario de creacion
+    * 
+    * debe validar que no exista un registro con la misma tcont_descripcion
+    * 
+    * debe crear un registro en la tabla t_tipo_contenedor
+    * 
+    * debe redireccionar a la funcion index con un mensaje de creacion exitosa
     *
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
@@ -144,7 +162,7 @@ class TTipoContenedorController extends Controller
     }
 
     /**
-    * Display the specified resource.
+    * show
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
@@ -155,7 +173,11 @@ class TTipoContenedorController extends Controller
     }
 
     /**
-    * Show the form for editing the specified resource.
+    * edit
+    * 
+    * Esta funcion recibe como parametro el id de un registro de la tabla t_tipo contendor
+    * 
+    * debe consultar el tipo contenedor a editar y retornar al usuario un formulario para actualizar el registro
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
@@ -182,7 +204,15 @@ class TTipoContenedorController extends Controller
     }
 
     /**
-    * Update the specified resource in storage.
+    * update
+    * 
+    * Esta funcion recibe como parametro el request con toda la informacion del formulario de actuaalizacion y el id del registro a actualizar
+    * 
+    * debe validar que no exista un registro con la misma tcont_descripcion
+    * 
+    * debe actualizar el registro en la tabla t_tipo_contenedor
+    * 
+    * debe redireccionar a la vista index y mostrar un mesnsaje de actualizacion exitosa
     *
     * @param  \Illuminate\Http\Request  $request
     * @param  int  $id
@@ -211,7 +241,13 @@ class TTipoContenedorController extends Controller
     }
 
     /**
-    * Remove the specified resource from storage.
+    * destroy
+    * 
+    * recibe como parametro el id de el t_tipo_contenedor a eliminar
+    * 
+    * debe borrar un registro de la tabla t_tipo contenedor usando softdeletes
+    * 
+    * debe redireccionar a la vista index con el mensaje de borrado exitoso
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response

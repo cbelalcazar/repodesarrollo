@@ -165,7 +165,7 @@ class TPagoImportacionController extends Controller
 }
 
     /**
-     * Display the specified resource.
+     * show
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -176,7 +176,13 @@ class TPagoImportacionController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * edit
+     * 
+     * Esta funcion recibe el id de el pago importacion que deseo editar
+     * 
+     * Esta funcion debe retornar al usuario un formulario para editar un registro de la tabla pago importacion
+     * 
+     * Debe validar los permisos de usuario
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -220,7 +226,15 @@ class TPagoImportacionController extends Controller
    }
 
     /**
-     * Update the specified resource in storage.
+     * update
+     * 
+     * Esta funcion recibe como parametros el request con el contenido del formulario pago_importacion y el id de la importacion
+     * 
+     * Debe actualizar un registro de la tabla pago importacion
+     * 
+     * Debe validar la obligatoriedad de los campos segun las reglas de validacion declaradas como variables globales
+     * 
+     * 
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -284,7 +298,7 @@ class TPagoImportacionController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * destroy
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response

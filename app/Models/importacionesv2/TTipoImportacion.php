@@ -6,11 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
 
+
 /**
- * Class TTipoImportacion
+ * @resource TTipoImportacion
+ * 
  * Creado por Carlos Belalcazar
+ * 
  * Analista desarrollador de software Belleza Express
- * 22/02/2017
+ * 
+ * 24/04/2017
  */
 class TTipoImportacion extends Model
 {

@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
 
 /**
- * Class TContenedorEmbarque
+ * @resource TContenedorEmbarque
+ * 
  * Creado por Carlos Belalcazar
+ * 
  * Analista desarrollador de software Belleza Express
- * 22/02/2017
+ * 
+ * 24/04/2017
  */
 class TContenedorEmbarque extends Model
 {

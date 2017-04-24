@@ -11,13 +11,18 @@ use Session;
 use JsValidator;
 use \Cache;
 
-/**
- * Controlador TTipoImportacionController
- * Creado por Carlos Belalcazar
- * Analista desarrollador de software Belleza Express
- * 22/02/2017
- */
 
+/**
+ * @resource TTipoImportacionController
+ *
+ * Controlador creado para el crud de tipo importacion
+ * 
+ * Creado por Carlos Belalcazar
+ * 
+ * Analista desarrollador de software Belleza Express
+ * 
+ * 24/04/2017
+ */
 class TTipoImportacionController extends Controller
 {
     //---------------------------------------------------------------------------------------------------------
@@ -56,7 +61,9 @@ class TTipoImportacionController extends Controller
 
 
     /**
-    * Display a listing of the resource.
+    * index
+    * 
+    * retorna al usuario un formulario con todos los tipos de imporacion existentes
     *
     * @return \Illuminate\Http\Response
     */
@@ -97,7 +104,9 @@ class TTipoImportacionController extends Controller
     }
 
     /**
-    * Show the form for creating a new resource.
+    * create
+    * 
+    * debe retornar al usuario un formulario de creacion para la tabla t_tipo_importacion
     *
     * @return \Illuminate\Http\Response
     */
@@ -116,7 +125,15 @@ class TTipoImportacionController extends Controller
     }
 
     /**
-    * Store a newly created resource in storage.
+    * store
+    * 
+    * recibe como parametro el request con la informacion del formulario de creacion
+    * 
+    * debe validar que no exista un registro en la tabla t_tipo_importacion con el mismo timp_nombre
+    * 
+    * debe crear un registro en la tabla t_tipo_importacion
+    * 
+    * debe redireccionar a la funcion del index con un mensaje de creacion exitosa
     *
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
@@ -143,7 +160,7 @@ class TTipoImportacionController extends Controller
     }
 
     /**
-    * Display the specified resource.
+    * show
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
@@ -154,7 +171,13 @@ class TTipoImportacionController extends Controller
     }
 
     /**
-    * Show the form for editing the specified resource.
+    * edit
+    * 
+    * Recibe como parametro el id del tipo de importacion que desea actualizar
+    * 
+    * debe retornar al usuario un formulario de actualizacion del registro con el id correspondiente
+    * 
+    * debe imprimir la funcion javascript de la libreria jsvalidator en el formulario para hacer las validaciones ajax 
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
@@ -181,7 +204,15 @@ class TTipoImportacionController extends Controller
     }
 
     /**
-    * Update the specified resource in storage.
+    * update
+    * 
+    * esta funcion  recibe como parametro el request con toda la informacion del formulario de actualizacion
+    * 
+    * debe validar que no exista ningun registro con el mismo timp_nombre
+    * 
+    * debe actualizar un registro en la tabla t_tipo_importacion 
+    * 
+    * debe redireccionar a la funcion index y mostrar un mensaje de actualizacion exitosa
     *
     * @param  \Illuminate\Http\Request  $request
     * @param  int  $id
@@ -210,7 +241,13 @@ class TTipoImportacionController extends Controller
     }
 
     /**
-    * Remove the specified resource from storage.
+    * destroy
+    * 
+    * Esta funcion recibe como parametro el id de el registro de la tabla t_tipo_impórtacion que deseo eliminar
+    * 
+    * debe eliminar el registro usando softdelete
+    * 
+    * debe redireccionar a la funcion index con mensaje de borrado exitoso
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response

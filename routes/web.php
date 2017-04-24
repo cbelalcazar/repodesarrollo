@@ -25,10 +25,10 @@ Route::group(['middleware' => ['auth']], function () {
     return redirect(env('APPV1_URL'));
   });
 
-/*
+/**
  * Creado por Carlos Belalcazar
  * Analista desarrollador de software Belleza Express
- * Rutas para el aplicativo importacionesv2
+ * Rutas para importacionesv2
  * 22/02/2017
 */
 Route::group(array('prefix' => 'importacionesv2', 'middleware' => []), function () {

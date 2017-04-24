@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
 
 /**
- * Class TMetrica
+ * @resource TMetrica
+ * 
  * Creado por Carlos Belalcazar
+ * 
  * Analista desarrollador de software Belleza Express
- * 22/02/2017
+ * 
+ * 24/04/2017
  */
 class TMetrica extends Model
 {

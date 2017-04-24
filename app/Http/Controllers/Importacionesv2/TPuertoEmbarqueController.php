@@ -11,13 +11,18 @@ use Session;
 use JsValidator;
 use \Cache;
 
-/**
- * Controlador TPuertoEmbarqueController
- * Creado por Carlos Belalcazar
- * Analista desarrollador de software Belleza Express
- * 22/02/2017
- */
 
+/**
+ * @resource TPuertoEmbarqueController
+ *
+ * Controlador creado para el crud de puerto de embarque
+ * 
+ * Creado por Carlos Belalcazar
+ * 
+ * Analista desarrollador de software Belleza Express
+ * 
+ * 24/04/2017
+ */
 class TPuertoEmbarqueController extends Controller
 {
     //---------------------------------------------------------------------------------------------------------
@@ -68,7 +73,10 @@ class TPuertoEmbarqueController extends Controller
 
 
     /**
-    * Display a listing of the resource.
+    * index
+    * 
+    * Esta funcion debe retornar una vista de consulta de todos los puertos de embarque
+    * 
     *
     * @return \Illuminate\Http\Response
     */
@@ -109,7 +117,11 @@ class TPuertoEmbarqueController extends Controller
     }
 
     /**
-    * Show the form for creating a new resource.
+    * create
+    * 
+    * Esta funcion debe retornar al usuario un formulario para ingresar datos de el puerto de embarque
+    * 
+    * Esta funcion debe poner al formulario la funcion ajax con la libreria jsvalidator y hacer las validaciones por medio de ajax
     *
     * @return \Illuminate\Http\Response
     */
@@ -128,6 +140,16 @@ class TPuertoEmbarqueController extends Controller
 
     }
 
+
+     /**
+    * Puertoajax
+    * 
+    * Esta funcion debe retornar al usuario un formulario para ingresar datos de el puerto de embarque encima de una ventana modal llamado a traves de ajax desde el formulario de creación de la orden de importacion
+    * 
+    * Esta funcion debe poner al formulario la funcion ajax con la libreria jsvalidator y hacer las validaciones por medio de ajax
+    *
+    * @return \Illuminate\Http\Response
+    */
     public function Puertoajax()
     {
         //Array que contiene los campos que deseo mostrar en el formulario no debes tiene en cuenta timestamps ni softdeletes
@@ -146,7 +168,16 @@ class TPuertoEmbarqueController extends Controller
     }
 
     /**
-    * Store a newly created resource in storage.
+    * store
+    * 
+    * Esta funcion recibe por el request toda la informacion del formulario de creacion de puertos de embarque.
+    * 
+    * Debe validar que no exista un registro con el mismo puem_nombre
+    * 
+    * Esta funcion debe crear un  nuevo registro en la tabla puerto de embarque
+    * 
+    * Debe retornar al usuario un mensaje informando que la creacion del registro fue exitosa   * 
+    * 
     *
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
@@ -174,7 +205,9 @@ class TPuertoEmbarqueController extends Controller
     }
 
       /**
-    * Store a newly created resource in storage.
+    * storeAjax
+    * 
+    * Guarda un registro en la tabla puerto de embarque que se manda a crear por medio de una peticion ajax
     *
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
@@ -209,7 +242,7 @@ class TPuertoEmbarqueController extends Controller
 
 
     /**
-    * Display the specified resource.
+    * show
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
@@ -220,7 +253,11 @@ class TPuertoEmbarqueController extends Controller
     }
 
     /**
-    * Show the form for editing the specified resource.
+    * edit
+    * 
+    * Esta funcion recibe como parametro el id del puerto de embarque que deseo editar
+    * 
+    * Debe retornar al usuario el formulario para editar un registro de la tabla puerto de embarque
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
@@ -247,7 +284,17 @@ class TPuertoEmbarqueController extends Controller
     }
 
     /**
-    * Update the specified resource in storage.
+    * update
+    * 
+    * Esta funcion recibe como parametro la informacion del formulario de actualizacion
+    * 
+    * recibe tambien el id del puerto de embarque que se desea editar
+    * 
+    * debe validar que no exista ningun registro con el mismo puem_nombre
+    * 
+    * debe actualizar el registro en la tabla
+    * 
+    * debe redireccionar a la vista de consulta de puertos de embarque
     *
     * @param  \Illuminate\Http\Request  $request
     * @param  int  $id
@@ -277,7 +324,15 @@ class TPuertoEmbarqueController extends Controller
     }
 
     /**
-    * Remove the specified resource from storage.
+    * destroy
+    * 
+    * Esta funcion recibe como parametro el id del registro de la tabla t_puerto_embarque, que deseo eliminar
+    * 
+    * Debe eliminar un registro de la tabla t_puerto_embarque haciendo uso de softdelete
+    * 
+    * debe borrar la variable de cache 
+    * 
+    * debe redireccionar a la vista de consulta
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response

@@ -13,6 +13,17 @@ use Redirect;
 
 use Illuminate\Http\Request;
 
+/**
+ * @resource TTiemposTransitoController
+ *
+ * Controlador creado para el crud de tiempos de transito
+ * 
+ * Creado por Carlos Belalcazar
+ * 
+ * Analista desarrollador de software Belleza Express
+ * 
+ * 24/04/2017
+ */
 class TTiemposTransitoController extends Controller
 {
 
@@ -64,7 +75,9 @@ class TTiemposTransitoController extends Controller
   //---------------------------------------------------------------------------------------------
 
     /**
-     * Display a listing of the resource.
+     * index
+     * 
+     * Esta funcion debe retornar al usuario una vista con los tiempos de transito existentes
      *
      * @return \Illuminate\Http\Response
      */
@@ -105,7 +118,9 @@ class TTiemposTransitoController extends Controller
   }
 
     /**
-     * Show the form for creating a new resource.
+     * create
+     * 
+     * Esta funcion debe retornar al usuario un formulario de creacin para tiempos de transito
      *
      * @return \Illuminate\Http\Response
      */
@@ -174,7 +189,15 @@ class TTiemposTransitoController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * store
+     * 
+     * Esta funcion recibe por el request toda la informacion del formulario de creacioin de tiempos de transito
+     * 
+     * debe validar que no exista un tiempo de transito igual al que intenta crear
+     * 
+     * debe crear un registro en la tabla tiempo de transito
+     * 
+     * debe redireccionar a la vista de consulta de tiempos de transito
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -208,7 +231,7 @@ class TTiemposTransitoController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * show
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -219,7 +242,11 @@ class TTiemposTransitoController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * edit
+     * 
+     * Esta funcion recibe como parametro el id de el tiempo de transito que deseo actualizar
+     * 
+     * debe retornar al usuario un formulario para actualizar el tiempo de transito
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -296,7 +323,15 @@ class TTiemposTransitoController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * update
+     * 
+     * Esta funcion recibe el id del tiempo de transito que deseo editar y el request con toda la informacion correspondiente al tiempo de transito que deseo editar
+     * 
+     * debe actualizar la informacion del registro de la tabla t_tiempo_transito
+     * 
+     * debe validar que no exista un registro con las mismas caracteristicas en la tabla t_pago_importacion
+     * 
+     * debe retornar un mensaje de exito si el registro logra ser actualizado
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -330,7 +365,13 @@ class TTiemposTransitoController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * destroy
+     * 
+     * esta funcion recibe como parametro el id del tiempo de transito t_tiempo_transito que deseo elimitar
+     * 
+     * debe borrar el registro de la bd usando softdelete
+     * 
+     * debe retornar un mensaje de borrado exitoso
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
