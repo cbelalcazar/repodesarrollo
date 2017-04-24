@@ -23,7 +23,7 @@ use App\Models\Importacionesv2\TPermisosImp;
 
 class TNacionalizacionImportacionController extends Controller
 {
-         //REGLAS DE VALIDACION EJECUTADOS ANTES DE GRABAR EL OBJETO 
+  //REGLAS DE VALIDACION EJECUTADOS ANTES DE GRABAR EL OBJETO 
   public $rules = array('naco_importacion'=>'required',
     'naco_tipo_importacion'=>'required', 
     'naco_tipo_nacionalizacion'=>'required',
@@ -41,7 +41,7 @@ class TNacionalizacionImportacionController extends Controller
   
 
     /**
-     * Display a listing of the resource.
+     * index
      *
      * @return \Illuminate\Http\Response
      */
@@ -51,8 +51,14 @@ class TNacionalizacionImportacionController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
+     * create
+     * 
+     * retorna una vista con el formulario de creacion de la nacionalizacion y costeo
+     * 
+     * debe validar que no existan alertas en la tabla t_producto_importacion
+     * 
+     * debe consultar el id de la importacion y enviarlo al formulario de creacion
+     * 
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request, $id)
@@ -89,7 +95,23 @@ class TNacionalizacionImportacionController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * store
+     * 
+     * Esta vista recibe el request proveniente del formulario de creacion de la tabla t_nacionalizacion y costeo
+     * 
+     * debe validar todas las reglas definidas como variable global
+     * 
+     * debe comprobar que no exista una nacionalizacion asociada a la misma importacion
+     * 
+     * debe validar que venga al menos una declaracion de importacion asociada
+     * 
+     * debe crear un registro en la tabla de nacionalizacion y costeo
+     * 
+     * debe cambiar el estado de la orden de importacion
+     * 
+     * debe crear declaraciones de importacion asociadas a la nacionalizacion y costeo
+     * 
+     * debe retornar mensaje existoso y redireccionar a la vista de consulta importacion
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -308,7 +330,7 @@ return Redirect::to($urlConsulta);
 
 
     /**
-     * Display the specified resource.
+     * show
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -319,8 +341,12 @@ return Redirect::to($urlConsulta);
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
+     * edit
+     * 
+     * Esta funcion recibe el id de la nacionalizacion y costeo que desea editar
+     * 
+     * Debe retornar una vista con todas que permita editar un registro de la tabla nacionalizacion y costeo y multiples registros de la tabla tdeclaracion 
+     * 
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -409,7 +435,17 @@ return Redirect::to($urlConsulta);
 
 
     /**
-     * Update the specified resource in storage.
+     * update
+     * 
+     * Esta funcion recibe el id de la nacionalizacion y costeo que desea editar y el request donde viene toda la informacion de la nacionalizacion y las declaraciones de importacion
+     * 
+     * Debe actualizar el registro de la tabla nacionalizacion y costeo
+     * 
+     * Debe validar que exista almentos una declaracion asociada a la orden de importacion
+     * 
+     * Debe actualizar las declaraciones de importacion
+     * 
+     * Debe redireccionar a la vista de consulta 
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -617,7 +653,7 @@ return Redirect::to($url);
 }
 
     /**
-     * Remove the specified resource from storage.
+     * destroy
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -630,6 +666,9 @@ return Redirect::to($url);
 
 
  /**
+  * 
+  * consultas
+  * 
     * Funcion creada para generar las consultas de los combobox en las funciones create y edit
     *
     */

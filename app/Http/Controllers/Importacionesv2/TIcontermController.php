@@ -12,12 +12,16 @@ use JsValidator;
 use \Cache;
 
 /**
- * Controlador TIcontermController
+ * @resource TIcontermController
+ *
+ * Controlador creado para generar el crud de la tabla t_iconterm
+ * 
  * Creado por Carlos Belalcazar
+ * 
  * Analista desarrollador de software Belleza Express
- * 22/02/2017
+ * 
+ * 21/04/2017
  */
-
 class TIcontermController extends Controller
 {
 
@@ -57,7 +61,10 @@ class TIcontermController extends Controller
 
 
     /**
-    * Display a listing of the resource.
+    * index
+    * 
+    * Esta funcion muestra la tabla de consulta de todos los iconterm
+    * 
     *
     * @return \Illuminate\Http\Response
     */
@@ -98,7 +105,9 @@ class TIcontermController extends Controller
     }
 
     /**
-    * Show the form for creating a new resource.
+    * create
+    * 
+    * Esta funcion retorna al usuario el formulario de creacion para la tabla t_iconterm
     *
     * @return \Illuminate\Http\Response
     */
@@ -116,6 +125,14 @@ class TIcontermController extends Controller
         return view('importacionesv2.create', compact('titulo','campos' ,'url', 'validator'));
     }
 
+
+    /**
+    * Incontermajax
+    * 
+    * Esta funcion retorn al usuario el formulario de creacion y la url para realizar el store por ajax
+    *
+    * @return \Illuminate\Http\Response
+    */
     public function Incontermajax()
     {
         //Array que contiene los campos que deseo mostrar en el formulario no debes tiene en cuenta timestamps ni softdeletes
@@ -135,7 +152,9 @@ class TIcontermController extends Controller
 
 
     /**
-    * Store a newly created resource in storage.
+    * store
+    * 
+    * Esta funcion recibe la informacion del formulario de creacion a traves del objeto $request y crea un nuevo iconterm en la bd luego redirecciona al formulario de consulta
     *
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
@@ -161,6 +180,14 @@ class TIcontermController extends Controller
         return Redirect::to($url);
     }
 
+     /**
+    * storeAjax
+    * 
+    * Esta funcion recibe la informacion del formulario de creacion a traves del objeto $request y crea un nuevo iconterm en la bd por ajax y luego no redirecciona si no que retorna una respuesta a la funcion ajax que lo llamo
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @return \Illuminate\Http\Response
+    */
     public function storeAjax(Request $request)
     {
         //Genera la url de consulta
@@ -187,7 +214,7 @@ class TIcontermController extends Controller
     }
 
     /**
-    * Display the specified resource.
+    * show
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
@@ -198,7 +225,9 @@ class TIcontermController extends Controller
     }
 
     /**
-    * Show the form for editing the specified resource.
+    * edit
+    * 
+    * Esta funcion retorna un formulario para editar un registro de la tabla t_iconterm
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
@@ -225,7 +254,9 @@ class TIcontermController extends Controller
     }
 
     /**
-    * Update the specified resource in storage.
+    * update
+    * 
+    * Esta funcion recibe el formulario de edicion valida que no exista un iconterm con la misma descripcion, posteriormente, realiza la edicion del campo.
     *
     * @param  \Illuminate\Http\Request  $request
     * @param  int  $id
@@ -254,7 +285,9 @@ class TIcontermController extends Controller
     }
 
     /**
-    * Remove the specified resource from storage.
+    * destroy
+    * 
+    * Borra un registro segun el id entregado, de la tabla t_iconterm
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response

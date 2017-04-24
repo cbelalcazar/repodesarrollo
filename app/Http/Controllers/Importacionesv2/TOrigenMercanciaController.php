@@ -285,7 +285,4 @@ public function edit($id)
     return redirect($url);
 
   }
-  /** 
-  END FUNCIONES RESOURCE
-  */  
 }

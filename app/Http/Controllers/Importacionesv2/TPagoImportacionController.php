@@ -12,6 +12,17 @@ use Illuminate\Http\Request;
 use Auth;
 use App\Models\Importacionesv2\TPermisosImp;
 
+/**
+ * @resource TPagoImportacionController
+ *
+ * Controlador creado para el crud de pago importacion
+ * 
+ * Creado por Carlos Belalcazar
+ * 
+ * Analista desarrollador de software Belleza Express
+ * 
+ * 21/04/2017
+ */
 class TPagoImportacionController extends Controller
 {
 
@@ -33,7 +44,7 @@ class TPagoImportacionController extends Controller
 
 
     /**
-     * Display a listing of the resource.
+     * index
      *
      * @return \Illuminate\Http\Response
      */
@@ -43,7 +54,11 @@ class TPagoImportacionController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * create
+     * 
+     * Esta funcion recibe el $request y el $id que es el numero de la importacion a la que se va a asociar el proceso de pagos
+     * 
+     * Debe retornar una vista con un formulario de creación para la creacion de un registro en la tabla de pagos importacion
      *
      * @return \Illuminate\Http\Response
      */
@@ -64,7 +79,17 @@ class TPagoImportacionController extends Controller
   }
 
     /**
-     * Store a newly created resource in storage.
+     * store
+     * 
+     * esta funcion recibe el request del formulario de creacion del proceso de pagos
+     * 
+     * debe validar el formulario segun las reglas de validacion establecidas como variable global a la clase
+     * 
+     * debe validar que no exista algun registro en la tabla t_pago_importacion con el mismo numero de importacion
+     * 
+     * debe crear un registro en la tabla t_pago_importacion
+     * 
+     * debe redireccionar a la vista de consulta y mostrar un mensaje de creacion exitosa 
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -73,7 +98,6 @@ class TPagoImportacionController extends Controller
     {
         //  
         $urlConsulta = route('consultaFiltros'); 
-
 
         $url = url("importacionesv2/Pagos/create");
         $validator = Validator::make($request->all(), $this->rules, $this->messages);

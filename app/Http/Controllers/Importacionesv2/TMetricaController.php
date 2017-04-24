@@ -11,13 +11,18 @@ use Session;
 use JsValidator;
 use \Cache;
 
-/**
- * Controlador TMetricaController
- * Creado por Carlos Belalcazar
- * Analista desarrollador de software Belleza Express
- * 22/02/2017
- */
 
+/**
+ * @resource TMetricaController
+ *
+ * Controlador creado para el crud de metricas
+ * 
+ * Creado por Carlos Belalcazar
+ * 
+ * Analista desarrollador de software Belleza Express
+ * 
+ * 21/04/2017
+ */
 class TMetricaController extends Controller
 {
     //---------------------------------------------------------------------------------------------------------
@@ -60,7 +65,12 @@ class TMetricaController extends Controller
 
 
     /**
-    * Display a listing of the resource.
+    * index
+    * 
+    * Esta funcion debe retornar una vista con todas las metricas
+    * la vista debe redireccionar a crear, consultar nuevamente, actualizar alguna de las metricas 
+    * y eliminar
+    * 
     *
     * @return \Illuminate\Http\Response
     */
@@ -104,7 +114,11 @@ class TMetricaController extends Controller
     }
 
     /**
-    * Show the form for creating a new resource.
+    * create
+    * 
+    * Esta funcion debe retornar una vista con un formulario de creacion de metricas.
+    * 
+    * Debe poner las validaciones con la libreria jsValidator en javascript para que se hagan por ajax
     *
     * @return \Illuminate\Http\Response
     */
@@ -123,7 +137,13 @@ class TMetricaController extends Controller
     }
 
     /**
-    * Store a newly created resource in storage.
+    * store
+    * 
+    * Esta funcion recibe el request que proviene del formulario de creacion create
+    * 
+    * Su funcion es crear un nuevo registro en la tabla t_metrica
+    * 
+    * Debe validar que no exista una metrica con el mismo nombre 
     *
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
@@ -151,7 +171,7 @@ class TMetricaController extends Controller
     }
 
     /**
-    * Display the specified resource.
+    * show
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
@@ -162,7 +182,13 @@ class TMetricaController extends Controller
     }
 
     /**
-    * Show the form for editing the specified resource.
+    * edit
+    * 
+    * Esta funcion recibe el id de la metrica que se desea editar
+    * 
+    * Debe retornar una vista con un formulario y montar la informacion de la metrica en el formulario
+    * 
+    * Debe poner las validaciones ajax sobre el formulario
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
@@ -189,7 +215,15 @@ class TMetricaController extends Controller
     }
 
     /**
-    * Update the specified resource in storage.
+    * update
+    * 
+    * Esta funcion recibe el request del formulario de edicion y el id de la metrica a editar
+    * 
+    * Debe consultar y actualizar el registro de la tabla t_metrica
+    * 
+    * Debe validar que no exista una metrica con el mismo nombre
+    * 
+    * Debe redireccionar a la pagina de consulta
     *
     * @param  \Illuminate\Http\Request  $request
     * @param  int  $id
@@ -219,7 +253,13 @@ class TMetricaController extends Controller
     }
 
     /**
-    * Remove the specified resource from storage.
+    * destroy
+    * 
+    * Esta funcion recibe como parametro el id de la metrica que deseo borrar
+    * 
+    * Debe consultar la metrica y borrarla
+    * 
+    * debe redireccionar a la pagina de consulta (index) y mostrar mensaje de exito
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response

@@ -14,12 +14,16 @@ use JsValidator;
 use \Cache;
 
 /**
- * Controlador TCausalesDemoraController
+ * @resource TCausalesDemoraController
+ *
+ * Controlador creado para generar crud de causales demora
+ * 
  * Creado por Carlos Belalcazar
+ * 
  * Analista desarrollador de software Belleza Express
- * 22/02/2017
+ * 
+ * 21/04/2017
  */
-
 class TCausalesDemoraController extends Controller
 {
 
@@ -63,7 +67,9 @@ class TCausalesDemoraController extends Controller
 
 
   /**
-  * Display a listing of the resource.
+  * index
+  * 
+  * Retorna al usuario un formulario con la tabla que muestra todos los causales de demora existentes
   *
   * @return \Illuminate\Http\Response
   */
@@ -106,7 +112,9 @@ class TCausalesDemoraController extends Controller
   }
 
   /**
-  * Show the form for creating a new resource.
+  * create
+  * 
+  * Retorna al usuario un formulario para la creacion de un registro en la tabla t_causales_demora
   *
   * @return \Illuminate\Http\Response
   */
@@ -137,7 +145,9 @@ class TCausalesDemoraController extends Controller
   }
 
   /**
-  * Store a newly created resource in storage.
+  * store
+  * 
+  * Recibe la informacion del formulario de creacion y valida que no exista una casual de demora con el mismo nombre de la que intenta crea, posteriormente si no existe ninguna, crea un registro nuevo en la tabla t_causales_demora
   *
   * @param  \Illuminate\Http\Request  $request
   * @return \Illuminate\Http\Response
@@ -165,7 +175,7 @@ class TCausalesDemoraController extends Controller
   }
 
   /**
-  * Display the specified resource.
+  * show
   *
   * @param  int  $id
   * @return \Illuminate\Http\Response
@@ -176,7 +186,9 @@ class TCausalesDemoraController extends Controller
   }
 
   /**
-  * Show the form for editing the specified resource.
+  * edit
+  * 
+  * Retorna al usuario un formulario para editar un registro de la tabla t_causales_demora.
   *
   * @param  int  $id
   * @return \Illuminate\Http\Response
@@ -212,7 +224,9 @@ class TCausalesDemoraController extends Controller
   }
 
   /**
-  * Update the specified resource in storage.
+  * update
+  * 
+  * Recibe la informacion del formulario a traves del request para actualizar un registro de la tabla t_causales_demora
   *
   * @param  \Illuminate\Http\Request  $request
   * @param  int  $id
@@ -242,7 +256,9 @@ class TCausalesDemoraController extends Controller
   }
 
   /**
-  * Remove the specified resource from storage.
+  * destroy
+  * 
+  * Borra un registro de la tabla t_causales demora, segun el id que se le pasa a la funcion.
   *
   * @param  int  $id
   * @return \Illuminate\Http\Response

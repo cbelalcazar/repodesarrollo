@@ -29,10 +29,15 @@ use App\Models\Importacionesv2\TPermisosImp;
 
 
 /**
- * Controlador TImportacionController
+ * @resource TImportacionController
+ *
+ * Controlador creado para el proceso de importacion
+ * 
  * Creado por Carlos Belalcazar
+ * 
  * Analista desarrollador de software Belleza Express
- * 22/02/2017
+ * 
+ * 21/04/2017
  */
 class TImportacionController extends Controller
 {
@@ -59,12 +64,18 @@ class TImportacionController extends Controller
   //Name de la url de consulta la uso para no redundar este string en mis funciones
   public $strUrlConsulta = 'importacionesv2/Importacion';
 
+  
+/**
+* __construct
+ *
+ * @return \Illuminate\Http\Response
+ */
   public function __construct()
   {
     $this->middleware('ImpMid')->only(['cerrarOrden']);
-}
+  }
     /**
-    * Display a listing of the resource.
+    * index
     *
     * @return \Illuminate\Http\Response
     */
@@ -73,8 +84,11 @@ class TImportacionController extends Controller
         //
     }
 
-    /**
-    * Muestra el formulario para la creadcion de un nuevo proceso de importacion
+   /**
+    
+    * create
+    * 
+    * Muestra el formulario para la creaacion de un nuevo proceso de importacion
     *
     * @return \Illuminate\Http\Response
     */
@@ -106,8 +120,6 @@ class TImportacionController extends Controller
             $consecutivo = intval($numero[0])+1;
 
         }
-
-
         $imp_consecutivo = "$consecutivo/" .$year;
         //retorna la informacion a la vista create
         return view('importacionesv2.importacionTemplate.createImportacion',
@@ -121,7 +133,19 @@ class TImportacionController extends Controller
     }
 
     /**
-    * Store a newly created resource in storage.
+    * store
+    * 
+    * Esta funcion debe crear un nuevo proceso de importacion en la tabla t_importacion y a ella asocia productos y origenes de la mercancia
+    * 
+    * Debe validar que no exista alguna importacion con el mismo consecutivo de importacion.
+    * 
+    * debe validar la obligatoriedad de los campos
+    * 
+    * Debe validar que no venga almenos un producto
+    * 
+    * Debe validar que venga almenos una proforma asociada
+    * 
+    * Debe redireccionar a la pagina de consulta
     *
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
@@ -275,7 +299,11 @@ return Redirect::to($urlConsulta);
 }
 
     /**
-    * Display the specified resource.
+    * show
+    * 
+    * Esta funcion debe mostrar la informacion de una importacion relacionada con proveedores, puertos de embarque, origenes de la mercancia, embaqeu de importacion, pagos de importacion, productos, proformas, embarque, pagos, nacionalizacion y costeo
+    * Debere retornar una vista que tenga la opcion de cambiar el estado de la orden a cerrada
+    * 
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
@@ -340,8 +368,23 @@ return Redirect::to($urlConsulta);
  }
 
 
-    /**
+   /**
+    * 
+    * edit
+    * 
     * Muestra el formulario para editar un proceso de importacion en especifico
+    * 
+    * Permite editar la tabla t_importacion
+    * 
+    * Permite editar la tabla t_producto_importacion
+    * 
+    * Permite editar la tabla t_proforma_importacion
+    * 
+    * Debe validar que no exista una importacion con el mismo
+    * 
+    * debe validar que vengan al menos un producto asociado a la orden de imporacion
+    * 
+    * debe validar que venga al menos una proforma asociada a la orden de importacion 
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
@@ -353,7 +396,6 @@ return Redirect::to($urlConsulta);
 
         //Consulto el registro que deseo editar
         $objeto = TImportacion::with('proveedor')->find($id);
-        // dd($objeto);
         //Titulo de la pagina
         $titulo = "EDITAR PROCESO DE IMPORTACION -". $objeto->imp_consecutivo;
         //url de redireccion para consultar
@@ -401,10 +443,6 @@ return Redirect::to($urlConsulta);
             array_push($unProducto, $value->id);
             array_push($tablaProductos, $unProducto);
         }
-
-
-
-
 
     }
 
@@ -463,6 +501,15 @@ return Redirect::to($urlConsulta);
            'hasPerm'));
 }
 
+
+ /**
+    * 
+    * permisos
+    * 
+    * Valida los permisos de usuario retorna 1 si tiene permisos si no retorna 0
+    *
+    * @return int
+    */
 public function permisos(){
     $usuario = Auth::user();
     $permisos = TPermisosImp::where('perm_cedula', '=',"$usuario->idTerceroUsuario")->first();
@@ -514,7 +561,20 @@ public function objectoImportacion($objeto, $request){
 
 
     /**
-    * Update the specified resource in storage.
+    * update
+    * 
+    * Debe actualizar el registro de la tabla t_importacion segun el id,
+    * 
+    * Debe actualizar los registros de la tabla producto importacion
+    * 
+    * Debe actualizar los registros de la tabla proforma importacion
+    * 
+    * Debe actualizar los registros de la tabla origenes de la mercancia
+    * 
+    * Debe validar que el consecutivo de importacion no exista para otra importacion
+    * 
+    * Debe redireccionar al formulario de consulta 
+    * 
     *
     * @param  \Illuminate\Http\Request  $request
     * @param  int  $id
@@ -649,9 +709,9 @@ public function objectoImportacion($objeto, $request){
     /**
     * borrar
     * 
-    * ** Esta funcion se llama a traves de ajax usando la libreria jquery en el archivo importacionesV2.js 
-    * ** Su objetivo es validar si existen mas de un producto asociados a la importacion, y si si existen borrar el que 
-    * ** le indican por medio del request.
+    * Esta funcion se llama a traves de ajax usando la libreria jquery en el archivo importacionesV2.js 
+    * Su objetivo es validar si existen mas de un producto asociados a la importacion, y si si existen borrar el que 
+    * le indican por medio del request.
     * 
     * 1 -  Consulta la cantidad de productos asociados a la orden de importacion ya existente
     * 2 -  si la cantidad es mayor que 1 permite borrar el producto importacion cuyo id corresponda a lo que viene en request->obj
@@ -678,7 +738,13 @@ public function objectoImportacion($objeto, $request){
 
 
     /**
+     * borrarProforma
+     * 
     * Funcion creada para el borrado de la proforma asociada a la importacion por ajax
+    * 
+    * debe retornar mensaje de exito si el borrado se ejecuto correctamente
+    * 
+    * si solo queda una proforma debe retornar mensaje de error informando la sitacion
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
@@ -700,7 +766,17 @@ public function objectoImportacion($objeto, $request){
 
 
 
-
+ /**
+     * autocomplete
+     * 
+     * debe consultar el unoee  traer los terceros 
+     * 
+     * debe poner los terceros dentro de un array
+     * 
+     * debe reponder con un json
+     * 
+    * @return \Illuminate\Http\Response
+    */
 public function autocomplete(){
     //Funcion para autocompletado de proveedores
     $term = Input::get('term');
@@ -719,6 +795,18 @@ public function autocomplete(){
 }
 
 
+ /**
+     * autocomplete
+     * 
+     * debe consultar el unoee  traer los terceros 
+     * 
+     * debe poner los terceros dentro de un array
+     * 
+     * debe reponder con un json
+     * 
+     * @param $request
+    * @return \Illuminate\Http\Response
+    */
 public function autocompleteProducto(Request $request){
     #Funcion de consulta de productos para el formulario de importaciones
   $referencia = strtoupper($request->obj);
@@ -739,7 +827,12 @@ return "error";
 
 
  /**
+  * consultas
+  * 
     * Funcion creada para generar las consultas de los combobox en las funciones create y edit
+    * 
+    * @param recibe un array con numeros segun la consulta solicitada
+    * @return debe retornar un array de arrays indexado por palabras que hacen referencia a la informacion que se necesita en el formulario para pintar los combobox
     *
     */
  public function consultas($consulta){
@@ -789,8 +882,23 @@ return "error";
 
 
  /**
-    * Funcion creada para generar la vista de consultas con filtros para las ordenes de importacion
-    *
+     * consultaFiltrada
+     * 
+     * La funcion principal es mostrar un formulario con filtros para consultar todas las ordenes de importacion ya sea por puerto de embarque, por consecutivo de importacion, por estado o por proveedor.
+     * 
+     * esta consulta tiene links que redireccionan a la creacion de la orden de importacion, 
+     * 
+     * redirecciona tambien al embarque si ya existe la orden de importacion
+     * 
+     * redirecciona a los pagos 
+     * 
+     * redirecciona a la nacionalizacion y costeo si ya esta creado el embarque
+     * 
+     * redirecciona a la pestaña de cierre de alertas si ya se creo la importacion, el embarque, los pagos y la nacionalizacion y costeo.
+     * 
+     * 
+     * 
+    * @return \Illuminate\Http\Response
     */
  public function consultaFiltrada(Request $request){
     #Genero los where para la consulta dependiendo de los filtros enviados por la vista
@@ -887,6 +995,19 @@ return "error";
         'embarque'));
 }
 
+
+
+
+/**
+     * cerrarOrden
+     * 
+     * funcion que toma la importacion y le cambia el estado
+     * retorna error si alguno de los campos de todo el proceso de negocio no esta diligenciado
+     * redirecciona a la consulta con filtros
+     * 
+     * 
+    * @return \Illuminate\Http\Response
+    */
 public function cerrarOrden(Request $request){
 
     $objectImportacion = TImportacion::find($request->OrdenId);

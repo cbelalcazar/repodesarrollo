@@ -20,12 +20,16 @@ use Auth;
 use App\Models\Importacionesv2\TPermisosImp;
 
 /**
- * Controlador TImportacionController
+ * @resource TEmbarqueImportacionController
+ *
+ * Controlador creado para generar el proceso de embarque importación
+ * 
  * Creado por Carlos Belalcazar
+ * 
  * Analista desarrollador de software Belleza Express
- * 22/02/2017
+ * 
+ * 21/04/2017
  */
-
 class TEmbarqueImportacionController extends Controller
 {
 
@@ -69,12 +73,15 @@ class TEmbarqueImportacionController extends Controller
     'emim_fecha_confirm_reserva.date'       => 'El campo fecha de confirmacion de la reserva debe tener formato fecha',
     'emim_documento_transporte.required'       => 'Favor ingresar el numero del documento de transporte',
     'emim_valor_flete.integer'       => 'El campo valor del flete debe tener formato numerico');
+
   //Name de la url de consulta la uso para no redundar este string en mis funciones
   public $strUrlConsulta = 'importacionesv2/Embarque';
 
 
     /**
-     * Display a listing of the resource.
+     * index
+     * 
+     * Sin ninguna funcionalidad
      *
      * @return \Illuminate\Http\Response
      */
@@ -83,6 +90,14 @@ class TEmbarqueImportacionController extends Controller
         //
     }
 
+
+    /**
+     * permisos
+     * 
+     * Su funcion es retornar 1 si el usuario es la jefe o 0 si es auxiliar consultando en la tabla TPermisosImp
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function permisos(){
         $usuario = Auth::user();
         $permisos = TPermisosImp::where('perm_cedula', '=',"$usuario->idTerceroUsuario")->first();
@@ -94,7 +109,9 @@ class TEmbarqueImportacionController extends Controller
    }
 
     /**
-     * Show the form for creating a new resource.
+     * create
+     * 
+     * Su funcionalidad es mostrar el formulario de creacion para las tablas t_embarque_importacion asociando t_tipo_carga, t_tipo_contenedor y t_linea_maritima
      *
      * @return \Illuminate\Http\Response
      */
@@ -125,7 +142,9 @@ class TEmbarqueImportacionController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * store
+     * 
+     * Esta funcion valida  la obligatoriedad de los campos y demas acciones del validator, tambien que no exista un embarque con el mismo numero de importacion, y crea un registro en la tabla t_embarque_importacion, t_contenedores y modifica los estados de la tabla t_producto importacion
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -280,7 +299,7 @@ return Redirect::to($urlConsulta);
 }
 
     /**
-     * Display the specified resource.
+     * show
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -291,7 +310,9 @@ return Redirect::to($urlConsulta);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * edit
+     * 
+     * Esta funcion debe entregar un formulario para editar un embarque importacion asociado a una importacion
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -334,7 +355,9 @@ return Redirect::to($urlConsulta);
     }
 
     /**
-     * Update the specified resource in storage.
+     * update
+     * 
+     * Esta funcion modifica un registro de la tabla t_embarque importacion segun el usuario diligencia en la tabla de la bd, edita tambien contenedores de embarque y retorna exito al editar y redirige a la pagina de consulta principal.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -414,7 +437,7 @@ return Redirect::to($urlConsulta);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * destroy
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -426,7 +449,9 @@ return Redirect::to($urlConsulta);
 
 
  /**
-    * Funcion creada para generar las consultas de los combobox en las funciones create y edit
+    * consultas
+    * 
+    * Esta funcion genera un array de arrays indexado con palabras cuya funcionalidad es proveer la consulta necesaria para pintar los combobox en los formularios
     *
     */
  public function consultas($consulta){

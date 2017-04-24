@@ -160,7 +160,7 @@ public function create()
 }
 
     /**
-     * Display the specified resource.
+     * show
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
