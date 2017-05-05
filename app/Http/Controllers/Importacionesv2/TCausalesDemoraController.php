@@ -5,10 +5,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Importacionesv2\TCausalesDemora;
 use App\Models\Importacionesv2\TMetrica;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
-use Input;
-use Redirect;
 use Session;
 use JsValidator;
 use \Cache;
@@ -87,7 +83,6 @@ class TCausalesDemoraController extends Controller
       }))->get();
     });
 
-
     /**
     *Variable titulosTabla debe contener un array con los titulos de la tabla.
     *La cantidad de titulos debe corresponder a la cantidad de columnas que trae la consulta.
@@ -99,7 +94,7 @@ class TCausalesDemoraController extends Controller
     *Variable que debe contener los campos de la tabla con su nombre real.
     *De primero siempre debe ir el identificador de la tabla.
     */
-    $campos =  array($this->id, $this->cdem_nombre, $this->cdem_metrica);
+    $campos = $this->arrayCampos();
 
     //Genera url completa de consulta
     $url = url($this->strUrlConsulta);
@@ -120,26 +115,16 @@ class TCausalesDemoraController extends Controller
   */
   public function create()
   {
-    //Consulta para mostrar combobox y guarda la consulta en cache para ser reutilizada en max 60 minutos
-    $array = Cache::remember('metrica', 60, function() {
-      return TMetrica::all();
-    });
-
-    //Se crea array con dos posiciones para llenar el combobox
-    $combobox = array();
-    foreach ($array as $key => $value) {
-      $combobox["$value->id"] = $value->met_nombre;
-    }
-    $cdem_metrica = $this->cdem_metrica;
-    $cdem_metrica[5] = $combobox;
+    //Proceso para generar la informacion para llenar el combobox
+    $this->suministrarInfoCombobox();
     //Array que contiene los campos que deseo mostrar en el formulario no debes tiene en cuenta timestamps ni softdeletes
-    $campos =  array($this->id, $this->cdem_nombre, $cdem_metrica);
+    $campos =  $this->arrayCampos();
     //Genera url completa de consulta
     $url = url($this->strUrlConsulta);
     //Variable que contiene el titulo de la vista crear
     $titulo = "CREAR ".$this->titulo;
     //Libreria de validaciones con ajax
-    $validator = JsValidator::make($this->rules, $this->messages);
+    $validator = $this->jsValidator();
 
     return view('importacionesv2.create', compact('titulo','campos' ,'url', 'validator'));
   }
@@ -147,7 +132,7 @@ class TCausalesDemoraController extends Controller
   /**
   * store
   * 
-  * Recibe la informacion del formulario de creacion y valida que no exista una casual de demora con el mismo nombre de la que intenta crea, posteriormente si no existe ninguna, crea un registro nuevo en la tabla t_causales_demora
+  * Recibe la informacion del formulario de creacion y valida que no exista una causal de demora con el mismo nombre de la que intenta crea, posteriormente si no existe ninguna, crea un registro nuevo en la tabla t_causales_demora
   *
   * @param  \Illuminate\Http\Request  $request
   * @return \Illuminate\Http\Response
@@ -157,21 +142,19 @@ class TCausalesDemoraController extends Controller
     //Genera la url de consulta
     $url = url($this->strUrlConsulta);
     //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
-    $validarExistencia = TCausalesDemora::where('cdem_nombre', '=', "$request->cdem_nombre")->get();
+    $validarExistencia = $this->validarExistencia($request->cdem_nombre);
     if(count($validarExistencia) > 0){
       //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
-      return Redirect::to("$url/create")
+      return redirect("$url/create")
       ->withErrors('La causal de demora que intenta crear tiene la misma descripcion que un registro ya existente');
     }
     //Crea el registro en la tabla origen mercancia
     $ObjectCrear = new TCausalesDemora;
-    $ObjectCrear->cdem_nombre = strtoupper(Input::get('cdem_nombre'));
-    $ObjectCrear->cdem_metrica = Input::get('cdem_metrica');
-    $ObjectCrear->save();
+    $this->storeOrUpdateAnObject($ObjectCrear, $request);
     Cache::forget('causalesDemora');
     //Redirecciona a la pagina de consulta y muestra mensaje
     Session::flash('message', 'La causal de demora fue creada exitosamente!');
-    return Redirect::to($url);
+    return redirect($url);
   }
 
   /**
@@ -198,24 +181,17 @@ class TCausalesDemoraController extends Controller
     //Id del registro que deseamos editar
     $id = $id;
     //Consulto el registro que deseo editar
-    $objeto = TCausalesDemora::find($id);$combobox = array();
-    //Consulta para mostrar combobox
-    $array = TMetrica::all();
-    //Se crea array con dos posiciones para llenar el combobox
-    $combobox = array();
-    foreach ($array as $key => $value) {
-      $combobox["$value->id"] = $value->met_nombre;
-    }
-    $cdem_metrica = $this->cdem_metrica;
-    $cdem_metrica[5] = $combobox;
-
-    $campos =  array($this->id, $this->cdem_nombre, $cdem_metrica);
+    $objeto = TCausalesDemora::find($id);
+    //Proceso para generar la informacion para llenar el combobox
+    $this->suministrarInfoCombobox();
+    //Campos para hacer que el formulario sepa que campos mostrar y con que informacion
+    $campos =  $this->arrayCampos();
     //Titulo de la pagina
     $titulo = "EDITAR ".$this->titulo;
     //url de redireccion para consultar
     $url = url($this->strUrlConsulta);
     // Validaciones ajax
-    $validator = JsValidator::make($this->rules, $this->messages);
+    $validator = $this->jsValidator();
     //url de redireccion para editar -- Name url correspondiente a method PUT|PATCH en comando route.list
     //correspondiente a este controlador
     $route = 'CausalesDemora.update';
@@ -239,20 +215,18 @@ class TCausalesDemoraController extends Controller
     //Consulto el registro a editar
     $ObjectUpdate = TCausalesDemora::find($id);
     //Valida la existencia del registro que se intenta crear en la tabla de la bd por el campo ormer_nombre
-    $validarExistencia = TCausalesDemora::where('cdem_nombre', '=', "$request->cdem_nombre")->first();
+    $validarExistencia = $this->validarExistencia($request->cdem_nombre);
     if(count($validarExistencia) > 0 && $validarExistencia != $ObjectUpdate){
       //retorna error en caso de encontrar algun registro en la tabla con el mismo nombre
-      return Redirect::to("$url/$id/edit")
+      return redirect("$url/$id/edit")
       ->withErrors('El causal de demora que intenta editar tiene el mismo nombre que un registro ya existente');
     }
     //Edita el registro en la tabla
-    $ObjectUpdate->cdem_nombre = strtoupper(Input::get('cdem_nombre'));
-    $ObjectUpdate->cdem_metrica = strtoupper(Input::get('cdem_metrica'));
-    $ObjectUpdate->save();
+    $this->storeOrUpdateAnObject($ObjectUpdate, $request);
     Cache::forget('causalesDemora');
     //Redirecciona a la pagina de consulta y muestra mensaje
     Session::flash('message', 'El causal de demora fue editado exitosamente!');
-    return Redirect::to($url);
+    return redirect($url);
   }
 
   /**
@@ -275,6 +249,79 @@ class TCausalesDemoraController extends Controller
 
     // redirect
     Session::flash('message', 'La causal de demora fue borrada exitosamente!');
-    return Redirect::to($url);
+    return redirect($url);
+  }
+
+  /**
+  * arrayCampos
+  * 
+  * Debe retornar un array de arrays con las variables globales declaradas arriba que permiten al formulario saber que campos mostrar al usuario
+  * 
+  * Funcion llamada en funciones de index - create - edit del mismo controlador
+  */
+  public function arrayCampos(){
+    return  [$this->id, $this->cdem_nombre, $this->cdem_metrica];
+  }
+
+  /**
+  * validarExistencia
+  * 
+  * Consulta la tabla obteniendo las causales demora que tengan el mismo el nombre que la que se intenta crear o actualizar
+  * 
+  * funcion llamada en store - update del mismo controlador
+  */
+  public function validarExistencia($cdem_nombre){
+    return TCausalesDemora::where('cdem_nombre', $cdem_nombre)->first();
+  }
+
+  /**
+  * suministrarInfoCombobox
+  * 
+  * Obtiene las metricas y las organiza en un array luego las setea a la variable global para que el formulario las pinte en el combobox
+  * 
+  * Funcion usada en edit - create del mismo controlador
+  * 
+  */
+  public function suministrarInfoCombobox(){
+    //Consulta para mostrar combobox y guarda la consulta en cache para ser reutilizada en max 60 minutos
+    $array = Cache::remember('metrica', 60, function() {
+      return TMetrica::all();
+    });
+    //Se crea array con dos posiciones para llenar el combobox
+    $combobox = [];
+    foreach ($array as $key => $value) {
+      $combobox["$value->id"] = $value->met_nombre;
+    }
+    $this->cdem_metrica[5] = $combobox;
+  }
+
+  /**
+  * storeOrUpdateAnObject
+  * 
+  * Cumple la funcion de guardar o actualizar un registro de la bd
+  * 
+  * Funcion usada en store - update del mismo controlador
+  * 
+  */
+  public function storeOrUpdateAnObject($objeto, $request){
+    //Obtiene el objeto que quiero crear o actualizar
+    //Cambia o agrega atributos al objeto
+    $objeto->cdem_nombre = strtoupper($request->cdem_nombre);
+    $objeto->cdem_metrica = $request->cdem_metrica;
+    //Guarda el objeto en la bd
+    $objeto->save();
+  }
+
+
+ /**
+  * jsValidator
+  * 
+  * retorna el script de jquery para validar el formulario
+  * 
+  * Funcion usada en create - edit de este controlador
+  * 
+  */
+  public function jsValidator(){
+    return JsValidator::make($this->rules, $this->messages);
   }
 }
