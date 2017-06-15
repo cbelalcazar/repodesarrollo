@@ -13,6 +13,7 @@ toc_footers:
 - <a href='http://github.com/mpociot/documentarian'>Documentation Powered by Documentarian</a>
 ---
 <!-- START_INFO -->
+
 # Info
 
 Welcome to the generated API reference.
@@ -357,7 +358,7 @@ $.ajax(settings).done(function (response) {
 <!-- START_25fef4f7bdd1d35fb9ec0dfc249f5471 -->
 ## store
 
-Recibe la informacion del formulario de creacion y valida que no exista una casual de demora con el mismo nombre de la que intenta crea, posteriormente si no existe ninguna, crea un registro nuevo en la tabla t_causales_demora
+Recibe la informacion del formulario de creacion y valida que no exista una causal de demora con el mismo nombre de la que intenta crea, posteriormente si no existe ninguna, crea un registro nuevo en la tabla t_causales_demora
 
 > Example request:
 
