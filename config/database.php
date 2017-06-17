@@ -63,7 +63,7 @@ return [
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
             'strict' => true,
-            'engine' => null,
+            'engine' => 'InnoDB',
         ],
 
         'pgsql' => [
@@ -110,7 +110,7 @@ return [
             'collation' => 'utf8_spanish2_ci',
             'prefix' => '',
             'strict' => true,
-            'engine' => null,
+            'engine' => 'InnoDB',
         ],
 
         'genericas' => [
@@ -124,7 +124,21 @@ return [
             'collation' => 'utf8_spanish2_ci',
             'prefix' => '',
             'strict' => true,
-            'engine' => null,
+            'engine' => 'InnoDB',
+        ],
+
+        'importacionesV2' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_I_DATABASE', 'importacionesV2'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_spanish2_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => 'InnoDB',
         ],
     ],
 

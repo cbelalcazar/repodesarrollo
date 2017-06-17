@@ -13,8 +13,9 @@
   </head>
   <body ng-app="aplicativos">
 
-    <div class="wrap">
+    <div class="wrap" id="mostrar">
       @yield('content')
+      @yield('formulario')
     </div>
 
   </body>
