@@ -207,12 +207,12 @@ class ReportesImportacionesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-   public function GenerarReporteBimestral(){
-    $url = route('ReporteBimestral');
-    $titulo = "GENERAR REPORTE BIMESTRAL POR FECHAS";
-    return view('importacionesv2.reportesImportaciones.consultaUAP', 
-      compact('url', 'titulo'));
-  }
+     public function GenerarReporteBimestral(){
+      $url = route('ReporteBimestral');
+      $titulo = "GENERAR REPORTE BIMESTRAL POR FECHAS";
+      return view('importacionesv2.reportesImportaciones.consultaUAP', 
+        compact('url', 'titulo'));
+    }
 
 
   /**
@@ -337,7 +337,7 @@ class ReportesImportacionesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-  public function ReporteBimestral(Request $request){
+   public function ReporteBimestral(Request $request){
     # Captura las fechas que el usuario ingreso en el formulario
     $from = Carbon::parse($request->desde)->format('Y-m-d');
     $to = Carbon::parse($request->hasta)->format('Y-m-d');
@@ -371,6 +371,23 @@ class ReportesImportacionesController extends Controller
     })->download('xlsx');
   }
 
+
+
+
+  public function generarUml(Request $request){
+
+    // initialize an empty graph and the UML class diagram builder
+    $graph = new Fhaculty\Graph\Graph();
+    $builder = new Fhaculty\Graph\Uml\ClassDiagramBuilder($graph);
+
+    // let's add some classes to the diagram
+    $builder->createVertexClass('Fhaculty\Graph\Uml\ClassDiagramBuilder');
+
+    // display graph as svg image
+    $graphviz = new Fhaculty\Graph\GraphViz($graph);
+    $graphviz->display();
+
+  }
 
 
 }

@@ -73,6 +73,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('GenerarReporteBimestral',               'Importacionesv2\ReportesImportacionesController@GenerarReporteBimestral')->name('GenerarReporteBimestral');
         Route::post('ReporteBimestral',                   'Importacionesv2\ReportesImportacionesController@ReporteBimestral')->name('ReporteBimestral');
         Route::get('ConsultaImportacionesExportar', 'Importacionesv2\ReportesImportacionesController@ConsultaImportacionesExportar')->name('ConsultaImportacionesExportar');
+        Route::get('generarUml', 'Importacionesv2\ReportesImportacionesController@generarUml')->name('generarUml');
     });
 
 });
