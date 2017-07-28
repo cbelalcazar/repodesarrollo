@@ -16,17 +16,23 @@ Route::post('logout', ['uses' => 'Auth\LoginController@logout', 'as' => 'logout'
 Route::get('logout', ['uses' => 'Auth\LoginController@logout', 'as' => 'logout']);
 
 Route::get('loginredirect', function () {
-  return view('loginredirect');
+	return view('loginredirect');
 });
 
 Route::group(['middleware' => ['auth']], function () {
-  Route::get('/', function () {
-    return view('loginredirect');
-  });
+	Route::get('/', function () {
+		return view('loginredirect');
+	});
 
-  Route::get('home', function () {
-    return redirect(env('APPV1_URL'));
-  });
+	Route::get('home', function () {
+		return redirect(env('APPV1_URL'));
+	});
 
-  Route::get('autocomplete', ['uses' => 'GenericasController@autocomplete', 'as' => 'autocomplete']);
+	Route::get('autocomplete', ['uses' => 'GenericasController@autocomplete', 'as' => 'autocomplete']);
+
+	Route::group(['prefix' => 'recepcionProveedores', 'middleware' => ['auth']], function () {
+		Route::resource('periodo', 'recepcionProveedores\PeriodoController');
+
+	});
+
 });
