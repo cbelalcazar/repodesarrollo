@@ -5,7 +5,7 @@ namespace App\Http\Controllers\recepcionProveedores;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class PeriodoController extends Controller
+class ProgramacionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,10 +14,21 @@ class PeriodoController extends Controller
      */
     public function index()
     {
-       $ruta = 'Recepcion de proveedores // Catalogos // Periodos';
-       $titulo = 'Periodos';
+        $titulo = 'PROGRAMACIÓN DE ORDENES';
+        $ruta = 'Programacion // Crear Programación';
+        return view('layouts.recepcionProveedores.programacion.ProgramacionIndex', compact('titulo', 'ruta'));
+    }
 
-       return view('layouts.recepcionProveedores.catalogos.periodo.periodoIndex',compact('ruta','titulo'));
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function programacionGetInfo()
+    {
+        $titulo = 'PROGRAMACIÓN DE ORDENES';
+        $response = compact('titulo');
+        return response()->json($response);
     }
 
     /**

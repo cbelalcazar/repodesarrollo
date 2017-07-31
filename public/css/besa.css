@@ -105,6 +105,10 @@ md-autocomplete input:not(.md-input){
   height: 34px !important;
 }
 
+.md-datepicker-calendar-pane{
+z-index: 9999
+}
+
 .panel-default>.panel-heading {
   background-color: #dedede;
 }

@@ -31,8 +31,8 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('autocomplete', ['uses' => 'GenericasController@autocomplete', 'as' => 'autocomplete']);
 
 	Route::group(['prefix' => 'recepcionProveedores', 'middleware' => ['auth']], function () {
-		Route::resource('periodo', 'recepcionProveedores\PeriodoController');
-
+		Route::resource('programacion', 'recepcionProveedores\ProgramacionController');
+		Route::get('programacionGetInfo', 'recepcionProveedores\ProgramacionController@programacionGetInfo');
 	});
 
 });
