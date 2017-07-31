@@ -33,6 +33,8 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::group(['prefix' => 'recepcionProveedores', 'middleware' => ['auth']], function () {
 		Route::resource('programacion', 'recepcionProveedores\ProgramacionController');
 		Route::get('programacionGetInfo', 'recepcionProveedores\ProgramacionController@programacionGetInfo');
+		Route::post('referenciasPorOc', 'recepcionProveedores\ProgramacionController@referenciasPorOc');
+		
 	});
 
 });

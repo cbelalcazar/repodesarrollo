@@ -4,6 +4,8 @@ namespace App\Http\Controllers\recepcionProveedores;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Genericas\Tercero;
+use \Cache;
 
 class ProgramacionController extends Controller
 {
@@ -26,8 +28,24 @@ class ProgramacionController extends Controller
      */
     public function programacionGetInfo()
     {
-        $titulo = 'PROGRAMACIÓN DE ORDENES';
-        $response = compact('titulo');
+        ini_set('memory_limit', '-1');
+        $item_txt_nitproveedor = Cache::remember('proveedores', 60, function(){
+            return Tercero::all();
+        });        
+        $response = compact('item_txt_nitproveedor');
+        return response()->json($response);
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function referenciasPorOc(Request $request)
+    {
+        $request = $request->nombre; 
+        $response = compact('request');
         return response()->json($response);
     }
 

@@ -11,8 +11,22 @@
        </div>
         <div class="modal-body">
           <div class="row">
-            <div class="col-md-3">
-              
+            <div class="col-md-4">
+                <!-- Autocomplete proveedores -->
+                <label>Consulta proveedores: (*)</label>
+                <md-autocomplete ng-blur="getReferenciasPorOc()"
+                md-selected-item="selectedItem" 
+                md-search-text="searchTextProveedor" 
+                md-items="item in query(searchTextProveedor)" 
+                md-item-text="item.razonSocialTercero">
+                <md-item-template>
+                  <span md-highlight-text="searchTextProveedor" md-highlight-flags="^i">@{{item.nitTercero}} - @{{item.razonSocialTercero}}</span>
+                </md-item-template>
+                <md-not-found>
+                  El proveedor "@{{searchTextProveedor}}" no fue encontrado.
+                </md-not-found>
+              </md-autocomplete>
+              <!-- End autocomplete proveedores -->
             </div>
             <div class="col-md-9">
 
