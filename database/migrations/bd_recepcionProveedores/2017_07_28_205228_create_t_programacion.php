@@ -18,10 +18,10 @@ class CreateTProgramacion extends Migration
             $table->increments('id');
 
             $table->string('prg_num_orden_compra')
-                  ->comment('Numero de la orden de compra');
+                  ->comment('Numero de la orden de compra PK');
 
             $table->string('prg_tipo_doc_oc')
-                  ->comment('Tipo de documento de la orden de compra');
+                  ->comment('Tipo de documento de la orden de compra PK');
 
             $table->string('prg_referencia')
                   ->comment('referencia del item');
@@ -45,12 +45,15 @@ class CreateTProgramacion extends Migration
                   ->comment('Cantidad pendiente por entregar en toda la orden de compra (REGISTRO ERP)');
 
             $table->integer('prg_unidad_empaque')
+                  ->nullable()
                   ->comment('Unidad de empaque que registra en la orden de compra (REGISTRO ERP)');
 
             $table->integer('prg_cant_embalaje')
+                  ->nullable()
                   ->comment('Cantidad de embalaje que ingresa el proveedor');
 
             $table->integer('prg_prioridad')
+                  ->nullable()
                   ->comment('Prioridad de la programacion para planeacion sirve para informar a abastecimiento que es mas urgente recibir');
 
             $table->integer('prg_estado')
@@ -61,9 +64,15 @@ class CreateTProgramacion extends Migration
                   ->comment('Observacion de la programacion');
 
             $table->integer('prg_tipo_programacion')
+                  ->nullable()
                   ->comment('Indica si es para seguir flujo establecido o solo genera correo');
 
+            $table->date('prg_fecha_ordenCompra')
+                  ->comment('Fecha real de entrega de la orden de compra PK');
 
+            $table->string('prg_consecutivoRefOc')
+                  ->comment('Campo que guarda el f421rowid del unoe para identificar cada item de la orden de compra');
+      
             $table->softDeletes();
 
             $table->timestamps();
@@ -77,6 +86,6 @@ class CreateTProgramacion extends Migration
      */
     public function down()
     {
-         Schema::connection('bd_recepcionProveedores')->dropIfExists('t_periodo');
+         Schema::connection('bd_recepcionProveedores')->dropIfExists('t_programacion');
     }
 }

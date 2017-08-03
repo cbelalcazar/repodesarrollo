@@ -131,7 +131,7 @@ return [
             'charset' => 'utf8',
             'collation' => 'utf8_spanish2_ci',
             'prefix' => '',
-            'strict' => true,
+            'strict' => false,
             'engine' => 'InnoDB',
         ],
     ],

@@ -18,29 +18,29 @@
             <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal1" ng-click="setArea()">
               <i class="glyphicon glyphicon-plus"></i> Programar
             </button><br><br>
-            <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover">
+            <table  datatable="ng" class="table table-condensed">
               <thead>
                 <tr>
                   <th>Id</th>
-                  <th>Fecha inicio</th>
-                  <th>Fecha Fin</th>
-                  <th></th>
+                  <th>Referencia</th>
+                  <th>Orden de compra</th>
+                  <th>Fecha programada</th>
+                  <th>Cantidad programada</th>
+                  <th>Cant. Solicitada OC</th>
+                  <th>Cant. Entregada OC</th>
+                  <th>Cant. Pendiente OC</th>
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="periodo in periodos">
-                  <td>@{{periodo.id}}</td>
-                  <td>@{{periodo.per_fecha_inicio}}</td>
-
-                  <td>@{{periodo.per_fecha_fin}}</td>
-                  <td class="text-right">
-                    <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modal1" ng-click="editPeriodo(periodo.id)">
-                      <i class="glyphicon glyphicon-pencil"></i> Editar
-                    </button>
-                    <button class="btn btn-danger btn-sm" ng-click="deleteActividad($event, periodo.id)">
-                      <i class="glyphicon glyphicon-trash"></i> Borrar
-                    </button>
-                  </td>
+                <tr ng-repeat="prg in progPendEnvio">
+                  <td>@{{prg.id}}</td>                 
+                  <td>@{{prg.prg_referencia}}</td>
+                  <td>@{{prg.prg_tipo_doc_oc}} - @{{prg.prg_num_orden_compra}}</td>
+                  <td>@{{prg.prg_fecha_programada}}</td>
+                  <td>@{{prg.prg_cant_programada}}</td>
+                  <td>@{{prg.prg_cant_solicitada_oc}}</td>
+                  <td>@{{prg.prg_cant_entregada_oc}}</td>
+                  <td>@{{prg.prg_cant_pendiente_oc}}</td>                 
                 </tr>
               </tbody>
             </table>
