@@ -26,8 +26,14 @@ class CreateTProgramacion extends Migration
             $table->string('prg_referencia')
                   ->comment('referencia del item');
 
+            $table->string('prg_desc_referencia')
+                  ->comment('referencia del item');
+
             $table->string('prg_nit_proveedor')
                   ->comment('Nit del proveedor');
+
+            $table->string('prg_razonSocialTercero')
+                  ->comment('nombre del proveedor');
 
             $table->date('prg_fecha_programada')
                   ->comment('Fecha en la que se programa la entrega por planeacion');
