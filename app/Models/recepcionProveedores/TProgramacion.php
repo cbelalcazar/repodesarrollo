@@ -50,6 +50,7 @@ class TProgramacion extends Model
      * consProveePorMesUnoeMatEmpaq($fechaInicial, FechaFinal)
      * 
      * Esta funcion consulta y retorna los proveedores que debo evaluar para un mes en especifico solo de material de empaque
+     * Ambas deben tener los mismos filtros siempre su unica diferencia es que una agrupa y la otra no.
      * 
      * Filtra por:
      * Tipo de documento

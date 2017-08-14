@@ -85,7 +85,7 @@ class ProgramacionController extends Controller
     public function programacionGetInfo()
     {
         $item_txt_nitproveedor = Tercero::where('indxProveedorTercero', '1')->get();
-        $progPendEnvio = TProgramacion::where('prg_estado','1')->get();
+        $progPendEnvio = TProgramacion::whereIn('prg_estado', [1,2])->get();
         $response = compact('item_txt_nitproveedor', 'progPendEnvio');
         return response()->json($response);
     }
@@ -144,7 +144,16 @@ class ProgramacionController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
         }else{
-            $objProg = TProgramacion::create($objProg);
+
+            if ($objProg['id'] != "") {
+                $update = TProgramacion::find($objProg['id']);
+                $update->prg_fecha_programada = $objProg['prg_fecha_programada'];
+                $update->prg_cant_programada = $objProg['prg_cant_programada'];
+                $update->prg_observacion = $objProg['prg_observacion'];
+                $update->save();
+            } else {
+                $objProg = TProgramacion::Create($objProg);
+            }            
             return response()->json($objProg);
         }
         
@@ -181,7 +190,9 @@ class ProgramacionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $lista = $refExcluir = array_pluck($request->all(), 'id');
+        $datosModificar = TProgramacion::whereIn('id', $lista)->update(['prg_estado' => 2]);
+        return response()->json($datosModificar);
     }
 
     /**
@@ -192,9 +203,11 @@ class ProgramacionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $objProg = TProgramacion::find($id);
+        $objProg->delete();
+        return response()->json('success');
     }
 
-  
+
 
 }

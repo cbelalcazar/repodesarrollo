@@ -2,92 +2,132 @@
 
 @section('content')
 @include('includes.titulo')
-<div ng-controller="programacionCtrl" ng-cloak>
+<div ng-controller="programacionCtrl as ctrl" ng-cloak>
+	<div class="row" md-whiteframe="12">
+		<ul class="nav nav-tabs">
+			<li  class="active"><a data-toggle="tab" href="#menu1">Ordenes en planeacion</a></li>
+			<li><a data-toggle="tab" href="#menu2">Ordenes pendiente asignar cita</a></li>
+		</ul>
+		<div class="tab-content">
+			<!-- tab ordenes en planeacion -->
+			<div id="menu1" class="tab-pane fade in active">
+				<div class="panel panel-default">
+					<div class="panel-body">
 
-  <div class="row">
-    <ul class="nav nav-tabs">
-      <li  class="active"><a data-toggle="tab" href="#menu1">Ordenes en planeacion</a></li>
-      <li><a data-toggle="tab" href="#menu2">Ordenes en solicitud cita</a></li>
-    </ul>
+						<button type="button"  class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal1" ng-click="limpiar()">
+							<i class="glyphicon glyphicon-plus"></i> Programar
+							<md-tooltip md-direction="bottom">
+								Crear nueva
+							</md-tooltip>
+						</button>
 
-    <div class="tab-content">
-      <!-- tab ordenes en planeacion -->
-      <div id="menu1" class="tab-pane fade in active">
-        <div class="panel panel-default">
-          <div class="panel-body">
-            <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal1" ng-click="limpiar()">
-              <i class="glyphicon glyphicon-plus"></i> Programar
-            </button><br><br>
-            <table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover">
-              <thead>
-                <tr>
-                  <th>
-                    <md-checkbox class="md-primary" aria-label="Select All"
-                    ng-checked="isChecked()"
-                    md-indeterminate="isIndeterminate()"
-                    ng-click="toggleAll()">
-                  </md-checkbox>
-                </th>
-                <th>Referencia</th>
-                <td>Proveedor</td>
-                <th>Orden de compra</th>
-                <th>Fecha programada</th>
-                <th>Cantidad programada</th>
-                <th>Cant. Solicitada OC</th>
-                <th>Cant. Entregada OC</th>
-                <th>Cant. Pendiente OC</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="prg in progPendEnvio">
-               <td>
-                  <md-checkbox ng-checked="exists(prg, progSelected)" ng-click="toggle(prg, progSelected)" class="md-primary">
-                   @{{prg.id}}
-                 </md-checkbox>                   
-               </td>                 
-               <td>@{{prg.prg_referencia}} - @{{prg.prg_desc_referencia}}</td>                       
-               <td>@{{prg.prg_razonSocialTercero}}</td>
-               <td>@{{prg.prg_tipo_doc_oc}} - @{{prg.prg_num_orden_compra}}</td>
-               <td>@{{prg.prg_fecha_programada}}</td>
-               <td>@{{prg.prg_cant_programada}}</td>
-               <td>@{{prg.prg_cant_solicitada_oc}}</td>
-               <td>@{{prg.prg_cant_entregada_oc}}</td>
-               <td>@{{prg.prg_cant_pendiente_oc}}</td>    
-               <td class="text-right"> 
-                 <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modal1" ng-click="edit(prg)">
-                  <i class="glyphicon glyphicon-pencil"></i> 
-                 </button>
-               </td>     
-               <td>
-                 <button class="btn btn-danger btn-sm" ng-click="delete(prg)">
-                  <i class="glyphicon glyphicon-trash"></i>
-                 </button>
-               </td>                     
-             </tr>
-           </tbody>
-         </table>
-       </div>
-     </div>
-   </div>
-   <!-- End tab ordenes en planeacion -->
+						<button type="button"  class="btn btn-success btn-sm" ng-click="cambiaEstado()">
+							<i class="glyphicon glyphicon-plus"></i> Enviar a bodega
+							<md-tooltip md-direction="bottom">
+								Enviar programacion a solicitud cita
+							</md-tooltip>
+						</button>
 
-   <!-- tab ordenes en solicitud cita -->
-   <div id="menu2" class="tab-pane fade">
-    <h3>Menu 2</h3>
-    <p>Some content in menu 2.</p>
-  </div>
-</div>
+						<br><br>
+						<div class="alert alert-success" ng-if="mensajeEliminar">
+							<strong>Registro eliminado exitosamente.</strong> 
+						</div>
+						<table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover">
+							<thead>
+								<tr>
+									<th>
+										<md-checkbox class="md-primary" aria-label="Select All"
+										ng-checked="isChecked()"
+										md-indeterminate="isIndeterminate()"
+										ng-click="toggleAll()">
+										<!--  <span ng-if="isChecked()">Anular </span>Seleccionar Todas -->
+										</md-checkbox>
+									</th>
+									<th>Referencia</th>
+									<td>Proveedor</td>
+									<th>Orden de compra</th>
+									<th>Fecha programada</th>
+									<th>Cantidad programada</th>
+									<th>Cant. Solicitada OC</th>
+									<th>Cant. Entregada OC</th>
+									<th>Cant. Pendiente OC</th>
+									<th></th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="prg in progPendEnvio | filter : {prg_estado : 1}">
+									<td>
+										<md-checkbox ng-checked="exists(prg, progSelected)" ng-click="toggle(prg, progSelected)" class="md-primary">
+											@{{prg.id}}
+										</md-checkbox>                   
+									</td>                 
+									<td>@{{prg.prg_referencia}} - @{{prg.prg_desc_referencia}}</td>                   
+									<td>@{{prg.prg_razonSocialTercero}}</td>
+									<td>@{{prg.prg_tipo_doc_oc}} - @{{prg.prg_num_orden_compra}}</td>
+									<td>@{{prg.prg_fecha_programada}}</td>
+									<td>@{{prg.prg_cant_programada}}</td>
+									<td>@{{prg.prg_cant_solicitada_oc}}</td>
+									<td>@{{prg.prg_cant_entregada_oc}}</td>
+									<td>@{{prg.prg_cant_pendiente_oc}}</td>    
+									<td class="text-right"> 
+										<button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modal1" ng-click="edit(prg)">
+											<i class="glyphicon glyphicon-pencil"></i>
+											<md-tooltip md-direction="bottom">
+												Actualizar registro
+											</md-tooltip> 
+										</button>
+									</td>     
+									<td>
+										<button class="btn btn-danger btn-sm" ng-click="showConfirm($event, prg)" >
+											<i class="glyphicon glyphicon-trash"></i>
+											<md-tooltip md-direction="bottom">
+												Borrar registro
+											</md-tooltip> 
+										</button>
+									</td>                     
+								</tr>
+							</tbody>
+						</table>
+				</div>
+				</div>
+			</div>
+			<div id="menu2" class="tab-pane fade">
 
+				<div class="panel panel-default">
+					<div class="panel-body">
 
+						<table  datatable="ng" dt-options="dtOptions2" dt-column-defs="dtColumnDefs2" class="row-border hover">
+							<thead>
+								<tr>
+									<th>Id</th>
+									<th>Referencia</th>
+									<td>Proveedor</td>
+									<th>Orden de compra</th>
+									<th>Fecha programada</th>
+									<th>Cantidad programada</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="prgCita in progPendEnvio | filter: {prg_estado : 2}">              
+								</td>        
+								<td>@{{prgCita.id}}</td>         
+								<td>@{{prgCita.prg_referencia}} - @{{prgCita.prg_desc_referencia}}</td>
+								<td>@{{prgCita.prg_razonSocialTercero}}</td>
+								<td>@{{prgCita.prg_tipo_doc_oc}} - @{{prgCita.prg_num_orden_compra}}</td>
+								<td>@{{prgCita.prg_fecha_programada}}</td>
+								<td>@{{prgCita.prg_cant_programada}}</td>  
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
 </div>
 
 @include('layouts.recepcionProveedores.programacion.programacionForm')
 <div ng-if="progress" class="progress">
-  <md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
-</div>
-
+	<md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
 </div>
 @endsection
 

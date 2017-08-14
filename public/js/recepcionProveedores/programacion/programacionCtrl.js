@@ -1,10 +1,13 @@
-app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'DTOptionsBuilder', 'DTColumnDefBuilder', '$mdDialog', '$window', function($scope, $timeout, $http, $filter, DTOptionsBuilder, DTColumnDefBuilder,  $mdDialog, $window ){
+app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'DTOptionsBuilder', 'DTColumnDefBuilder', '$mdDialog', '$window', '$interval', function($scope, $timeout, $http, $filter, DTOptionsBuilder, DTColumnDefBuilder,  $mdDialog, $window, $interval){
   $scope.getUrl = "programacionGetInfo";
   $scope.Url = "programacion";
   $scope.urlOC = "referenciasPorOc";
   $scope.referencias = [];
   $scope.ordenes = [];
-  $scope.objeto = {'ordenObj': undefined};
+  $scope.objeto = {
+    'ordenObj':  undefined,
+    'id'      :  "",
+  };
   $scope.errorCantidad = false;
   $scope.progPendEnvio = [];
   $scope.alertas = false;
@@ -13,13 +16,16 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
   $scope.progSelected = [];
   $scope.progress = true;
   $scope.datoRestar = 0;
+  $scope.mensajeEliminar = false;
 
- 
  // FUNCIONALIDADES ESPECIFICAS DEL FORMULARIO
 
   $scope.save = function(){
+    //activa la progress bar
     $scope.progress = true;
+    //Crea el objeto que se va a guardar en la base de datos
     $scope.objProg = {
+     'id'                     : $scope.objeto.id,
      'prg_num_orden_compra'   : $scope.objeto.ordenObj.ConsDocto,
      'prg_tipo_doc_oc'        : $scope.objeto.ordenObj.TipoDocto,
      'prg_referencia'         : $scope.objeto.ordenObj.Referencia,
@@ -38,16 +44,27 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
      'prg_cant_embalaje'      : 1,
      'prg_estado' : 1
    }
+   // Envia el objeto al controlador de laravel
    $http.post($scope.Url, $scope.objProg).then(function(response){
       var res = response.data;
+      // valida si en la respuesta esta definido algun error, si hay muestra mensaje
+      // si no ahi guarda el objeto en el grupo de objetos y limpia el formulario
       if (res.errors == undefined) {
-        $scope.progPendEnvio.push(res);
+        existe =  $filter('filter')($scope.progPendEnvio, {id : res.id});
+        if (existe.length > 0) {
+            var pos = $scope.progPendEnvio.indexOf(existe[0]);
+            $scope.progPendEnvio.splice(pos, 1);
+            $scope.progPendEnvio.push(res); 
+        }else{
+          $scope.progPendEnvio.push(res);
+          $scope.mostrarTabla = false; 
+        }        
         $scope.mensajeExito = true;
         $scope.objeto.cant_pedida = "";
         $scope.objeto.fechaEntrega = "";
-        $scope.objeto.observacion = "";         
+        $scope.objeto.observacion = ""; 
         $scope.searchTextProveedor = "";
-        $scope.objeto.selectedItem = "";   
+        $scope.objeto.selectedItem = undefined;   
         $scope.objeto.referencia = {};
         $scope.objeto.ordenObj = undefined;  
         $scope.periodoForm.$setPristine();
@@ -61,16 +78,44 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
       $scope.alertas = false;  
       $scope.mensajeExito = false;
       $scope.mensajes = {};
-      }, 11000);
+      }, 5000);
     }, function(response){
       alert(response.statusText + "  ["+ response.status + "]");
     });
 
   }
 
+  $scope.cambiaEstado = function(){
+    $scope.progress = true;     
+    console.log($scope.progSelected);
+    console.log($scope.progSelected.length);
+    if ($scope.progSelected.length > 0) {
+      $http.put($scope.Url + '/2', $scope.progSelected).then(function(response){
+        $scope.getInfo();   
+        $scope.progSelected = [];
+      }, function(response){
+        alert(response.statusText + "  ["+ response.status + "]");
+      });
+    }else{
+      $scope.progress = false; 
+      alert = $mdDialog.alert({
+        title: 'Favor seleccionar al menos un elemento',
+        textContent: '',
+        ok: 'Cerrar'
+      });
+      $mdDialog
+        .show(alert)
+        .finally(function() {
+          alert = undefined;
+        });
+      
+    }
+  }
+
   $scope.edit = function(obj){
     $scope.tituloBoton = 'Actualizar';
     $scope.tituloModal = 'Actualizar Programación Orden de Compra: #' + obj.id;
+    $scope.objeto.id = obj.id;
     $scope.equisAutocompletar = false;
     $scope.bloqAutocompl = true;
     $scope.mostrarLinkOc = true;
@@ -102,12 +147,50 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
     $scope.datoRestar = 0;
     // Calculo la cantidad total maxima posible de programar en la orden de compra
     $scope.datoRestar += obj.prg_cant_programada;
-    $scope.seleccionarOrden($scope.objeto.ordenObj);
+    $scope.seleccionarOrden($scope.objeto.ordenObj, $scope.datoRestar);    
+    $timeout(function() {
+       $scope.toggle.list1 = false;
+       $scope.mostrarTabla = false;
+    }, 500);
     // Obtengo la cantidad y fecha programada de la programacion
     $scope.objeto.cant_pedida = obj.prg_cant_programada;  
     $scope.objeto.fechaEntrega = new Date($filter('date')(obj.prg_fecha_programada, 'MM/dd/yyyy', '+0500'));
     $scope.objeto.observacion = obj.prg_observacion;
   }
+
+  $scope.showConfirm = function(ev, prg) {
+    // Appending dialog to document.body to cover sidenav in docs app
+    var textBorrado = '¿Desea eliminar la programacion #' + prg.id + '?';
+    var confirm = $mdDialog.confirm()
+    .title(textBorrado)
+    .textContent('')
+    .ariaLabel('Buen dia')
+    .targetEvent(ev)
+    .ok('OK')
+    .cancel('CANCELAR');
+
+    $mdDialog.show(confirm).then(function() {
+      $scope.progress = true;     
+      // Envia el objeto al controlador de laravel para ser borrado
+      $http.delete($scope.Url + '/'+ prg.id).then(function(response){
+
+        if (response.data = 'success') {
+          var pos = $scope.progPendEnvio.indexOf(prg);
+          $scope.progPendEnvio.splice(pos, 1);
+          $scope.mensajeEliminar = true;
+          $scope.progress = false; 
+        }      
+      }, function(response){
+        alert(response.statusText + "  ["+ response.status + "]");
+      });
+
+      $timeout(function() {
+        $scope.mensajeEliminar = false;
+      }, 5000);
+    }, function() {
+      //
+    });
+  };
 
   $scope.filtrarOrdenes = function(){
     if($scope.objeto.referencia == undefined){
@@ -121,14 +204,18 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
    $scope.objeto.observacion = "";
   }
 
-  $scope.seleccionarOrden = function(orden){
-    $scope.objeto.referencia = {'DescripcionReferencia' : orden.DescripcionReferencia,
-    'Referencia': orden.Referencia.trim()} 
+  $scope.seleccionarOrden = function(orden, datoRestar = 0){
+    // crea un objeto referencia con la informacion de la orden seleecionada en el formulario
+    $scope.objeto.referencia = {
+                                'DescripcionReferencia' : orden.DescripcionReferencia,
+                                'Referencia'            : orden.Referencia.trim()
+                               } 
+    $scope.toggle.list1 = false;
     $scope.objeto.ordenObj = orden;  
     $scope.cantMaximaProg = 0;
+    $scope.datoRestar = datoRestar;
     var existe = [];
     existe =  $filter('filter')($scope.progPendEnvio, {prg_consecutivoRefOc : $scope.objeto.ordenObj.f421_rowid});
-    console.log($scope.progPendEnvio);
     if (existe.length > 0) {
       existe.forEach(function(obj) {
          $scope.cantMaximaProg += obj.prg_cant_programada;
@@ -158,6 +245,7 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
 
    // Funcion que filtra el array de proveedores por la palabra ingresada en el autocomplete y retorna el array filtrado
   $scope.query = function(searchTextProveedor) { 
+    console.log(searchTextProveedor);
     if(searchTextProveedor != ""){
       var filtroDoble = $filter('filter')($scope.autocompProveedor, {nitTercero: searchTextProveedor}); 
       if(filtroDoble.length == 0){
@@ -178,7 +266,7 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
       var res = response.data;
         $scope.autocompProveedor = angular.copy(res.item_txt_nitproveedor);
         $scope.progPendEnvio = angular.copy(res.progPendEnvio);
-        $scope.progress = false;     
+        $scope.progress = false;   
     });
   }
 
@@ -188,6 +276,8 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
   $scope.getReferenciasPorOc = function(){
       if ($scope.searchTextProveedor != "") {
        $scope.progress = true;
+       $scope.toggle.list1 = true;       
+       $scope.mostrarTabla = true;
        var data = {};
        data.proveedor = $scope.objeto.selectedItem;
        $http.post($scope.urlOC, data).then(function(response){
@@ -201,8 +291,8 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
       $scope.objeto.referencia = {};
       $scope.objeto.orden = "";
       $scope.objeto.ordenObj = undefined;
-      $scope.ordenes = {};
-      $scope.todas = {};
+      $scope.ordenes = [];
+      $scope.todas = [];
       $scope.referencias = {};
       $scope.objeto.cant_pedida = "";
       $scope.objeto.fechaEntrega = "";
@@ -210,14 +300,15 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
     }   
   }
 
-  $scope.limpiar = function(){
+  $scope.limpiar = function(){      
+      $scope.mostrarTabla = false;
       $scope.equisAutocompletar = true;
       $scope.mostrarLinkOc = false;
       $scope.bloqAutocompl = false;
       $scope.objeto.referencia = {};
       $scope.objeto.orden = "";
+      $scope.ordenes = [];
       $scope.objeto.ordenObj = undefined;
-      $scope.ordenes = {};
       $scope.referencias = {};
       $scope.objeto.cant_pedida = "";
       $scope.objeto.fechaEntrega = "";
@@ -225,6 +316,7 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
       $scope.datoRestar = 0;
       $scope.searchTextProveedor = "";
       $scope.selectedItem = {};
+      $scope.objeto.id = "";
       $scope.tituloBoton = 'Adicionar';
       $scope.tituloModal = 'Crear Programación Orden de Compra';
   };
@@ -246,30 +338,35 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
   };
 
   $scope.isChecked = function() {
-    return $scope.progSelected.length === $scope.progPendEnvio.length;
+    var listaSinEstadoUno = $filter('filter')($scope.progPendEnvio, {prg_estado : 1});
+    return $scope.progSelected.length === listaSinEstadoUno.length;
   };
 
   $scope.isIndeterminate = function() {
+    var listaSinEstadoUno = $filter('filter')($scope.progPendEnvio, {prg_estado : 1});
     return ($scope.progSelected.length !== 0 &&
-        $scope.progSelected.length !== $scope.progPendEnvio.length);
+        $scope.progSelected.length !== listaSinEstadoUno.length);
   };
 
   $scope.toggleAll = function() {
-    if ($scope.progSelected.length === $scope.progPendEnvio.length) {
+    var listaSinEstadoUno = $filter('filter')($scope.progPendEnvio, {prg_estado : 1});
+    if ($scope.progSelected.length === listaSinEstadoUno.length) {
       $scope.progSelected = [];
     } else if ($scope.progSelected.length === 0 || $scope.progSelected.length > 0) {
-      $scope.progSelected = $scope.progPendEnvio.slice(0);
+      $scope.progSelected = listaSinEstadoUno.slice(0);
     }
   };
 
   // INICIALIZACION LIBRERIA DATATABLE
   $scope.dtOptions = DTOptionsBuilder.newOptions();
   $scope.dtOptions1 = DTOptionsBuilder.newOptions();
+  $scope.dtOptions2 = DTOptionsBuilder.newOptions();
   $scope.dtColumnDefs = [
   DTColumnDefBuilder.newColumnDef(0).notSortable(),
   DTColumnDefBuilder.newColumnDef(9).notSortable(),
   DTColumnDefBuilder.newColumnDef(10).notSortable()
   ];
+  $scope.dtColumnDefs2 = [];
 
   // FUNCIONES PARA EL MANEJO DE CALENDARIOS
 
@@ -283,5 +380,13 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
     return day === 1 || day === 2|| day === 3|| day === 4|| day === 5;
   }
 
+  //Animacion de sombras 
+  this.elevation = 1;
+  this.nextElevation = function() {
+        if (++this.elevation == 25) {
+          this.elevation = 1;
+        }
+      };
+  $interval(this.nextElevation.bind(this), 50);
 
 }]);
