@@ -50,17 +50,17 @@ class CreateTProgramacion extends Migration
             $table->integer('prg_cant_pendiente_oc')
                   ->comment('Cantidad pendiente por entregar en toda la orden de compra (REGISTRO ERP)');
 
-            $table->integer('prg_unidad_empaque')
+            $table->string('prg_tipoempaque')
                   ->nullable()
-                  ->comment('Unidad de empaque que registra en la orden de compra (REGISTRO ERP)');
+                  ->comment('Tipo de empaque especificado por el proveedor para esta referencia');
 
-            $table->integer('prg_cant_embalaje')
+            $table->string('prg_cantidadempaques')
                   ->nullable()
-                  ->comment('Cantidad de embalaje que ingresa el proveedor');
+                  ->comment('Cantidad de empaques que van a llegar, calculado dividiendo la cantidad programada en la cantidad que puede contener cada empaque.');
 
-            $table->integer('prg_prioridad')
+            $table->string('prg_unidadreferencia')
                   ->nullable()
-                  ->comment('Prioridad de la programacion para planeacion sirve para informar a abastecimiento que es mas urgente recibir');
+                  ->comment('Tipo de unidad de la referencia especificada en el UNOEE');
 
             $table->integer('prg_estado')
                   ->comment('Estado de la programacion');

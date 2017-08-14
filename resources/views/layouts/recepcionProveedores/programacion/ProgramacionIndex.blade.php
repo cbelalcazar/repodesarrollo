@@ -21,18 +21,26 @@
 							</md-tooltip>
 						</button>
 
-						<button type="button"  class="btn btn-success btn-sm" ng-click="cambiaEstado()">
-							<i class="glyphicon glyphicon-plus"></i> Enviar a bodega
+						<button type="button"  class="btn btn-info btn-sm" ng-click="cambiaEstado()">
+							<i class="glyphicon glyphicon-gift"></i> Enviar a bodega
 							<md-tooltip md-direction="bottom">
 								Enviar programacion a solicitud cita
 							</md-tooltip>
 						</button>
 
+						<button type="button"  class="btn btn-danger btn-sm" ng-click="eliminarSeleccionadas($event)">
+							<i class="glyphicon glyphicon-trash"></i> Eliminar seleccionadas
+							<md-tooltip md-direction="bottom">
+								Eliminar todas las ordenes programaciones seleccionadas
+							</md-tooltip>
+						</button>
+
+
 						<br><br>
 						<div class="alert alert-success" ng-if="mensajeEliminar">
 							<strong>Registro eliminado exitosamente.</strong> 
 						</div>
-						<table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover">
+						<table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover" dt-instance="dtInstance">
 							<thead>
 								<tr>
 									<th>
@@ -45,9 +53,10 @@
 									</th>
 									<th>Referencia</th>
 									<td>Proveedor</td>
-									<th>Orden de compra</th>
+									<th>Orden compra</th>
 									<th>Fecha programada</th>
-									<th>Cantidad programada</th>
+									<th>Cant. programada</th>
+									<th>Embalaje</th>
 									<th>Cant. Solicitada OC</th>
 									<th>Cant. Entregada OC</th>
 									<th>Cant. Pendiente OC</th>
@@ -65,8 +74,9 @@
 									<td>@{{prg.prg_referencia}} - @{{prg.prg_desc_referencia}}</td>                   
 									<td>@{{prg.prg_razonSocialTercero}}</td>
 									<td>@{{prg.prg_tipo_doc_oc}} - @{{prg.prg_num_orden_compra}}</td>
-									<td>@{{prg.prg_fecha_programada}}</td>
-									<td>@{{prg.prg_cant_programada}}</td>
+									<td>@{{prg.prg_fecha_programada  | date:'M/dd/yyyy'}}</td>
+									<td>@{{prg.prg_cant_programada}} - @{{prg.prg_unidadreferencia}}</td>
+									<td>@{{prg.prg_cantidadempaques}} - @{{prg.prg_tipoempaque}}</td>
 									<td>@{{prg.prg_cant_solicitada_oc}}</td>
 									<td>@{{prg.prg_cant_entregada_oc}}</td>
 									<td>@{{prg.prg_cant_pendiente_oc}}</td>    
@@ -115,7 +125,7 @@
 								<td>@{{prgCita.prg_referencia}} - @{{prgCita.prg_desc_referencia}}</td>
 								<td>@{{prgCita.prg_razonSocialTercero}}</td>
 								<td>@{{prgCita.prg_tipo_doc_oc}} - @{{prgCita.prg_num_orden_compra}}</td>
-								<td>@{{prgCita.prg_fecha_programada}}</td>
+								<td>@{{prgCita.prg_fecha_programada  | date:'M/dd/yyyy'}}</td>
 								<td>@{{prgCita.prg_cant_programada}}</td>  
 							</tr>
 						</tbody>

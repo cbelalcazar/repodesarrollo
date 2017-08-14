@@ -21,6 +21,11 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
  // FUNCIONALIDADES ESPECIFICAS DEL FORMULARIO
 
   $scope.save = function(){
+    // Busco la referencia a guardar en el catalogo de referencias del aplicativo t_inforeferencia para poder calcular
+    // Como viene la carga dato que sirve a la persona de bodega en la asignacion de la cita
+    var filtro = $filter('filter')($scope.infoReferencia, {iref_referencia : $scope.objeto.ordenObj.Referencia.trim()});
+    // Calculo de cantidad de empaques que va a enviar el proveedor
+    var canempaques = $scope.objeto.cant_pedida / filtro[0].iref_pesoporempaque;
     //activa la progress bar
     $scope.progress = true;
     //Crea el objeto que se va a guardar en la base de datos
@@ -39,9 +44,10 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
      'prg_cant_pendiente_oc'  : $scope.objeto.ordenObj.CantPendiente,
      'prg_fecha_ordenCompra'  : $scope.objeto.ordenObj.f421_fecha_entrega,
      'prg_consecutivoRefOc'   : $scope.objeto.ordenObj.f421_rowid,
+     'prg_unidadreferencia'   : $scope.objeto.ordenObj.UndOrden,
+     'prg_cantidadempaques'   : Math.ceil(canempaques),
+     'prg_tipoempaque'        : filtro[0].iref_tipoempaque + ' de ' + filtro[0].iref_pesoporempaque,
      'prg_observacion'        : $scope.objeto.observacion,
-     'prg_unidad_empaque'     : 1,
-     'prg_cant_embalaje'      : 1,
      'prg_estado' : 1
    }
    // Envia el objeto al controlador de laravel
@@ -68,7 +74,7 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
         $scope.objeto.referencia = {};
         $scope.objeto.ordenObj = undefined;  
         $scope.periodoForm.$setPristine();
-
+        $scope.progSelected = [];    
       }else{
        $scope.mensajes = res.errors;     
        $scope.alertas = true;
@@ -87,8 +93,6 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
 
   $scope.cambiaEstado = function(){
     $scope.progress = true;     
-    console.log($scope.progSelected);
-    console.log($scope.progSelected.length);
     if ($scope.progSelected.length > 0) {
       $http.put($scope.Url + '/2', $scope.progSelected).then(function(response){
         $scope.getInfo();   
@@ -170,27 +174,70 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
     .cancel('CANCELAR');
 
     $mdDialog.show(confirm).then(function() {
-      $scope.progress = true;     
-      // Envia el objeto al controlador de laravel para ser borrado
-      $http.delete($scope.Url + '/'+ prg.id).then(function(response){
-
-        if (response.data = 'success') {
-          var pos = $scope.progPendEnvio.indexOf(prg);
-          $scope.progPendEnvio.splice(pos, 1);
-          $scope.mensajeEliminar = true;
-          $scope.progress = false; 
-        }      
-      }, function(response){
-        alert(response.statusText + "  ["+ response.status + "]");
-      });
-
-      $timeout(function() {
-        $scope.mensajeEliminar = false;
-      }, 5000);
+      $scope.delete(prg.id, prg);            
     }, function() {
       //
     });
+
+
   };
+
+  $scope.delete = function(id, prg){
+    $scope.progress = true;     
+    // Envia el objeto al controlador de laravel para ser borrado
+    $http.delete($scope.Url + '/'+ id).then(function(response){
+      if (response.data = 'success') {
+        var pos = $scope.progPendEnvio.indexOf(prg);
+        $scope.progPendEnvio.splice(pos, 1);
+        $scope.mensajeEliminar = true;
+        $scope.progress = false; 
+      }      
+    }, function(response){
+      alert(response.statusText + "  ["+ response.status + "]");
+    });
+
+    $timeout(function() {
+      $scope.mensajeEliminar = false;
+    }, 5000);
+    $scope.progSelected = [];    
+  }
+
+  $scope.eliminarSeleccionadas = function(ev){
+    console.log($scope.progSelected);
+    
+    // Appending dialog to document.body to cover sidenav in docs app
+    var textBorrado = '¿Desea eliminar las ' + $scope.progSelected.length + ' seleccionadas';
+    var confirm = $mdDialog.confirm()
+    .title(textBorrado)
+    .textContent('')
+    .ariaLabel('Buen dia')
+    .targetEvent(ev)
+    .ok('OK')
+    .cancel('CANCELAR');
+
+    $mdDialog.show(confirm).then(function() {
+      $scope.progress = true;
+      $scope.progSelected.forEach(function(obj) {
+         // uno
+         $http.delete($scope.Url + '/'+ obj.id).then(function(response){
+          if (response.data = 'success') {
+            $scope.mensajeEliminar = true;
+          }      
+        }, function(response){
+          alert(response.statusText + "  ["+ response.status + "]");
+        });
+          // dos
+      }); 
+      $scope.getInfo(); 
+      $scope.progSelected = [];        
+    }, function() {
+      //
+    });
+    
+    $timeout(function() {
+      $scope.mensajeEliminar = false;
+    }, 5000);
+  }
 
   $scope.filtrarOrdenes = function(){
     if($scope.objeto.referencia == undefined){
@@ -206,6 +253,16 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
 
   $scope.seleccionarOrden = function(orden, datoRestar = 0){
     // crea un objeto referencia con la informacion de la orden seleecionada en el formulario
+    var filtro = $filter('filter')($scope.infoReferencia, {iref_referencia : orden.Referencia.trim()});
+    if (filtro.length <= 0) {
+      $scope.alertas = true;
+      $scope.mensajes.obj = ['No existe esta referencia en el catalogo, favor indicar si se puede programar o no'];
+      $timeout(function() {
+        $scope.alertas = false;
+        $scope.mensajes = {};
+      }, 6000);
+      return false;
+    }
     $scope.objeto.referencia = {
                                 'DescripcionReferencia' : orden.DescripcionReferencia,
                                 'Referencia'            : orden.Referencia.trim()
@@ -266,6 +323,7 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
       var res = response.data;
         $scope.autocompProveedor = angular.copy(res.item_txt_nitproveedor);
         $scope.progPendEnvio = angular.copy(res.progPendEnvio);
+        $scope.infoReferencia = angular.copy(res.infoReferencia);
         $scope.progress = false;   
     });
   }

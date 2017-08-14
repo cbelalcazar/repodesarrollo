@@ -34,14 +34,15 @@ class TProgramacion extends Model
     'prg_cant_solicitada_oc',
     'prg_cant_entregada_oc',
     'prg_cant_pendiente_oc',
-    'prg_unidad_empaque',
-    'prg_cant_embalaje',
     'prg_prioridad',
     'prg_estado',
     'prg_observacion',
     'prg_tipo_programacion',
     'prg_fecha_ordenCompra',
-    'prg_consecutivoRefOc'
+    'prg_consecutivoRefOc', 
+    'prg_tipoempaque',
+    'prg_cantidadempaques',
+    'prg_unidadreferencia'
     ];
 
     protected $guarded = [];

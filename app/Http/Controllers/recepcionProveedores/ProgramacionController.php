@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Genericas\Tercero;
 use App\Models\recepcionProveedores\TProgramacion;
+use App\Models\recepcionProveedores\TInfoReferencia;
 use \Cache;
 use DB;
 use Validator;
@@ -32,8 +33,6 @@ class ProgramacionController extends Controller
         'prg_cant_pendiente_oc' => 'required',
         'prg_fecha_ordenCompra' => 'required',
         'prg_consecutivoRefOc' => 'required',
-        'prg_unidad_empaque' => 'required',
-        'prg_cant_embalaje' => 'required',
         'prg_estado' => 'required',
         ];
 
@@ -58,8 +57,6 @@ class ProgramacionController extends Controller
         'prg_cant_pendiente_oc.required' => 'Intresar cantidad pendiente orden de compra',
         'prg_fecha_ordenCompra.required' => 'Ingresar fecha entrega orden de compra',
         'prg_consecutivoRefOc.required' => 'Ingresar consecutivo por referencia orden de compra',
-        'prg_unidad_empaque.required' => 'Ingresar unidad de empaque orden de compra',
-        'prg_cant_embalaje.required' => 'Ingresar embalaje orden de compra',
         'prg_estado.required' => 'Ingresar estado orden de compra',
         ];
     }
@@ -86,7 +83,8 @@ class ProgramacionController extends Controller
     {
         $item_txt_nitproveedor = Tercero::where('indxProveedorTercero', '1')->get();
         $progPendEnvio = TProgramacion::whereIn('prg_estado', [1,2])->get();
-        $response = compact('item_txt_nitproveedor', 'progPendEnvio');
+        $infoReferencia = TInfoReferencia::all();
+        $response = compact('item_txt_nitproveedor', 'progPendEnvio', 'infoReferencia');
         return response()->json($response);
     }
 
