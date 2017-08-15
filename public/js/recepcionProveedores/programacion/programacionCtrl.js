@@ -48,6 +48,7 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
      'prg_cantidadempaques'   : Math.ceil(canempaques),
      'prg_tipoempaque'        : filtro[0].iref_tipoempaque + ' de ' + filtro[0].iref_pesoporempaque,
      'prg_observacion'        : $scope.objeto.observacion,
+     'prg_tipo_programacion'  : filtro[0].iref_programable,
      'prg_estado' : 1
    }
    // Envia el objeto al controlador de laravel

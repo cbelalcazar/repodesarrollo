@@ -58,9 +58,7 @@
 									<th>Cant. programada</th>
 									<th>Embalaje</th>
 									<th>Cant. Solicitada OC</th>
-									<th>Cant. Entregada OC</th>
 									<th>Cant. Pendiente OC</th>
-									<th></th>
 									<th></th>
 								</tr>
 							</thead>
@@ -78,24 +76,21 @@
 									<td>@{{prg.prg_cant_programada}} - @{{prg.prg_unidadreferencia}}</td>
 									<td>@{{prg.prg_cantidadempaques}} - @{{prg.prg_tipoempaque}}</td>
 									<td>@{{prg.prg_cant_solicitada_oc}}</td>
-									<td>@{{prg.prg_cant_entregada_oc}}</td>
 									<td>@{{prg.prg_cant_pendiente_oc}}</td>    
-									<td class="text-right"> 
+									<td class="text-right" style="white-space:nowrap;"> 
 										<button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modal1" ng-click="edit(prg)">
 											<i class="glyphicon glyphicon-pencil"></i>
 											<md-tooltip md-direction="bottom">
 												Actualizar registro
 											</md-tooltip> 
 										</button>
-									</td>     
-									<td>
 										<button class="btn btn-danger btn-sm" ng-click="showConfirm($event, prg)" >
 											<i class="glyphicon glyphicon-trash"></i>
 											<md-tooltip md-direction="bottom">
 												Borrar registro
 											</md-tooltip> 
 										</button>
-									</td>                     
+									</td>                  
 								</tr>
 							</tbody>
 						</table>
