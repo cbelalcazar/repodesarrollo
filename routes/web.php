@@ -31,9 +31,14 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('autocomplete', ['uses' => 'GenericasController@autocomplete', 'as' => 'autocomplete']);
 
 	Route::group(['prefix' => 'recepcionProveedores'], function () {
+		// Programacion ordenes 
 		Route::resource('programacion', 'recepcionProveedores\ProgramacionController');
 		Route::get('programacionGetInfo', 'recepcionProveedores\ProgramacionController@programacionGetInfo');
 		Route::post('referenciasPorOc', 'recepcionProveedores\ProgramacionController@referenciasPorOc');
+
+		// Solicitud cita
+		Route::resource('cita', 'recepcionProveedores\CitaController');
+		Route::get('citaGetInfo', 'recepcionProveedores\CitaController@citaGetInfo');
 		
 	});
 
