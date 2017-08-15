@@ -418,12 +418,9 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
 
   // INICIALIZACION LIBRERIA DATATABLE
   $scope.dtOptions = DTOptionsBuilder.newOptions();
-  $scope.dtOptions1 = DTOptionsBuilder.newOptions();
-  $scope.dtOptions2 = DTOptionsBuilder.newOptions();
   $scope.dtColumnDefs = [
   DTColumnDefBuilder.newColumnDef(0).notSortable(),
-  DTColumnDefBuilder.newColumnDef(9).notSortable(),
-  DTColumnDefBuilder.newColumnDef(10).notSortable()
+  DTColumnDefBuilder.newColumnDef(9).notSortable()
   ];
   $scope.dtColumnDefs2 = [];
 

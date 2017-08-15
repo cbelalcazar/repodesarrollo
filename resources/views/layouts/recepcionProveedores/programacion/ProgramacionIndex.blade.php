@@ -3,7 +3,7 @@
 @section('content')
 @include('includes.titulo')
 <div ng-controller="programacionCtrl as ctrl" ng-cloak>
-	<div class="row" md-whiteframe="12">
+	<div>
 		<ul class="nav nav-tabs">
 			<li  class="active"><a data-toggle="tab" href="#menu1">Ordenes en planeacion</a></li>
 			<li><a data-toggle="tab" href="#menu2">Ordenes pendiente asignar cita</a></li>
