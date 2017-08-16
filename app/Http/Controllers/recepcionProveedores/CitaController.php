@@ -17,7 +17,7 @@ class CitaController extends Controller
     {
         $titulo = 'ASIGACION DE CITA';
         $ruta = 'Cita // Asignacion de cita';
-        return view('layouts.recepcionProveedores.cita.citaIndex', compact('titulo', 'ruta'));
+        return view('layouts.recepcionProveedores.cita.citaIndex2', compact('titulo', 'ruta'));
     }
 
      /**
