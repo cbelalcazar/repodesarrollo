@@ -26,57 +26,6 @@ $provide.value("$locale", {
     ],
     "FIRSTDAYOFWEEK": 6,
     "MONTH": [
-<<<<<<< HEAD
-      "enero",
-      "febrero",
-      "marzo",
-      "abril",
-      "mayo",
-      "junio",
-      "julio",
-      "agosto",
-      "septiembre",
-      "octubre",
-      "noviembre",
-      "diciembre"
-    ],
-    "SHORTDAY": [
-      "dom.",
-      "lun.",
-      "mar.",
-      "mi\u00e9.",
-      "jue.",
-      "vie.",
-      "s\u00e1b."
-    ],
-    "SHORTMONTH": [
-      "ene.",
-      "feb.",
-      "mar.",
-      "abr.",
-      "may.",
-      "jun.",
-      "jul.",
-      "ago.",
-      "sep.",
-      "oct.",
-      "nov.",
-      "dic."
-    ],
-    "STANDALONEMONTH": [
-      "enero",
-      "febrero",
-      "marzo",
-      "abril",
-      "mayo",
-      "junio",
-      "julio",
-      "agosto",
-      "septiembre",
-      "octubre",
-      "noviembre",
-      "diciembre"
-=======
       "Enero",
       "Febrero",
       "Marzo",
@@ -126,7 +75,6 @@ $provide.value("$locale", {
       "Octubre",
       "Noviembre",
       "Diciembre"
->>>>>>> 9ea48f584dce26969e2356341525b3050512a2c9
     ],
     "WEEKENDRANGE": [
       5,
@@ -174,8 +122,5 @@ $provide.value("$locale", {
   "localeID": "es_CO",
   "pluralCat": function(n, opt_precision) {  if (n == 1) {    return PLURAL_CATEGORY.ONE;  }  return PLURAL_CATEGORY.OTHER;}
 });
-<<<<<<< HEAD
+
 }]);
-=======
-}]);
->>>>>>> 9ea48f584dce26969e2356341525b3050512a2c9

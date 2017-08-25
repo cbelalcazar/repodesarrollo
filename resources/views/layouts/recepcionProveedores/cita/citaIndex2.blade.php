@@ -3,8 +3,7 @@
 @section('content')
 @include('includes.titulo')
 <div ng-controller="citaCtrl as ctrl" ng-cloak>
-    <div ui-calendar ng-model="eventSources">
-      
+    <div ui-calendar="uiConfig.calendar" ng-model="eventSources">   
     </div>
 
   <div ng-if="progress" class="progress">
