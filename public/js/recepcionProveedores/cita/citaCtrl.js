@@ -53,16 +53,25 @@ app.controller('citaCtrl', ['$scope', '$http', '$filter', 'uiCalendarConfig', '$
  }
 
  $scope.drop = function(date, jsEvent, ui, resourceId) {
- 	console.log($scope.events);
  	var eventosMismoDia = $filter('filter')($scope.events, {fechaGroup : $scope.fecha, resourceId: resourceId});
- 	console.log(eventosMismoDia);
-    if (String($filter('date')(date._d, 'yyyy-MM-dd','+0000')) == $scope.fecha) {
+ 	$scope.fechaEvento = String($filter('date')(date._d, 'yyyy-MM-dd HH:mm:ss','+0000'));
+ 	var eventos = [];
+ 	eventos = eventosMismoDia.map(function(obj){ 
+ 		if (obj.start <= $scope.fechaEvento && obj.end > $scope.fechaEvento) {
+ 			return obj;
+ 		}else{
+ 			return null;
+ 		}
+     });
+ 	eventos =$filter('remove')(eventos, null);
+    if (String($filter('date')(date._d, 'yyyy-MM-dd','+0000')) == $scope.fecha && eventos.length <= 0) {
         var pos = $scope.seleccionadas.indexOf($scope.seleccionado);
         $scope.seleccionadas.splice(pos, 1);
         var d = new Date(date._d);   
         var start = String($filter('date')(date._d, 'yyyy-MM-dd HH:mm:ss','+0000'));      
         d.setMinutes(d.getMinutes()+15);
         var end = String($filter('date')(d, 'yyyy-MM-dd HH:mm:ss','+0000'));     
+       
         obj = {
             overlap: false,
             stick: true,
@@ -76,6 +85,7 @@ app.controller('citaCtrl', ['$scope', '$http', '$filter', 'uiCalendarConfig', '$
             estado:'sinGuardar',
             fechaGroup : String($filter('date')(date._d, 'yyyy-MM-dd','+0000')),
         };
+
         if(String($filter('date')(date._d, 'HH:mm:ss','+0000')) == '00:00:00'){
             obj.allDay = true;
         }
@@ -87,8 +97,13 @@ app.controller('citaCtrl', ['$scope', '$http', '$filter', 'uiCalendarConfig', '$
         var pos2 = $scope.programaciones[$scope.fecha].indexOf($scope.seleccionado);
         $scope.programaciones[$scope.fecha].splice(pos2, 1);
     }else{ 
+    	if (eventos.length <= 0) {
+    		var mensaje = 'la programación debe ser agregada para el dia indicado por planeación';
+    	}else{
+    		var mensaje = 'No se permite sobreponer elementos en el calendario.';
+    	}
         alert = $mdDialog.alert({
-            title: 'la programación debe ser agregada para el dia indicado por planeación',
+            title: mensaje,
             textContent: '',
             ok: 'Cerrar'
         });
@@ -222,12 +237,36 @@ $timeout(function() {
                     var data = response.data;
                     $scope.getInfo();
                     $scope.progress = true;
+                    var mensaje = ""; 
+                    var fecha = "";    
+                    var proveedor = "";                
+                    response.data.citas.forEach( function(element, index) {
+                    	console.log(element);
+                    	if (element.mensaje != "") {
+                    		mensaje += element.mensaje + '\n';
+                    		fecha = element.fechaGroup;
+                    		proveedor = element.cit_nitproveedor;
+                    	}
+                    	
+                    });
+                    console.log(mensaje);
                     $timeout(function() {
-	                    $scope.actualizarLista();                  
+	                    $scope.actualizarLista();      
+	                    $scope.mostrarProgramaciones(fecha, proveedor);            
 	                }, 3000);  
 	                $timeout(function() {
 	                    $scope.progress = false;                
 	                }, 3100);    
+	                alert = $mdDialog.alert({
+	                    title: 'Citas creadas:',
+	                    textContent: mensaje,
+	                    ok: 'Cerrar'
+	                });
+	                $mdDialog
+	                .show(alert)
+	                .finally(function() {
+	                    alert = undefined;
+	                });    
                 }, function(response){
                     alert(response.statusText + "  ["+ response.status + "]");
                 });

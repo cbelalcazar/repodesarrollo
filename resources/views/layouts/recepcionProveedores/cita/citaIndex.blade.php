@@ -50,7 +50,7 @@
 					<hr>
 					<h4>Programaciones pendientes: @{{seleccionadas[0].prg_razonSocialTercero}}</h4>
 					<hr>
-					<div class='fc-event' style="margin-bottom:1px; padding:5px;" drag-me ng-repeat="lista in seleccionadas" ng-mouseup="seleccionar(lista)">@{{lista.prg_tipo_doc_oc}} - @{{lista.prg_num_orden_compra}} - Ref: @{{lista.prg_referencia}} - Cant: @{{lista.prg_cant_programada}} - Embalaje: @{{lista.prg_cantidadempaques}} en @{{lista.prg_tipoempaque}} - @{{lista.prg_nit_proveedor}}</div>
+					<div class='fc-event' style="margin-bottom:1px; padding:5px;" drag-me ng-repeat="lista in seleccionadas" ng-mouseup="seleccionar(lista)">@{{lista.prg_tipo_doc_oc}} - @{{lista.prg_num_orden_compra}} - Ref: @{{lista.prg_referencia}} - Cant: @{{lista.prg_cant_programada}} - Embalaje: @{{lista.prg_cantidadempaques}} en @{{lista.prg_tipoempaque}}</div>
 				</div>
 			</div>
 		</div>

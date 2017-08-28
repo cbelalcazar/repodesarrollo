@@ -81,6 +81,7 @@ class CitaController extends Controller
                         $cita['cit_nombreproveedor'] = $prog['nomProveedor'];
                         $cita['cit_estado'] = "PENDCONFIRPROVEE";
                         $cita['fechaGroup'] = $prog['fechaGroup'];
+                        $cita['error'] = false;
 
                         $bandera = true;
                         if (count($value) == 1) {
@@ -95,7 +96,7 @@ class CitaController extends Controller
                        }                   
                        if ($bandera == false) {
                            $cita['error'] = true;
-                           $cita['mensaje'] = "Las programaciones para el proveedor " . $prog['nomProveedor'] . " Deben guardarse agrupadas para el mismo dia y en el mismo muelle"; 
+                           $cita['mensaje'] = "Las programaciones del proveedor " . $prog['nomProveedor'] . ' para el día ' . $prog['fechaGroup'] . ' se encuentran desagrupadas.'; 
                            break;
                        }elseif($bandera == true){
                            $final = $prog['end'];
@@ -105,28 +106,32 @@ class CitaController extends Controller
                     }
 
                 }
-                $programacionesId = array_pluck($cita['programaciones'], 'programacion');
-                $jsonCita = [
-                            'end'                       => $cita['cit_fechafin'],
-                            'start'                     => $cita['cit_fechainicio'],
-                            'stick'                     => true,
-                            'overlap'                   => false,
-                            'editable'                  => false,
-                            'estado'                    => $cita['cit_estado'],
-                            'resourceId'                => $cita['cit_muelle'], 
-                            'title'                     => $cita['cit_nitproveedor'] . ' - ' .  $cita['cit_nombreproveedor'],
-                            'backgroundColor'           => '#696969' , 
-                            'borderColor'               => '#696969' , 
-                            'programaciones'            => $programacionesId,
-                            'fechaGroup'                => $cita['fechaGroup'], 
-                            ];
-                $cita['cit_objcalendarcita'] = json_encode($jsonCita);
-                $objCita = TCita::Create($cita); 
-                TProgramacion::whereIn('id', $programacionesId)
-                              ->update(['prg_estado' => 3, 'prg_idcita' => $objCita->id]);                
-                array_push($citas, $cita);
 
-
+                if ($cita['error'] == true) {
+                    array_push($citas, $cita);
+                }else{
+                    $programacionesId = array_pluck($cita['programaciones'], 'programacion');
+                    $jsonCita = [
+                                'end'                       => $cita['cit_fechafin'],
+                                'start'                     => $cita['cit_fechainicio'],
+                                'stick'                     => true,
+                                'overlap'                   => false,
+                                'editable'                  => false,
+                                'estado'                    => $cita['cit_estado'],
+                                'resourceId'                => $cita['cit_muelle'], 
+                                'title'                     => $cita['cit_nitproveedor'] . ' - ' .  $cita['cit_nombreproveedor'],
+                                'backgroundColor'           => '#696969' , 
+                                'borderColor'               => '#696969' , 
+                                'programaciones'            => $programacionesId,
+                                'fechaGroup'                => $cita['fechaGroup'], 
+                                ];
+                    $cita['cit_objcalendarcita'] = json_encode($jsonCita);
+                    $objCita = TCita::Create($cita); 
+                    TProgramacion::whereIn('id', $programacionesId)
+                                  ->update(['prg_estado' => 3, 'prg_idcita' => $objCita->id]);                
+                    array_push($citas, $cita);
+                }
+                
             }            
         }
        
