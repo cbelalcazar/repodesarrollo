@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\recepcionProveedores\TProgramacion;
 use App\Models\recepcionProveedores\TCita;
+use Mail;
+use App\Mail\citaProveedor;
 
 class CitaController extends Controller
 {
@@ -131,6 +133,9 @@ class CitaController extends Controller
                     TProgramacion::whereIn('id', $programacionesId)
                                   ->update(['prg_estado' => 3, 'prg_idcita' => $objCita->id]);                
                     array_push($citas, $cita);
+                    //Debe buscar el correo del proveedor y ponerlo en un array $correoProveedor
+                    $correoProveedor = ['cabelalcazar@bellezaexpress.com'];
+                    Mail::to($correoProveedor)->send(new citaProveedor($cita));
                 }
                 
             }            
