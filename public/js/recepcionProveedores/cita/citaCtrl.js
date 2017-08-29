@@ -12,8 +12,8 @@ app.directive('dragMe', function() {
     };
 });
 
-app.controller('citaCtrl', ['$scope', '$http', '$filter', 'uiCalendarConfig', '$timeout', '$mdDialog',
-    function($scope, $http, $filter, uiCalendarConfig, $timeout, $mdDialog){
+app.controller('citaCtrl', ['$scope', '$http', '$filter', 'uiCalendarConfig', '$timeout', '$mdDialog', '$window',
+    function($scope, $http, $filter, uiCalendarConfig, $timeout, $mdDialog, $window){
 
         $scope.progress = true;
         $scope.getUrl = 'citaGetInfo';
@@ -127,7 +127,7 @@ $timeout(function() {
 	$scope.uiConfig = {
 	    calendar:{
 	        defaultView:'agendaDay',
-	        height: 500,
+	        height: 430,
 	        allDaySlot: false,
 	        schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
 	        editable: true,
@@ -161,11 +161,11 @@ $timeout(function() {
 	        eventOverlap: false,
 	        changeView:'agendaDay',
 	        businessHours: {
-	                        //Se descarga de lunes a viernes
-	                        dow: [ 1, 2, 3, 4, 5], 
-	                        // Se descarga de 7 a 4pm
-	                        start: '7:00',
-	                        end: '16:00', 
+                //Se descarga de lunes a viernes
+                dow: [ 1, 2, 3, 4, 5], 
+                // Se descarga de 7 a 4pm
+                start: '7:00',
+                end: '16:00', 
 	        },       
 	        dayRender: function(date, cell){
 	            if (String($filter('date')(date._d, 'yyyy-MM-dd','+0000')) != $scope.fecha) {
@@ -239,17 +239,19 @@ $timeout(function() {
                     $scope.progress = true;
                     var mensaje = ""; 
                     var fecha = "";    
-                    var proveedor = "";                
+                    var proveedor = "";            
                     response.data.citas.forEach( function(element, index) {
-                    	console.log(element);
-                    	if (element.mensaje != "") {
-                    		mensaje += element.mensaje + '\n';
-                    		fecha = element.fechaGroup;
-                    		proveedor = element.cit_nitproveedor;
-                    	}
+                    	
+                    	if (element.error == true) {
+                    		mensaje += element.mensaje + '<br>';
+                    	}else if(element.error == false){
+                            mensaje += element.cit_nombreproveedor + ' Inicio: ' + element.cit_fechainicio + ' Fin: ' + element.cit_fechafin + ' Muelle:' + element.cit_muelle + '<br>';
+                        }                            
+                        fecha = element.fechaGroup;
+                        proveedor = element.cit_nitproveedor;
                     	
                     });
-                    console.log(mensaje);
+
                     $timeout(function() {
 	                    $scope.actualizarLista();      
 	                    $scope.mostrarProgramaciones(fecha, proveedor);            
@@ -259,7 +261,7 @@ $timeout(function() {
 	                }, 3100);    
 	                alert = $mdDialog.alert({
 	                    title: 'Citas creadas:',
-	                    textContent: mensaje,
+	                    htmlContent: mensaje,
 	                    ok: 'Cerrar'
 	                });
 	                $mdDialog
@@ -271,6 +273,40 @@ $timeout(function() {
                     alert(response.statusText + "  ["+ response.status + "]");
                 });
                         
+            }
+
+            $scope.showPrompt = function(ev, lista){
+                var confirm = $mdDialog.prompt()
+                  .title('Desea rechazar la programacion?')
+                  .textContent('Favor ingresar la observación:')
+                  .placeholder('Observación')
+                  .ariaLabel('Observación')
+                  .initialValue('')
+                  .targetEvent(ev)
+                  .ok('Rechazar!')
+                  .cancel('Cancelar');
+
+                $mdDialog.show(confirm).then(function(result) {
+                    $scope.progress = true;
+                    if (result == undefined) {
+                        result = "";
+                    }
+                    lista.prg_observacion = result;
+                    $http.put($scope.Url + '/' + lista.id, lista).then(function(response){
+                        var pos = $scope.programaciones[lista.prg_fecha_programada].indexOf(lista);
+                        $scope.programaciones[lista.prg_fecha_programada].splice(pos, 1);
+                        var pos = $scope.seleccionadas.indexOf(lista);
+                        $scope.seleccionadas.splice(pos, 1);
+                        $scope.progress = false;
+                    }, function(response){
+                        alert(response.statusText + "  ["+ response.status + "]");
+                    });
+                }, function() {
+                });
+            }
+
+            $scope.recargarPagina = function(){
+                $window.location.reload();
             }
 
         }]);

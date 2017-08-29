@@ -82,7 +82,8 @@ class ProgramacionController extends Controller
     public function programacionGetInfo()
     {
         $item_txt_nitproveedor = Tercero::where('indxProveedorTercero', '1')->get();
-        $progPendEnvio = TProgramacion::whereIn('prg_estado', [1,2])->get();
+        //ESTADO PENDIENTE ENVIO A BODEGA => 1  Y ENVIADO A BODEGA => 2
+        $progPendEnvio = TProgramacion::whereIn('prg_estado', [1, 2, 4])->get();
         $infoReferencia = TInfoReferencia::all();
         $response = compact('item_txt_nitproveedor', 'progPendEnvio', 'infoReferencia');
         return response()->json($response);

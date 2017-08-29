@@ -445,4 +445,8 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
       };
   $interval(this.nextElevation.bind(this), 50);
 
+  $scope.filtroDobleEstado = function(item){
+    return item.prg_estado === 1 || item.prg_estado === 4; 
+  }
+
 }]);

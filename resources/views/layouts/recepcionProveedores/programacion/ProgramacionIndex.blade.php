@@ -59,11 +59,12 @@
 									<th>Embalaje</th>
 									<th>Cant. Solicitada OC</th>
 									<th>Cant. Pendiente OC</th>
+									<th>Estado</th>
 									<th></th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="prg in progPendEnvio | filter : {prg_estado : 1}">
+								<tr ng-repeat="prg in progPendEnvio | filter : filtroDobleEstado">
 									<td>
 										<md-checkbox ng-checked="exists(prg, progSelected)" ng-click="toggle(prg, progSelected)" class="md-primary">
 											@{{prg.id}}
@@ -76,7 +77,9 @@
 									<td>@{{prg.prg_cant_programada}} - @{{prg.prg_unidadreferencia}}</td>
 									<td>@{{prg.prg_cantidadempaques}} - @{{prg.prg_tipoempaque}}</td>
 									<td>@{{prg.prg_cant_solicitada_oc}}</td>
-									<td>@{{prg.prg_cant_pendiente_oc}}</td>    
+									<td>@{{prg.prg_cant_pendiente_oc}}</td>  
+									<td ng-if="prg.prg_estado == 4">Rechazada</td>
+									<td ng-if="prg.prg_estado == 1">Creada</td>    
 									<td class="text-right" style="white-space:nowrap;"> 
 										<button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modal1" ng-click="edit(prg)">
 											<i class="glyphicon glyphicon-pencil"></i>

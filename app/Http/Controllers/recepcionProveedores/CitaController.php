@@ -127,6 +127,7 @@ class CitaController extends Controller
                                 ];
                     $cita['cit_objcalendarcita'] = json_encode($jsonCita);
                     $objCita = TCita::Create($cita); 
+                    //ESTADO ENVIADO A PROVEEDOR
                     TProgramacion::whereIn('id', $programacionesId)
                                   ->update(['prg_estado' => 3, 'prg_idcita' => $objCita->id]);                
                     array_push($citas, $cita);
@@ -170,7 +171,12 @@ class CitaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->all();
+        //ESTADO RECHAZADA 4
+        $objProg = TProgramacion::where('id', $id)
+                                  ->update(['prg_estado' => 4, 'prg_observacion' => $data['prg_observacion']]);        
+        $response = compact('objProg');
+        return response()->json($response);
     }
 
     /**

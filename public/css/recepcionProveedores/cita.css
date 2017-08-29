@@ -1,0 +1,38 @@
+hr {
+	    margin-top: 0px;
+	    margin-bottom: 10px;
+	}
+.alert {
+	padding: 10px !important;
+}
+.bandeja{
+	height:200px; overflow-y: auto;
+}
+.fechal{
+	margin-bottom:2px !important;
+}
+.fecha2{
+	padding:5px 25px !important;  
+	background-color:#337ab7 !important;
+}
+.fuenteFecha{
+	font-size: 13px;
+}
+.liproveedor{
+	padding:0px;
+}
+.proveedor{
+	padding: 0px 2px 7px 7px;
+}
+.arrastrable{
+	margin-bottom:4px; 
+	background-color:#337ab7;
+}
+.subdivhijo{
+	width: 90%;
+	display: inline-block;
+	vertical-align: middle;
+}
+.linkcerrar{
+	color:white;
+}
