@@ -71,8 +71,6 @@ class CitaController extends Controller
             $cita = [];
             foreach ($agrupadoProvFech as $key => $value) {                 
                 foreach ($value as $clave => $prog) {  
-                    // $programacion = $value[$clave]['end'];   
-                    // $clavess = $clave;      
                     if ($clave == 0) {
                         $final = $prog['end'];
                         $muelle = $prog['resourceId'];

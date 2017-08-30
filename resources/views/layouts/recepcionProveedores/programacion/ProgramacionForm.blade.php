@@ -77,7 +77,6 @@
                           <md-icon ng-show="!toggle.list1"></md-icon>
                           <md-icon ng-show="toggle.list1"></md-icon>
                        </md-list-item>
-                      </div>                       
                        <div class="col-sm-12" ng-show="toggle.list1">
                           <table datatable="ng" dt-instance="dtInstance1" dt-options="dtOptions1" dt-column-defs="dtColumnDefs1" class="row-border hover" >
                             <thead>
@@ -105,6 +104,8 @@
                             </tbody>
                           </table>
                       </div>
+                      </div>                       
+                       
                     </md-list>
                 </div>
                    
@@ -123,7 +124,7 @@
                   <label>Ingresar fecha entrega programada:  (*)</label>
                   <br>
                   <md-datepicker ng-model="objeto.fechaEntrega" md-placeholder="Enter date"
-                  md-date-filter="soloDiasSemana" required></md-datepicker>
+                  md-date-filter="soloDiasSemana" md-min-date="dateNow" required></md-datepicker>
                 </div>
 
                 <div class="col-sm-4" ng-if="objeto.ordenObj != undefined">

@@ -69,7 +69,7 @@ class CreateTProgramacion extends Migration
                   ->nullable()
                   ->comment('Observacion de la programacion');
 
-            $table->integer('prg_tipo_programacion')
+            $table->string('prg_tipo_programacion', 50)
                   ->nullable()
                   ->comment('Indica si es para seguir flujo establecido o solo genera correo');
 

@@ -64,7 +64,23 @@ app.controller('citaCtrl', ['$scope', '$http', '$filter', 'uiCalendarConfig', '$
  		}
      });
  	eventos =$filter('remove')(eventos, null);
-    if (String($filter('date')(date._d, 'yyyy-MM-dd','+0000')) == $scope.fecha && eventos.length <= 0) {
+
+
+    //Ultimos tres dias y proximos tres dias rango para programar al proveedor
+    var diasRangoMaximo = 4;   
+    var validar = false;
+    //Este codigo suma dias o resta segun el rango con el objetivo de validar si la fecha en la que se suelta el elemento
+    //en el calendario esta dentro del rango permitido.
+    for (var i = -3; i < diasRangoMaximo; i++) {
+       $scope.fechaInicioRango = new Date(String($filter('date')($scope.fecha, 'yyyy-MM-dd HH:mm:ss Z','+0500')));
+       $scope.nuevaFecha = $scope.sumaFecha($scope.fechaInicioRango, i);
+       if (String($filter('date')(new Date($scope.nuevaFecha), 'yyyy-MM-dd')) == String($filter('date')(date._d, 'yyyy-MM-dd','+0000'))) {
+          var validar = true;
+          break;
+       }
+    }
+
+    if (validar && eventos.length <= 0) {
         var pos = $scope.seleccionadas.indexOf($scope.seleccionado);
         $scope.seleccionadas.splice(pos, 1);
         var d = new Date(date._d);   
@@ -75,13 +91,16 @@ app.controller('citaCtrl', ['$scope', '$http', '$filter', 'uiCalendarConfig', '$
         obj = {
             overlap: false,
             stick: true,
-            title: $scope.seleccionado.id + '-' + $scope.seleccionado.prg_tipo_doc_oc + '-' + $scope.seleccionado.prg_num_orden_compra+ '-' + $scope.seleccionado.prg_referencia+ '-Cant: ' + $scope.seleccionado.prg_cant_programada+ '- Embalaje: ' + $scope.seleccionado.prg_cantidadempaques+ ' en' + $scope.seleccionado.prg_tipoempaque + '-' + $scope.seleccionado.prg_nit_proveedor,
+            title: $scope.seleccionado.id + '-' + $scope.seleccionado.prg_tipo_doc_oc + '-' + $scope.seleccionado.prg_num_orden_compra+ '-' + $scope.seleccionado.prg_referencia+ '- Cant: ' + $scope.seleccionado.prg_cant_programada+ '- Embalaje: ' + $scope.seleccionado.prg_cantidadempaques+ ' en ' + $scope.seleccionado.prg_tipoempaque + ' - ' + $scope.seleccionado.prg_nit_proveedor,
             start: start,
             end : end,
             resourceId : resourceId,
             programacion : $scope.seleccionado.id,
             proveedor: $scope.seleccionado.prg_nit_proveedor,
             nomProveedor: $scope.seleccionado.prg_razonSocialTercero,
+            referencia: $scope.seleccionado.prg_referencia,
+            cantidadProgramada: $scope.seleccionado.prg_cant_programada,
+            embalaje: $scope.seleccionado.prg_tipoempaque,
             estado:'sinGuardar',
             fechaGroup : String($filter('date')(date._d, 'yyyy-MM-dd','+0000')),
         };
@@ -92,7 +111,7 @@ app.controller('citaCtrl', ['$scope', '$http', '$filter', 'uiCalendarConfig', '$
         $scope.events.push(obj);
         uiCalendarConfig.calendars.myCalendar.fullCalendar('renderEvent', obj);
         $timeout(function() {
-                    uiCalendarConfig.calendars.myCalendar.fullCalendar('changeView', 'agendaDay', $scope.fecha);
+                    uiCalendarConfig.calendars.myCalendar.fullCalendar('changeView', 'agendaDay', String($filter('date')(date._d, 'yyyy-MM-dd','+0000')));
          }, 10);
         var pos2 = $scope.programaciones[$scope.fecha].indexOf($scope.seleccionado);
         $scope.programaciones[$scope.fecha].splice(pos2, 1);
@@ -178,7 +197,7 @@ $timeout(function() {
 	            $scope.events.splice(pos, 1);
 	            obj[0].end = String($filter('date')(event.end._d, 'yyyy-MM-dd HH:mm:ss','+0000'));
 	            $scope.events.push(obj[0]); 
-	            $scope.actualizarLista();
+	            $scope.actualizarLista(String($filter('date')(event.end._d, 'yyyy-MM-dd','+0000')));
 	        },
 	        eventDrop: function (event, delta, revertFunc, jsEvent, ui, view) {  
 	            if (String($filter('date')(event.start._d, 'HH:mm:ss','+0000')) < '07:00:00' || String($filter('date')(event.end._d, 'HH:mm:ss','+0000')) > '16:00:00' ) {
@@ -213,7 +232,7 @@ $timeout(function() {
 	                obj[0].end = fechaFin;
 	                obj[0].resourceId = resourceId;
 	                $scope.events.push(obj[0]); 
-	                $scope.actualizarLista();
+	                $scope.actualizarLista(String($filter('date')(event.start._d, 'yyyy-MM-dd','+0000')));
 	            }      
 	        }
 	    }
@@ -229,49 +248,65 @@ $timeout(function() {
             };
 
             $scope.guardarProgramacion = function(){
-            	$scope.progress = true;
-                var objetos = $filter('filter')($scope.events, {estado : 'sinGuardar'});
-                objetos = $filter('orderBy')(objetos, 'start');
-                $scope.objCitas = objetos;
-                $http.post($scope.Url, $scope.objCitas).then(function(response){
-                    var data = response.data;
-                    $scope.getInfo();
-                    $scope.progress = true;
-                    var mensaje = ""; 
-                    var fecha = "";    
-                    var proveedor = "";            
-                    response.data.citas.forEach( function(element, index) {
-                    	
-                    	if (element.error == true) {
-                    		mensaje += element.mensaje + '<br>';
-                    	}else if(element.error == false){
-                            mensaje += element.cit_nombreproveedor + ' Inicio: ' + element.cit_fechainicio + ' Fin: ' + element.cit_fechafin + ' Muelle:' + element.cit_muelle + '<br>';
-                        }                            
-                        fecha = element.fechaGroup;
-                        proveedor = element.cit_nitproveedor;
-                    	
-                    });
 
-                    $timeout(function() {
-	                    $scope.actualizarLista();      
-	                    $scope.mostrarProgramaciones(fecha, proveedor);            
-	                }, 3000);  
-	                $timeout(function() {
-	                    $scope.progress = false;                
-	                }, 3100);    
-	                alert = $mdDialog.alert({
-	                    title: 'Citas creadas:',
-	                    htmlContent: mensaje,
-	                    ok: 'Cerrar'
-	                });
-	                $mdDialog
-	                .show(alert)
-	                .finally(function() {
-	                    alert = undefined;
-	                });    
-                }, function(response){
-                    alert(response.statusText + "  ["+ response.status + "]");
-                });
+            	
+                var objetos = $filter('filter')($scope.events, {estado : 'sinGuardar'});
+                console.log(objetos.length);
+                if (objetos.length > 0) {
+                    $scope.progress = true;
+                    objetos = $filter('orderBy')(objetos, 'start');
+                    $scope.objCitas = objetos;
+                    $http.post($scope.Url, $scope.objCitas).then(function(response){
+                        var data = response.data;
+                        $scope.getInfo();
+                        $scope.progress = true;
+                        var mensaje = ""; 
+                        var fecha = "";    
+                        var proveedor = "";            
+                        response.data.citas.forEach( function(element, index) {
+                            
+                            if (element.error == true) {
+                                mensaje += element.mensaje + '<br>';
+                            }else if(element.error == false){
+                                mensaje += element.cit_nombreproveedor + ' Inicio: ' + element.cit_fechainicio + ' Fin: ' + element.cit_fechafin + ' Muelle:' + element.cit_muelle + '<br>';
+                            }                            
+                            fecha = element.fechaGroup;
+                            proveedor = element.cit_nitproveedor;
+                            
+                        });
+
+                        $timeout(function() {
+                            $scope.actualizarLista();      
+                            $scope.mostrarProgramaciones(fecha, proveedor);            
+                        }, 3000);  
+                        $timeout(function() {
+                            $scope.progress = false;                
+                        }, 3100);    
+                        alert = $mdDialog.alert({
+                            title: 'Citas creadas:',
+                            htmlContent: mensaje,
+                            ok: 'Cerrar'
+                        });
+                        $mdDialog
+                        .show(alert)
+                        .finally(function() {
+                            alert = undefined;
+                        });    
+                    }, function(response){
+                        alert(response.statusText + "  ["+ response.status + "]");
+                    });
+                }else{
+                    alert = $mdDialog.alert({
+                            title: 'No se encontraron elementos para crear',
+                            htmlContent: "",
+                            ok: 'Cerrar'
+                        });
+                    $mdDialog
+                    .show(alert)
+                    .finally(function() {
+                    });  
+                }
+                
                         
             }
 
@@ -287,7 +322,6 @@ $timeout(function() {
                   .cancel('Cancelar');
 
                 $mdDialog.show(confirm).then(function(result) {
-                    $scope.progress = true;
                     if (result == undefined) {
                         result = "";
                     }
@@ -307,6 +341,27 @@ $timeout(function() {
 
             $scope.recargarPagina = function(){
                 $window.location.reload();
+            }
+
+            $scope.sumaFecha = function(fecha1, days){
+                milisegundos=parseInt(35*24*60*60*1000);
+             
+                fecha= fecha1;
+                day=fecha.getDate();
+                // el mes es devuelto entre 0 y 11
+                month=fecha.getMonth()+1;
+                year=fecha.getFullYear();             
+                //Obtenemos los milisegundos desde media noche del 1/1/1970
+                tiempo=fecha.getTime();
+                //Calculamos los milisegundos sobre la fecha que hay que sumar o restar...
+                milisegundos=parseInt(days*24*60*60*1000);
+                //Modificamos la fecha actual
+                total=fecha.setTime(tiempo+milisegundos);
+                day=fecha.getDate();
+                month=fecha.getMonth()+1;
+                year=fecha.getFullYear();
+             
+                return year+"-"+month+"-"+day;
             }
 
         }]);
