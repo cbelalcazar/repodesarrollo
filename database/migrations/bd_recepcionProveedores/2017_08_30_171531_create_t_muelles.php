@@ -15,12 +15,12 @@ class CreateTMuelles extends Migration
     {
        Schema::connection('bd_recepcionProveedores')->create('t_muelles', function (Blueprint $table) {
             
-            $table->increments('id');
+            $table->increments('mu_id');
 
-            $table->string('mu_abreviatura')
+            $table->string('id')
                   ->comment('Abreviatura del muelle');
 
-            $table->string('mu_nombre')
+            $table->string('title')
                   ->comment('Nombre del muelle');
       
             $table->softDeletes();

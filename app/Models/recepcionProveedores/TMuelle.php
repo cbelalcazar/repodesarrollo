@@ -21,8 +21,10 @@ class TMuelle extends Model
 
     public $timestamps = true;
 
+    public $primaryKey = 'mu_id';
+
     protected $fillable = [
-        'mu_abreviatura',
+        'id',
         'title'
     ];
 

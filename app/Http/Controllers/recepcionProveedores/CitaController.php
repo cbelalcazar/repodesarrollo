@@ -33,7 +33,7 @@ class CitaController extends Controller
     {
         $programaciones = TProgramacion::where('prg_estado', '2')->orderBy('prg_fecha_programada', 'asc')->get();
         $programaciones = $programaciones->groupBy('prg_fecha_programada');        
-        $muelles = TMuelle::select('mu_abreviatura AS id', 'title')->get();
+        $muelles = TMuelle::select('id', 'title')->get();
         $citas = collect(TCita::select('cit_objcalendarcita')->get());
         $citas = array_pluck($citas, 'cit_objcalendarcita');
         $response = compact('programaciones', 'citas', 'muelles', 'array');
@@ -52,26 +52,32 @@ class CitaController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Funcion que crea las citas que ingresan en el calendario.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
+        //Obtengo la informacion de la vista
         $vista = $request->all();
+        //Agrupo por fechaGroup
         $collection = collect($vista);
         $agrupadoFecha = $collection->groupBy('fechaGroup');
         $citas = [];
+        //Recorro cada uno de los grupos de fechas
         foreach ($agrupadoFecha as $key => $value) {
+            // Agrupo por proveedor
             $dato = collect($value);
             $agrupadoProvFech = $dato->groupBy('proveedor');
             $bandera = false;
             $final = "";
             $mensaje = "";            
             $cita = [];
+            //Recorro cada uno de los proveedores en una fecha determinada
             foreach ($agrupadoProvFech as $key => $value) {                 
                 foreach ($value as $clave => $prog) {  
+                    //Armo la cita
                     if ($clave == 0) {
                         $final = $prog['end'];
                         $muelle = $prog['resourceId'];
@@ -111,6 +117,7 @@ class CitaController extends Controller
                 if ($cita['error'] == true) {
                     array_push($citas, $cita);
                 }else{
+                    //Creo un objeto con la cita y se lo asigno a ella misma
                     $programacionesId = array_pluck($cita['programaciones'], 'programacion');
                     $jsonCita = [
                                 'end'                       => $cita['cit_fechafin'],
@@ -127,11 +134,14 @@ class CitaController extends Controller
                                 'fechaGroup'                => $cita['fechaGroup'], 
                                 ];
                     $cita['cit_objcalendarcita'] = json_encode($jsonCita);
+                    // Creo la cita en la tabla t_cita
                     $objCita = TCita::Create($cita); 
                     //ESTADO ENVIADO A PROVEEDOR
+                    //Cambio el estado de las programaciones y asigno el id de la cita
                     TProgramacion::whereIn('id', $programacionesId)
                                   ->update(['prg_estado' => 3, 'prg_idcita' => $objCita->id]);                
                     array_push($citas, $cita);
+                    // Genero correo al proveedor
                     //Debe buscar el correo del proveedor y ponerlo en un array $correoProveedor
                     $correoProveedor = ['cabelalcazar@bellezaexpress.com'];
                     Mail::to($correoProveedor)->send(new citaProveedor($cita));
@@ -167,7 +177,7 @@ class CitaController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Funcion que cambia el estado de la programacion cuando en la vista de asginacion de cita se rechaza
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -175,8 +185,10 @@ class CitaController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Obtengo el id de lo que quiero editar
         $data = $request->all();
         //ESTADO RECHAZADA 4
+        // Realizo el update
         $objProg = TProgramacion::where('id', $id)
                                   ->update(['prg_estado' => 4, 'prg_observacion' => $data['prg_observacion']]);        
         $response = compact('objProg');

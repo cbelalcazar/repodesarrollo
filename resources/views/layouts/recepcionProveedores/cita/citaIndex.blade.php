@@ -50,7 +50,7 @@
 					<div class="subdivhijo" style="">
 						OC: @{{lista.prg_tipo_doc_oc}} - @{{lista.prg_num_orden_compra}} - Ref: @{{lista.prg_referencia}} - Cant: @{{lista.prg_cant_programada}} - Embalaje: @{{lista.prg_cantidadempaques}} &nbsp; en @{{lista.prg_tipoempaque}}
 					</div>
-					<a href="#" ng-click="showPrompt($event, lista)"  class="glyphicon glyphicon-remove pull-right linkcerrar"><md-tooltip>Rechazar Orden de compra</md-tooltip></a>				 
+					<a href="#" ng-click="showPrompt($event, lista)"  class="glyphicon glyphicon-remove pull-right linkcerrar"><md-tooltip>Rechazar programación</md-tooltip></a>				 
 					</div>
 				</div>
 			</div>
@@ -62,7 +62,7 @@
 		<div ui-calendar="uiConfig.calendar"  calendar="myCalendar" ng-model="eventSources">   
 		</div>
 		<div class="col-sm-12">
-			<md-button  ng-click="guardarProgramacion()" class="btn btn-success btn-sm pull-right" md-click>Guardar</md-button>
+			<md-button  ng-click="guardarCitas()" class="btn btn-success btn-sm pull-right" md-click>Guardar</md-button>
 			<md-button  ng-click="recargarPagina()" class="btn btn-default btn-sm pull-right" md-click>Cancelar</md-button>
 		</div>
 	</div>
