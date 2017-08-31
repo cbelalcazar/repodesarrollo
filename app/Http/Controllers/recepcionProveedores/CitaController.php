@@ -137,14 +137,14 @@ class CitaController extends Controller
                     // Creo la cita en la tabla t_cita
                     $objCita = TCita::Create($cita); 
                     //ESTADO ENVIADO A PROVEEDOR
-                    //Cambio el estado de las programaciones y asigno el id de la cita
-                    TProgramacion::whereIn('id', $programacionesId)
-                                  ->update(['prg_estado' => 3, 'prg_idcita' => $objCita->id]);                
                     array_push($citas, $cita);
                     // Genero correo al proveedor
                     //Debe buscar el correo del proveedor y ponerlo en un array $correoProveedor
                     $correoProveedor = ['cabelalcazar@bellezaexpress.com'];
-                    Mail::to($correoProveedor)->send(new citaProveedor($cita));
+                    Mail::to($correoProveedor)->send(new citaProveedor($cita));                 
+                    //Cambio el estado de las programaciones y asigno el id de la cita
+                    TProgramacion::whereIn('id', $programacionesId)
+                                  ->update(['prg_estado' => 3, 'prg_idcita' => $objCita->id]);                
                 }
                 
             }            

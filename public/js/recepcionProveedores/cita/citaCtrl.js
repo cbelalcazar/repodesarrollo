@@ -185,8 +185,11 @@ $scope.drop = function(date, jsEvent, ui, resourceId) {
     	$scope.nuevaFecha = $scope.sumaFecha($scope.fechaInicioRango, i);
     	if (String($filter('date')(new Date($scope.nuevaFecha), 'yyyy-MM-dd')) == String($filter('date')(date._d, 'yyyy-MM-dd','+0000'))) {
     		var validar = true;
-    		break;
     	}
+
+        if (String($filter('date')(new Date(), 'yyyy-MM-dd')) > String($filter('date')(date._d, 'yyyy-MM-dd','+0000'))) {
+            var validar = false;
+        }
     }
 
     //Si pasa todas las validaciones entonces se crea el objeto en el calendario, si no muestra mensaje
@@ -278,9 +281,9 @@ $scope.guardarCitas = function(){
 			response.data.citas.forEach( function(element, index) {
 
 				if (element.error == true) {
-					mensaje += element.mensaje + '<br>';
+					mensaje += '<strong>Error! - </strong>' + element.mensaje + '<br>';
 				}else if(element.error == false){
-					mensaje += element.cit_nombreproveedor + ' Inicio: ' + element.cit_fechainicio + ' Fin: ' + element.cit_fechafin + ' Muelle:' + element.cit_muelle + '<br>';
+					mensaje += '<strong>Exito! - </strong>' + element.cit_nombreproveedor + ' - Inicio: ' + element.cit_fechainicio + ' - Fin: ' + element.cit_fechafin + ' - Muelle:' + element.cit_muelle + '<br>';
 				}                            
 				fecha = element.fechaGroup;
 				proveedor = element.cit_nitproveedor;
@@ -295,7 +298,7 @@ $scope.guardarCitas = function(){
 				$scope.progress = false;                
 			}, 3100);    
 			alert = $mdDialog.alert({
-				title: 'Citas creadas:',
+				title: 'Resultados creación cita:',
 				htmlContent: mensaje,
 				ok: 'Cerrar'
 			});

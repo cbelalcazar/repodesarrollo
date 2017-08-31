@@ -8,6 +8,11 @@
 		<hr>
 		<h4>Bandeja solictud cita</h4>
 		<hr>
+
+		<div ng-if="programaciones.length == 0">
+			No se encontraron registros....
+		</div>
+
 		<div class="bandeja">
 			<div class="panel-group" id="accordion"  ng-if="programaciones[fecha].length != 0" role="tablist" aria-multiselectable="true" ng-repeat="(fecha, array) in programaciones">      
 				<div class="panel panel-primary fechal" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse@{{fecha}}">
@@ -46,8 +51,12 @@
 					<h4>Programaciones pendientes: @{{seleccionadas[0].prg_razonSocialTercero}}</h4>
 					<hr>
 
+					<div ng-if="seleccionadas.length == 0">
+						Seleccionar un elemento de bandeja solicitud cita...
+					</div>
+
 					<div class="alert fc-event arrastrable" drag-me ng-repeat="lista in seleccionadas" ng-mouseup="seleccionar(lista)">
-					<div class="subdivhijo" style="">
+					<div class="subdivhijo">
 						OC: @{{lista.prg_tipo_doc_oc}} - @{{lista.prg_num_orden_compra}} - Ref: @{{lista.prg_referencia}} - Cant: @{{lista.prg_cant_programada}} - Embalaje: @{{lista.prg_cantidadempaques}} &nbsp; en @{{lista.prg_tipoempaque}}
 					</div>
 					<a href="#" ng-click="showPrompt($event, lista)"  class="glyphicon glyphicon-remove pull-right linkcerrar"><md-tooltip>Rechazar programación</md-tooltip></a>				 
@@ -66,7 +75,7 @@
 			<md-button  ng-click="recargarPagina()" class="btn btn-default btn-sm pull-right" md-click>Cancelar</md-button>
 		</div>
 	</div>
-	<a class="btn" data-ng-click="test()">Test</a>  
+	<!-- <a class="btn" data-ng-click="test()">Test</a>   -->
 
 	<div ng-if="progress" class="progress">
 		<md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
