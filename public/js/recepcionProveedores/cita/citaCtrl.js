@@ -63,7 +63,7 @@ app.controller('citaCtrl', ['$scope', '$http', '$filter', 'uiCalendarConfig', '$
  			return null;
  		}
      });
- 	eventos =$filter('remove')(eventos, null);
+ 	eventos = $filter('remove')(eventos, null);
 
 
     //Ultimos tres dias y proximos tres dias rango para programar al proveedor
@@ -239,129 +239,129 @@ $timeout(function() {
 	};
 }, 3000);
 
-            $scope.actualizarLista = function(fecha = $scope.fecha){
-                uiCalendarConfig.calendars.myCalendar.fullCalendar('removeEvents');
-                uiCalendarConfig.calendars.myCalendar.fullCalendar('addEventSource', $scope.events);
-                $timeout(function() {
-                    uiCalendarConfig.calendars.myCalendar.fullCalendar('changeView', 'agendaDay', fecha);                   
-                }, 25);
-            };
+    $scope.actualizarLista = function(fecha = $scope.fecha){
+        uiCalendarConfig.calendars.myCalendar.fullCalendar('removeEvents');
+        uiCalendarConfig.calendars.myCalendar.fullCalendar('addEventSource', $scope.events);
+        $timeout(function() {
+            uiCalendarConfig.calendars.myCalendar.fullCalendar('changeView', 'agendaDay', fecha);                   
+        }, 25);
+    };
 
-            $scope.guardarProgramacion = function(){
+    $scope.guardarProgramacion = function(){
 
-            	
-                var objetos = $filter('filter')($scope.events, {estado : 'sinGuardar'});
-                console.log(objetos.length);
-                if (objetos.length > 0) {
-                    $scope.progress = true;
-                    objetos = $filter('orderBy')(objetos, 'start');
-                    $scope.objCitas = objetos;
-                    $http.post($scope.Url, $scope.objCitas).then(function(response){
-                        var data = response.data;
-                        $scope.getInfo();
-                        $scope.progress = true;
-                        var mensaje = ""; 
-                        var fecha = "";    
-                        var proveedor = "";            
-                        response.data.citas.forEach( function(element, index) {
-                            
-                            if (element.error == true) {
-                                mensaje += element.mensaje + '<br>';
-                            }else if(element.error == false){
-                                mensaje += element.cit_nombreproveedor + ' Inicio: ' + element.cit_fechainicio + ' Fin: ' + element.cit_fechafin + ' Muelle:' + element.cit_muelle + '<br>';
-                            }                            
-                            fecha = element.fechaGroup;
-                            proveedor = element.cit_nitproveedor;
-                            
-                        });
-
-                        $timeout(function() {
-                            $scope.actualizarLista();      
-                            $scope.mostrarProgramaciones(fecha, proveedor);            
-                        }, 3000);  
-                        $timeout(function() {
-                            $scope.progress = false;                
-                        }, 3100);    
-                        alert = $mdDialog.alert({
-                            title: 'Citas creadas:',
-                            htmlContent: mensaje,
-                            ok: 'Cerrar'
-                        });
-                        $mdDialog
-                        .show(alert)
-                        .finally(function() {
-                            alert = undefined;
-                        });    
-                    }, function(response){
-                        alert(response.statusText + "  ["+ response.status + "]");
-                    });
-                }else{
-                    alert = $mdDialog.alert({
-                            title: 'No se encontraron elementos para crear',
-                            htmlContent: "",
-                            ok: 'Cerrar'
-                        });
-                    $mdDialog
-                    .show(alert)
-                    .finally(function() {
-                    });  
-                }
-                
-                        
-            }
-
-            $scope.showPrompt = function(ev, lista){
-                var confirm = $mdDialog.prompt()
-                  .title('Desea rechazar la programacion?')
-                  .textContent('Favor ingresar la observación:')
-                  .placeholder('Observación')
-                  .ariaLabel('Observación')
-                  .initialValue('')
-                  .targetEvent(ev)
-                  .ok('Rechazar!')
-                  .cancel('Cancelar');
-
-                $mdDialog.show(confirm).then(function(result) {
-                    if (result == undefined) {
-                        result = "";
-                    }
-                    lista.prg_observacion = result;
-                    $http.put($scope.Url + '/' + lista.id, lista).then(function(response){
-                        var pos = $scope.programaciones[lista.prg_fecha_programada].indexOf(lista);
-                        $scope.programaciones[lista.prg_fecha_programada].splice(pos, 1);
-                        var pos = $scope.seleccionadas.indexOf(lista);
-                        $scope.seleccionadas.splice(pos, 1);
-                        $scope.progress = false;
-                    }, function(response){
-                        alert(response.statusText + "  ["+ response.status + "]");
-                    });
-                }, function() {
+    	
+        var objetos = $filter('filter')($scope.events, {estado : 'sinGuardar'});
+        console.log(objetos.length);
+        if (objetos.length > 0) {
+            $scope.progress = true;
+            objetos = $filter('orderBy')(objetos, 'start');
+            $scope.objCitas = objetos;
+            $http.post($scope.Url, $scope.objCitas).then(function(response){
+                var data = response.data;
+                $scope.getInfo();
+                $scope.progress = true;
+                var mensaje = ""; 
+                var fecha = "";    
+                var proveedor = "";            
+                response.data.citas.forEach( function(element, index) {
+                    
+                    if (element.error == true) {
+                        mensaje += element.mensaje + '<br>';
+                    }else if(element.error == false){
+                        mensaje += element.cit_nombreproveedor + ' Inicio: ' + element.cit_fechainicio + ' Fin: ' + element.cit_fechafin + ' Muelle:' + element.cit_muelle + '<br>';
+                    }                            
+                    fecha = element.fechaGroup;
+                    proveedor = element.cit_nitproveedor;
+                    
                 });
-            }
 
-            $scope.recargarPagina = function(){
-                $window.location.reload();
-            }
+                $timeout(function() {
+                    $scope.actualizarLista();      
+                    $scope.mostrarProgramaciones(fecha, proveedor);            
+                }, 3000);  
+                $timeout(function() {
+                    $scope.progress = false;                
+                }, 3100);    
+                alert = $mdDialog.alert({
+                    title: 'Citas creadas:',
+                    htmlContent: mensaje,
+                    ok: 'Cerrar'
+                });
+                $mdDialog
+                .show(alert)
+                .finally(function() {
+                    alert = undefined;
+                });    
+            }, function(response){
+                alert(response.statusText + "  ["+ response.status + "]");
+            });
+        }else{
+            alert = $mdDialog.alert({
+                    title: 'No se encontraron elementos para crear',
+                    htmlContent: "",
+                    ok: 'Cerrar'
+                });
+            $mdDialog
+            .show(alert)
+            .finally(function() {
+            });  
+        }
+        
+                
+    }
 
-            $scope.sumaFecha = function(fecha1, days){
-                milisegundos=parseInt(35*24*60*60*1000);
-             
-                fecha= fecha1;
-                day=fecha.getDate();
-                // el mes es devuelto entre 0 y 11
-                month=fecha.getMonth()+1;
-                year=fecha.getFullYear();             
-                //Obtenemos los milisegundos desde media noche del 1/1/1970
-                tiempo=fecha.getTime();
-                //Calculamos los milisegundos sobre la fecha que hay que sumar o restar...
-                milisegundos=parseInt(days*24*60*60*1000);
-                //Modificamos la fecha actual
-                total=fecha.setTime(tiempo+milisegundos);
-                day=fecha.getDate();
-                month=fecha.getMonth()+1;
-                year=fecha.getFullYear();
-             
-                return year+"-"+month+"-"+day;
+    $scope.showPrompt = function(ev, lista){
+        var confirm = $mdDialog.prompt()
+          .title('Desea rechazar la programacion?')
+          .textContent('Favor ingresar la observación:')
+          .placeholder('Observación')
+          .ariaLabel('Observación')
+          .initialValue('')
+          .targetEvent(ev)
+          .ok('Rechazar!')
+          .cancel('Cancelar');
+
+        $mdDialog.show(confirm).then(function(result) {
+            if (result == undefined) {
+                result = "";
             }
+            lista.prg_observacion = result;
+            $http.put($scope.Url + '/' + lista.id, lista).then(function(response){
+                var pos = $scope.programaciones[lista.prg_fecha_programada].indexOf(lista);
+                $scope.programaciones[lista.prg_fecha_programada].splice(pos, 1);
+                var pos = $scope.seleccionadas.indexOf(lista);
+                $scope.seleccionadas.splice(pos, 1);
+                $scope.progress = false;
+            }, function(response){
+                alert(response.statusText + "  ["+ response.status + "]");
+            });
+        }, function() {
+        });
+    }
+
+    $scope.recargarPagina = function(){
+        $window.location.reload();
+    }
+
+    $scope.sumaFecha = function(fecha1, days){
+        milisegundos=parseInt(35*24*60*60*1000);
+     
+        fecha= fecha1;
+        day=fecha.getDate();
+        // el mes es devuelto entre 0 y 11
+        month=fecha.getMonth()+1;
+        year=fecha.getFullYear();             
+        //Obtenemos los milisegundos desde media noche del 1/1/1970
+        tiempo=fecha.getTime();
+        //Calculamos los milisegundos sobre la fecha que hay que sumar o restar...
+        milisegundos=parseInt(days*24*60*60*1000);
+        //Modificamos la fecha actual
+        total=fecha.setTime(tiempo+milisegundos);
+        day=fecha.getDate();
+        month=fecha.getMonth()+1;
+        year=fecha.getFullYear();
+     
+        return year+"-"+month+"-"+day;
+    }
 
         }]);

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\recepcionProveedores\TProgramacion;
 use App\Models\recepcionProveedores\TCita;
+use App\Models\recepcionProveedores\TMuelle;
 use Mail;
 use App\Mail\citaProveedor;
 
@@ -32,12 +33,12 @@ class CitaController extends Controller
     {
         $programaciones = TProgramacion::where('prg_estado', '2')->orderBy('prg_fecha_programada', 'asc')->get();
         $programaciones = $programaciones->groupBy('prg_fecha_programada');        
+        $muelles = TMuelle::select('mu_abreviatura AS id', 'title')->get();
         $citas = collect(TCita::select('cit_objcalendarcita')->get());
         $citas = array_pluck($citas, 'cit_objcalendarcita');
-        $response = compact('programaciones', 'citas');
+        $response = compact('programaciones', 'citas', 'muelles', 'array');
         return response()->json($response);
     }
-
 
 
     /**
