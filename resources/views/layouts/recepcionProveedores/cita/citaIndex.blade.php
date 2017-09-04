@@ -14,19 +14,19 @@
 		</div>
 
 		<div class="bandeja">
-			<div class="panel-group" id="accordion"  ng-if="programaciones[fecha].length != 0" role="tablist" aria-multiselectable="true" ng-repeat="(fecha, array) in programaciones">      
-				<div class="panel panel-primary fechal" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse@{{fecha}}">
+			<div class="panel-group" id="mygroup"  ng-if="programaciones[fecha].length != 0" role="tablist" aria-multiselectable="true" ng-repeat="(fecha, array) in programaciones">      
+				<div class="panel panel-primary fechal" role="button" data-toggle="collapse" data-parent="#mygroup" href="#collapse@{{fecha}}">
 					<div class="panel-heading fecha2" role="tab">
 						<h6 class="panel-title row pro-name fuenteFecha">
-								@{{fecha | date: 'EEEE - dd/MMMM/yyyy'}}
+							@{{fecha | date: 'EEEE - dd/MMMM/yyyy'}}
 						</h6>
 					</div>
 				</div>
-
-				<div id="collapse@{{fecha}}" class="panel-collapse collapse" role="tabpanel">
-					<div class="panel panel-default">
-						<ul class="list-group">
-							<li class="list-group-item liproveedor" ng-repeat="(key, value) in array | groupBy: 'prg_nit_proveedor'">
+				<div class="accordion-group">
+					<div id="collapse@{{fecha}}" class="panel-collapse collapse" role="tabpanel">
+						<div class="panel panel-default">
+							<ul class="list-group">
+								<li class="list-group-item liproveedor" ng-repeat="(key, value) in array | groupBy: 'prg_nit_proveedor'">
 
 									<div class="panel-heading proveedor" role="tab">
 										<h4 class="panel-title row">
@@ -36,11 +36,11 @@
 										</h4>
 									</div>
 
-							</li>
-						</ul>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</div>
-
 			</div>
 		</div>
 
@@ -55,11 +55,12 @@
 						Seleccionar un elemento de bandeja solicitud cita...
 					</div>
 
-					<div class="alert fc-event arrastrable" drag-me ng-repeat="lista in seleccionadas" ng-mouseup="seleccionar(lista)">
-					<div class="subdivhijo">
-						OC: @{{lista.prg_tipo_doc_oc}} - @{{lista.prg_num_orden_compra}} - Ref: @{{lista.prg_referencia}} - Cant: @{{lista.prg_cant_programada}} - Embalaje: @{{lista.prg_cantidadempaques}} &nbsp; en @{{lista.prg_tipoempaque}}
-					</div>
-					<a href="#" ng-click="showPrompt($event, lista)"  class="glyphicon glyphicon-remove pull-right linkcerrar"><md-tooltip>Rechazar programación</md-tooltip></a>				 
+					<div md-whiteframe="@{{ctrl.elevation}}" class="alert fc-event arrastrable" drag-me ng-repeat="lista in seleccionadas" ng-mouseup="seleccionar(lista)">
+						<div class="subdivhijo">
+							OC: @{{lista.prg_tipo_doc_oc}} - @{{lista.prg_num_orden_compra}} - Ref: @{{lista.prg_referencia}} - Cant: @{{lista.prg_cant_programada}} - Embalaje: @{{lista.prg_cantidadempaques}} &nbsp; en @{{lista.prg_tipoempaque}}
+						</div>
+						<a href="#" ng-click="showPrompt($event, lista)"  class="glyphicon glyphicon-remove pull-right linkcerrar"><md-tooltip>Rechazar programación</md-tooltip></a>		
+						<md-tooltip>¡Click! - Mover al calendario</md-tooltip>		 
 					</div>
 				</div>
 			</div>

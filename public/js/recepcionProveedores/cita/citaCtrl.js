@@ -16,8 +16,8 @@ app.directive('dragMe', function() {
 });
 
 
-app.controller('citaCtrl', ['$scope', '$http', '$filter', 'uiCalendarConfig', '$timeout', '$mdDialog', '$window',
-	function($scope, $http, $filter, uiCalendarConfig, $timeout, $mdDialog, $window){
+app.controller('citaCtrl', ['$scope', '$http', '$filter', 'uiCalendarConfig', '$timeout', '$mdDialog', '$window', '$interval',
+	function($scope, $http, $filter, uiCalendarConfig, $timeout, $mdDialog, $window, $interval){
 
 		//Inicializacion de variables
 		$scope.progress = true;
@@ -204,7 +204,7 @@ $scope.drop = function(date, jsEvent, ui, resourceId) {
     	obj = {
     		overlap: false,
     		stick: true,
-    		title: $scope.seleccionado.id + '-' + $scope.seleccionado.prg_tipo_doc_oc + '-' + $scope.seleccionado.prg_num_orden_compra+ '-' + $scope.seleccionado.prg_referencia+ '- Cant: ' + $scope.seleccionado.prg_cant_programada+ '- Embalaje: ' + $scope.seleccionado.prg_cantidadempaques+ ' en ' + $scope.seleccionado.prg_tipoempaque + ' - ' + $scope.seleccionado.prg_nit_proveedor,
+    		title: 'OC: ' + $scope.seleccionado.prg_tipo_doc_oc + '-' + $scope.seleccionado.prg_num_orden_compra+ '- Ref: ' + $scope.seleccionado.prg_referencia+ '- Cant: ' + $scope.seleccionado.prg_cant_programada+ '- Embalaje: ' + $scope.seleccionado.prg_cantidadempaques+ ' en ' + $scope.seleccionado.prg_tipoempaque + ' - ' + $scope.seleccionado.prg_razonSocialTercero,
     		start: start,
     		end : end,
     		resourceId : resourceId,
@@ -380,5 +380,14 @@ $scope.sumaFecha = function(fecha1, days){
 
         return year+"-"+month+"-"+day;
     }
+
+    //Animacion de sombras 
+  this.elevation = 1;
+  this.nextElevation = function() {
+        if (++this.elevation == 25) {
+          this.elevation = 1;
+        }
+      };
+  $interval(this.nextElevation.bind(this), 50);
 
 }]);

@@ -33,7 +33,7 @@ class CitaController extends Controller
     {
         $programaciones = TProgramacion::where('prg_estado', '2')->orderBy('prg_fecha_programada', 'asc')->get();
         $programaciones = $programaciones->groupBy('prg_fecha_programada');        
-        $muelles = TMuelle::select('id', 'title')->get();
+        $muelles = TMuelle::select('id', 'title', 'eventColor')->get();
         $citas = collect(TCita::select('cit_objcalendarcita')->get());
         $citas = array_pluck($citas, 'cit_objcalendarcita');
         $response = compact('programaciones', 'citas', 'muelles', 'array');

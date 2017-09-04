@@ -22,6 +22,9 @@ class CreateTMuelles extends Migration
 
             $table->string('title')
                   ->comment('Nombre del muelle');
+
+            $table->string('eventColor')
+                  ->comment('Define el color del evento que se arrastra al calendario');
       
             $table->softDeletes();
 

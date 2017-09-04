@@ -18,6 +18,7 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
   $scope.datoRestar = 0;
   $scope.mensajeEliminar = false;
   $scope.dateNow = new Date();
+  $scope.showFrame = 1;
 
  // FUNCIONALIDADES ESPECIFICAS DEL FORMULARIO
 
