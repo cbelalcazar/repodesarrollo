@@ -61,13 +61,14 @@ class TProgramacion extends Model
      *
      * @return ConsultaUNOEE
      */
-    public static function referenciasOrOc($nitProveedor, $seleccionConsulta, $refYaProgramadas){
+    public static function referenciasOrOc($nitProveedor, $seleccionConsulta, $refYaProgramadas, $refProgramables){
         if ($seleccionConsulta == 2) {
             return DB::connection('besa')->table('102_OrdenCompra')
             ->select('Referencia', 'DescripcionReferencia')
             ->whereIn('TipoDocto', ['OC', 'OCB', 'OMB', 'OMC', 'OR', 'ORB', 'ONP', 'ONB'])
             ->whereIn('EstadoMovto', ['1', '2'])
-            ->whereIn('TipoInventario', ['INMP'])
+            ->whereIn('Referencia', $refProgramables)
+            ->whereIn('TipoInventario', ['INMP', 'INVME', 'INSUMOS'])
             ->whereNotIn('f421_rowid', $refYaProgramadas)
             ->where('NitTercero', 'like', "%".$nitProveedor."%")
             ->groupBy('Referencia', 'DescripcionReferencia')
@@ -76,8 +77,9 @@ class TProgramacion extends Model
         } elseif($seleccionConsulta == 1) {
             return DB::connection('besa')->table('102_OrdenCompra')
             ->whereIn('TipoDocto', ['OC', 'OCB', 'OMB', 'OMC', 'OR', 'ORB', 'ONP', 'ONB'])
-            ->whereIn('EstadoMovto', ['1', '2'])
-            ->whereIn('TipoInventario', ['INMP'])
+            ->whereIn('EstadoMovto', ['1', '2'])            
+            ->whereIn('TipoInventario', ['INMP', 'INVME', 'INSUMOS'])
+            ->whereIn('Referencia', $refProgramables)
             ->whereNotIn('f421_rowid', $refYaProgramadas)
             ->where('NitTercero', 'like', "%".$nitProveedor."%")
             ->get();
@@ -92,6 +94,30 @@ class TProgramacion extends Model
                 ->groupBy('prg_consecutivoRefOc')
                 ->havingRaw('SUM(prg_cant_programada) >= prg_cant_pendiente_oc')
                 ->where('prg_nit_proveedor', $proveedor['nitTercero'])
+                ->get();
+    }
+
+
+    /**
+     *
+     * @return ConsultaUNOEE
+     */
+    public static function OcTarea($refYaProgramadas, $refNoProgramables, $hoy, $unaSemanaDespues){
+            return DB::connection('besa')->table('102_OrdenCompra')
+            ->whereIn('TipoDocto', ['OC', 'OCB', 'OMB', 'OMC', 'OR', 'ORB', 'ONP', 'ONB'])
+            ->whereIn('EstadoMovto', ['1', '2'])            
+            ->whereIn('TipoInventario', ['INMP', 'INVME', 'INSUMOS'])
+            ->whereNotIn('Referencia', $refNoProgramables)
+            ->whereNotIn('f421_rowid', $refYaProgramadas)
+            ->where('f421_fecha_entrega', '<', $unaSemanaDespues)
+            ->get();        
+    }
+
+    public static function ordenesExcluirTarea(){
+        return  DB::connection('bd_recepcionProveedores')->table('t_programacion')
+                ->select('prg_consecutivoRefOc', DB::raw('SUM(prg_cant_programada) as total_prog, prg_cant_pendiente_oc'))
+                ->groupBy('prg_consecutivoRefOc')
+                ->havingRaw('SUM(prg_cant_programada) >= prg_cant_pendiente_oc')
                 ->get();
     }
 

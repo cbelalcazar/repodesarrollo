@@ -19,6 +19,10 @@ class UpdateTProgramacion extends Migration
                   ->nullable()
                   ->comment('Id que identifica esta programacion a que cita pertenece');
 
+            $table->string('prg_envioCorreo', 50)
+                  ->nullable()
+                  ->comment('Campo en el que se especifica si ya se envio correo para esta programacion');
+
         });   
     }
 

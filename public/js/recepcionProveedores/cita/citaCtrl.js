@@ -28,9 +28,12 @@ app.controller('citaCtrl', ['$scope', '$http', '$filter', 'uiCalendarConfig', '$
 		$scope.seleccionado = {};
 		$scope.fecha = "";
 		$scope.Url = "cita";
+        $scope.groupChekbox = [];
+        $scope.recurso = "";
 
 // Funcion que se ejecuta cuando se da click a un elemento arrastrable para ponerlo en el calendario
 $scope.seleccionar = function(obj){
+    console.log('me ejecute');
 	$scope.seleccionado = obj;
 }
 
@@ -95,11 +98,11 @@ $scope.seleccionar = function(obj){
             	if (String($filter('date')(date._d, 'yyyy-MM-dd','+0000')) != $scope.fecha) {
             		cell.css("background-color", "#eee");
             	}
-            },    
+            },
             eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
-            	var obj = $filter('filter')($scope.events, {programacion : event.programacion});
+            	var obj = $filter('filter')($scope.events, {start : event.start._i, nomProveedor : event.nomProveedor, resourceId: event.resourceId});
             	var pos = $scope.events.indexOf(obj[0]);
-            	$scope.events.splice(pos, 1);
+            	$scope.events.splice(pos, 1);                
             	obj[0].end = String($filter('date')(event.end._d, 'yyyy-MM-dd HH:mm:ss','+0000'));
             	$scope.events.push(obj[0]); 
             	$scope.actualizarLista(String($filter('date')(event.end._d, 'yyyy-MM-dd','+0000')));
@@ -118,7 +121,7 @@ $scope.seleccionar = function(obj){
             		});    
             		$scope.actualizarLista();
             	}else{
-            		var obj = $filter('filter')($scope.events, {programacion : event.programacion});
+            		var obj = $filter('filter')($scope.events, {start : event.start._i, nomProveedor : event.nomProveedor, resourceId: event.resourceIdOld});
             		var fechaInicio = String($filter('date')(event.start._d, 'yyyy-MM-dd HH:mm:ss','+0000'));
             		if (event.end == null && event.allDay == true) {
             			var fechaFin = null;
@@ -136,6 +139,7 @@ $scope.seleccionar = function(obj){
             		obj[0].start = fechaInicio;
             		obj[0].end = fechaFin;
             		obj[0].resourceId = resourceId;
+                    obj[0].resourceIdOld = obj[0].resourceId;
             		$scope.events.push(obj[0]); 
             		$scope.actualizarLista(String($filter('date')(event.start._d, 'yyyy-MM-dd','+0000')));
             	}      
@@ -152,6 +156,7 @@ $scope.getInfo();
 // Esta funcion se ejecuta cuando le das click a uno de los proveedores de la bandeja de solicitud cita
 // Su objetivo es mostrar en programaciones pendientes los objetos dropeables que representan programaciones
 $scope.mostrarProgramaciones = function(fecha, proveedor){
+    $scope.groupChekbox = [];
 	$scope.fecha = fecha;
 	$scope.seleccionadas = $scope.programaciones[fecha];
 	$scope.seleccionadas = $filter('filter')($scope.seleccionadas, {prg_nit_proveedor : proveedor});
@@ -194,40 +199,52 @@ $scope.drop = function(date, jsEvent, ui, resourceId) {
 
     //Si pasa todas las validaciones entonces se crea el objeto en el calendario, si no muestra mensaje
     if (validar && eventos.length <= 0) {
-    	var pos = $scope.seleccionadas.indexOf($scope.seleccionado);
-    	$scope.seleccionadas.splice(pos, 1);
-    	var d = new Date(date._d);   
-    	var start = String($filter('date')(date._d, 'yyyy-MM-dd HH:mm:ss','+0000'));      
-    	d.setMinutes(d.getMinutes()+15);
-    	var end = String($filter('date')(d, 'yyyy-MM-dd HH:mm:ss','+0000'));     
+        // Defino fecha de inicio del objeto
+        var start = String($filter('date')(date._d, 'yyyy-MM-dd HH:mm:ss','+0000'));  
 
-    	obj = {
-    		overlap: false,
-    		stick: true,
-    		title: 'OC: ' + $scope.seleccionado.prg_tipo_doc_oc + '-' + $scope.seleccionado.prg_num_orden_compra+ '- Ref: ' + $scope.seleccionado.prg_referencia+ '- Cant: ' + $scope.seleccionado.prg_cant_programada+ '- Embalaje: ' + $scope.seleccionado.prg_cantidadempaques+ ' en ' + $scope.seleccionado.prg_tipoempaque + ' - ' + $scope.seleccionado.prg_razonSocialTercero,
-    		start: start,
-    		end : end,
-    		resourceId : resourceId,
-    		programacion : $scope.seleccionado.id,
-    		proveedor: $scope.seleccionado.prg_nit_proveedor,
-    		nomProveedor: $scope.seleccionado.prg_razonSocialTercero,
-    		referencia: $scope.seleccionado.prg_referencia,
-    		cantidadProgramada: $scope.seleccionado.prg_cant_programada,
-    		embalaje: $scope.seleccionado.prg_tipoempaque,
-    		estado:'sinGuardar',
-    		fechaGroup : String($filter('date')(date._d, 'yyyy-MM-dd','+0000')),
-    	};
+        // Defino fecha fin del objeto + 15 minutos
+        var d = new Date(date._d);   
+        d.setMinutes(d.getMinutes()+15);
+        var end = String($filter('date')(d, 'yyyy-MM-dd HH:mm:ss','+0000'));         
 
-    	if(String($filter('date')(date._d, 'HH:mm:ss','+0000')) == '00:00:00'){
-    		obj.allDay = true;
-    	}
-    	$scope.events.push(obj);
-    	uiCalendarConfig.calendars.myCalendar.fullCalendar('renderEvent', obj);
-    	$timeout(function() {
-    		uiCalendarConfig.calendars.myCalendar.fullCalendar('changeView', 'agendaDay', String($filter('date')(date._d, 'yyyy-MM-dd','+0000')));
-    	}, 10);
-    	var pos2 = $scope.programaciones[$scope.fecha].indexOf($scope.seleccionado);
-    	$scope.programaciones[$scope.fecha].splice(pos2, 1);
+        // Creo el objeto del calendario
+        obj = {
+            overlap: false,
+            stick: true,
+            title: $scope.groupChekbox[0].prg_nit_proveedor + ' - ' + $scope.groupChekbox[0].prg_razonSocialTercero,
+            start: start,
+            end : end,
+            resourceId : resourceId,
+            resourceIdOld : resourceId,
+            programacion : $scope.groupChekbox,
+            proveedor: $scope.groupChekbox[0].prg_nit_proveedor,
+            nomProveedor: $scope.groupChekbox[0].prg_razonSocialTercero,
+            estado:'sinGuardar',
+            fechaGroup : String($filter('date')(date._d, 'yyyy-MM-dd','+0000')),
+        };
+
+        if(String($filter('date')(date._d, 'HH:mm:ss','+0000')) == '00:00:00'){
+         obj.allDay = true;
+        }
+        
+        // Quito los elementos agrupados de los arrays donde ya no deben estar.
+        $scope.groupChekbox.forEach( function(element, index) {
+            var pos = $scope.seleccionadas.indexOf(element);
+            $scope.seleccionadas.splice(pos, 1);
+            var pos2 = $scope.programaciones[$scope.fecha].indexOf(element);
+            $scope.programaciones[$scope.fecha].splice(pos2, 1);
+        });
+
+        // Hago render del nuevo evento en el calendario
+        $scope.events.push(obj);
+        uiCalendarConfig.calendars.myCalendar.fullCalendar('renderEvent', obj);
+        // Redirecciono el calendario a la fecha del evento que se acaba de crear
+        $timeout(function() {
+         uiCalendarConfig.calendars.myCalendar.fullCalendar('changeView', 'agendaDay', String($filter('date')(date._d, 'yyyy-MM-dd','+0000')));
+        }, 10);
+        //Vacio el grupo de checkbox
+        $scope.groupChekbox = [];
+
     }else{ 
     	if (eventos.length <= 0) {
     		var mensaje = 'la programación debe ser agregada para el dia indicado por planeación';
@@ -266,11 +283,15 @@ $scope.actualizarLista = function(fecha = $scope.fecha){
 
 
 $scope.guardarCitas = function(){
+    // Obtiene una lista de todos los objetos que no se han guardado en el calendario
 	var objetos = $filter('filter')($scope.events, {estado : 'sinGuardar'});
 	if (objetos.length > 0) {
+        // Muestra barra de progreso
 		$scope.progress = true;
+        // Ordena los objetos por fecha de inicio
 		objetos = $filter('orderBy')(objetos, 'start');
 		$scope.objCitas = objetos;
+        // Realizo la peticion POST para guardar las citas en la base de datos
 		$http.post($scope.Url, $scope.objCitas).then(function(response){
 			var data = response.data;
 			$scope.getInfo();
@@ -342,11 +363,14 @@ $scope.showPrompt = function(ev, lista){
 			result = "";
 		}
 		lista.prg_observacion = result;
+        $scope.progress = true;
 		$http.put($scope.Url + '/' + lista.id, lista).then(function(response){
 			var pos = $scope.programaciones[lista.prg_fecha_programada].indexOf(lista);
 			$scope.programaciones[lista.prg_fecha_programada].splice(pos, 1);
 			var pos = $scope.seleccionadas.indexOf(lista);
 			$scope.seleccionadas.splice(pos, 1);
+            $scope.getInfo();
+            $scope.groupChekbox = [];
 			$scope.progress = false;
 		}, function(response){
 			alert(response.statusText + "  ["+ response.status + "]");
@@ -388,6 +412,40 @@ $scope.sumaFecha = function(fecha1, days){
           this.elevation = 1;
         }
       };
-  $interval(this.nextElevation.bind(this), 50);
+  $interval(this.nextElevation.bind(this), 100);
+
+
+  //Funciones checkbox
+    $scope.toggle = function (item, list) {
+    var idx = list.indexOf(item);
+        if (idx > -1) {
+            list.splice(idx, 1);
+        }
+        else {
+            list.push(item);
+        }
+    };
+
+    $scope.exists = function (item, list) {
+        return list.indexOf(item) > -1;
+    };
+
+    $scope.isIndeterminate = function() {
+        return ($scope.groupChekbox.length !== 0 &&
+        $scope.groupChekbox.length !== $scope.seleccionadas.length);
+    };
+
+    $scope.isChecked = function() {
+        return $scope.groupChekbox.length === $scope.seleccionadas.length;
+    };
+
+    $scope.toggleAll = function() {
+        if ($scope.groupChekbox.length === $scope.seleccionadas.length) {
+            $scope.groupChekbox = [];
+        } else if ($scope.groupChekbox.length === 0 || $scope.groupChekbox.length > 0) {
+                $scope.groupChekbox = $scope.seleccionadas.slice(0);
+        }
+    };
+  
 
 }]);

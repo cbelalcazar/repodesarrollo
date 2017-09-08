@@ -36,9 +36,11 @@ class CreateTProgramacion extends Migration
                   ->comment('nombre del proveedor');
 
             $table->date('prg_fecha_programada')
+                  ->nullable()
                   ->comment('Fecha en la que se programa la entrega por planeacion');
 
             $table->integer('prg_cant_programada')
+                  ->nullable()
                   ->comment('Cantidad que se programa para entrega en planeacion para esta programacion en especifico');
 
             $table->integer('prg_cant_solicitada_oc')

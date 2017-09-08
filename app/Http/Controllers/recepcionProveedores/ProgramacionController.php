@@ -103,11 +103,14 @@ class ProgramacionController extends Controller
         // Consulto las referencias de este proveedor que actualmente tienen alguna programacion sin terminar (*OJOOOOO SIN FILTRO DE ESTADO TODAVIAAA*)
         $refExcluir = TProgramacion::refExcluir($proveedor);
         $refExcluir = array_pluck($refExcluir, 'prg_consecutivoRefOc');
+        //consultar las referencias que son programables
+        $refProgramables = TInfoReferencia::select('iref_referencia')->where('iref_programable', 'Programable')->get();
+        $refProgramables = array_pluck($refProgramables, 'iref_referencia');
         // Consulto las referencias y ordenes de compra para este proveedor en estado 1 aprobado, 2 parcial, excluyendo las que ya con las programaciones que estan montadas sin cerrar, completan su capacidad maxima de pedido.
-        $referencias = TProgramacion::referenciasOrOc($proveedor['nitTercero'], 2, $refExcluir);
-        $ordenes = TProgramacion::referenciasOrOc($proveedor['nitTercero'], 1, $refExcluir);
+        $referencias = TProgramacion::referenciasOrOc($proveedor['nitTercero'], 2, $refExcluir, $refProgramables);
+        $ordenes = TProgramacion::referenciasOrOc($proveedor['nitTercero'], 1, $refExcluir, $refProgramables);
         // Retorno la informacion a la vista.
-        $response = compact('proveedor', 'referencias', 'ordenes', 'refExcluir');
+        $response = compact('proveedor', 'referencias', 'ordenes', 'refExcluir', 'refProgramables');
         return response()->json($response);
     }
 

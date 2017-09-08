@@ -26,7 +26,7 @@ hr {
 }
 .arrastrable{
 	margin-bottom:4px; 
-	background-color:#337ab7;
+	background-color:#588c7e;
 }
 .subdivhijo{
 	width: 90%;
@@ -34,5 +34,5 @@ hr {
 	vertical-align: middle;
 }
 .linkcerrar{
-	color:white;
+	color:gray;
 }

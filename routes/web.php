@@ -30,15 +30,27 @@ Route::group(['middleware' => ['auth']], function () {
 
 	Route::get('autocomplete', ['uses' => 'GenericasController@autocomplete', 'as' => 'autocomplete']);
 
+
+	// Aplicativo Programacion, Recepcion y Evaluacion de proveedores
+	// 08-09-2017
+	// Carlos Andres Belalcazar Mendez
+	// Analista Desarrollador de software - Belleza Express S.A.
+
 	Route::group(['prefix' => 'recepcionProveedores'], function () {
 		// Programacion ordenes 
-		Route::resource('programacion', 'recepcionProveedores\ProgramacionController');
+		Route::resource('programacion', 'recepcionProveedores\ProgramacionController', ['only' => ['index', 'destroy', 'update', 'store']]);
 		Route::get('programacionGetInfo', 'recepcionProveedores\ProgramacionController@programacionGetInfo');
 		Route::post('referenciasPorOc', 'recepcionProveedores\ProgramacionController@referenciasPorOc');
 
 		// Solicitud cita
-		Route::resource('cita', 'recepcionProveedores\CitaController');
+		Route::resource('cita', 'recepcionProveedores\CitaController', ['only' => ['index', 'update', 'store']]);
 		Route::get('citaGetInfo', 'recepcionProveedores\CitaController@citaGetInfo');
+
+		// Tarea generar citas proveedores 
+		Route::resource('tareaCitas', 'recepcionProveedores\tareaCitasController', ['only' => ['index']]);
+
+		// Portal de proveedores para confirmar cita
+		Route::resource('confirmarProveedor', 'recepcionProveedores\confirmarProveedorController');
 		
 	});
 

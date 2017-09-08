@@ -29,8 +29,8 @@
 								<li class="list-group-item liproveedor" ng-repeat="(key, value) in array | groupBy: 'prg_nit_proveedor'">
 
 									<div class="panel-heading proveedor" role="tab">
-										<h4 class="panel-title row">
-											<div class="col-sm-12">
+										<h4 class="panel-title">
+											<div>
 												<md-button  ng-click="mostrarProgramaciones(fecha, value[0].prg_nit_proveedor)" class="btn btn-default btn-sm" md-click>@{{value[0].prg_razonSocialTercero}} &nbsp;</md-button>
 											</div>
 										</h4>
@@ -44,28 +44,37 @@
 			</div>
 		</div>
 
-		<div>
-			<div id='external-events'>
-				<div id='external-events-listing'>
-					<hr>
-					<h4>Programaciones pendientes: @{{seleccionadas[0].prg_razonSocialTercero}}</h4>
-					<hr>
-
-					<div ng-if="seleccionadas.length == 0">
-						Seleccionar un elemento de bandeja solicitud cita...
-					</div>
-
-					<div md-whiteframe="@{{ctrl.elevation}}" class="alert fc-event arrastrable" drag-me ng-repeat="lista in seleccionadas" ng-mouseup="seleccionar(lista)">
-						<div class="subdivhijo">
-							OC: @{{lista.prg_tipo_doc_oc}} - @{{lista.prg_num_orden_compra}} - Ref: @{{lista.prg_referencia}} - Cant: @{{lista.prg_cant_programada}} - Embalaje: @{{lista.prg_cantidadempaques}} &nbsp; en @{{lista.prg_tipoempaque}}
-						</div>
-						<a href="#" ng-click="showPrompt($event, lista)"  class="glyphicon glyphicon-remove pull-right linkcerrar"><md-tooltip>Rechazar programación</md-tooltip></a>		
-						<md-tooltip>¡Click! - Mover al calendario</md-tooltip>		 
-					</div>
+		<div>	
+			<hr>
+				<h4>Programaciones pendientes: @{{seleccionadas[0].prg_razonSocialTercero}}</h4>
+			<hr>
+			<div style="min-height:40px">
+				<div ng-if="groupChekbox.length > 0" md-whiteframe="@{{ctrl.elevation}}" drag-me class="list-group-item arrastrable alert fc-event" style="font-size:12px; cursor: -moz-grab; cursor: -webkit-grab; cursor:grab">
+					Cita para: @{{seleccionadas[0].prg_razonSocialTercero}} - Prog. selecc: @{{groupChekbox.length}}
+					<md-tooltip>Mover al calendario</md-tooltip>
 				</div>
 			</div>
-		</div>
+			
+			<hr>
+			<div flex-xs flex="50" ng-if="seleccionadas.length > 0">
+	           	<md-checkbox aria-label="Select All"
+	                         ng-checked="isChecked()"
+	                         md-indeterminate="isIndeterminate()"
+	                         ng-click="toggleAll()">
+              		<span ng-if="isChecked()">Des-</span>Seleccionar
+            	</md-checkbox>            	
+            </div>           
+            <div ng-if="seleccionadas.length == 0">
+				Seleccionar un elemento de bandeja solicitud cita...
+			</div>
+            <div class="demo-select-all-checkboxes" style="font-size:11px;" flex="100" ng-repeat="lista in seleccionadas">            	
+                <md-checkbox ng-checked="exists(lista, groupChekbox)" style="width:95%;display:inline-block;" ng-click="toggle(lista, groupChekbox)">
+	               	@{{lista.prg_tipo_doc_oc}} - @{{lista.prg_num_orden_compra}} - <strong>Ref:	</strong> @{{lista.prg_referencia}} - <strong>Cant: </strong>@{{lista.prg_cant_programada}} - <strong>Embalaje: </strong>@{{lista.prg_cantidadempaques}} &nbsp; en @{{lista.prg_tipoempaque}}					
+                </md-checkbox>
+                <a href="#" ng-click="showPrompt($event, lista)" style="width:3%;display:inline-block;"  class="glyphicon glyphicon-remove pull-right linkcerrar"><md-tooltip>Rechazar programación</md-tooltip></a>
+            </div>
 
+		</div>
 	</div>
 
 	<div class="col-md-8">        

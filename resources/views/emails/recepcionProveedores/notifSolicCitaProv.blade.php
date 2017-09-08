@@ -2,10 +2,10 @@
 
 @section('content')
   <p style="{{ $style['body-line'] }}">
-  La empresa <strong>Belleza Express S.A.</strong> solicita al proveedor {{$nombre}} realizar la entrega de las mercancías a continuación mencionadas en la fecha: {{ $fecha }} hora: {{ $hora }}:
+  La empresa <strong>Belleza Express S.A.</strong> solicita al proveedor {{$nombre}} ingresar al portal de belleza express y solicitar cita para las siguientes referencias, con fecha de entrega {{$fecha}}.
   </p>
   <p>
-  <strong>Detalle de la cita</strong>
+  <strong>Referencias</strong>
   </p>
   <ul>
   @foreach($programaciones as $key => $value)

@@ -40,17 +40,6 @@ class CitaController extends Controller
         return response()->json($response);
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Funcion que crea las citas que ingresan en el calendario.
      *
@@ -58,68 +47,36 @@ class CitaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {      
         //Obtengo la informacion de la vista
         $vista = $request->all();
         //Agrupo por fechaGroup
         $collection = collect($vista);
         $agrupadoFecha = $collection->groupBy('fechaGroup');
         $citas = [];
-        //Recorro cada uno de los grupos de fechas
-        foreach ($agrupadoFecha as $key => $value) {
-            // Agrupo por proveedor
-            $dato = collect($value);
-            $agrupadoProvFech = $dato->groupBy('proveedor');
-            $bandera = false;
-            $final = "";
-            $mensaje = "";            
-            $cita = [];
-            //Recorro cada uno de los proveedores en una fecha determinada
-            foreach ($agrupadoProvFech as $key => $value) {                 
-                foreach ($value as $clave => $prog) {  
-                    //Armo la cita
-                    if ($clave == 0) {
-                        $final = $prog['end'];
-                        $muelle = $prog['resourceId'];
-                        $cita['cit_muelle'] = $muelle;
-                        $cita['cit_fechainicio']= $prog['start'];
-                        $cita['programaciones'] = $value;
-                        $cita['cit_nitproveedor'] = $prog['proveedor'];
-                        $cita['cit_nombreproveedor'] = $prog['nomProveedor'];
-                        $cita['cit_estado'] = "PENDCONFIRPROVEE";
-                        $cita['fechaGroup'] = $prog['fechaGroup'];
-                        $cita['error'] = false;
-
-                        $bandera = true;
-                        if (count($value) == 1) {
-                            $cita['cit_fechafin'] = $prog['end'];
-
-                        }
-                    }
-
-                    if ($clave > 0) {
-                       if($final != $prog['start'] || $muelle != $prog['resourceId']){
-                        $bandera = false;
-                       }                   
-                       if ($bandera == false) {
-                           $cita['error'] = true;
-                           $cita['mensaje'] = "Las programaciones del proveedor " . $prog['nomProveedor'] . ' para el día ' . $prog['fechaGroup'] . ' se encuentran desagrupadas.'; 
-                           break;
-                       }elseif($bandera == true){
-                           $final = $prog['end'];
-                           $muelle = $prog['resourceId'];
-                           $cita['cit_fechafin'] = $prog['end'];
-                       }                  
-                    }
-
+        foreach ($agrupadoFecha as $fecha => $grupoDeCitas) {
+            $collection = collect($grupoDeCitas);
+            foreach ($grupoDeCitas as $key => $citaVista) {
+                $cita['error'] = false;
+                $cita['mensaje'] = "";
+                // Esto se realiza para identificar si el usuario quiere crear dos citas el mismo dia 
+                $filtraCitasProveedor = $collection->where('proveedor', $citaVista['proveedor'])->all();
+                if (count($filtraCitasProveedor) > 1) {
+                    $cita['error'] = true;
+                    $cita['mensaje'] = "Las programaciones del proveedor " . $citaVista['nomProveedor'] . ' para el día ' . $citaVista['fechaGroup'] . ' se encuentran desagrupadas.';
                 }
 
-                if ($cita['error'] == true) {
-                    array_push($citas, $cita);
-                }else{
-                    //Creo un objeto con la cita y se lo asigno a ella misma
-                    $programacionesId = array_pluck($cita['programaciones'], 'programacion');
-                    $jsonCita = [
+                $cita['cit_fechafin'] = $citaVista['end'];
+                $cita['cit_muelle'] = $citaVista['resourceId'];
+                $cita['cit_fechainicio']= $citaVista['start'];
+                $cita['programaciones'] = $citaVista['programacion'];
+                $cita['cit_nitproveedor'] = $citaVista['proveedor'];
+                $cita['cit_nombreproveedor'] = $citaVista['nomProveedor'];
+                $cita['cit_estado'] = "PENDCONFIRPROVEE";
+                $cita['fechaGroup'] = $citaVista['fechaGroup'];
+                // Creo un objeto con la cita y se lo asigno a ella misma
+                $programacionesId = array_pluck($cita['programaciones'], 'id');
+                $jsonCita = [
                                 'end'                       => $cita['cit_fechafin'],
                                 'start'                     => $cita['cit_fechainicio'],
                                 'stick'                     => true,
@@ -132,49 +89,32 @@ class CitaController extends Controller
                                 'borderColor'               => '#696969' , 
                                 'programaciones'            => $programacionesId,
                                 'fechaGroup'                => $cita['fechaGroup'], 
-                                ];
-                    $cita['cit_objcalendarcita'] = json_encode($jsonCita);
+                            ];
+                $cita['cit_objcalendarcita'] = json_encode($jsonCita);
+
+                //ESTADO ENVIADO A PROVEEDOR
+                array_push($citas, $cita);
+                if ($cita['error'] == false) {
                     // Creo la cita en la tabla t_cita
                     $objCita = TCita::Create($cita); 
-                    //ESTADO ENVIADO A PROVEEDOR
-                    array_push($citas, $cita);
                     // Genero correo al proveedor
                     //Debe buscar el correo del proveedor y ponerlo en un array $correoProveedor
                     $correoProveedor = ['cabelalcazar@bellezaexpress.com'];
                     Mail::to($correoProveedor)->send(new citaProveedor($cita));                 
                     //Cambio el estado de las programaciones y asigno el id de la cita
                     TProgramacion::whereIn('id', $programacionesId)
-                                  ->update(['prg_estado' => 3, 'prg_idcita' => $objCita->id]);                
+                                      ->update(['prg_estado' => 3, 'prg_idcita' => $objCita->id, 'prg_envioCorreo' => 'Enviado']);
                 }
-                
-            }            
+               
+            }
         }
-       
-        $response = compact('citas');
+        // Recorro cada uno de los grupos de fechas
+        $response = compact('citas', 'programacionesId');
         return response()->json($response);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+
 
     /**
      * Funcion que cambia el estado de la programacion cuando en la vista de asginacion de cita se rechaza
@@ -195,14 +135,5 @@ class CitaController extends Controller
         return response()->json($response);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+
 }
