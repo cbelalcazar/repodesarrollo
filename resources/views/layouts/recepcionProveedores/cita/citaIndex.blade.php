@@ -96,5 +96,4 @@
 
 @push('script_angularjs')
 <script src="{{url('/js/recepcionProveedores/cita/citaCtrl.js')}}" type="text/javascript" language="javascript"></script>
-<script src="{{url('/js/angularJs/angular-locale_es-co.js')}}"></script>
 @endpush

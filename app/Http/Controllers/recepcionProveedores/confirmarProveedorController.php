@@ -4,6 +4,7 @@ namespace App\Http\Controllers\recepcionProveedores;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\recepcionProveedores\TProgramacion;
 
 class confirmarProveedorController extends Controller
 {
@@ -14,7 +15,25 @@ class confirmarProveedorController extends Controller
      */
     public function index()
     {
-        //
+        $titulo = "SOLICITAR CITAS Y CONFIRMAR PROGRAMACIONES";
+        $ruta = "Proveedores // Solicitar cita y confirmar programaciones";
+        return view("layouts.recepcionProveedores.confirmarProveedor.confirmarIndex", compact('titulo', 'ruta'));
+    }
+
+
+    /**
+     * Retorna a la vista las consultas de cargue inicial
+     * 
+     * Return JSON
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function confirmarProveedorGetInfo()
+    {
+        // Falta filtrar las programaciones de acuerdo con el proveedor logueado
+        $programaciones = TProgramacion::where([['prg_estado', 3], ['prg_nit_proveedor', '860026759']])->orderBy('prg_fecha_programada')->get();
+        $response = compact('programaciones');
+        return response()->json($response);
     }
 
     /**
@@ -26,6 +45,7 @@ class confirmarProveedorController extends Controller
     {
         //
     }
+
 
     /**
      * Store a newly created resource in storage.
