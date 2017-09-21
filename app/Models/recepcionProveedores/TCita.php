@@ -43,5 +43,9 @@ class TCita extends Model
         return unserialize($value);
     }
 
+    public function programaciones(){
+        return $this->hasMany('App\Models\recepcionProveedores\TProgramacion',"prg_idcita","id");
+    }
+
         
 }

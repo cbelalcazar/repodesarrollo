@@ -42,7 +42,9 @@ class TProgramacion extends Model
     'prg_consecutivoRefOc', 
     'prg_tipoempaque',
     'prg_cantidadempaques',
-    'prg_unidadreferencia'
+    'prg_unidadreferencia',
+    'prg_idcita', 
+    'prg_envioCorreo'
     ];
 
     protected $guarded = [];

@@ -34,7 +34,7 @@ Route::group(['middleware' => ['auth']], function () {
 	// Aplicativo Programacion, Recepcion y Evaluacion de proveedores
 	// 08-09-2017
 	// Carlos Andres Belalcazar Mendez
-	// Analista Desarrollador de software - Belleza Express S.A.
+	// Analista Desarrollador de software 
 
 	Route::group(['prefix' => 'recepcionProveedores'], function () {
 		// Programacion ordenes 

@@ -14,7 +14,7 @@
 				<div class="panel panel-default">
 					<div class="panel-body">
 
-						<button type="button"  class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal1" ng-click="limpiar()">
+						<button type="button"  class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal1" ng-click="limpiar()" name="programar">
 							<i class="glyphicon glyphicon-plus"></i> Programar
 							<md-tooltip md-direction="bottom">
 								Crear nueva
