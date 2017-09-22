@@ -42,8 +42,7 @@
 								<div class="col-sm-12">
 									<div ng-if="alertas" class="col-sm-12">
 											<div class="alert alert-danger alert-dismissable">                       
-													<p ng-repeat="msj in mensajes">@{{msj[0]}}</p>  
-													<p ng-if="observacionRechazo == '' || observacionRechazo == undefined">Favor ingresar algunar observacion</p>               
+													<p ng-repeat="msj in mensajes">@{{msj[0]}}</p>              
 											</div>
 										</div>
 								</div>
@@ -60,8 +59,8 @@
 									  <label><input type="checkbox" ng-model="checkbox.probCantidad">Problemas con la cantidad a entregar</label>
 									</div>
 									<div class="form-group">
-										<label for="obsRechazoid">Observaciones:</label>
-										<textarea class="form-control" ng-model="observacionRechazo" id="obsRechazoid" cols="100" rows="3" required></textarea>@{{observacionRechazo}}
+										<label>Observaciones:</label>
+										<textarea class="form-control" ng-model="observacionRechazo.obs" cols="100" rows="3" required></textarea>
 									</div>
 								</div>
 

@@ -32,9 +32,9 @@ class confirmarProveedorController extends Controller
     public function confirmarProveedorGetInfo()
     {
         // Falta filtrar las programaciones de acuerdo con el proveedor logueado
-        $programaciones = TProgramacion::where([['prg_estado', 3], ['prg_nit_proveedor', '860000580']])->orderBy('prg_fecha_programada')->get();
+        $programaciones = TProgramacion::where([['prg_estado', 3], ['prg_nit_proveedor', '890304375']])->orderBy('prg_fecha_programada')->get();
         // Consulto las citas sin confirmar con todas su programaciones asignadas para el mismo proveedor
-        $citas = TCita::with('programaciones')->where([['cit_nitproveedor','860000580'], ['cit_estado', 'PENDCONFIRPROVEE']])->get();
+        $citas = TCita::with('programaciones')->where([['cit_nitproveedor','890304375'], ['cit_estado', 'PENDCONFIRPROVEE']])->get();
         $response = compact('programaciones', 'citas');
         return response()->json($response);
     }
@@ -120,8 +120,16 @@ class confirmarProveedorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function rechazo(Request $request)
     {
-        //
+        $citaSeleccionada = $request->all();
+        $updateCita = TCita::where('id', $citaSeleccionada['id'])->update(['cit_estado' => 'RECHAZOPROV']);
+        $deleteProgramaciones = TProgramacion::where('prg_idcita', $citaSeleccionada['id'])
+                                               ->get();
+        foreach ($deleteProgramaciones as $key => $value) {
+            $value->delete();
+        }
+        return response()->json($updateCita);
+
     }
 }

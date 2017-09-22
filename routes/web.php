@@ -52,6 +52,7 @@ Route::group(['middleware' => ['auth']], function () {
 		// Portal de proveedores para confirmar cita
 		Route::resource('confirmarProveedor', 'recepcionProveedores\confirmarProveedorController');
 		Route::get('confirmarProveedorGetInfo', 'recepcionProveedores\confirmarProveedorController@confirmarProveedorGetInfo');
+		Route::post('rechazo', 'recepcionProveedores\confirmarProveedorController@rechazo');
 		
 		
 	});

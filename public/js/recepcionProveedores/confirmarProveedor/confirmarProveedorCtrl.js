@@ -4,6 +4,7 @@ app.controller('confirmProveedorCtrl', ['$scope', '$http', '$filter', 'DTOptions
 // Definicion de variables
 $scope.Url = "confirmarProveedorGetInfo";
 $scope.urlResource = "confirmarProveedor";
+$scope.urlRechazo = "rechazo";
 $scope.titulocitas = "Seleccionar referencias"
 $scope.progress = true;
 $scope.tablaClase = "col-md-12";
@@ -20,6 +21,7 @@ $scope.checkbox = {
 										probHora     : false, 
 										probCantidad : false
 									};
+$scope.observacionRechazo = {};
 
 $scope.getInfo = function(){
 	$http.get($scope.Url).then(function(response){
@@ -56,7 +58,7 @@ $scope.generarCita = function(ev){
 	console.log(progConCantidad);
 	if (progConCantidad.length > 0) {
 		var confirm = $mdDialog.prompt()
-		.title('Desea agregar alguna observacion a la cita?')
+		.title('Desea agregar alguna observacion a su solicitud de cita?')
 		.textContent('')
 		.placeholder('Ingresar observación')
 		.ariaLabel('Observación')
@@ -125,8 +127,22 @@ $scope.generarRechazo = function(){
 	$scope.mensajes = [];
 	if (($scope.checkbox.probFecha == false && $scope.checkbox.probHora == false && $scope.checkbox.probCantidad == false )) {
 		$scope.mensajes.push(['Favor seleccionar al menos un motivo de rechazo']);
+	}
+	if ($scope.observacionRechazo.obs == undefined) {
+		$scope.mensajes.push(['Favor Ingresar una observacion']);
+	}
+
+	if ($scope.mensajes.length <= 0) {
+		$scope.alertas = false;
+		console.log($scope.citaSeleccionada);
+		$http.post($scope.urlRechazo, $scope.citaSeleccionada).then(function(response){
+			console.log(response.data);
+			$scope.getInfo();
+			$scope.citaSeleccionada = {};
+			angular.element('.close').trigger('click');
+		});
 	}else{
-		$scope.mensajes = [];
+		$scope.alertas = true;
 	}
 }
 
