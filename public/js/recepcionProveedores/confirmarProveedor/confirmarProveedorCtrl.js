@@ -14,7 +14,7 @@ $scope.fechaEntrega = "";
 $scope.seleccionadasCita = [];
 $scope.tituloModal = "Informacion cita";
 $scope.citaSeleccionada = {};
-$obsRechazo = false;
+$scope.obsRechazo = false;
 $scope.mensajes = [];
 $scope.checkbox = {
 										probFecha    : false,
@@ -23,12 +23,15 @@ $scope.checkbox = {
 									};
 $scope.observacionRechazo = {};
 
+
 $scope.getInfo = function(){
 	$http.get($scope.Url).then(function(response){
 		data = response.data;
 		$scope.datos = angular.copy(data.programaciones);
 		$scope.noProgramables = $filter('filter')($scope.datos, {prg_tipo_programacion: 'NoProgramable'});
-		$scope.citas = angular.copy(data.citas);
+		$scope.citasTodas = angular.copy(data.citas);
+		$scope.citas = $filter('filter')($scope.citasTodas, {cit_estado : "PENDCONFIRPROVEE"});
+		$scope.confirmadas = $filter('filter')($scope.citasTodas, {cit_estado : "CONFIRMADA"});
 		$scope.progress = false;
 	}, function errorCallback(response) {
 		console.log(response);
@@ -107,7 +110,9 @@ $scope.validarVacios = function(dato){
 	}
 }
 
-$scope.seleccionarCita = function(cita){
+$scope.seleccionarCita = function(cita, conBotones = true){
+	$scope.limpiar();
+	$scope.mostrarBotones = conBotones;
 	$scope.citaSeleccionada = cita;
 }
 
@@ -144,6 +149,20 @@ $scope.generarRechazo = function(){
 	}else{
 		$scope.alertas = true;
 	}
+}
+
+$scope.limpiar = function(){
+	$scope.obsRechazo = false;
+	$scope.observacionRechazo.obs = "";
+	$scope.checkbox.probFecha    = false;
+	$scope.checkbox.probHora     = false; 
+	$scope.checkbox.probCantidad = false;
+	$scope.alertas = false;
+	$scope.mensajes = [];
+}
+
+$scope.cambiaEstado = function(){
+	$scope.obsRechazo = true;
 }
 
 }]);

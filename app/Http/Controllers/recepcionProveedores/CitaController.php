@@ -102,8 +102,12 @@ class CitaController extends Controller
                     $correoProveedor = ['cabelalcazar@bellezaexpress.com'];
                     Mail::to($correoProveedor)->send(new citaProveedor($cita));                 
                     //Cambio el estado de las programaciones y asigno el id de la cita
+                    $estadoNuevo = 3;
+                    if ($cita['programaciones'][0]['prg_tipo_programacion'] == "NoProgramable") {
+                        $estadoNuevo = 5;
+                    }
                     TProgramacion::whereIn('id', $programacionesId)
-                                      ->update(['prg_estado' => 3, 'prg_idcita' => $objCita->id, 'prg_envioCorreo' => 'Enviado']);
+                                      ->update(['prg_estado' => $estadoNuevo, 'prg_idcita' => $objCita->id, 'prg_envioCorreo' => 'Enviado']);
                 }
                
             }

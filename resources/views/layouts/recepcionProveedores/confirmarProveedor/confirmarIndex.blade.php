@@ -42,12 +42,13 @@
 <div ng-controller="confirmProveedorCtrl as ctrl" ng-cloak>
 	<div class="col-md-12">
 		<ul class="nav nav-tabs">
-			<li><a data-toggle="tab" href="#citas">Solicitar citas</a></li>
-			<li class="active"><a data-toggle="tab" href="#programaciones">Confirmar programaciones</a></li>
+			<li class="active"><a data-toggle="tab" href="#citas">Solicitar citas</a></li>
+			<li><a data-toggle="tab" href="#programaciones">Confirmar programaciones</a></li>
+			<li><a data-toggle="tab" href="#confirmadas">Citas confirmadas</a></li>
 		</ul>
 
 		<div class="tab-content">
-			<div id="citas" class="tab-pane fade">
+			<div id="citas" class="tab-pane fade in active">
 				<form name="citaForm" ng-submit="citaForm.$valid && generarCita($event)" class="row" novalidate>
 					<div class="col-md-11">
 						<div class="form-group">
@@ -101,14 +102,14 @@
 						</table>
 
 					</div>
-					<div class="col-md-1" style="max-height: 450px;">
+					<div class="col-md-1" style="max-height: 400px;">
 						<button ng-if="(fechaEntrega != '')" class="btn btn-success" style="position:fixed; bottom:5px; right:10px;">Solicitar cita</button>
 					</div>
 
 				</form>
 				
 			</div>
-			<div id="programaciones" class="tab-pane fade in active">
+			<div id="programaciones" class="tab-pane fade">
 				<div>
 					<div class="col-md-12">
 						<hr>
@@ -134,6 +135,30 @@
 					</div>					
 				</div>
 				
+			</div>
+			<div id="confirmadas" class="tab-pane fade">
+				<hr>
+				<h3>Citas confirmadas</h3>
+				<hr><br>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Fecha</th>
+							<th>Detalle cita</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-if="confirmadas.length == 0">
+							<td>No se encontraron registros...</td>
+						</tr>
+						<tr ng-repeat="confir in confirmadas">
+							<td>@{{confir.cit_fechainicio}}</td>
+							<td>
+							<button class="btn btn-info "  data-toggle="modal" data-target="#modal1" ng-click="seleccionarCita(confir, false)"><span class="glyphicon glyphicon-eye-open"></span></button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>

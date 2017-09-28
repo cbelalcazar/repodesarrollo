@@ -97,7 +97,7 @@
 								</tr>
 							</tbody>
 						</table>
-				</div>
+					</div>
 				</div>
 			</div>
 			<div id="menu2" class="tab-pane fade">

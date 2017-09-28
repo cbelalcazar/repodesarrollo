@@ -4,7 +4,7 @@
 			<form name="periodoForm" ng-submit="periodoForm.$valid && save()" novalidate>
 				<div class="modal-content panel-primary">
 					<div class="modal-header panel-heading">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+						<button type="button" class="close" data-dismiss="modal aria-label="Cerrar">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						<h4 class="modal-title">@{{tituloModal}}</h4>
@@ -67,16 +67,16 @@
 							</div>
 						</div>
 						<div class="modal-footer">  
-							<button class="btn btn-primary" ng-click="confirmarCita()">
+							<button class="btn btn-primary" ng-if="mostrarBotones" ng-click="confirmarCita()">
 								Confirmar
 							</button> 
-							<button class="btn btn-danger" ng-hide="obsRechazo"  ng-click="obsRechazo = true">
+							<button class="btn btn-danger"  ng-if="mostrarBotones" ng-hide="obsRechazo"  ng-click="cambiaEstado()">
 								Rechazar
 							</button> 
 							<button class="btn btn-danger" ng-if="obsRechazo"  ng-click="generarRechazo()">
 								Rechazar
 							</button> 
-							<button class="btn btn-secondary" ng-click="limpiar()" data-dismiss="modal" type="button">
+							<button class="btn btn-secondary" data-dismiss="modal" type="button">
 								Cerrar
 							</button>
 						</div>

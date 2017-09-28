@@ -35,7 +35,8 @@ class notifProvCita extends Mailable
        $agrupado = $this->agrupado;
        $nombre = $agrupado[0]['prg_razonSocialTercero'];
        $fecha = Carbon::parse($agrupado[0]['prg_fecha_ordenCompra'])->format('d-m-Y');
-       $programaciones = $agrupado;
+       $programaciones = collect($agrupado);
+       $programaciones = $programaciones->groupBy('prg_num_orden_compra');
 
         return $this->subject('Solicitud confirmación de cita Belleza Express')
                     ->view('emails.recepcionProveedores.notifSolicCitaProv')

@@ -33,7 +33,6 @@ app.controller('citaCtrl', ['$scope', '$http', '$filter', 'uiCalendarConfig', '$
 
 // Funcion que se ejecuta cuando se da click a un elemento arrastrable para ponerlo en el calendario
 $scope.seleccionar = function(obj){
-    console.log('me ejecute');
 	$scope.seleccionado = obj;
 }
 
@@ -47,11 +46,24 @@ $scope.seleccionar = function(obj){
  		// Obtiene los muelles y eventos del calendario
  		$scope.muelles = angular.copy(res.muelles);
  		$scope.events = angular.copy(res.citas);
+
  		// parsea cada uno de los obj que vienen en el array events el cual tiene en cada posicion un string con formato JSON 
  		var eventos = $scope.events.map(function(obj){
- 			uiCalendarConfig.calendars.myCalendar.fullCalendar('renderEvent', JSON.parse(obj));
- 			return JSON.parse(obj);
+            var objParse = JSON.parse(obj);
+            uiCalendarConfig.calendars.myCalendar.fullCalendar('renderEvent', objParse);            
+            // Si esta confirmada es negro #343a40
+            if (objParse.estado == 'CONFIRMADA') {
+                objParse.backgroundColor = "#343a40";
+                objParse.borderColor = "#343a40";
+                objParse.description = "Cita confirmada";
+                return objParse;
+            }else{
+                // Si no esta confirmada queda gris
+                objParse.description = "Cita sin confirmar";
+                return objParse;
+            } 			
  		});
+        console.log(eventos);
  		$scope.events = eventos;   
  		$scope.progress = false; 
  		// Instancia el objeto de la libreria con toda la informacion para que muestre el calendario
@@ -143,6 +155,12 @@ $scope.seleccionar = function(obj){
             		$scope.events.push(obj[0]); 
             		$scope.actualizarLista(String($filter('date')(event.start._d, 'yyyy-MM-dd','+0000')));
             	}      
+            },
+            eventClick : function(event, jsEvent, view){
+                $http.get($urlConsultaVista).then(function(response){
+                    var res = response.data;
+
+                });
             }
         }
     };

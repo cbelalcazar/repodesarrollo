@@ -38,7 +38,8 @@ class citaProveedor extends Mailable
        $nombre = $cita['cit_nombreproveedor'];
        $fecha = Carbon::parse($cita['cit_fechainicio'])->format('d-m-Y');
        $hora = Carbon::parse($cita['cit_fechainicio'])->format('h:m');
-       $programaciones = $cita['programaciones'];
+       $programaciones = collect($cita['programaciones']);
+       $programaciones = $programaciones->groupBy('prg_num_orden_compra');
 
         return $this->subject('Solicitud confirmación de cita Belleza Express')
                     ->view('emails.recepcionProveedores.citaProveedor')

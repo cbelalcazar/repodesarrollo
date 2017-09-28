@@ -32,9 +32,9 @@ class confirmarProveedorController extends Controller
     public function confirmarProveedorGetInfo()
     {
         // Falta filtrar las programaciones de acuerdo con el proveedor logueado
-        $programaciones = TProgramacion::where([['prg_estado', 3], ['prg_nit_proveedor', '890304375']])->orderBy('prg_fecha_programada')->get();
+        $programaciones = TProgramacion::where([['prg_estado', 3], ['prg_nit_proveedor', '860056150']])->orderBy('prg_fecha_programada')->get();
         // Consulto las citas sin confirmar con todas su programaciones asignadas para el mismo proveedor
-        $citas = TCita::with('programaciones')->where([['cit_nitproveedor','890304375'], ['cit_estado', 'PENDCONFIRPROVEE']])->get();
+        $citas = TCita::with('programaciones')->where('cit_nitproveedor','860056150')->whereIn('cit_estado', ['CONFIRMADA', 'PENDCONFIRPROVEE'])->get();
         $response = compact('programaciones', 'citas');
         return response()->json($response);
     }
@@ -62,7 +62,13 @@ class confirmarProveedorController extends Controller
 
         $update = TCita::find($data['id']);
         $update->cit_estado = "CONFIRMADA";
+        $objetoCalendario = $update['cit_objcalendarcita'];
+        $json = json_decode($objetoCalendario);
+        $json->estado = "CONFIRMADA";
+        $update['cit_objcalendarcita'] = json_encode($json);
         $update->save();
+
+        $programaciones = TProgramacion::where('prg_idcita', $data['id'])->update(['prg_estado' => 6]);
 
         $response = compact('data');
         return response()->json($response);
@@ -124,11 +130,8 @@ class confirmarProveedorController extends Controller
     {
         $citaSeleccionada = $request->all();
         $updateCita = TCita::where('id', $citaSeleccionada['id'])->update(['cit_estado' => 'RECHAZOPROV']);
-        $deleteProgramaciones = TProgramacion::where('prg_idcita', $citaSeleccionada['id'])
-                                               ->get();
-        foreach ($deleteProgramaciones as $key => $value) {
-            $value->delete();
-        }
+        $programaciones = TProgramacion::where('prg_idcita', $citaSeleccionada['id'])
+                                               ->update(['prg_estado' => 4]);
         return response()->json($updateCita);
 
     }
