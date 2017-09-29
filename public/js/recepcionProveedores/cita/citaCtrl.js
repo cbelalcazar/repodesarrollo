@@ -30,6 +30,7 @@ app.controller('citaCtrl', ['$scope', '$http', '$filter', 'uiCalendarConfig', '$
 		$scope.Url = "cita";
         $scope.groupChekbox = [];
         $scope.recurso = "";
+        $scope.urlConsultaVista = 'consultaProg';
 
 // Funcion que se ejecuta cuando se da click a un elemento arrastrable para ponerlo en el calendario
 $scope.seleccionar = function(obj){
@@ -63,7 +64,6 @@ $scope.seleccionar = function(obj){
                 return objParse;
             } 			
  		});
-        console.log(eventos);
  		$scope.events = eventos;   
  		$scope.progress = false; 
  		// Instancia el objeto de la libreria con toda la informacion para que muestre el calendario
@@ -157,10 +157,29 @@ $scope.seleccionar = function(obj){
             	}      
             },
             eventClick : function(event, jsEvent, view){
-                $http.get($urlConsultaVista).then(function(response){
-                    var res = response.data;
 
-                });
+                $scope.progress = true;
+                $scope.progShow = [];
+                // Obtengo el objeto que quiero enviar
+                var obj = $filter('filter')($scope.events, {start : event.start._i, nomProveedor : event.nomProveedor, resourceId: event.resourceId});
+                if(obj[0].estado == "sinGuardar"){           
+                    $scope.progShow = event.programacion;
+                    $scope.progShow[0]['cita'] = JSON.parse(JSON.stringify(obj[0]));
+                    console.log($scope.progShow);
+                    angular.element('.close').trigger('click');
+                    $scope.progress = false;
+                    $scope.moverCalendarioAFecha();
+                }else{
+                    $http.post($scope.urlConsultaVista, obj).then(function(response){
+                        var res = response.data;
+                        $scope.progShow = angular.copy(res.progShow);
+                        console.log($scope.progShow);
+                        angular.element('.close').trigger('click');
+                        $scope.progress = false;
+                    });
+                }
+
+                
             }
         }
     };
@@ -296,6 +315,13 @@ $scope.actualizarLista = function(fecha = $scope.fecha){
 	$timeout(function() {
 		uiCalendarConfig.calendars.myCalendar.fullCalendar('changeView', 'agendaDay', fecha);                   
 	}, 25);
+};
+
+// Actualiza los elementos renderizados en el calendario
+$scope.moverCalendarioAFecha = function(){
+    $timeout(function() {
+        uiCalendarConfig.calendars.myCalendar.fullCalendar('changeView', 'agendaDay', $scope.fecha);                   
+    }, 25);
 };
 
 

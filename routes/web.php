@@ -44,7 +44,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 		// Solicitud cita
 		Route::resource('cita', 'recepcionProveedores\CitaController', ['only' => ['index', 'update', 'store']]);
-		Route::get('citaGetInfo', 'recepcionProveedores\CitaController@citaGetInfo');
+		Route::get('citaGetInfo', 'recepcionProveedores\CitaController@citaGetInfo');		
+		Route::post('consultaProg', 'recepcionProveedores\CitaController@consultaProg');
 
 		// Tarea generar citas proveedores 
 		Route::resource('tareaCitas', 'recepcionProveedores\tareaCitasController', ['only' => ['index']]);

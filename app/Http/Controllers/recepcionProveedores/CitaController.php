@@ -139,5 +139,18 @@ class CitaController extends Controller
         return response()->json($response);
     }
 
+    /**
+     * 
+     * Funcion que retorna programaciones segun los indices enviados desde la vista
+     * Estos indices se envian debido a que se quiere mostrar las programaciones asociadas a una cita
+     * 
+     */
+    public function consultaProg(Request $request){
+        $data = $request->all();
+        $progShow = TProgramacion::whereIn('id', $data[0]['programaciones'])->with('cita')->get();
+        $response = compact('data', 'progShow');
+        return response()->json($response);
+    }
+
 
 }

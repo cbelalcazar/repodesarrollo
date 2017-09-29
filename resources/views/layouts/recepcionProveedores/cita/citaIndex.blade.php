@@ -85,11 +85,16 @@
 			<md-button  ng-click="recargarPagina()" class="btn btn-default btn-sm pull-right" md-click>Cancelar</md-button>
 		</div>
 	</div>
-	<a class="btn" data-ng-click="test()">Test</a>  
+	<!-- <a class="btn" data-ng-click="test()">Test</a>   -->
+
+	@include('layouts.recepcionProveedores.cita.citaShow')
 
 	<div ng-if="progress" class="progress">
 		<md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
 	</div>
+
+	<button type="button" ng-hide="true" class="close" data-toggle="modal" data-target="#modal1"></button>
+
 </div>
 
 @endsection

@@ -123,5 +123,9 @@ class TProgramacion extends Model
                 ->get();
     }
 
+    public function cita(){
+        return $this->belongsTo('App\Models\recepcionProveedores\TCita','prg_idcita','id');
+    }
+
 
 }
