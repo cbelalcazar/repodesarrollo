@@ -58,4 +58,11 @@ Route::group(['middleware' => ['auth']], function () {
 		
 	});
 
+
 });
+
+
+Route::group(['prefix' => 'bmovil'], function () {
+		Route::resource('documentociego', 'bmovil\documentociegoController');	
+		Route::get('documentociegoGetInfo', 'bmovil\documentociegoController@documentociegoGetInfo');	
+	});
