@@ -45,9 +45,6 @@ $.extend( true, $.fn.dataTable.defaults, {
 <!-- Dropzone -->
 <script src="{{url('/js/dropzone.js')}}" type="text/javascript" language="javascript"></script>
 
-<!-- dirPagination -->
-<script src="{{url('/js/dirPagination.js')}}" type="text/javascript" language="javascript"></script>
-
 
 <script src="{{url('/js/genericas.js')}}" type="text/javascript" language="javascript"></script>
 
