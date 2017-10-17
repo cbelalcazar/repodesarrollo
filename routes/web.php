@@ -54,6 +54,11 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::resource('confirmarProveedor', 'recepcionProveedores\confirmarProveedorController');
 		Route::get('confirmarProveedorGetInfo', 'recepcionProveedores\confirmarProveedorController@confirmarProveedorGetInfo');
 		Route::post('rechazo', 'recepcionProveedores\confirmarProveedorController@rechazo');
+		// Entrada WMS
+		Route::resource('docEntradaAlmacen', 'recepcionProveedores\docEntradaAlmacenController');
+		Route::get('docEntradaAlmacenGetInfo', 'recepcionProveedores\docEntradaAlmacenController@docEntradaAlmacenGetInfo');
+		Route::post('formValidacionCiegoGetInfo', 'recepcionProveedores\docEntradaAlmacenController@formValidacionCiegoGetInfo');
+		Route::post('guardarEntrada', 'recepcionProveedores\docEntradaAlmacenController@guardarEntrada');
 		
 		
 	});
