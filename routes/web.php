@@ -29,4 +29,12 @@ Route::group(['middleware' => ['auth']], function () {
   });
 
   Route::get('autocomplete', ['uses' => 'GenericasController@autocomplete', 'as' => 'autocomplete']);
+
+  // Aplicativo Control Inversion, Creado Oscar O
+  Route::group(['prefix' => 'controlinversion'], function () {
+  	Route::resource('solicitud','controlinversion\solicitudController');
+  	Route::get('solicitudGetInfo','controlinversion\solicitudController@solicitudGetInfo');
+  });
+
+  
 });

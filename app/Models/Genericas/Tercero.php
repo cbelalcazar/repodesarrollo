@@ -34,4 +34,10 @@ class Tercero extends Model
         'fechaNacimientoTercero',
         'indxEstadoTercero'
     ];
+
+    public function Cliente()
+    {
+        return $this->hasOne('App\Models\Genericas\TCliente', 'ter_id', 'idTercero');
+    }
+
 }
