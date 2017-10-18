@@ -1,12 +1,27 @@
 app.controller('solicitudCtrl', ['$scope', '$filter', '$http', function($scope, $filter, $http){
 	
 	// Variable fecha para el formulario de creacion	
-		var fechahoy = new Date();
-		$scope.solicitud = {
-		  										fecha:$filter('date')(fechahoy, 'yyyy-MM-dd HH:mm:ss'),
-											  };
-
-$scope.url = '../solicitudGetInfo';
+	var fechahoy = new Date();
+	$scope.solicitud = {
+			  				fecha:$filter('date')(fechahoy, 'yyyy-MM-dd HH:mm:ss'),
+						};
+	$scope.motivoSalida = [
+							{
+								'id'			: 7,
+								'descripcion' 	: 'Salida de Obsequios y Muestras Mercadeo'
+							},
+			  				{
+			  					'id'			: 8,
+			  					'descripcion' 	: 'Salida Eventos de Mercadeo'
+			  				},
+			  				{
+			  					'id'			: 10,
+			  					'descripcion' 	: 'Salida Probadores Mercadeo'
+			  				},
+						  ];
+			  					
+	$scope.progress = true;
+	$scope.url = '../solicitudGetInfo';
 	
 	// Campo Facturar A
 		$scope.hab_ac_facturara = false;
@@ -21,6 +36,7 @@ $scope.url = '../solicitudGetInfo';
 	$scope.getInfo = function(){
 		$http.get($scope.url).then(function(response){
 			var res = response.data;
+			console.log(res);
 			$scope.personas = angular.copy(res.personas);
 			$scope.tiposalida = angular.copy(res.tiposalida);
 			$scope.tipopersona = angular.copy(res.tipopersona);
@@ -28,6 +44,7 @@ $scope.url = '../solicitudGetInfo';
 			$scope.lineasproducto = angular.copy(res.lineasproducto);
 			$scope.colaboradores = angular.copy(res.colaboradores);
 			$scope.items = angular.copy(res.item);
+			$scope.progress = false;
 		});
 	}
 
@@ -82,6 +99,10 @@ $scope.qs_referencia = function(string){
 
       // Otherwise, create a new one
       return { name: chip, type: 'new' }
+    }
+
+    $scope.scrollto = function($event){
+    	console.log($event);
     }
 
 
