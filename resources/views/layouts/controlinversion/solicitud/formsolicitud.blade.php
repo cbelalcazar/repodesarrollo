@@ -21,7 +21,6 @@
 					          ng-disabled="hab_ac_facturara"
 					          md-selected-item="objeto.selectedItem"
 							  md-search-text="buscar_ac_facturara"
-							  (change) = "scrollto($event)"
 					          md-no-cache="true"
 							  md-item-text="item.tercero.razonSocialTercero"
 					          md-items="item in qs_facturara(buscar_ac_facturara)"
