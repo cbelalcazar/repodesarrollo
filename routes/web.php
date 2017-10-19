@@ -32,9 +32,15 @@ Route::group(['middleware' => ['auth']], function () {
 
   // Aplicativo Control Inversion, Creado Oscar O
   Route::group(['prefix' => 'controlinversion'], function () {
+
+    //solicitud de creacion de obsequios y muestras
   	Route::resource('solicitud','controlinversion\solicitudController');
   	Route::get('solicitudGetInfo','controlinversion\solicitudController@solicitudGetInfo');
+
+    //gestion catalogo de vendedores por zona
+    Route::resource('vendedores','controlinversion\vendedorController');
+    Route::get('vendedoresGetInfo','controlinversion\vendedorController@getInfo');
   });
 
-  
+
 });
