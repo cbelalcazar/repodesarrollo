@@ -32,11 +32,11 @@ use App\Models\Importacionesv2\TPermisosImp;
  * @resource TImportacionController
  *
  * Controlador creado para el proceso de importacion
- * 
+ *
  * Creado por Carlos Belalcazar
- * 
+ *
  * Analista desarrollador de software Belleza Express
- * 
+ *
  * 21/04/2017
  */
 class TImportacionController extends Controller
@@ -64,7 +64,7 @@ class TImportacionController extends Controller
   //Name de la url de consulta la uso para no redundar este string en mis funciones
   public $strUrlConsulta = 'importacionesv2/Importacion';
 
-  
+
 /**
 * __construct
  *
@@ -85,9 +85,9 @@ class TImportacionController extends Controller
     }
 
    /**
-    
+
     * create
-    * 
+    *
     * Muestra el formulario para la creaacion de un nuevo proceso de importacion
     *
     * @return \Illuminate\Http\Response
@@ -134,17 +134,17 @@ class TImportacionController extends Controller
 
     /**
     * store
-    * 
+    *
     * Esta funcion debe crear un nuevo proceso de importacion en la tabla t_importacion y a ella asocia productos y origenes de la mercancia
-    * 
+    *
     * Debe validar que no exista alguna importacion con el mismo consecutivo de importacion.
-    * 
+    *
     * debe validar la obligatoriedad de los campos
-    * 
+    *
     * Debe validar que no venga almenos un producto
-    * 
+    *
     * Debe validar que venga almenos una proforma asociada
-    * 
+    *
     * Debe redireccionar a la pagina de consulta
     *
     * @param  \Illuminate\Http\Request  $request
@@ -196,7 +196,7 @@ class TImportacionController extends Controller
         DB::beginTransaction();
         //Crea el registro en la tabla importacion
         $objeto = new TImportacion;
-        $ObjectCrear = $this->objectoImportacion($objeto, $request);       
+        $ObjectCrear = $this->objectoImportacion($objeto, $request);
         $ObjectCrear->imp_estado_proceso = 1;
         $ObjectCrear->save();
        #Si la creacion de la importacion genera error lo retorna
@@ -300,10 +300,10 @@ return Redirect::to($urlConsulta);
 
     /**
     * show
-    * 
+    *
     * Esta funcion debe mostrar la informacion de una importacion relacionada con proveedores, puertos de embarque, origenes de la mercancia, embaqeu de importacion, pagos de importacion, productos, proformas, embarque, pagos, nacionalizacion y costeo
     * Debere retornar una vista que tenga la opcion de cambiar el estado de la orden a cerrada
-    * 
+    *
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
@@ -353,14 +353,14 @@ return Redirect::to($urlConsulta);
 
     /**
     * consultaProductosUnoee
-    * 
+    *
     * Esta funcion retorna la informacion del uno ee para una referencia en especifico
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
     public function consultaProductosUnoee($referenciaProd){
-     return DB::connection('besa_UNOEEREAL')->table('t124_mc_items_referencias as a')
+     return DB::connection('unoeereal')->table('t124_mc_items_referencias as a')
      ->join('t120_mc_items as b', 'a.f124_rowid_item','=','b.f120_rowid')
      ->select('a.f124_referencia', 'b.f120_referencia', 'b.f120_descripcion')
      ->where('a.f124_referencia', 'LIKE', "%$referenciaProd%")
@@ -369,22 +369,22 @@ return Redirect::to($urlConsulta);
 
 
    /**
-    * 
+    *
     * edit
-    * 
+    *
     * Muestra el formulario para editar un proceso de importacion en especifico
-    * 
+    *
     * Permite editar la tabla t_importacion
-    * 
+    *
     * Permite editar la tabla t_producto_importacion
-    * 
+    *
     * Permite editar la tabla t_proforma_importacion
-    * 
+    *
     * Debe validar que no exista una importacion con el mismo
-    * 
+    *
     * debe validar que vengan al menos un producto asociado a la orden de imporacion
-    * 
-    * debe validar que venga al menos una proforma asociada a la orden de importacion 
+    *
+    * debe validar que venga al menos una proforma asociada a la orden de importacion
     *
     * @param  int  $id
     * @return \Illuminate\Http\Response
@@ -503,9 +503,9 @@ return Redirect::to($urlConsulta);
 
 
  /**
-    * 
+    *
     * permisos
-    * 
+    *
     * Valida los permisos de usuario retorna 1 si tiene permisos si no retorna 0
     *
     * @return int
@@ -525,10 +525,10 @@ public function permisos(){
 
  /**
     * objectoImportacion
-    * 
+    *
     * Funcion que recibe un objeto del modelo importacion y le agrega la informacion que viene en el request
     * debe retornar el objeto nuevamente.
-    * 
+    *
     * la uso para no escribir este codigo dos veces en las funciones store y update
     *
     * @param  \Illuminate\Http\Request  $request
@@ -543,7 +543,7 @@ public function objectoImportacion($objeto, $request){
     $objeto->imp_puerto_embarque = $request->imp_puerto_embarque;
     $objeto->imp_iconterm = $request->imp_iconterm;
     $objeto->imp_moneda_negociacion = $request->imp_moneda_negociacion;
-    
+
     if($request->imp_observaciones == ""){
         $objeto->imp_observaciones = null;
     }else{
@@ -562,19 +562,19 @@ public function objectoImportacion($objeto, $request){
 
     /**
     * update
-    * 
+    *
     * Debe actualizar el registro de la tabla t_importacion segun el id,
-    * 
+    *
     * Debe actualizar los registros de la tabla producto importacion
-    * 
+    *
     * Debe actualizar los registros de la tabla proforma importacion
-    * 
+    *
     * Debe actualizar los registros de la tabla origenes de la mercancia
-    * 
+    *
     * Debe validar que el consecutivo de importacion no exista para otra importacion
-    * 
-    * Debe redireccionar al formulario de consulta 
-    * 
+    *
+    * Debe redireccionar al formulario de consulta
+    *
     *
     * @param  \Illuminate\Http\Request  $request
     * @param  int  $id
@@ -604,7 +604,7 @@ public function objectoImportacion($objeto, $request){
         $url = route('consultaFiltros');
         //Consulto el registro a editar
         $objeto = TImportacion::find($id);
-        $ObjectUpdate = $this->objectoImportacion($objeto, $request);  
+        $ObjectUpdate = $this->objectoImportacion($objeto, $request);
         $ObjectUpdate->save();
 
         #Obtiene los productos que debe guardar de la tabla productos
@@ -708,11 +708,11 @@ public function objectoImportacion($objeto, $request){
 
     /**
     * borrar
-    * 
-    * Esta funcion se llama a traves de ajax usando la libreria jquery en el archivo importacionesV2.js 
-    * Su objetivo es validar si existen mas de un producto asociados a la importacion, y si si existen borrar el que 
+    *
+    * Esta funcion se llama a traves de ajax usando la libreria jquery en el archivo importacionesV2.js
+    * Su objetivo es validar si existen mas de un producto asociados a la importacion, y si si existen borrar el que
     * le indican por medio del request.
-    * 
+    *
     * 1 -  Consulta la cantidad de productos asociados a la orden de importacion ya existente
     * 2 -  si la cantidad es mayor que 1 permite borrar el producto importacion cuyo id corresponda a lo que viene en request->obj
     * 3 -  si la cantidad es <= 1 entonces retorna mensaje que indica que no se puede borrar el producto.
@@ -739,11 +739,11 @@ public function objectoImportacion($objeto, $request){
 
     /**
      * borrarProforma
-     * 
+     *
     * Funcion creada para el borrado de la proforma asociada a la importacion por ajax
-    * 
+    *
     * debe retornar mensaje de exito si el borrado se ejecuto correctamente
-    * 
+    *
     * si solo queda una proforma debe retornar mensaje de error informando la sitacion
     *
     * @param  int  $id
@@ -768,13 +768,13 @@ public function objectoImportacion($objeto, $request){
 
  /**
      * autocomplete
-     * 
-     * debe consultar el unoee  traer los terceros 
-     * 
+     *
+     * debe consultar el unoee  traer los terceros
+     *
      * debe poner los terceros dentro de un array
-     * 
+     *
      * debe reponder con un json
-     * 
+     *
     * @return \Illuminate\Http\Response
     */
 public function autocomplete(){
@@ -797,13 +797,13 @@ public function autocomplete(){
 
  /**
      * autocomplete
-     * 
-     * debe consultar el unoee  traer los terceros 
-     * 
+     *
+     * debe consultar el unoee  traer los terceros
+     *
      * debe poner los terceros dentro de un array
-     * 
+     *
      * debe reponder con un json
-     * 
+     *
      * @param $request
     * @return \Illuminate\Http\Response
     */
@@ -828,9 +828,9 @@ return "error";
 
  /**
   * consultas
-  * 
+  *
     * Funcion creada para generar las consultas de los combobox en las funciones create y edit
-    * 
+    *
     * @param recibe un array con numeros segun la consulta solicitada
     * @return debe retornar un array de arrays indexado por palabras que hacen referencia a la informacion que se necesita en el formulario para pintar los combobox
     *
@@ -883,21 +883,21 @@ return "error";
 
  /**
      * consultaFiltrada
-     * 
+     *
      * La funcion principal es mostrar un formulario con filtros para consultar todas las ordenes de importacion ya sea por puerto de embarque, por consecutivo de importacion, por estado o por proveedor.
-     * 
-     * esta consulta tiene links que redireccionan a la creacion de la orden de importacion, 
-     * 
+     *
+     * esta consulta tiene links que redireccionan a la creacion de la orden de importacion,
+     *
      * redirecciona tambien al embarque si ya existe la orden de importacion
-     * 
-     * redirecciona a los pagos 
-     * 
+     *
+     * redirecciona a los pagos
+     *
      * redirecciona a la nacionalizacion y costeo si ya esta creado el embarque
-     * 
+     *
      * redirecciona a la pestaña de cierre de alertas si ya se creo la importacion, el embarque, los pagos y la nacionalizacion y costeo.
-     * 
-     * 
-     * 
+     *
+     *
+     *
     * @return \Illuminate\Http\Response
     */
  public function consultaFiltrada(Request $request){
@@ -1000,12 +1000,12 @@ return "error";
 
 /**
      * cerrarOrden
-     * 
+     *
      * funcion que toma la importacion y le cambia el estado
      * retorna error si alguno de los campos de todo el proceso de negocio no esta diligenciado
      * redirecciona a la consulta con filtros
-     * 
-     * 
+     *
+     *
     * @return \Illuminate\Http\Response
     */
 public function cerrarOrden(Request $request){
@@ -1105,7 +1105,7 @@ public function cerrarOrden(Request $request){
             $url = route('cerrarImportacion');
             return redirect()->action(
                 'Importacionesv2\TImportacionController@show', ['id' => $request->OrdenId]
-                )->withErrors($mensaje);      
+                )->withErrors($mensaje);
         }
 
     }

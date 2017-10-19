@@ -126,41 +126,6 @@ return [
             'strict' => true,
             'engine' => 'InnoDB',
         ],
-
-        'besa' => [
-            'driver' => 'sqlsrv',
-            'host' => env('DB_SQL_HOST', 'localhost'),
-            'database' => env('DB_SQL_DATABASE', 'forge'),
-            'username' => env('DB_SQL_USERNAME', 'forge'),
-            'password' => env('DB_SQL_PASSWORD', ''),
-            'charset' => 'utf8',
-            'prefix' => '',
-        ],
-
-        'importacionesV2' => [
-            'driver' => 'mysql',
-            'host' => env('DB_HOST', 'localhost'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_I_DATABASE', 'importacionesV2'),
-            'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => 'utf8',
-            'collation' => 'utf8_spanish2_ci',
-            'prefix' => '',
-            'strict' => true,
-            'engine' => 'InnoDB',
-        ],
-
-         'besa_UNOEEREAL' => [
-            'driver' => 'sqlsrv',
-            'host' => env('DB_SQL_HOST', 'localhost'),
-            'database' => env('DB_SQL_DATABASE_UNOEEREAL', 'forge'),
-            'username' => env('DB_SQL_USERNAME', 'forge'),
-            'password' => env('DB_SQL_PASSWORD', ''),
-            'charset' => 'utf8',
-            'prefix' => '',
-        ],
-
     ],
 
     /*
