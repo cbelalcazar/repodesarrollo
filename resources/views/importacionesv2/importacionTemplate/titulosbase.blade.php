@@ -15,7 +15,7 @@
 <br>
 
 <div class="tituloForm">
-  <font size="2.5">{{$titulo}}</font>jkdshajkd
+  <font size="2.5">{{$titulo}}</font>
 </div>
 
 <div class="panel-body" align="left">
