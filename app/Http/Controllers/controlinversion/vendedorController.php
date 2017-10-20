@@ -7,12 +7,15 @@ use App\Models\BESA\Vendedores;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use Validator;
+use DB;
+
 class vendedorController extends Controller
 {
 
    public function getInfo(){
 
-     $vendedoresZona = VendedorZona::get();
+     $vendedoresZona = VendedorZona::orderBy('id','desc')->get();
      $zonas = VendedorZona::select('CodZona','NomZona')->distinct()->get();
      $subzonas = VendedorZona::select('CodZona','CodSubZona','NomSubZona')->distinct()->get();
 
@@ -36,7 +39,9 @@ class vendedorController extends Controller
      */
     public function index()
     {
-        
+      $ruta = 'Control de Inversion // Gestion de Vendedores por Zonas';
+      $titulo = 'Gestion de Vendedores';
+      return view('layouts.controlinversion.vendedores.indexVendedores', compact('ruta','titulo'));
     }
 
     /**
@@ -58,7 +63,47 @@ class vendedorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      $validationRules = [
+        'vendedores' => 'required'
+      ];
+
+      $validator = Validator::make($request->all(), $validationRules);
+
+      if ($validator->fails()){
+        return response()->json(['errors' => $validator->errors()]);
+      }else{
+
+        foreach ($request->vendedores as $vendedor) {
+
+            if($vendedor['esNuevo'] === 1){
+                $vendedorZona = new VendedorZona;
+                $vendedorZona->CodVendedor = $vendedor['CodVendedor'];
+                $vendedorZona->NitVendedor = $vendedor['NitVendedor'];
+                $vendedorZona->NomVendedor = $vendedor['NomVendedor'];
+                $vendedorZona->CodZona = $vendedor['CodZona'];
+                $vendedorZona->NomZona = $vendedor['NomZona'];
+                $vendedorZona->CodSubZona = $vendedor['CodSubZona'];
+                $vendedorZona->NomSubZona = $vendedor['NomSubZona'];
+                $vendedorZona->CodSubZona_ant = $vendedor['CodSubZona_ant'];
+                $vendedorZona->NomSubZona_ant = $vendedor['NomSubZona_ant'];
+                $vendedorZona->dir_territorio = $vendedor['dir_territorio'];
+                $vendedorZona->ger_zona = $vendedor['ger_zona'];
+                $vendedorZona->estado = $vendedor['estado'];
+                $vendedorZona->save();
+            }
+
+            if($vendedor['existente'] === 1){
+              if($vendedor['estadoModificado'] != $vendedor['estado']){
+                $vendedorToUpdate = VendedorZona::find($vendedor['id']);
+                $vendedorToUpdate->estado = $vendedor['estadoModificado'];
+                $vendedorToUpdate->save();
+              }
+            }
+
+        }
+
+        return response()->json($request->all());
+      }
     }
 
     /**
