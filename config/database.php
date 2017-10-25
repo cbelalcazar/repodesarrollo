@@ -143,7 +143,7 @@ return [
             'prefix' => '',
             'strict' => true,
             'engine' => 'InnoDB',
-        ],        
+        ],
     ],
 
     /*

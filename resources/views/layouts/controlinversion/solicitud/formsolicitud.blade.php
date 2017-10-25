@@ -1,6 +1,12 @@
 @extends('app')
 @section('content')
 @include('includes.titulo')
+<style media="screen">
+  md-select {
+
+    margin-top:  5px !important;
+  }
+</style>
 <div ng-controller='solicitudCtrl as ctrl' ng-cloak class="col-md-12">
     <div class="panel panel-primary">
         <div class="panel-heading">
@@ -13,18 +19,18 @@
 			            <label>Fecha: </label>
 			            <input class="form-control" type="text" ng-model="solicitud.fecha" disabled></input>
 			        </div>
-			    </div>    
-			    <!-- Campo Facturar A --> 
+			    </div>
+			    <!-- Campo Facturar A -->
 		        <div class="form-group">
 		            <label>Facturar a: </label>
 					<md-autocomplete
 					          ng-disabled="hab_ac_facturara"
 					          md-selected-item="objeto.selectedItem"
-							  md-search-text="buscar_ac_facturara"
+							      md-search-text="buscar_ac_facturara"
 					          md-no-cache="true"
-							  md-item-text="item.tercero.razonSocialTercero"
+							      md-item-text="item.tercero.razonSocialTercero"
 					          md-items="item in qs_facturara(buscar_ac_facturara)"
-					          md-min-length="0"
+					          md-min-length="1"
 					          placeholder="Ingrese el número documento de identidad o el nombre de la persona a la cual se le facturará">
 					        <md-item-template>
 					          <span md-highlight-text="buscar_ac_facturara" md-highlight-flags="^i">@{{item.fca_idTercero}} - @{{item.tercero.razonSocialTercero}}</span>
@@ -33,8 +39,8 @@
 					          No states matching "@{{buscar_ac_facturara}}" were found.
 					        </md-not-found>
 					</md-autocomplete>
-		        </div>	 
-		        <!-- Campo Tipo de Salida y Motivo de Salida --> 
+		        </div>
+		        <!-- Campo Tipo de Salida y Motivo de Salida -->
 				<div class="row">
 			        <div class="form-group col-md-6">
 			            <label>Tipo de Salida: </label>
@@ -49,7 +55,7 @@
 			            	<option value=''>Seleccione...</option>
 			            </select>
 			            <!-- @{{solicitud.tiposalida1}} -->
-			        </div>		        
+			        </div>
 				</div>
 				<!-- Campo Cargar Gastos A y Linea -->
 		        <div class="row">
@@ -67,24 +73,41 @@
 			            	<option value=''>Seleccione...</option>
 			            </select>
 			            <!-- @{{solicitud.tipopersona1}} -->
-			        </div>		        
+			        </div>
 		        </div>
 		        <!-- Campo Observaciones -->
 		        <div class="form-group">
 		            <label>Observaciones: </label>
 		            <textarea class="form-control" ng-model="solicitud.observaciones" cols="50" rows="3"></textarea>
-		        </div>		        
-		        <!-- Campo Tipo Persona -->
-				<div class="row">
-		            <div class="form-group col-md-6">
-			            <label>Tipo de Persona: </label>
-			            <select class='form-control' ng-model='solicitud.tipopersona1' ng-change='filtrapersona()' ng-options='opt1.tpe_tipopersona for opt1 in tipopersona track by opt1.tpe_id'>
-			            	<option value=''>Seleccione...</option>
-			            </select>
-			            <!-- @{{solicitud.tipopersona1}} -->
-			        </div> 
 		        </div>
-		        <!-- Campo Despachar A -->
+		        <!-- Campo Tipo Persona -->
+
+				    <div class="row">
+
+		               <div class="form-group col-md-6">
+      			            <label>Tipo de Persona: </label>
+      			            <select class='form-control' ng-model='solicitud.tipopersona1' ng-change="filtrapersona()" ng-options='opt1.tpe_tipopersona for opt1 in tipopersona track by opt1.tpe_id'>
+      			            	<option value=''>Seleccione...</option>
+      			            </select>
+			             </div>
+
+                   <div ng-if="esVendedor" class="form-group col-md-6">
+
+                        <label>Zonas: </label>
+                        <md-select ng-model="solicitud.zonasSelected"
+                                   aria-label="zonas de vendedores"
+                                   data-md-container-class="selectdemoSelectHeader"
+                                   multiple>
+                          <md-optgroup label="zonas">
+                            <md-option ng-value="zona" ng-repeat="zona in zonas">@{{zona.descripcion}}</md-option>
+                          </md-optgroup>
+                        </md-select>
+
+                   </div>
+
+		        </div>
+
+
 				<div class="row">
 		            <div class="form-group col-md-12" ng-if="solicitud.tipopersona1.tpe_tipopersona != undefined">
 			            <label>Despachar a: </label>
@@ -92,22 +115,24 @@
 					              md-transform-chip="transformChip($chip)"
 					              md-require-match="autocompleteDemoRequireMatch">
 					    	<md-autocomplete
-					        	md-selected-item="selectedItem"
-					          	md-search-text="searchText"
-					          	md-items="item in querySearchPersona(searchText)"
-					          	md-item-text="item.razonSocialTercero"
+					        	  md-selected-item="selectedItem"
+					          	md-search-text="colaboradorText"
+					          	md-items="item in onSearchQueryChange(colaboradorText) | map: filtrarVendedorZona | remove: undefined"
+					          	md-item-text="[item.nitVendedor, item.nombreVendedor].join(' - ')"
+                      md-min-length="1"
+                      md-no-cache="true"
 					          	placeholder="Buscar un/a colaborador/a...">
-					        	<span md-highlight-text="ctrl.searchText">@{{item.razonSocialTercero}}</span>
+					        	<span md-highlight-text="searchText">@{{[item.nitVendedor, item.nombreVendedor].join(' - ')}}</span>
 					      	</md-autocomplete>
 					    	<md-chip-template>
 					    		<span>
-					    			@{{$chip.razonSocialTercero}}
+					    			@{{[$chip.nitVendedor, $chip.nombreVendedor].join(' - ')}}
 					    		</span>
 					      	</md-chip-template>
-					    </md-chips>					
-			        </div> 		        
-		        </div> 	        
-		        <!-- Tabla - Referencias Sugeridas -->	
+					    </md-chips>
+			        </div>
+		        </div>
+		        <!-- Tabla - Referencias Sugeridas -->
 			    <div class="panel panel-primary" ng-if="selectedColaboradores.length > 0">
 			        <div class="panel-heading" align="center">
 			        	Referencias Sugeridas
@@ -118,47 +143,59 @@
 					        	<label>Referencia:</label>
 					        	<div class="input-group">
 					        		<md-autocomplete
-								          ng-disabled = "habautcomplete"
-								          md-selected-item = "objeto.selectedRef"
-										  md-search-text = "searchReferencia"
+								          md-selected-item = "objeto.referenciaGeneral"
+										      md-search-text = "searchReferencia"
 								          md-no-cache = "true"
-										  md-item-text = "item.ite_descripcion"
 								          md-items = "item in qs_referencia(searchReferencia)"
-								          md-min-length = "0"
+                          md-item-text = "[item.referenciaCodigo,item.referenciaDescripcion].join(' - ')"
+								          md-min-length = "1"
 								          placeholder = "Digite la referencia">
 								        <md-item-template>
-								          <span md-highlight-text="searchReferencia" md-highlight-flags="^i">@{{item.ite_referencia}} - @{{item.ite_descripcion}}</span>
+								          <span md-highlight-text="searchReferencia" md-highlight-flags="^i">@{{[item.referenciaCodigo,item.referenciaDescripcion].join(" - ")}}</span>
 								        </md-item-template>
 								        <md-not-found>
 								          No states matching "@{{searchReferencia}}" were found.
 								        </md-not-found>
-									</md-autocomplete>		
+									</md-autocomplete>
 								    <div class="input-group-btn">
-								      <button class="btn btn-success" type="submit">
+
+								      <button ng-disabled="!(objeto.referenciaGeneral != '' &&  objeto.referenciaGeneral != undefined)" class="btn btn-success" type="button" ng-click="agregarReferenciaTodos(referenciaGeneral)">
 								        <i class="glyphicon glyphicon-plus"></i>
 								      </button>
+
 								    </div>
 								  </div>
-					        </div> 
-				        </div>	        	
+					        </div>
+				        </div>
 			        </div>
-			    </div>    
-		        <!-- Tabla - Detalle por Destinatario -->	
+			    </div>
+		        <!-- Tabla - Detalle por Destinatario -->
 		        <div class="table-responsive" ng-repeat="persona in selectedColaboradores">
 		        	<table class="table">
 		        		<thead>
 		        			<tr>
-		        				<th colspan="7">@{{persona.razonSocialTercero}}</th>
+		        				<th colspan="7">@{{[persona.nitVendedor, persona.nombreVendedor].join(' - ')}}</th>
 		        			</tr>
 		        			<tr>
-		        				<td>
-		        					<input type="text" class="form-control">
+		        				<td colspan="4">
+                        <md-autocomplete
+                            md-selected-item = "persona.referenciaSearchItem"
+                            md-search-text = "searchReferencia"
+                            md-no-cache = "true"
+                            md-items = "item in qs_referencia(searchReferencia)"
+                            md-item-text = "[item.referenciaCodigo,item.referenciaDescripcion].join(' - ')"
+                            md-min-length = "1"
+                            placeholder = "Digite la referencia">
+                            <md-item-template>
+                              <span md-highlight-text="searchReferencia" md-highlight-flags="^i">@{{[item.referenciaCodigo,item.referenciaDescripcion].join(" - ")}}</span>
+                            </md-item-template>
+                            <md-not-found>
+                              No states matching "@{{searchReferencia}}" were found.
+                            </md-not-found>
+                        </md-autocomplete>
 		        				</td>
-		        				<td colspan="5">
-		        					<input type="text" disabled class="form-control">
-		        				</td>
 		        				<td>
-		        					<button class="btn btn-success"><span class="glyphicon glyphicon-plus"></span></button>
+		        					<button ng-disabled="!(persona.referenciaSearchItem != '' &&  persona.referenciaSearchItem != undefined)" class="btn btn-success" type="button" ng-click="agregarReferenciaVendedor(persona, $event)"><span class="glyphicon glyphicon-plus"></span></button>
 		        				</td>
 		        			</tr>
 		        			<tr>
@@ -166,13 +203,27 @@
 		        				<th>Estado</th>
 		        				<th>Costo</th>
 		        				<th>Cantidad</th>
-		        				<th>lineas</th>
+		        				<th>linea</th>
 		        				<th>Valor total</th>
 		        				<th>Acción</th>
 		        			</tr>
 		        		</thead>
+                <tbody>
+                  <tr ng-if="persona.referencias == undefined"><td style="text-align:center;" colspan="7">No hay referencias para esta persona</td></tr>
+                  <tr ng-repeat="referencia in persona.referencias">
+                    <td>@{{[referencia.referenciaCodigo,referencia.referenciaDescripcion].join(" - ")}}</td>
+                    <td>@{{referencia.referenciaEstado}}</td>
+                    <td>@{{referencia.referenciaPrecio | currency: "$" : 2}}</td>
+                    <td style="width: 76px;">
+                      <input class="form-control inputCantMinimized inputCantMinimized-success" type="number" ng-model="referencia.referenciaCantidad" ng-change="onCantidadChange(referencia)" min="0"/>
+                    </td>
+                    <td>@{{referencia.referenciaLinea}}</td>
+                    <td>@{{referencia.referenciaValorTotal  | currency: "$" : 2}}</td>
+                    <td><button type="button" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></buttom></td>
+                  </tr>
+                </tbody>
 		        	</table>
-		        </div>        
+		        </div>
 	        </div>
         </form>
     </div>

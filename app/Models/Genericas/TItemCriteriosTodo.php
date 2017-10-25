@@ -85,4 +85,7 @@ class TItemcriteriosTodo extends Model
         'ite_desc_refcomp3',
         'ite_desc_refcomp2'
     ];
+
+
+
 }
