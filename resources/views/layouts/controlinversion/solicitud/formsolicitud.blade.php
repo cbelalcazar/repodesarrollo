@@ -18,6 +18,9 @@
 			        <div class="form-group col-md-2">
 			            <label>Fecha: </label>
 			            <input class="form-control" type="text" ng-model="solicitud.fecha" disabled></input>
+			        	<!-- Esta es la directiva nueva marcillo, ya funciona carga cada fila del excel en un objeto en el controlador de angular -->
+			        	<js-xls onread="read" onerror="error"></js-xls>
+			        	<!-- end directiva excel -->
 			        </div>
 			    </div>
 			    <!-- Campo Facturar A -->
@@ -208,20 +211,24 @@
 		        				<th>Acción</th>
 		        			</tr>
 		        		</thead>
-                <tbody>
-                  <tr ng-if="persona.referencias == undefined"><td style="text-align:center;" colspan="7">No hay referencias para esta persona</td></tr>
-                  <tr ng-repeat="referencia in persona.referencias">
-                    <td>@{{[referencia.referenciaCodigo,referencia.referenciaDescripcion].join(" - ")}}</td>
-                    <td>@{{referencia.referenciaEstado}}</td>
-                    <td>@{{referencia.referenciaPrecio | currency: "$" : 2}}</td>
-                    <td style="width: 76px;">
-                      <input class="form-control inputCantMinimized inputCantMinimized-success" type="number" ng-model="referencia.referenciaCantidad" ng-change="onCantidadChange(referencia)" min="0"/>
-                    </td>
-                    <td>@{{referencia.referenciaLinea}}</td>
-                    <td>@{{referencia.referenciaValorTotal  | currency: "$" : 2}}</td>
-                    <td><button type="button" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></buttom></td>
-                  </tr>
-                </tbody>
+		                <tbody>
+		                  <tr ng-if="persona.referencias == undefined"><td style="text-align:center;" colspan="7">No hay referencias para esta persona</td></tr>
+		                  <tr ng-repeat="referencia in persona.referencias">
+		                    <td>@{{[referencia.referenciaCodigo,referencia.referenciaDescripcion].join(" - ")}}</td>
+		                    <td>@{{referencia.referenciaEstado}}</td>
+		                    <td>@{{referencia.referenciaPrecio | currency: "$" : 2}}</td>
+		                    <td style="width: 76px;">
+		                    	<input class="form-control inputCantMinimized inputCantMinimized-success" type="number" ng-model="referencia.referenciaCantidad" ng-change="onCantidadChange(referencia)" min="0"/>
+		                    </td>
+		                    <td>@{{referencia.referenciaLinea}}</td>
+		                    <td>@{{referencia.referenciaValorTotal  | currency: "$" : 2}}</td>
+		                    <td>
+			                    <button type="button" class="btn btn-danger">
+			                    	<i class="glyphicon glyphicon-remove"></i>
+			                    </buttom>
+		                    </td>
+		                  </tr>
+		                </tbody>
 		        	</table>
 		        </div>
 	        </div>

@@ -74,6 +74,9 @@ $scope.zonas = [
 			$scope.vendedoresBesa = angular.copy(res.vendedoresBesa);
 			$scope.items = angular.copy(res.item);
 			$scope.progress = false;
+		}, function(errorResponse){
+			console.log(errorResponse);
+			$scope.getInfo();
 		});
 	}
 
@@ -241,6 +244,23 @@ $scope.qs_referencia = function(string){
     $scope.scrollToElement = function(x,y){
     	$window.scrollTo(x,y);
     }
+
+    // Estas son las funciones que ejecuta la directiva
+    $scope.read = function (workbook) {
+
+    	// Parce vea para que le quede mas facil en el excel replique la estructra del objeto que armo para el formulario, y luego se lo pasa a la lista de usuarios de arriba lo seteas y eso te va a llenar la lista hablamos me llevo los cigar
+		var headerNames = XLSX.utils.sheet_to_json( workbook.Sheets[workbook.SheetNames[0]], { header: 1 })[0];
+		var data = XLSX.utils.sheet_to_json( workbook.Sheets[workbook.SheetNames[0]]);
+		// Cuando se ejecuta la informacion queda aqui para los encabezados
+		console.log(headerNames);
+		// Aqui para los registros es una lista de objetos [{},{},{}]
+		console.log(data);
+	}		
+
+	$scope.error = function (e) {
+		console.log(e);
+	}
+	// End funciones que ejecuta la directiva
 
 
 }]);
