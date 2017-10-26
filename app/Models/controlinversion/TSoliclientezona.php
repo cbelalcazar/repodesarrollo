@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\controlinversion;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class TSoliclientezona extends Model
 {
+    protected $connection = "bd_controlinversion";
+
     protected $table = 't_soliclientezona';
 
     protected $primaryKey = 'scz_id';
@@ -27,5 +29,5 @@ class TSoliclientezona extends Model
 
     protected $guarded = [];
 
-        
+
 }

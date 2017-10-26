@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\controlinversion;
 
 use App\Models\controlinversion\TSolicitudctlinv;
+use App\Models\controlinversion\TSolicliente;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -42,22 +43,25 @@ class solicitudController extends Controller
 
         $lineasproducto = TLineascc::with('LineasProducto')->where('lcc_centrocosto','!=','0')->get();
 
+        $pruebita = TSolicliente::with('clientesZonas')->get();
 
-        $colaboradores = Tercero::select('idTercero','idTercero as nitVendedor', 'razonSocialTercero as nombreVendedor')->with('Cliente.Sucursales')->where([['indxEstadoTercero', '1'], ['indxEmpleadoTercero', '1']])->orderBy('razonSocialTercero')->get();
+
+        $colaboradores = Tercero::select('idTercero','idTercero as scl_cli_id', 'razonSocialTercero as scl_nombre')->with('Cliente.Sucursales')->where([['indxEstadoTercero', '1'], ['indxEmpleadoTercero', '1']])->orderBy('razonSocialTercero')->get();
         $colaboradores = $colaboradores->filter(function($value, $key){
             return ($value['Cliente'] != null && $value['Cliente']['Sucursales'] != null && count($value['Cliente']['Sucursales']) > 0 && strlen($value['idTercero']) > 5);
         })->values();
 
-        $vendedoresBesa= VendedorZona::select('NitVendedor as nitVendedor', 'NomVendedor as nombreVendedor', 'NomZona')->where('estado', 1)->get();
+        $vendedoresBesa= VendedorZona::select('NitVendedor as scl_cli_id', 'NomVendedor as scl_nombre', 'NomZona', 'CodZona as scz_zon_id')->where('estado', 1)->get();
 
-        $item = TItemCriteriosTodo::select('ite_referencia as referenciaCodigo',
+        $item = TItemCriteriosTodo::select('ite_referencia as srf_referencia',
         'ite_descripcion as referenciaDescripcion',
-        'ite_nom_estado as referenciaEstado',
-        'ite_nom_linea as referenciaLinea')
+        'ite_nom_estado as srf_estadoref',
+        'ite_nom_linea as referenciaLinea',
+        'ite_cod_linea as srf_lin_id_gasto')
         ->where('ite_cod_tipoinv', '1051')
         ->get();
 
-        $response = compact('personas','tiposalida', 'tipopersona', 'cargagasto', 'lineasproducto', 'colaboradores', 'users', 'item', 'vendedoresBesa', 'userLogged');
+        $response = compact('personas','tiposalida', 'tipopersona', 'cargagasto', 'lineasproducto', 'colaboradores', 'users', 'item', 'vendedoresBesa', 'userLogged', 'pruebita');
         return response()->json($response);
     }
 
@@ -100,8 +104,28 @@ class solicitudController extends Controller
      */
     public function store(Request $request)
     {
+        $data = $request->all();
+        $solicitudToCreate = TSolicitudctlinv::create($data);
 
-        $solicitudToCreate = TSolicitudctlinv::create($request->all());
+        foreach ($data['personas'] as $key => $value) {
+          $objeto = $solicitudToCreate->clientes()->create($value);
+          $zona = [];
+          $zona['scl_scz_id'] = $objeto['scl_id'];
+          $zona['scz_zon_id'] = $value['scz_zon_id'];
+          $zona['scz_porcentaje'] = 100;
+          $zona['scz_porcentaje_real'] = null;
+          $zona['scz_vdescuento'] = null;
+          $zona['scz_vesperado'] = null;
+          $zona['scz_estado'] = 1;
+          $objetoZonas = $objeto->clientesZonas()->create($zona);
+
+          foreach ($value['solicitud']['referencias'] as $clave => $dato) {
+            $objeto->clientesReferencias()->create($dato);
+          }
+
+
+        }
+
         return response()->json($solicitudToCreate);
 
     }

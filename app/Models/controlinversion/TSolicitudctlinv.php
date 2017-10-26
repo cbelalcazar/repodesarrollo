@@ -59,5 +59,9 @@ class TSolicitudctlinv extends Model
 
     protected $guarded = [];
 
+    public function clientes(){
+      return $this->hasMany('App\Models\controlinversion\TSolicliente', 'scl_sci_id', 'sci_id');
+    }
+
 
 }

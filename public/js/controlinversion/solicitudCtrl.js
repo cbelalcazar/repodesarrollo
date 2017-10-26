@@ -44,6 +44,7 @@ $scope.zonas = [
 	$scope.resource = "../solicitud";
 	$scope.url = '../solicitudGetInfo';
 	$scope.refUrl = '../consultarReferencia';
+	$scope.objeto = {};
 
 
 	// Campo Facturar A
@@ -89,7 +90,7 @@ $scope.onCantidadChange = function(referencia){
 
 	console.log($scope.selectedColaboradores);
 
-	referencia.referenciaValorTotal = referencia.referenciaCantidad * referencia.referenciaPrecio;
+	referencia.referenciaValorTotal = referencia.srf_unidades * referencia.srf_preciouni;
 
 
 }
@@ -104,15 +105,22 @@ $scope.qs_facturara = function(string){
 }
 
 $scope.agregarReferenciaTodos = function(){
-
-	$http.get($scope.refUrl+"/"+$scope.objeto.referenciaGeneral.referenciaCodigo).then(function(response){
+console.log($scope.objeto);
+	$http.get($scope.refUrl+"/"+$scope.objeto.referenciaGeneral.srf_referencia).then(function(response){
 
 			$scope.selectedColaboradores.map(function(colaborador){
 
-				$scope.objeto.referenciaGeneral.referenciaPrecio = response.data.infoRefe.length > 0 ? response.data.infoRefe[0].precio : 1;
-				$scope.objeto.referenciaGeneral.referenciaCantidad = 0;
+				$scope.objeto.referenciaGeneral.srf_preciouni = response.data.infoRefe.length > 0 ? response.data.infoRefe[0].precio : 1;
+				$scope.objeto.referenciaGeneral.srf_unidades = 0;
+				$scope.objeto.referenciaGeneral.srf_porcentaje = 0;
+				$scope.objeto.referenciaGeneral.srf_estado = 1;
 				$scope.objeto.referenciaGeneral.referenciaValorTotal = 0;
+
 				colaborador.solicitud.referencias.push(angular.copy($scope.objeto.referenciaGeneral));
+
+				colaborador.cantidadTotalReferencias = colaborador.solicitud.referencias.length;
+
+				// colaborador.solicitud.referencias.
 
 				return colaborador;
 			})
@@ -129,10 +137,12 @@ $scope.agregarReferenciaVendedor = function(colaborador,ev){
 	console.log(ev.offsetX);
 	console.log(ev.offsetY);
 
-	$http.get($scope.refUrl+"/"+colaborador.referenciaSearchItem.referenciaCodigo).then(function(response){
+	$http.get($scope.refUrl+"/"+colaborador.referenciaSearchItem.srf_referencia).then(function(response){
 
-				colaborador.referenciaSearchItem.referenciaPrecio = response.data.infoRefe.length > 0 ? response.data.infoRefe[0].precio : 1;
-				colaborador.referenciaSearchItem.referenciaCantidad = 0;
+				colaborador.referenciaSearchItem.srf_preciouni = response.data.infoRefe.length > 0 ? response.data.infoRefe[0].precio : 1;
+				colaborador.referenciaSearchItem.srf_unidades = 0;
+				colaborador.referenciaSearchItem.srf_porcentaje = 0;
+				colaborador.referenciaSearchItem.srf_estado = 1;
 				colaborador.referenciaSearchItem.referenciaValorTotal = 0;
 				colaborador.solicitud.referencias.push(angular.copy(colaborador.referenciaSearchItem));
 
@@ -192,6 +202,8 @@ $scope.saveSolicitud = function(){
 	$scope.solicitud.sci_planoprovfecha = null;
 	$scope.solicitud.sci_ventaesperada = 0
 
+
+	console.log($scope.solicitud);
 	$http.post($scope.resource,$scope.solicitud).then(function(response){
 
 		var data = response.data;
@@ -253,10 +265,10 @@ $scope.onSearchQueryChange = function(colaboradorText){
 
 			$scope.colaboradoresAutocomplete = [];
 
-			$scope.colaboradoresAutocomplete =  $filter('filter')($scope.colaboradoresGeneral, {nombreVendedor : colaboradorText});
+			$scope.colaboradoresAutocomplete =  $filter('filter')($scope.colaboradoresGeneral, {scl_nombre : colaboradorText});
 
 			if($scope.colaboradoresAutocomplete.length == 0){
-				$scope.colaboradoresAutocomplete =  $filter('filter')($scope.colaboradoresGeneral, {nitVendedor : colaboradorText});
+				$scope.colaboradoresAutocomplete =  $filter('filter')($scope.colaboradoresGeneral, {scl_cli_id : colaboradorText});
 			}
 
 			return $scope.colaboradoresAutocomplete
@@ -266,13 +278,16 @@ $scope.onSearchQueryChange = function(colaboradorText){
 $scope.onAddColaboradores = function(colaborador){
 
 	if(colaborador.solicitud == undefined){
-		colaborador.solicitud = [];
+		colaborador.solicitud = {};
 		colaborador.solicitud.referencias = [];
 	}
 
-	colaborador.solicitud.cantidadTotalReferencias = 0;
-	colaborador.solicitud.cantidadSolicitadaTotal = 0;
-	colaborador.solicitud.valorTotalSolicitud = 0;
+	colaborador.cantidadTotalReferencias = 0;
+	colaborador.cantidadSolicitadaTotal = 0;
+	colaborador.scl_ventaesperada = 0;
+	colaborador.scl_desestimado = null;
+	colaborador.scl_por = null;
+	colaborador.scl_estado = 1;
 	console.log(colaborador);
 }
 
@@ -287,7 +302,7 @@ $scope.addpersonadespachar = function(string){
 $scope.qs_referencia = function(string){
 							var ref1 = $filter('filter')($scope.items, {referenciaDescripcion : string});
 							if(ref1.length == 0){
-								return $filter('filter')($scope.items, {referenciaCodigo : string});
+								return $filter('filter')($scope.items, {srf_referencia : string});
 							}else{
 								return ref1;
 							}
@@ -316,7 +331,7 @@ $scope.qs_referencia = function(string){
     // Estas son las funciones que ejecuta la directiva
     $scope.read = function (workbook) {
 
-    	// Parce vea para que le quede mas facil en el excel replique la estructra del objeto que armo para el formulario, y luego se lo pasa a la lista de usuarios de arriba lo seteas y eso te va a llenar la lista hablamos me llevo los cigar
+
 		var headerNames = XLSX.utils.sheet_to_json( workbook.Sheets[workbook.SheetNames[0]], { header: 1 })[0];
 		var data = XLSX.utils.sheet_to_json( workbook.Sheets[workbook.SheetNames[0]]);
 		// Cuando se ejecuta la informacion queda aqui para los encabezados
@@ -330,5 +345,14 @@ $scope.qs_referencia = function(string){
 	}
 	// End funciones que ejecuta la directiva
 
+
+$scope.sumaCantidadSolicitada = function(arrayReferencias){
+	var arreglito = arrayReferencias.map(function(referencia){
+		return referencia.cantidadSolicitadaTotal;
+	});
+
+	console.log(arreglito);
+	return arreglito;
+}
 
 }]);

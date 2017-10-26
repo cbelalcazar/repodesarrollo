@@ -12,7 +12,7 @@
         <div class="panel-heading">
         	Datos de la Solicitud
         </div>
-        <form name="solicitudForm" ng-submit="solicitudForm.$valid && saveSolicitud()">
+        <form name="solicitudForm" ng-submit="solicitudForm.$valid && saveSolicitud()" novalidate>
 	        <div class="panel-body">
 	        	<div class="row">
 			        <div class="form-group col-md-2">
@@ -123,15 +123,15 @@
 					        	  md-selected-item="selectedItem"
 					          	md-search-text="colaboradorText"
 					          	md-items="item in onSearchQueryChange(colaboradorText) | map: filtrarVendedorZona | remove: undefined"
-					          	md-item-text="[item.nitVendedor, item.nombreVendedor].join(' - ')"
+					          	md-item-text="[item.scl_cli_id, item.scl_nombre].join(' - ')"
                       md-min-length="1"
                       md-no-cache="true"
 					          	placeholder="Buscar un/a colaborador/a...">
-					        	<span md-highlight-text="searchText">@{{[item.nitVendedor, item.nombreVendedor].join(' - ')}}</span>
+					        	<span md-highlight-text="searchText">@{{[item.scl_cli_id, item.scl_nombre].join(' - ')}}</span>
 					      	</md-autocomplete>
 					    	<md-chip-template>
 					    		<span>
-					    			@{{[$chip.nitVendedor, $chip.nombreVendedor].join(' - ')}}
+					    			@{{[$chip.scl_cli_id, $chip.scl_nombre].join(' - ')}}
 					    		</span>
 					      	</md-chip-template>
 					    </md-chips>
@@ -166,11 +166,11 @@
 										      md-search-text = "searchReferencia"
 								          md-no-cache = "true"
 								          md-items = "item in qs_referencia(searchReferencia)"
-                          md-item-text = "[item.referenciaCodigo,item.referenciaDescripcion].join(' - ')"
+                          md-item-text = "[item.srf_referencia,item.referenciaDescripcion].join(' - ')"
 								          md-min-length = "1"
 								          placeholder = "Digite la referencia">
 								        <md-item-template>
-								          <span md-highlight-text="searchReferencia" md-highlight-flags="^i">@{{[item.referenciaCodigo,item.referenciaDescripcion].join(" - ")}}</span>
+								          <span md-highlight-text="searchReferencia" md-highlight-flags="^i">@{{[item.srf_referencia,item.referenciaDescripcion].join(" - ")}}</span>
 								        </md-item-template>
 								        <md-not-found>
 								          No states matching "@{{searchReferencia}}" were found.
@@ -212,11 +212,11 @@
                           </thead>
                           <tbody>
                             <tr ng-repeat="persona in selectedColaboradores">
-                              <td>@{{persona.nombreVendedor}}</td>
+                              <td>@{{persona.scl_nombre}}</td>
                               <td style="text-align:center;">@{{persona.NomZona}}</td>
-                              <td style="text-align:right;">@{{persona.solicitud.cantidadTotalReferencias}}</td>
-                              <td style="text-align:right;">@{{persona.solicitud.cantidadSolicitadaTotal}}</td>
-                              <td style="text-align:right;">@{{persona.solicitud.valorTotalSolicitud}}</td>
+                              <td style="text-align:right;">@{{persona.cantidadTotalReferencias}}</td>
+                              <td style="text-align:right;">@{{sumaCantidadSolicitada(persona.solicitud.referencias) | sum}}</td>
+                              <td style="text-align:right;">@{{persona.scl_ventaesperada}}</td>
                               <td style="text-align:center;"><button type="button" class="btn btn-info"><i class="glyphicon glyphicon-eye-open"></i></button></td>
                               <td style="text-align:center;"><button type="button" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button></td>
                             </tr>
@@ -230,10 +230,10 @@
 
 		        <!-- Tabla - Detalle por Destinatario -->
 		        <div class="table-responsive" ng-repeat="persona in selectedColaboradores">
-		        	<table id="@{{persona.nitVendedor}}" class="table">
+		        	<table id="@{{persona.scl_cli_id}}" class="table">
 		        		<thead>
 		        			<tr>
-		        				<th colspan="7">@{{[persona.nitVendedor, persona.nombreVendedor].join(' - ')}}</th>
+		        				<th colspan="7">@{{[persona.scl_cli_id, persona.scl_nombre].join(' - ')}}</th>
 		        			</tr>
 		        			<tr>
 		        				<td colspan="4">
@@ -242,11 +242,11 @@
                             md-search-text = "searchReferencia"
                             md-no-cache = "true"
                             md-items = "item in qs_referencia(searchReferencia)"
-                            md-item-text = "[item.referenciaCodigo,item.referenciaDescripcion].join(' - ')"
+                            md-item-text = "[item.srf_referencia,item.referenciaDescripcion].join(' - ')"
                             md-min-length = "1"
                             placeholder = "Digite la referencia">
                             <md-item-template>
-                              <span md-highlight-text="searchReferencia" md-highlight-flags="^i">@{{[item.referenciaCodigo,item.referenciaDescripcion].join(" - ")}}</span>
+                              <span md-highlight-text="searchReferencia" md-highlight-flags="^i">@{{[item.srf_referencia,item.referenciaDescripcion].join(" - ")}}</span>
                             </md-item-template>
                             <md-not-found>
                               No states matching "@{{searchReferencia}}" were found.
@@ -270,11 +270,11 @@
 		                <tbody>
 		                  <tr ng-if="persona.solicitud.referencias == undefined"><td style="text-align:center;" colspan="7">No hay referencias para esta persona</td></tr>
 		                  <tr ng-repeat="referencia in persona.solicitud.referencias">
-		                    <td>@{{[referencia.referenciaCodigo,referencia.referenciaDescripcion].join(" - ")}}</td>
-		                    <td>@{{referencia.referenciaEstado}}</td>
-		                    <td>@{{referencia.referenciaPrecio | currency: "$" : 2}}</td>
+		                    <td>@{{[referencia.srf_referencia,referencia.referenciaDescripcion].join(" - ")}}</td>
+		                    <td>@{{referencia.srf_estadoref}}</td>
+		                    <td>@{{referencia.srf_preciouni | currency: "$" : 2}}</td>
 		                    <td style="width: 76px;">
-		                    	<input class="form-control inputCantMinimized inputCantMinimized-success" type="number" ng-model="referencia.referenciaCantidad" ng-change="onCantidadChange(referencia)" min="0"/>
+		                    	<input class="form-control inputCantMinimized inputCantMinimized-success" type="number" ng-model="referencia.srf_unidades" ng-change="onCantidadChange(referencia)" min="0"/>
 		                    </td>
 		                    <td>@{{referencia.referenciaLinea}}</td>
 		                    <td>@{{referencia.referenciaValorTotal  | currency: "$" : 2}}</td>

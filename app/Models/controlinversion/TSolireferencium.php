@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\controlinversion;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class TSolireferencium extends Model
 {
+
+    protected $connection = "bd_controlinversion";
+
     protected $table = 't_solireferencia';
 
     protected $primaryKey = 'srf_id';
@@ -28,5 +31,5 @@ class TSolireferencium extends Model
 
     protected $guarded = [];
 
-        
+
 }
