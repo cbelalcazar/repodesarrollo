@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\controlinversion;
 
+use App\Models\controlinversion\TSolicitudctlinv;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -15,6 +16,7 @@ use App\Models\Genericas\Tercero;
 use App\Models\Genericas\TItemCriteriosTodo;
 use App\Models\BESA\VendedorZona;
 use App\Models\BESA\PreciosReferencias;
+use Illuminate\Support\Facades\Auth;
 
 
 class solicitudController extends Controller
@@ -28,6 +30,8 @@ class solicitudController extends Controller
      */
     public function solicitudGetInfo()
     {
+        $userLogged = Auth::user();
+
         $personas = TFacturara::with('tercero')->get();
 
         $tiposalida = TTiposalida::where('tsd_estado', '1')->get();
@@ -53,7 +57,7 @@ class solicitudController extends Controller
         ->where('ite_cod_tipoinv', '1051')
         ->get();
 
-        $response = compact('personas','tiposalida', 'tipopersona', 'cargagasto', 'lineasproducto', 'colaboradores', 'users', 'item', 'vendedoresBesa');
+        $response = compact('personas','tiposalida', 'tipopersona', 'cargagasto', 'lineasproducto', 'colaboradores', 'users', 'item', 'vendedoresBesa', 'userLogged');
         return response()->json($response);
     }
 
@@ -96,7 +100,10 @@ class solicitudController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $solicitudToCreate = TSolicitudctlinv::create($request->all());
+        return response()->json($solicitudToCreate);
+
     }
 
     /**

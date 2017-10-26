@@ -3,7 +3,7 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', functi
 	// Variable fecha para el formulario de creacion
 	var fechahoy = new Date();
 	$scope.solicitud = {
-			  				fecha:$filter('date')(fechahoy, 'yyyy-MM-dd HH:mm:ss'),
+			  				sci_fecha:$filter('date')(fechahoy, 'yyyy-MM-dd HH:mm:ss'),
 						};
 	$scope.motivoSalida = [
 							{
@@ -41,8 +41,10 @@ $scope.zonas = [
 ];
 
 	$scope.progress = true;
+	$scope.resource = "../solicitud";
 	$scope.url = '../solicitudGetInfo';
 	$scope.refUrl = '../consultarReferencia';
+
 
 	// Campo Facturar A
 		$scope.hab_ac_facturara = false;
@@ -60,6 +62,8 @@ $scope.zonas = [
 	$scope.colaboradorText;
 
 	$scope.filtrado = [];
+	$scope.solicitudEncabezado = {};
+
 
 	$scope.getInfo = function(){
 		$http.get($scope.url).then(function(response){
@@ -73,6 +77,7 @@ $scope.zonas = [
 			$scope.colaboradores = angular.copy(res.colaboradores);
 			$scope.vendedoresBesa = angular.copy(res.vendedoresBesa);
 			$scope.items = angular.copy(res.item);
+			$scope.userLogged = angular.copy(res.userLogged);
 			$scope.progress = false;
 		}, function(errorResponse){
 			console.log(errorResponse);
@@ -103,14 +108,11 @@ $scope.agregarReferenciaTodos = function(){
 	$http.get($scope.refUrl+"/"+$scope.objeto.referenciaGeneral.referenciaCodigo).then(function(response){
 
 			$scope.selectedColaboradores.map(function(colaborador){
-				if(colaborador.referencias == undefined){
-					colaborador.referencias = [];
-				}
 
 				$scope.objeto.referenciaGeneral.referenciaPrecio = response.data.infoRefe.length > 0 ? response.data.infoRefe[0].precio : 1;
 				$scope.objeto.referenciaGeneral.referenciaCantidad = 0;
 				$scope.objeto.referenciaGeneral.referenciaValorTotal = 0;
-				colaborador.referencias.push(angular.copy($scope.objeto.referenciaGeneral));
+				colaborador.solicitud.referencias.push(angular.copy($scope.objeto.referenciaGeneral));
 
 				return colaborador;
 			})
@@ -129,16 +131,12 @@ $scope.agregarReferenciaVendedor = function(colaborador,ev){
 
 	$http.get($scope.refUrl+"/"+colaborador.referenciaSearchItem.referenciaCodigo).then(function(response){
 
-				if(colaborador.referencias == undefined){
-					colaborador.referencias = [];
-				}
-
 				colaborador.referenciaSearchItem.referenciaPrecio = response.data.infoRefe.length > 0 ? response.data.infoRefe[0].precio : 1;
 				colaborador.referenciaSearchItem.referenciaCantidad = 0;
 				colaborador.referenciaSearchItem.referenciaValorTotal = 0;
-				colaborador.referencias.push(angular.copy(colaborador.referenciaSearchItem));
+				colaborador.solicitud.referencias.push(angular.copy(colaborador.referenciaSearchItem));
 
-				console.log(colaborador.referencias);
+				console.log(colaborador.solicitud.referencias);
 
 				colaborador.referenciaSearchItem="";
 
@@ -146,6 +144,65 @@ $scope.agregarReferenciaVendedor = function(colaborador,ev){
 
 	// $scope.scrollToElement(ev.offsetX, ev.offsetY);
 
+}
+
+$scope.saveSolicitud = function(){
+
+	//Variables que se toman desde el formulario
+
+	$scope.solicitud.sci_tsd_id = $scope.solicitud.tiposalida1.tsd_id;
+	$scope.solicitud.sci_mts_id = $scope.solicitud.motivoSalida.id;
+	$scope.solicitud.sci_usuario = $scope.userLogged.idTerceroUsuario;
+	$scope.solicitud.sci_cargarlinea = $scope.solicitud.lineas1.lcc_codigo;
+	$scope.solicitud.sci_observaciones = $scope.solicitud.observaciones != undefined ? $scope.solicitud.observaciones : "";
+	$scope.solicitud.sci_tipopersona = $scope.solicitud.tipopersona1.tpe_id;
+	$scope.solicitud.sci_cargara = $scope.solicitud.cargagasto1.cga_id;
+  $scope.solicitud.sci_nombre = $scope.solicitud.facturarA.tercero.razonSocialTercero;
+	$scope.solicitud.sci_facturara = $scope.solicitud.facturarA.tercero.nitTercero;
+
+	$scope.solicitud.personas = $scope.selectedColaboradores;
+
+
+	//Variables que el valor es predeterminado
+
+	$scope.solicitud.sci_can_id = null;
+	$scope.solicitud.sci_soe_id = 0;
+	$scope.solicitud.sci_tdc_id = 0;
+	$scope.solicitud.sci_solicitante = 0;
+	$scope.solicitud.sci_periododes_ini = null;
+	$scope.solicitud.sci_periododes_fin = null;
+	$scope.solicitud.sci_descuento_estimado = null;
+	$scope.solicitud.sci_tipo = 3;
+	$scope.solicitud.sci_tipono = 0;
+	$scope.solicitud.sci_tipononumero = "";
+	$scope.solicitud.sci_toc_id = 0;
+	$scope.solicitud.sci_planoobmu = 0;
+	$scope.solicitud.sci_planoobmufecha = null;
+	$scope.solicitud.sci_cerradaautomatica = 0;
+	$scope.solicitud.sci_fechacierreautomatica = null;
+	$scope.solicitud.sci_motivodescuento = null;
+	$scope.solicitud.sci_duplicar = null;
+	$scope.solicitud.sci_nduplicar = null;
+	$scope.solicitud.sci_cduplicar = 0;
+	$scope.solicitud.sci_todocanal = null;
+	$scope.solicitud.sci_direccion = 0;
+	$scope.solicitud.sci_ciudad = 0;
+	$scope.solicitud.sci_totalref = null;
+	$scope.solicitud.sci_planoprov = 0;
+	$scope.solicitud.sci_planoprovfecha = null;
+	$scope.solicitud.sci_ventaesperada = 0
+
+	$http.post($scope.resource,$scope.solicitud).then(function(response){
+
+		var data = response.data;
+		console.log(data);
+
+
+	},function(errorResponse){
+		console.log(errorResponse);
+	});
+
+	console.log($scope.solicitud);
 }
 
 
@@ -206,6 +263,18 @@ $scope.onSearchQueryChange = function(colaboradorText){
 
 }
 
+$scope.onAddColaboradores = function(colaborador){
+
+	if(colaborador.solicitud == undefined){
+		colaborador.solicitud = [];
+		colaborador.solicitud.referencias = [];
+	}
+
+	colaborador.solicitud.cantidadTotalReferencias = 0;
+	colaborador.solicitud.cantidadSolicitadaTotal = 0;
+	colaborador.solicitud.valorTotalSolicitud = 0;
+	console.log(colaborador);
+}
 
 $scope.addpersonadespachar = function(string){
 
@@ -236,7 +305,6 @@ $scope.qs_referencia = function(string){
       if (angular.isObject(chip)) {
         return chip;
       }
-
       // Otherwise, create a new one
       return { name: chip, type: 'new' }
     }

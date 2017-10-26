@@ -12,46 +12,48 @@
         <div class="panel-heading">
         	Datos de la Solicitud
         </div>
-        <form ng-submit="$event.preventDefault()">
+        <form name="solicitudForm" ng-submit="solicitudForm.$valid && saveSolicitud()">
 	        <div class="panel-body">
 	        	<div class="row">
 			        <div class="form-group col-md-2">
 			            <label>Fecha: </label>
-			            <input class="form-control" type="text" ng-model="solicitud.fecha" disabled></input>
+			            <input class="form-control" type="text" ng-model="solicitud.sci_fecha" disabled></input>
 			        </div>
 			    </div>
 			    <!-- Campo Facturar A -->
 		        <div class="form-group">
 		            <label>Facturar a: </label>
-					<md-autocomplete
-					          ng-disabled="hab_ac_facturara"
-					          md-selected-item="objeto.selectedItem"
-							      md-search-text="buscar_ac_facturara"
-					          md-no-cache="true"
-							      md-item-text="item.tercero.razonSocialTercero"
-					          md-items="item in qs_facturara(buscar_ac_facturara)"
-					          md-min-length="1"
-					          placeholder="Ingrese el número documento de identidad o el nombre de la persona a la cual se le facturará">
-					        <md-item-template>
-					          <span md-highlight-text="buscar_ac_facturara" md-highlight-flags="^i">@{{item.fca_idTercero}} - @{{item.tercero.razonSocialTercero}}</span>
-					        </md-item-template>
-					        <md-not-found>
-					          No states matching "@{{buscar_ac_facturara}}" were found.
-					        </md-not-found>
-					</md-autocomplete>
+      					<md-autocomplete
+      					          ng-disabled="hab_ac_facturara"
+      					          md-selected-item="solicitud.facturarA"
+      							      md-search-text="buscar_ac_facturara"
+      					          md-no-cache="true"
+      							      md-item-text="item.tercero.razonSocialTercero"
+      					          md-items="item in qs_facturara(buscar_ac_facturara)"
+      					          md-min-length="1"
+      					          placeholder="Ingrese el número documento de identidad o el nombre de la persona a la cual se le facturará"
+                          required
+                          >
+      					        <md-item-template>
+      					          <span md-highlight-text="buscar_ac_facturara" md-highlight-flags="^i">@{{item.fca_idTercero}} - @{{item.tercero.razonSocialTercero}}</span>
+      					        </md-item-template>
+      					        <md-not-found>
+      					          No states matching "@{{buscar_ac_facturara}}" were found.
+      					        </md-not-found>
+      					</md-autocomplete>
 		        </div>
 		        <!-- Campo Tipo de Salida y Motivo de Salida -->
 				<div class="row">
 			        <div class="form-group col-md-6">
 			            <label>Tipo de Salida: </label>
-			            <select class='form-control' ng-model='solicitud.tiposalida1' ng-options='opt.tsd_descripcion for opt in tiposalida track by opt.tsd_codigo'>
+			            <select required class='form-control' ng-model='solicitud.tiposalida1' ng-options='opt.tsd_descripcion for opt in tiposalida track by opt.tsd_codigo'>
 			            	<option value=''>Seleccione...</option>
 			            </select>
 			            <!-- @{{solicitud.tiposalida1}} -->
 			        </div>
 			        <div class="form-group col-md-6">
 			            <label>Motivo de Salida: </label>
-			            <select class='form-control' ng-model='solicitud.motivoSalida' ng-options='opt.descripcion for opt in motivoSalida track by opt.id'>
+			            <select required class='form-control' ng-model='solicitud.motivoSalida' ng-options='opt.descripcion for opt in motivoSalida track by opt.id'>
 			            	<option value=''>Seleccione...</option>
 			            </select>
 			            <!-- @{{solicitud.tiposalida1}} -->
@@ -61,7 +63,7 @@
 		        <div class="row">
 			        <div class="form-group col-md-6">
 			            <label>Cargar Gastos a: </label>
-			            <select class='form-control' ng-model='solicitud.cargagasto1' ng-options='opt2.cga_descripcion for opt2 in cargagasto track by opt2.cga_id'>
+			            <select required class='form-control' ng-model='solicitud.cargagasto1' ng-options='opt2.cga_descripcion for opt2 in cargagasto track by opt2.cga_id'>
 			            	<option value=''>Seleccione...</option>
 			            </select>
 			            <!-- @{{solicitud.tipopersona1}} -->
@@ -69,7 +71,7 @@
 
 			        <div class="form-group col-md-6" ng-if="solicitud.cargagasto1.cga_descripcion == 'Linea'">
 			            <label>Línea: </label>
-			            <select class='form-control' ng-model='solicitud.lineas1' ng-options='opt3.lineas_producto.NomLinea for opt3 in lineasproducto track by opt3.lineas_producto.CodLinea'>
+			            <select required class='form-control' ng-model='solicitud.lineas1' ng-options='opt3.lineas_producto.NomLinea for opt3 in lineasproducto track by opt3.lineas_producto.CodLinea'>
 			            	<option value=''>Seleccione...</option>
 			            </select>
 			            <!-- @{{solicitud.tipopersona1}} -->
@@ -86,7 +88,7 @@
 
 		               <div class="form-group col-md-6">
       			            <label>Tipo de Persona: </label>
-      			            <select class='form-control' ng-model='solicitud.tipopersona1' ng-change="filtrapersona()" ng-options='opt1.tpe_tipopersona for opt1 in tipopersona track by opt1.tpe_id'>
+      			            <select required class='form-control' ng-model='solicitud.tipopersona1' ng-change="filtrapersona()" ng-options='opt1.tpe_tipopersona for opt1 in tipopersona track by opt1.tpe_id'>
       			            	<option value=''>Seleccione...</option>
       			            </select>
 			             </div>
@@ -97,7 +99,9 @@
                         <md-select ng-model="solicitud.zonasSelected"
                                    aria-label="zonas de vendedores"
                                    data-md-container-class="selectdemoSelectHeader"
-                                   multiple>
+                                   multiple
+                                   required
+                                   >
                           <md-optgroup label="zonas">
                             <md-option ng-value="zona" ng-repeat="zona in zonas">@{{zona.descripcion}}</md-option>
                           </md-optgroup>
@@ -113,6 +117,7 @@
 			            <label>Despachar a: </label>
 					    <md-chips ng-model="selectedColaboradores" md-autocomplete-snap
 					              md-transform-chip="transformChip($chip)"
+                        md-on-add="onAddColaboradores($chip)"
 					              md-require-match="autocompleteDemoRequireMatch">
 					    	<md-autocomplete
 					        	  md-selected-item="selectedItem"
@@ -196,27 +201,24 @@
                         <table class="table table-striped table-bordered">
                           <thead>
                             <tr>
-                              <th>Despachar a</th>
-                              <th>Zona</th>
-                              <th>Cantidad Referencias</th>
-                              <th>Cantidad Solicitada</th>
-                              <th>Valor</th>
-                              <th>Mostrar Referencias</th>
-                              <th>Acción</th>
+                              <th style="text-align:center;">Despachar a</th>
+                              <th style="text-align:center;">Zona</th>
+                              <th style="text-align:center;">Cantidad Referencias</th>
+                              <th style="text-align:center;">Cantidad Solicitada</th>
+                              <th style="text-align:center;">Valor</th>
+                              <th style="text-align:center;"></th>
+                              <th style="text-align:center;"></th>
                             </tr>
                           </thead>
                           <tbody>
-                            <tr>
-                              <td colspan="7">No hay personas agregadas por ahora</td>
-                            </tr>
-                            <tr>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
+                            <tr ng-repeat="persona in selectedColaboradores">
+                              <td>@{{persona.nombreVendedor}}</td>
+                              <td style="text-align:center;">@{{persona.NomZona}}</td>
+                              <td style="text-align:right;">@{{persona.solicitud.cantidadTotalReferencias}}</td>
+                              <td style="text-align:right;">@{{persona.solicitud.cantidadSolicitadaTotal}}</td>
+                              <td style="text-align:right;">@{{persona.solicitud.valorTotalSolicitud}}</td>
+                              <td style="text-align:center;"><button type="button" class="btn btn-info"><i class="glyphicon glyphicon-eye-open"></i></button></td>
+                              <td style="text-align:center;"><button type="button" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button></td>
                             </tr>
                           </tbody>
                         </table>
@@ -228,7 +230,7 @@
 
 		        <!-- Tabla - Detalle por Destinatario -->
 		        <div class="table-responsive" ng-repeat="persona in selectedColaboradores">
-		        	<table class="table">
+		        	<table id="@{{persona.nitVendedor}}" class="table">
 		        		<thead>
 		        			<tr>
 		        				<th colspan="7">@{{[persona.nitVendedor, persona.nombreVendedor].join(' - ')}}</th>
@@ -260,14 +262,14 @@
 		        				<th>Estado</th>
 		        				<th>Costo</th>
 		        				<th>Cantidad</th>
-		        				<th>linea</th>
+		        				<th>Lineas a Cargar Gasto	</th>
 		        				<th>Valor total</th>
 		        				<th>Acción</th>
 		        			</tr>
 		        		</thead>
 		                <tbody>
-		                  <tr ng-if="persona.referencias == undefined"><td style="text-align:center;" colspan="7">No hay referencias para esta persona</td></tr>
-		                  <tr ng-repeat="referencia in persona.referencias">
+		                  <tr ng-if="persona.solicitud.referencias == undefined"><td style="text-align:center;" colspan="7">No hay referencias para esta persona</td></tr>
+		                  <tr ng-repeat="referencia in persona.solicitud.referencias">
 		                    <td>@{{[referencia.referenciaCodigo,referencia.referenciaDescripcion].join(" - ")}}</td>
 		                    <td>@{{referencia.referenciaEstado}}</td>
 		                    <td>@{{referencia.referenciaPrecio | currency: "$" : 2}}</td>
@@ -285,7 +287,14 @@
 		                </tbody>
 		        	</table>
 		        </div>
+
+            <div ng-if="selectedColaboradores.length > 0" class="modal-footer">
+              <button class="btn btn-primary" ng-disabled="valorTotalGeneral==0" type="submit">Guardar</button>
+              <button class="btn btn-secondary" type="button">Cerrar</button>
+            </div>
+
 	        </div>
+
         </form>
     </div>
     <div ng-if="progress" class="progress">

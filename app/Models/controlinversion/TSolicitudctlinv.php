@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\controlinversion;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class TSolicitudctlinv extends Model
 {
+
+    protected $connection = "bd_controlinversion";
+
     protected $table = 't_solicitudctlinv';
 
     protected $primaryKey = 'sci_id';
@@ -56,5 +59,5 @@ class TSolicitudctlinv extends Model
 
     protected $guarded = [];
 
-        
+
 }
