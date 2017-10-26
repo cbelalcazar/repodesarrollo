@@ -145,4 +145,34 @@ class solicitudController extends Controller
     }
 
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function misSolicitudes()
+    {
+        //
+        $ruta = 'Control de Inversion // Mis solicitudes';
+        $titulo = 'Mis solicitudes - Obsequios y muestras';
+        return view('layouts.controlinversion.solicitud.misSolicitudes', compact('ruta','titulo'));
+    }
+
+      /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getInfoMisolicitudes()
+    {
+        
+        $response = compact();
+        return response()->json();
+    }
+
+    
+
+
 }

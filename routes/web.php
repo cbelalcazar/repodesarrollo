@@ -38,9 +38,14 @@ Route::group(['middleware' => ['auth']], function () {
   	Route::get('solicitudGetInfo','controlinversion\solicitudController@solicitudGetInfo');
     Route::get('consultarReferencia/{referencia}','controlinversion\solicitudController@consultarInformacionReferencia');
 
+    Route::get('misSolicitudes','controlinversion\solicitudController@misSolicitudes');
+    Route::get('getInfoMisolicitudes','controlinversion\solicitudController@getInfoMisolicitudes');
+
     //gestion catalogo de vendedores por zona
     Route::resource('vendedores','controlinversion\vendedorController');
     Route::get('vendedoresGetInfo','controlinversion\vendedorController@getInfo');
+
+
   });
 
 
