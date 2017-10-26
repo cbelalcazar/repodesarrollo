@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\controlinversion;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,11 +9,14 @@ use Illuminate\Database\Eloquent\Model;
  */
 class TSolicliente extends Model
 {
+
+    protected $connection = "bd_controlinversion";
+
     protected $table = 't_solicliente';
 
     protected $primaryKey = 'scl_id';
 
-	public $timestamps = false;
+	  public $timestamps = false;
 
     protected $fillable = [
         'scl_sci_id',
@@ -27,5 +30,12 @@ class TSolicliente extends Model
 
     protected $guarded = [];
 
-        
+    public function clientesZonas(){
+      return $this->hasOne('App\Models\controlinversion\TSoliclientezona', 'scz_scl_id', 'scl_id');
+    }
+
+    public function clientesReferencias(){
+      return $this->hasMany('App\Models\controlinversion\TSolireferencium', 'srf_scl_id', 'scl_id');
+    }
+
 }
