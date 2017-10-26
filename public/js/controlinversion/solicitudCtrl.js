@@ -136,7 +136,7 @@ $scope.agregarReferenciaVendedor = function(colaborador,ev){
 				colaborador.referenciaSearchItem.referenciaPrecio = response.data.infoRefe.length > 0 ? response.data.infoRefe[0].precio : 1;
 				colaborador.referenciaSearchItem.referenciaCantidad = 0;
 				colaborador.referenciaSearchItem.referenciaValorTotal = 0;
-				colaborador.referencias.push(colaborador.referenciaSearchItem);
+				colaborador.referencias.push(angular.copy(colaborador.referenciaSearchItem));
 
 				console.log(colaborador.referencias);
 
@@ -255,7 +255,7 @@ $scope.qs_referencia = function(string){
 		console.log(headerNames);
 		// Aqui para los registros es una lista de objetos [{},{},{}]
 		console.log(data);
-	}		
+	}
 
 	$scope.error = function (e) {
 		console.log(e);

@@ -18,9 +18,6 @@
 			        <div class="form-group col-md-2">
 			            <label>Fecha: </label>
 			            <input class="form-control" type="text" ng-model="solicitud.fecha" disabled></input>
-			        	<!-- Esta es la directiva nueva marcillo, ya funciona carga cada fila del excel en un objeto en el controlador de angular -->
-			        	<js-xls onread="read" onerror="error"></js-xls>
-			        	<!-- end directiva excel -->
 			        </div>
 			    </div>
 			    <!-- Campo Facturar A -->
@@ -141,6 +138,20 @@
 			        	Referencias Sugeridas
 			        </div>
 			        <div class="panel-body">
+
+                <div class="row">
+					        <div class="form-group col-md-12">
+                      <label style="display:inline-block;">Cargar Referencias:</label>&nbsp
+                      <div class="input-group" style="display:inline-block;">
+                        <!-- Esta es la directiva nueva marcillo, ya funciona carga cada fila del excel en un objeto en el controlador de angular -->
+                        <js-xls onread="read" onerror="error"></js-xls>
+                        <label for="file"><i class="glyphicon glyphicon-cloud-upload"></i> Subir Archivo</label>
+                        <!-- end directiva excel -->
+                      </div>
+                  </div>
+                </div>
+
+
 				        <div class="row">
 					        <div class="form-group col-md-12">
 					        	<label>Referencia:</label>
@@ -172,6 +183,49 @@
 				        </div>
 			        </div>
 			    </div>
+          <!--Tabla de resumen de detalles por Destinatario-->
+          <div class="panel panel-primary" ng-if="selectedColaboradores.length > 0">
+              <div class="panel-heading" align="center">
+                Resumen de detalle por persona
+              </div>
+              <div class="panel-body">
+
+                <div class="row">
+                  <div class="form-group col-md-12">
+                      <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                          <thead>
+                            <tr>
+                              <th>Despachar a</th>
+                              <th>Zona</th>
+                              <th>Cantidad Referencias</th>
+                              <th>Cantidad Solicitada</th>
+                              <th>Valor</th>
+                              <th>Mostrar Referencias</th>
+                              <th>Acción</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td colspan="7">No hay personas agregadas por ahora</td>
+                            </tr>
+                            <tr>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+
 		        <!-- Tabla - Detalle por Destinatario -->
 		        <div class="table-responsive" ng-repeat="persona in selectedColaboradores">
 		        	<table class="table">
