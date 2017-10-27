@@ -9,8 +9,7 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', 'DTOptionsBui
 		$scope.todas = [];
 
 		$scope.dtOptions = DTOptionsBuilder.newOptions()
-										.withPaginationType('full_numbers')
-										.withDisplayLength(2);
+										.withOption('aaSorting', [[0, 'desc']]);
 	    
 	    $scope.dtColumnDefs = [
 	        DTColumnDefBuilder.newColumnDef(0)
@@ -31,6 +30,8 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', 'DTOptionsBui
 			console.log(errorResponse);
 			$scope.getInfo();
 		});		
+		$scope.dtOptions = DTOptionsBuilder.newOptions()
+										.withOption('aaSorting', [[0, 'desc']]);
 
 		$scope.progress = false;
 	};

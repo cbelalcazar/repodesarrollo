@@ -34,15 +34,15 @@
 	          	<tbody>
 	          		<tr ng-repeat="toda in todas">
 	          			<td>@{{toda.sci_id}}</td>
-	          			<td></td>
-	          			<td></td>
-	          			<td></td>
-	          			<td></td>
-	          			<td></td>
-	          			<td></td>
-	          			<td></td>
-	          			<td></td>
-	          			<td></td>
+	          			<td>@{{toda.estado.soe_descripcion}}</td>
+	          			<td>@{{toda.sci_fecha}}</td>
+	          			<td>@{{toda.sci_facturara}}</td>
+	          			<td>@{{toda.sci_tsd_id}}</td>
+	          			<td>@{{toda.sci_tipopersona}}</td>
+	          			<td>@{{toda.sci_cargara}}</td>
+	          			<td>@{{toda.sci_observaciones}}</td>
+	          			<td>DUPLICAR</td>
+	          			<td>BOTON</td>
 	          		</tr>
 	          	</tbody>
 	          </table>

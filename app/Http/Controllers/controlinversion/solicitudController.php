@@ -199,7 +199,7 @@ class solicitudController extends Controller
     public function getInfoMisolicitudes()
     {
         //esto debe filtrar por usuario campo sci_usuario y sci_tipo 3,7
-        $solicitudes = TSolicitudctlinv::with('estado')->get();
+        $solicitudes = TSolicitudctlinv::with('estado')->orderBy('sci_id', 'desc')->get();
         $response = compact('solicitudes');
         return response()->json($response);
     }
