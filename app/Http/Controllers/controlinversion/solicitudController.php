@@ -74,6 +74,15 @@ class solicitudController extends Controller
     }
 
 
+    public function consultarInformacionReferencias(Request $request){
+
+      //return response()->json($request->all());
+      $infoRefes = PreciosReferencias::consultarReferencias($request);
+      $response = compact('infoRefes');
+      return response()->json($response);
+    }
+
+
     /**
      * Display a listing of the resource.
      *

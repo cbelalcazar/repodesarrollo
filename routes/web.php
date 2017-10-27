@@ -37,6 +37,7 @@ Route::group(['middleware' => ['auth']], function () {
   	Route::resource('solicitud','controlinversion\solicitudController');
   	Route::get('solicitudGetInfo','controlinversion\solicitudController@solicitudGetInfo');
     Route::get('consultarReferencia/{referencia}','controlinversion\solicitudController@consultarInformacionReferencia');
+    Route::post('consultarReferencias','controlinversion\solicitudController@consultarInformacionReferencias');
 
     Route::get('misSolicitudes','controlinversion\solicitudController@misSolicitudes');
     Route::get('getInfoMisolicitudes','controlinversion\solicitudController@getInfoMisolicitudes');

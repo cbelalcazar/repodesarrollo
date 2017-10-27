@@ -44,6 +44,7 @@ $scope.zonas = [
 	$scope.resource = "../solicitud";
 	$scope.url = '../solicitudGetInfo';
 	$scope.refUrl = '../consultarReferencia';
+	$scope.refesUrl = '../consultarReferencias';
 	$scope.objeto = {};
 
 
@@ -333,13 +334,36 @@ $scope.qs_referencia = function(string){
     // Estas son las funciones que ejecuta la directiva
     $scope.read = function (workbook) {
 
-
 		var headerNames = XLSX.utils.sheet_to_json( workbook.Sheets[workbook.SheetNames[0]], { header: 1 })[0];
 		var data = XLSX.utils.sheet_to_json( workbook.Sheets[workbook.SheetNames[0]]);
 		// Cuando se ejecuta la informacion queda aqui para los encabezados
 		console.log(headerNames);
-		// Aqui para los registros es una lista de objetos [{},{},{}]
 		console.log(data);
+
+		var codigosReferencia = [];
+		var referenciasFiltradas = [];
+
+		data.forEach(function(referencia){
+			codigosReferencia.push(referencia.REFERENCIA);
+		});
+		//Los codigos de referencias del archivo se filtran con los items del autocomplete de referencias para descartar los que no estan
+		codigosReferencia.forEach(function(codigo){
+			var objetoRefe = $filter('filter')($scope.items, {srf_referencia : codigo});
+			if(objetoRefe.length > 0){
+				referenciasFiltradas.push(objetoRefe[0]);
+			}
+		})
+		//se reinicializa la variable codigosReferencia para agregar solo las referencias que se encuentran en el autocomplete
+		codigosReferencia = [];
+		//las referencias filtradas son a las que se les consultara el precio y se agregaran para cada
+		referenciasFiltradas.forEach(function(referencia){
+			codigosReferencia.push(referencia.srf_referencia);
+		});
+		//se realiza la consulta de los precios por un arreglo de referenciasFiltradas y se agregan
+		$http.post($scope.refesUrl,codigosReferencia).then(function(response){
+			console.log(response.data);
+		});
+
 	}
 
 	$scope.error = function (e) {
