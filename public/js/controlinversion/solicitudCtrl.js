@@ -146,6 +146,8 @@ $scope.agregarReferenciaVendedor = function(colaborador,ev){
 				colaborador.referenciaSearchItem.referenciaValorTotal = 0;
 				colaborador.solicitud.referencias.push(angular.copy(colaborador.referenciaSearchItem));
 
+				colaborador.cantidadTotalReferencias = colaborador.solicitud.referencias.length;
+
 				console.log(colaborador.solicitud.referencias);
 
 				colaborador.referenciaSearchItem="";
@@ -346,13 +348,25 @@ $scope.qs_referencia = function(string){
 	// End funciones que ejecuta la directiva
 
 
-$scope.sumaCantidadSolicitada = function(arrayReferencias){
-	var arreglito = arrayReferencias.map(function(referencia){
-		return referencia.cantidadSolicitadaTotal;
+$scope.sumaCantidadSolicitada = function(persona){
+	var arreglito = persona.solicitud.referencias.map(function(referencia){
+		return referencia.srf_unidades;
 	});
 
-	console.log(arreglito);
-	return arreglito;
+	persona.cantidadSolicitadaTotal = $filter('sum')(arreglito);
+
+	return persona.cantidadSolicitadaTotal;
+}
+
+
+$scope.sumaValorTotal = function(persona){
+	var arreglito = persona.solicitud.referencias.map(function(referencia){
+		return referencia.referenciaValorTotal;
+	});
+
+	persona.scl_ventaesperada = $filter('sum')(arreglito);
+
+	return persona.scl_ventaesperada;
 }
 
 }]);
