@@ -185,4 +185,35 @@ class solicitudController extends Controller
     }
 
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function misSolicitudes()
+    {
+        //
+        $ruta = 'Control de Inversion // Mis solicitudes';
+        $titulo = 'Mis solicitudes - Obsequios y muestras';
+        return view('layouts.controlinversion.solicitud.misSolicitudes', compact('ruta','titulo'));
+    }
+
+      /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getInfoMisolicitudes()
+    {
+        //esto debe filtrar por usuario campo sci_usuario y sci_tipo 3,7
+        $solicitudes = TSolicitudctlinv::with('estado')->orderBy('sci_id', 'desc')->get();
+        $response = compact('solicitudes');
+        return response()->json($response);
+    }
+
+    
+
+
 }
