@@ -63,7 +63,7 @@ class TSolicitudctlinv extends Model
       return $this->hasMany('App\Models\controlinversion\TSolicliente', 'scl_sci_id', 'sci_id');
     }
 
-     public function estado(){
+    public function estado(){
       return $this->hasOne('App\Models\controlinversion\TSolestado', 'soe_id', 'sci_soe_id');
     }
 
