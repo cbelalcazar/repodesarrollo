@@ -26,6 +26,7 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', 'DTOptionsBui
 			$scope.aprobada =  $filter('filter')($scope.todas, {sci_soe_id : 5});
 			$scope.cerrada =  $filter('filter')($scope.todas, {sci_soe_id : 6});
 			$scope.aprobacionAuditoria =  $filter('filter')($scope.todas, {sci_soe_id : 7});
+			$scope.progress = false;
 		}, function(errorResponse){
 			console.log(errorResponse);
 			$scope.getInfo();
@@ -33,7 +34,7 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', 'DTOptionsBui
 		$scope.dtOptions = DTOptionsBuilder.newOptions()
 										.withOption('aaSorting', [[0, 'desc']]);
 
-		$scope.progress = false;
+		
 	};
 
 	$scope.getInfo();
