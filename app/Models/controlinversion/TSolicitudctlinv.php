@@ -67,5 +67,21 @@ class TSolicitudctlinv extends Model
       return $this->hasOne('App\Models\controlinversion\TSolestado', 'soe_id', 'sci_soe_id');
     }
 
+    public function tipoSalida(){
+      return $this->hasOne('App\Models\controlinversion\TTiposalida', 'tsd_id', 'sci_tsd_id');
+    }
+
+    public function tipoPersona(){
+      return $this->hasOne('App\Models\controlinversion\TTipopersona', 'tpe_id', 'sci_tipopersona');
+    }
+
+    public function cargara(){
+      return $this->hasOne('App\Models\controlinversion\TCargagasto', 'cga_id', 'sci_cargara');
+    }
+
+    public function facturara(){
+      return $this->hasOne('App\Models\controlinversion\TFacturara', 'fca_idTercero', 'sci_facturara');
+    }
+
 
 }
