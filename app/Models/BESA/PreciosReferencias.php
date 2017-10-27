@@ -51,4 +51,21 @@ class PreciosReferencias extends Model
     }
 
 
+
+    public static function consultarReferencias($referencias){
+
+            $objetos = DB::connection('besa')->table('000_LP-003_RNF_tbl')
+            ->select('lp','referencia','cod_linea','nom_linea','cod_categoria','precio','estado_criterio','llave')
+            ->where('lp','RNF')
+            ->whereIn('referencia',$referencias)
+            ->where('llave','like','%UND%')
+            ->orWhere('lp','RNF')
+            ->whereIn('referencia',$referencias)
+            ->where('llave','like','%PAR%')
+            ->orderBy('fecha_activacion','desc')->get();
+
+            return $objetos;
+    }
+
+
 }
