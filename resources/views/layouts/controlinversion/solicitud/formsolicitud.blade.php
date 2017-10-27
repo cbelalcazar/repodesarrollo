@@ -215,8 +215,8 @@
                               <td>@{{persona.scl_nombre}}</td>
                               <td style="text-align:center;">@{{persona.NomZona}}</td>
                               <td style="text-align:right;">@{{persona.cantidadTotalReferencias}}</td>
-                              <td style="text-align:right;">@{{sumaCantidadSolicitada(persona.solicitud.referencias) | sum}}</td>
-                              <td style="text-align:right;">@{{persona.scl_ventaesperada}}</td>
+                              <td style="text-align:right;">@{{sumaCantidadSolicitada(persona)}}</td>
+                              <td style="text-align:right;">@{{sumaValorTotal(persona) | currency: "$" : 2}}</td>
                               <td style="text-align:center;"><button type="button" class="btn btn-info"><i class="glyphicon glyphicon-eye-open"></i></button></td>
                               <td style="text-align:center;"><button type="button" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button></td>
                             </tr>
