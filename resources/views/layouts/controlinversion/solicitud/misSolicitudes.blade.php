@@ -34,7 +34,7 @@
 	          			<td>@{{toda.tipo_persona.tpe_tipopersona}}</td>
 	          			<td>@{{toda.cargara.cga_descripcion}}</td>
 	          			<td>@{{toda.sci_observaciones}}</td>
-	          			<td>BOTON</td>
+	          			<td><button class="btn btn-info" type="button"><i class="glyphicon glyphicon-eye-open"></i></button></td>
 	          		</tr>
 	          	</tbody>
 	          </table>
