@@ -1,6 +1,14 @@
-app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', function($scope, $filter, $http, $window){
+app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDialog', function($scope, $filter, $http, $window, $mdDialog){
 
 	// Variable fecha para el formulario de creacion
+	function afterShowAnimation() {
+                        var $dialog = angular.element(document.querySelector('md-dialog'));
+                        var $actionsSection = $dialog.find('md-dialog-actions');
+                        var $cancelButton = $actionsSection.children()[0];
+                        var $confirmButton = $actionsSection.children()[1];
+                        angular.element($confirmButton).addClass('md-raised md-warn');
+                        angular.element($cancelButton).addClass('md-raised');
+                    }
 	var fechahoy = new Date();
 	$scope.solicitud = {
 			  				sci_fecha:$filter('date')(fechahoy, 'yyyy-MM-dd HH:mm:ss'),
@@ -58,6 +66,7 @@ $scope.zonas = [
 	$scope.colaboradoresGeneral = [];
 	$scope.colaboradoresAutocomplete = [];
   $scope.selectedColaboradores = [];
+	$scope.referenciasError = [];
 
   $scope.autocompleteDemoRequireMatch = true;
 	$scope.esVendedor = false;
@@ -87,6 +96,37 @@ $scope.zonas = [
 		});
 	}
 
+$scope.onChangeOpcionCargaGasto = function(){
+	console.log($scope.solicitud.cargagasto1);
+	if($scope.solicitud.cargagasto1.cga_id == 2){
+		if($scope.selectedColaboradores.length > 0){
+			$scope.selectedColaboradores.forEach(function(colaborador){
+				if(colaborador.solicitud.referencias.length > 0){
+					colaborador.solicitud.referencias.map(function(referencia){
+						console.log(referencia);
+						referencia.srf_lin_id_gasto = referencia.originalLinea;
+						return referencia;
+					})
+				}
+			})
+		}
+	}
+}
+
+$scope.onChangeLineaCargaGasto = function(){
+	console.log($scope.solicitud.lineas1);
+	if($scope.selectedColaboradores.length > 0){
+		$scope.selectedColaboradores.forEach(function(colaborador){
+			if(colaborador.solicitud.referencias.length > 0){
+				colaborador.solicitud.referencias.map(function(referencia){
+					referencia.srf_lin_id_gasto = $scope.solicitud.lineas1.lcc_codigo;
+					return referencia;
+				})
+			}
+		})
+	}
+}
+
 $scope.onCantidadChange = function(referencia){
 
 	console.log($scope.selectedColaboradores);
@@ -106,7 +146,9 @@ $scope.qs_facturara = function(string){
 }
 
 $scope.agregarReferenciaTodos = function(){
-console.log($scope.objeto);
+
+	$scope.progress = true;
+
 	$http.get($scope.refUrl+"/"+$scope.objeto.referenciaGeneral.srf_referencia).then(function(response){
 
 			$scope.selectedColaboradores.map(function(colaborador){
@@ -116,8 +158,18 @@ console.log($scope.objeto);
 				$scope.objeto.referenciaGeneral.srf_porcentaje = 0;
 				$scope.objeto.referenciaGeneral.srf_estado = 1;
 				$scope.objeto.referenciaGeneral.referenciaValorTotal = 0;
+				$scope.objeto.referenciaGeneral.originalLinea = angular.copy($scope.objeto.referenciaGeneral.srf_lin_id_gasto);
 
-				colaborador.solicitud.referencias.push(angular.copy($scope.objeto.referenciaGeneral));
+				if(colaborador.solicitud.referencias.length > 0){
+
+					var objetoExiste = $filter('filter')(colaborador.solicitud.referencias,{srf_referencia: $scope.objeto.referenciaGeneral.srf_referencia });
+					if(objetoExiste.length == 0){
+						colaborador.solicitud.referencias.push(angular.copy($scope.objeto.referenciaGeneral));
+					}
+
+				}else{
+					colaborador.solicitud.referencias.push(angular.copy($scope.objeto.referenciaGeneral));
+				}
 
 				colaborador.cantidadTotalReferencias = colaborador.solicitud.referencias.length;
 
@@ -130,13 +182,14 @@ console.log($scope.objeto);
 
 			$scope.objeto.referenciaGeneral = "";
 
+			$scope.progress = false;
+
 	});
 }
 
 $scope.agregarReferenciaVendedor = function(colaborador,ev){
 
-	console.log(ev.offsetX);
-	console.log(ev.offsetY);
+	$scope.progress = true;
 
 	$http.get($scope.refUrl+"/"+colaborador.referenciaSearchItem.srf_referencia).then(function(response){
 
@@ -145,13 +198,26 @@ $scope.agregarReferenciaVendedor = function(colaborador,ev){
 				colaborador.referenciaSearchItem.srf_porcentaje = 0;
 				colaborador.referenciaSearchItem.srf_estado = 1;
 				colaborador.referenciaSearchItem.referenciaValorTotal = 0;
-				colaborador.solicitud.referencias.push(angular.copy(colaborador.referenciaSearchItem));
+				colaborador.referenciaSearchItem.originalLinea = angular.copy(colaborador.referenciaSearchItem.srf_lin_id_gasto);
+
+
+				if(colaborador.solicitud.referencias.length > 0){
+
+					var objetoExiste = $filter('filter')(colaborador.solicitud.referencias,{srf_referencia: colaborador.referenciaSearchItem.srf_referencia });
+					if(objetoExiste.length == 0){
+							colaborador.solicitud.referencias.push(angular.copy(colaborador.referenciaSearchItem));
+					}
+
+				}else{
+							colaborador.solicitud.referencias.push(angular.copy(colaborador.referenciaSearchItem));
+				}
 
 				colaborador.cantidadTotalReferencias = colaborador.solicitud.referencias.length;
 
 				console.log(colaborador.solicitud.referencias);
 
 				colaborador.referenciaSearchItem="";
+				$scope.progress = false;
 
 	});
 
@@ -294,6 +360,12 @@ $scope.onAddColaboradores = function(colaborador){
 	console.log(colaborador);
 }
 
+$scope.onRemoveColaboradores= function(colaborador){
+	if(colaborador.solicitud.referencias.length >0){
+		colaborador.solicitud.referencias = [];
+	}
+}
+
 $scope.addpersonadespachar = function(string){
 
 					console.log(string);
@@ -334,36 +406,142 @@ $scope.qs_referencia = function(string){
     // Estas son las funciones que ejecuta la directiva
     $scope.read = function (workbook) {
 
-		var headerNames = XLSX.utils.sheet_to_json( workbook.Sheets[workbook.SheetNames[0]], { header: 1 })[0];
-		var data = XLSX.utils.sheet_to_json( workbook.Sheets[workbook.SheetNames[0]]);
-		// Cuando se ejecuta la informacion queda aqui para los encabezados
-		console.log(headerNames);
-		console.log(data);
+			$scope.progress = true;
+			var headerNames = XLSX.utils.sheet_to_json( workbook.Sheets[workbook.SheetNames[0]], { header: 1 })[0];
+			var data = XLSX.utils.sheet_to_json( workbook.Sheets[workbook.SheetNames[0]]);
+			// Cuando se ejecuta la informacion queda aqui para los encabezados
+			console.log(headerNames);
+			console.log(data);
 
-		var codigosReferencia = [];
-		var referenciasFiltradas = [];
+			var codigosReferencia = [];
+			var referenciasFiltradas = [];
+			$scope.referenciasError = [];
 
-		data.forEach(function(referencia){
-			codigosReferencia.push(referencia.REFERENCIA);
-		});
-		//Los codigos de referencias del archivo se filtran con los items del autocomplete de referencias para descartar los que no estan
-		codigosReferencia.forEach(function(codigo){
-			var objetoRefe = $filter('filter')($scope.items, {srf_referencia : codigo});
-			if(objetoRefe.length > 0){
-				referenciasFiltradas.push(objetoRefe[0]);
+
+			data.forEach(function(referencia){
+				codigosReferencia.push(referencia);
+			});
+			//Los codigos de referencias del archivo se filtran con los items del autocomplete de referencias para descartar los que no estan
+			codigosReferencia.forEach(function(codigo){
+				var objetoRefe = $filter('filter')($scope.items, {srf_referencia : codigo.REFERENCIA});
+				if(objetoRefe.length > 0){
+					objetoRefe[0].srf_unidades = parseInt(codigo.CANTIDAD);
+					referenciasFiltradas.push(objetoRefe[0]);
+				}else{
+					$scope.referenciasError.push(codigo);
+				}
+			})
+			//se reinicializa la variable codigosReferencia para agregar solo las referencias que se encuentran en el autocomplete
+			codigosReferencia = [];
+			//las referencias filtradas son a las que se les consultara el precio y se agregaran para cada
+			referenciasFiltradas.forEach(function(referencia){
+				codigosReferencia.push(referencia.srf_referencia);
+			});
+			//se realiza la consulta de los precios por un arreglo de referenciasFiltradas y se agregan
+			if($scope.referenciasError.length == 0){
+
+					$http.post($scope.refesUrl,codigosReferencia).then(function(response){
+
+						var preciosRefes = angular.copy(response.data.infoRefes);
+
+						if(preciosRefes.length > 0){
+							$scope.selectedColaboradores.map(function(colaborador){
+
+
+								referenciasFiltradas.forEach(function(referencia1){
+
+									var objetoFilter = $filter('filter')(preciosRefes,{referencia: referencia1.srf_referencia});
+
+									referencia1.srf_preciouni = objetoFilter.length > 0 ? objetoFilter[0].precio : 1;
+									referencia1.srf_porcentaje = 0;
+									referencia1.srf_estado = 1;
+									referencia1.referenciaValorTotal =  referencia1.srf_preciouni * referencia1.srf_unidades;
+									referencia1.originalLinea = angular.copy(referencia1.srf_lin_id_gasto);
+
+									if(colaborador.solicitud.referencias.length > 0){
+
+										var objetoExiste = $filter('filter')(colaborador.solicitud.referencias,{srf_referencia: referencia1.srf_referencia });
+										if(objetoExiste.length == 0){
+											colaborador.solicitud.referencias.push(angular.copy(referencia1));
+										}
+
+									}else{
+										colaborador.solicitud.referencias.push(angular.copy(referencia1));
+									}
+
+									colaborador.cantidadTotalReferencias = colaborador.solicitud.referencias.length;
+
+								});
+
+								return colaborador;
+							})
+						}
+
+						$scope.progress = false;
+					});
+
+			}else{
+
+				var encabezado = "<br><h5>Se ha presentado un error al intentar el cargue masivo de las siguientes referencias</h5>";
+
+				var text = "";
+				$scope.referenciasError.forEach(function(refe){
+					text += '<md-list-item>REFERENCIA: '+ refe.REFERENCIA +' CANTIDAD: '+refe.CANTIDAD+' FILA: '+ refe.__rowNum__ +'</md-list-item><br>';
+				})
+
+				encabezado += text;
+
+				console.log(text);
+
+				$scope.progress = false;
+
+			    $mdDialog.show($mdDialog.alert({
+						title: 'Errores en cargue masivo de referencias',
+						htmlContent: encabezado,
+						ok: 'Cerrar'
+
+					}));
+
 			}
-		})
-		//se reinicializa la variable codigosReferencia para agregar solo las referencias que se encuentran en el autocomplete
-		codigosReferencia = [];
-		//las referencias filtradas son a las que se les consultara el precio y se agregaran para cada
-		referenciasFiltradas.forEach(function(referencia){
-			codigosReferencia.push(referencia.srf_referencia);
-		});
-		//se realiza la consulta de los precios por un arreglo de referenciasFiltradas y se agregan
-		$http.post($scope.refesUrl,codigosReferencia).then(function(response){
-			console.log(response.data);
-		});
 
+	}
+
+
+  $scope.eliminarReferencia = function(persona,referencia){
+
+			console.log(persona,referencia);
+      if(referencia && persona){
+          for(var x in persona.solicitud.referencias){
+              var ref = persona.solicitud.referencias[x];
+              if(ref['srf_referencia'] == referencia.srf_referencia){
+                  persona.solicitud.referencias.splice(x, 1);
+									persona.cantidadTotalReferencias = persona.solicitud.referencias.length;
+              }
+          }
+      }
+  }
+
+
+	$scope.eliminarPersona = function(persona){
+
+			console.log(persona);
+			if(persona){
+					for(var x in $scope.selectedColaboradores){
+							var ref = $scope.selectedColaboradores[x];
+							if(ref['scl_cli_id'] == persona.scl_cli_id){
+
+								if(persona.solicitud.referencias.length >0){
+									persona.solicitud.referencias = [];
+								}
+								$scope.selectedColaboradores.splice(x, 1);
+
+							}
+					}
+			}
+	}
+
+	$scope.closeDialog = function() {
+		$mdDialog.hide();
 	}
 
 	$scope.error = function (e) {

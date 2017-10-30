@@ -63,7 +63,7 @@
 		        <div class="row">
 			        <div class="form-group col-md-6">
 			            <label>Cargar Gastos a: </label>
-			            <select required class='form-control' ng-model='solicitud.cargagasto1' ng-options='opt2.cga_descripcion for opt2 in cargagasto track by opt2.cga_id'>
+			            <select required class='form-control' ng-model='solicitud.cargagasto1' ng-change="onChangeOpcionCargaGasto()" ng-options='opt2.cga_descripcion for opt2 in cargagasto track by opt2.cga_id'>
 			            	<option value=''>Seleccione...</option>
 			            </select>
 			            <!-- @{{solicitud.tipopersona1}} -->
@@ -71,7 +71,7 @@
 
 			        <div class="form-group col-md-6" ng-if="solicitud.cargagasto1.cga_descripcion == 'Linea'">
 			            <label>Línea: </label>
-			            <select required class='form-control' ng-model='solicitud.lineas1' ng-options='opt3.lineas_producto.NomLinea for opt3 in lineasproducto track by opt3.lineas_producto.CodLinea'>
+			            <select required class='form-control' ng-change="onChangeLineaCargaGasto()" ng-model='solicitud.lineas1' ng-options='opt3.lineas_producto.NomLinea for opt3 in lineasproducto track by opt3.lineas_producto.CodLinea'>
 			            	<option value=''>Seleccione...</option>
 			            </select>
 			            <!-- @{{solicitud.tipopersona1}} -->
@@ -118,6 +118,7 @@
 					    <md-chips ng-model="selectedColaboradores" md-autocomplete-snap
 					              md-transform-chip="transformChip($chip)"
                         md-on-add="onAddColaboradores($chip)"
+                        md-on-remove="onRemoveColaboradores($chip)"
 					              md-require-match="autocompleteDemoRequireMatch">
 					    	<md-autocomplete
 					        	  md-selected-item="selectedItem"
@@ -202,7 +203,7 @@
                           <thead>
                             <tr>
                               <th style="text-align:center;">Despachar a</th>
-                              <th style="text-align:center;">Zona</th>
+                              <th ng-if="esVendedor" style="text-align:center;">Zona</th>
                               <th style="text-align:center;">Cantidad Referencias</th>
                               <th style="text-align:center;">Cantidad Solicitada</th>
                               <th style="text-align:center;">Valor</th>
@@ -213,12 +214,12 @@
                           <tbody>
                             <tr ng-repeat="persona in selectedColaboradores">
                               <td>@{{persona.scl_nombre}}</td>
-                              <td style="text-align:center;">@{{persona.NomZona}}</td>
+                              <td ng-if="esVendedor" style="text-align:center;">@{{persona.NomZona}}</td>
                               <td style="text-align:right;">@{{persona.cantidadTotalReferencias}}</td>
                               <td style="text-align:right;">@{{sumaCantidadSolicitada(persona)}}</td>
                               <td style="text-align:right;">@{{sumaValorTotal(persona) | currency: "$" : 2}}</td>
                               <td style="text-align:center;"><button type="button" class="btn btn-info"><i class="glyphicon glyphicon-eye-open"></i></button></td>
-                              <td style="text-align:center;"><button type="button" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button></td>
+                              <td style="text-align:center;"><button type="button" ng-click="eliminarPersona(persona)" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button></td>
                             </tr>
                           </tbody>
                         </table>
@@ -276,10 +277,12 @@
 		                    <td style="width: 76px;">
 		                    	<input class="form-control inputCantMinimized inputCantMinimized-success" type="number" ng-model="referencia.srf_unidades" ng-change="onCantidadChange(referencia)" min="0"/>
 		                    </td>
-		                    <td>@{{referencia.referenciaLinea}}</td>
+                        <td>
+                          <select required class='form-control' ng-model='referencia.srf_lin_id_gasto' ng-value="referencia.srf_lin_id_gasto" ng-options='opt3.lineas_producto.NomLinea for opt3 in lineasproducto track by opt3.lineas_producto.CodLinea'></select>
+                        </td>
 		                    <td>@{{referencia.referenciaValorTotal  | currency: "$" : 2}}</td>
 		                    <td>
-			                    <button type="button" class="btn btn-danger">
+			                    <button type="button" ng-click="eliminarReferencia(persona,referencia)" class="btn btn-danger">
 			                    	<i class="glyphicon glyphicon-remove"></i>
 			                    </buttom>
 		                    </td>
