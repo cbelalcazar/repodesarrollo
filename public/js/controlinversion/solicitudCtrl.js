@@ -273,15 +273,15 @@ $scope.saveSolicitud = function(){
 
 
 	console.log($scope.solicitud);
-	$http.post($scope.resource,$scope.solicitud).then(function(response){
-
-		var data = response.data;
-		console.log(data);
-
-
-	},function(errorResponse){
-		console.log(errorResponse);
-	});
+	// $http.post($scope.resource,$scope.solicitud).then(function(response){
+	//
+	// 	var data = response.data;
+	// 	console.log(data);
+	//
+	//
+	// },function(errorResponse){
+	// 	console.log(errorResponse);
+	// });
 
 	console.log($scope.solicitud);
 }
