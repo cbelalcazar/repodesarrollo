@@ -34,7 +34,7 @@
 	          			<td>@{{toda.tipo_persona.tpe_tipopersona}}</td>
 	          			<td>@{{toda.cargara.cga_descripcion}}</td>
 	          			<td>@{{toda.sci_observaciones}}</td>
-	          			<td><button class="btn btn-info" type="button"><i class="glyphicon glyphicon-eye-open"></i></button></td>
+	          			<td><button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(toda)"><i class="glyphicon glyphicon-eye-open"></i></button></td>
 	          		</tr>
 	          	</tbody>
 	          </table>
@@ -248,9 +248,12 @@
 
 	    </md-tabs>
 	  </md-content>
+
+			 @include('layouts.controlinversion.reportesVisuales.mostrarSolicitud')
+
 	     <div ng-if="progress" class="progress">
 	    	<md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
-		</div>
+			</div>
 </div>
 @endsection
 
