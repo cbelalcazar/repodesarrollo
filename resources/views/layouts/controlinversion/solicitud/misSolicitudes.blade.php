@@ -10,7 +10,7 @@
 	      <md-tab label="Todas (@{{todas.length}})">
 	        <md-content class="md-padding">
 
-	          <table datatable="ng" class="row-border hover">
+	          <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
 	          	<thead>
 	          		<tr>
 	          			<td>No</td>
@@ -21,14 +21,14 @@
 	          			<td>Tipo de persona</td>
 	          			<td>Cargar a</td>
 	          			<td>Observaciones</td>
-	          			<td>Ver</td>
+	          			<td></td>
 	          		</tr>
 	          	</thead>
 	          	<tbody>
 	          		<tr ng-repeat="toda in todas">
 	          			<td>@{{toda.sci_id}}</td>
 	          			<td>@{{toda.estado.soe_descripcion}}</td>
-	          			<td>@{{toda.sci_fecha}}</td>
+	          			<td>@{{toda.sci_fecha | date: 'dd/MM/yyyy'}}</td>
 	          			<td>@{{toda.facturara.tercero.razonSocialTercero}}</td>
 	          			<td>@{{toda.tipo_salida.tsd_descripcion}}</td>
 	          			<td>@{{toda.tipo_persona.tpe_tipopersona}}</td>
@@ -44,7 +44,7 @@
 
 	      <md-tab label="En elaboracion (@{{elaboracion.length}})">
 	        <md-content class="md-padding">
-	           <table datatable="ng" class="row-border hover">
+	           <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs1" class="row-border hover">
 	          	<thead>
 	          		<tr>
 	          			<td>No</td>
@@ -55,24 +55,24 @@
 	          			<td>Tipo de persona</td>
 	          			<td>Cargar a</td>
 	          			<td>Observaciones</td>
-	          			<td>Ver</td>
-	          			<td>Terminar</td>
-	          			<td>Anular</td>
+	          			<td></td>
+	          			<td></td>
+	          			<td></td>
 	          		</tr>
 	          	</thead>
 	          	<tbody>
 	          		<tr ng-repeat="elabora in elaboracion">
 	          			<td>@{{elabora.sci_id}}</td>
 	          			<td>@{{elabora.estado.soe_descripcion}}</td>
-	          			<td>@{{elabora.sci_fecha}}</td>
+	          			<td>@{{elabora.sci_fecha | date: 'dd/MM/yyyy'}}</td>
 	          			<td>@{{elabora.facturara.tercero.razonSocialTercero}}</td>
 	          			<td>@{{elabora.tipo_salida.tsd_descripcion}}</td>
 	          			<td>@{{elabora.tipo_persona.tpe_tipopersona}}</td>
 	          			<td>@{{elabora.cargara.cga_descripcion}}</td>
 	          			<td>@{{elabora.sci_observaciones}}</td>
 	          			<td><button class="btn btn-info" type="button"><i class="glyphicon glyphicon-eye-open"></i></button></td>
-	          			<td>TERMINAR</td>
-	          			<td>ANULAR</td>
+	          			<td><button class="btn btn-success" ng-click="terminarSolicitud(elabora)" type="button"><i class="glyphicon glyphicon-check"></i></button></td>
+	          			<td><button class="btn btn-danger" type="button"><i class="glyphicon glyphicon-remove"></i></button></td>
 	          		</tr>
 	          	</tbody>
 	          </table>
@@ -81,7 +81,7 @@
 
 	      <md-tab label="Correcciones (@{{correcciones.length}})">
 	        <md-content class="md-padding">
-	           <table datatable="ng" class="row-border hover">
+	           <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs1" class="row-border hover">
 	          	<thead>
 	          		<tr>
 	          			<td>No</td>
@@ -92,24 +92,24 @@
 	          			<td>Tipo de persona</td>
 	          			<td>Cargar a</td>
 	          			<td>Observaciones</td>
-	          			<td>Ver</td>
-	          			<td>Corregir</td>
-	          			<td>Anular</td>
+	          			<td></td>
+	          			<td></td>
+	          			<td></td>
 	          		</tr>
 	          	</thead>
 	          	<tbody>
 	          		<tr ng-repeat="corre in correcciones">
 	          			<td>@{{corre.sci_id}}</td>
 	          			<td>@{{corre.estado.soe_descripcion}}</td>
-	          			<td>@{{corre.sci_fecha}}</td>
+	          			<td>@{{corre.sci_fecha | date: 'dd/MM/yyyy'}}</td>
 	          			<td>@{{corre.facturara.tercero.razonSocialTercero}}</td>
 	          			<td>@{{corre.tipo_salida.tsd_descripcion}}</td>
 	          			<td>@{{corre.tipo_persona.tpe_tipopersona}}</td>
 	          			<td>@{{corre.cargara.cga_descripcion}}</td>
 	          			<td>@{{corre.sci_observaciones}}</td>
-	          			<td><button class="btn btn-info" type="button"><i class="glyphicon glyphicon-eye-open"></i></button></td>
-	          			<td>CORREGIR</td>
-	          			<td>ANULAR</td>
+									<td><button class="btn btn-info" type="button"><i class="glyphicon glyphicon-eye-open"></i></button></td>
+	          			<td><button class="btn btn-warning" type="button"><i class="glyphicon glyphicon-edit"></i></button></td>
+	          			<td><button class="btn btn-danger" type="button"><i class="glyphicon glyphicon-remove"></i></button></td>
 	          		</tr>
 	          	</tbody>
 	          </table>
@@ -118,7 +118,7 @@
 
 	      <md-tab label="Anulada (@{{anulada.length}})">
 	        <md-content class="md-padding ()">
-	         <table datatable="ng" class="row-border hover">
+	         <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
 	          	<thead>
 	          		<tr>
 	          			<td>No</td>
@@ -129,14 +129,14 @@
 	          			<td>Tipo de persona</td>
 	          			<td>Cargar a</td>
 	          			<td>Observaciones</td>
-	          			<td>Ver</td>
+	          			<td></td>
 	          		</tr>
 	          	</thead>
 	          	<tbody>
 	          		<tr ng-repeat="anul in anulada">
 	          			<td>@{{anul.sci_id}}</td>
 	          			<td>@{{anul.estado.soe_descripcion}}</td>
-	          			<td>@{{anul.sci_fecha}}</td>
+	          			<td>@{{anul.sci_fecha | date: 'dd/MM/yyyy'}}</td>
 	          			<td>@{{anul.facturara.tercero.razonSocialTercero}}</td>
 	          			<td>@{{anul.tipo_salida.tsd_descripcion}}</td>
 	          			<td>@{{anul.tipo_persona.tpe_tipopersona}}</td>
@@ -150,7 +150,7 @@
 
 	      <md-tab label="Solicitud (@{{solicitud.length}})">
 	        <md-content class="md-padding ()">
-	         <table datatable="ng" class="row-border hover">
+	         <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
 	          	<thead>
 	          		<tr>
 	          			<td>No</td>
@@ -161,14 +161,14 @@
 	          			<td>Tipo de persona</td>
 	          			<td>Cargar a</td>
 	          			<td>Observaciones</td>
-	          			<td>Ver</td>
+	          			<td></td>
 	          		</tr>
 	          	</thead>
 	          	<tbody>
 	          		<tr ng-repeat="solic in solicitud">
 	          			<td>@{{solic.sci_id}}</td>
 	          			<td>@{{solic.estado.soe_descripcion}}</td>
-	          			<td>@{{solic.sci_fecha}}</td>
+	          			<td>@{{solic.sci_fecha | date: 'dd/MM/yyyy'}}</td>
 	          			<td>@{{solic.facturara.tercero.razonSocialTercero}}</td>
 	          			<td>@{{solic.tipo_salida.tsd_descripcion}}</td>
 	          			<td>@{{solic.tipo_persona.tpe_tipopersona}}</td>
@@ -183,7 +183,7 @@
 
 	      <md-tab label="En aprobacion (@{{aprobacion.length}})">
 	        <md-content class="md-padding">
-	           <table datatable="ng" class="row-border hover">
+	           <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
 	          	<thead>
 	          		<tr>
 	          			<td>No</td>
@@ -194,14 +194,14 @@
 	          			<td>Tipo de persona</td>
 	          			<td>Cargar a</td>
 	          			<td>Observaciones</td>
-	          			<td>Ver</td>
+	          			<td></td>
 	          		</tr>
 	          	</thead>
 	          	<tbody>
 	          		<tr ng-repeat="aprob in aprobacion">
 	          			<td>@{{aprob.sci_id}}</td>
 	          			<td>@{{aprob.estado.soe_descripcion}}</td>
-	          			<td>@{{aprob.sci_fecha}}</td>
+	          			<td>@{{aprob.sci_fecha | date: 'dd/MM/yyyy'}}</td>
 	          			<td>@{{aprob.facturara.tercero.razonSocialTercero}}</td>
 	          			<td>@{{aprob.tipo_salida.tsd_descripcion}}</td>
 	          			<td>@{{aprob.tipo_persona.tpe_tipopersona}}</td>
@@ -215,7 +215,7 @@
 
 	      <md-tab label="Cerrada (@{{cerrada.length}})">
 	        <md-content class="md-padding">
-	          <table datatable="ng" class="row-border hover">
+	          <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
 	          	<thead>
 	          		<tr>
 	          			<td>No</td>
@@ -226,14 +226,14 @@
 	          			<td>Tipo de persona</td>
 	          			<td>Cargar a</td>
 	          			<td>Observaciones</td>
-	          			<td>Ver</td>
+	          			<td></td>
 	          		</tr>
 	          	</thead>
 	          	<tbody>
 	          		<tr ng-repeat="cerr in cerrada">
 	          			<td>@{{cerr.sci_id}}</td>
 	          			<td>@{{cerr.estado.soe_descripcion}}</td>
-	          			<td>@{{cerr.sci_fecha}}</td>
+	          			<td>@{{cerr.sci_fecha | date: 'dd/MM/yyyy'}}</td>
 	          			<td>@{{cerr.facturara.tercero.razonSocialTercero}}</td>
 	          			<td>@{{cerr.tipo_salida.tsd_descripcion}}</td>
 	          			<td>@{{cerr.tipo_persona.tpe_tipopersona}}</td>

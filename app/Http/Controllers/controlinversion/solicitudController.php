@@ -113,6 +113,7 @@ class solicitudController extends Controller
      */
     public function store(Request $request)
     {
+        $routeSuccess = route('misSolicitudes');
         $data = $request->all();
         $solicitudToCreate = TSolicitudctlinv::create($data);
 
@@ -135,7 +136,8 @@ class solicitudController extends Controller
 
         }
 
-        return response()->json($solicitudToCreate);
+        $response = compact('solicitudToCreate', 'routeSuccess');
+        return response()->json($response);
 
     }
 
@@ -158,7 +160,12 @@ class solicitudController extends Controller
      */
     public function edit($id)
     {
-        //
+      $ruta = 'Control de Inversion // Editar Solicitud';
+      $titulo = 'EDITAR SOLICITUD';
+      $solicitud = TSolicitudctlinv::with('clientes.clientesReferencias')->with('clientes.clientesZonas')->where('sci_id', $id)->get();
+      $response = compact('ruta', 'titulo', 'solicitud');
+
+      return view('layouts.controlinversion.solicitud.formsolicitud', $response);
     }
 
     /**
@@ -170,7 +177,35 @@ class solicitudController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->all();
+        $solicitudPrincipal = TSolicitudctlinv::find($id)->update($data);
+        $clientes = TSolicliente::where('scl_sci_id', $id)->get();
+
+        foreach ($clientes as $key => $cliente) {
+          $cliente->clientesZonas()->delete();
+          $cliente->clientesReferencias()->delete();
+          $cliente->delete();
+        }
+
+        $solicitudToCreate = TSolicitudctlinv::find($id);
+        foreach ($data['personas'] as $key => $value) {
+          $objeto = $solicitudToCreate->clientes()->create($value);
+          $zona = [];
+          $zona['scl_scz_id'] = $objeto['scl_id'];
+          $zona['scz_zon_id'] = $value['clientes_zonas']['scz_zon_id'];
+          $zona['scz_porcentaje'] = 100;
+          $zona['scz_porcentaje_real'] = null;
+          $zona['scz_vdescuento'] = null;
+          $zona['scz_vesperado'] = null;
+          $zona['scz_estado'] = 1;
+          $objetoZonas = $objeto->clientesZonas()->create($zona);
+
+          foreach ($value['solicitud']['referencias'] as $clave => $dato) {
+            $objeto->clientesReferencias()->create($dato);
+          }
+        }
+        $response = compact('solicitudToCreate');
+        return response()->json($response);
     }
 
     /**
@@ -207,13 +242,22 @@ class solicitudController extends Controller
      */
     public function getInfoMisolicitudes()
     {
-        //esto debe filtrar por usuario campo sci_usuario y sci_tipo 3,7
-        $solicitudes = TSolicitudctlinv::with('estado', 'tipoSalida', 'tipoPersona', 'cargara', 'facturara.tercero')->orderBy('sci_id', 'desc')->get();
+        //esto debe filtrar por usuario campo sci_usuario y sci_tipo 3,7 idTerceroUsuario
+        $userLogged = Auth::user();
+
+        $solicitudes = TSolicitudctlinv::with('estado', 'tipoSalida', 'tipoPersona', 'cargara', 'facturara.tercero')->where('sci_usuario',$userLogged->idTerceroUsuario)->orderBy('sci_id', 'desc')->get();
+
+        $solicitudes->map(function($solicitud){
+            $id = $solicitud->sci_id;
+            $solicitud->rutaEdit = route('solicitud.edit', ['id' => $id]);
+            return $solicitud;
+        });
+
         $response = compact('solicitudes');
         return response()->json($response);
     }
 
-    
+
 
 
 }

@@ -7,7 +7,12 @@
     margin-top:  5px !important;
   }
 </style>
-<div ng-controller='solicitudCtrl as ctrl' ng-cloak class="col-md-12">
+@if(isset($solicitud))
+<div ng-controller='solicitudCtrl as ctrl' ng-cloak class="col-md-12" ng-init="inicializacion={{$solicitud}};getInfo();">
+@else
+<div ng-controller='solicitudCtrl as ctrl' ng-cloak class="col-md-12" ng-init="getInfo()">
+@endif
+
     <div class="panel panel-primary">
         <div class="panel-heading">
         	Datos de la Solicitud
@@ -80,7 +85,7 @@
 		        <!-- Campo Observaciones -->
 		        <div class="form-group">
 		            <label>Observaciones: </label>
-		            <textarea class="form-control" ng-model="solicitud.observaciones" cols="50" rows="3"></textarea>
+		            <textarea class="form-control" ng-model="solicitud.sci_observaciones" cols="50" rows="3"></textarea>
 		        </div>
 		        <!-- Campo Tipo Persona -->
 
@@ -93,7 +98,7 @@
       			            </select>
 			             </div>
 
-                   <div ng-if="esVendedor" class="form-group col-md-6">
+                   <div ng-if="solicitud.tipopersona1.tpe_tipopersona == 'Vendedor'" class="form-group col-md-6">
 
                         <label>Zonas: </label>
                         <md-select ng-model="solicitud.zonasSelected"
@@ -275,7 +280,7 @@
 		                    <td>@{{referencia.srf_estadoref}}</td>
 		                    <td>@{{referencia.srf_preciouni | currency: "$" : 2}}</td>
 		                    <td style="width: 76px;">
-		                    	<input class="form-control inputCantMinimized inputCantMinimized-success" type="number" ng-model="referencia.srf_unidades" ng-change="onCantidadChange(referencia)" min="0"/>
+		                    	<input class="form-control inputCantMinimized inputCantMinimized-success" type="number" ng-model="referencia.srf_unidades" ng-change="onCantidadChange(referencia)" min="1" maxlength="20" minlength="1"/>
 		                    </td>
                         <td>
                           <select required class='form-control' ng-model='referencia.srf_lin_id_gasto' ng-value="referencia.srf_lin_id_gasto" ng-options='opt3.lineas_producto.NomLinea for opt3 in lineasproducto track by opt3.lineas_producto.CodLinea'></select>
@@ -292,8 +297,9 @@
 		        </div>
 
             <div ng-if="selectedColaboradores.length > 0" class="modal-footer">
-              <button class="btn btn-primary" ng-disabled="valorTotalGeneral==0" type="submit">Guardar</button>
-              <button class="btn btn-secondary" type="button">Cerrar</button>
+              <button class="btn btn-primary" ng-disabled="!solicitud.canBeProccess" type="submit">Guardar</button>
+              <button class="btn btn-success" ng-disabled="!solicitud.canBeProccess"  type="button">Enviar</button>
+              <button class="btn btn-secondary" onclick="window.location='{{route("misSolicitudes")}}'" type="button">Cerrar</button>
             </div>
 
 	        </div>
