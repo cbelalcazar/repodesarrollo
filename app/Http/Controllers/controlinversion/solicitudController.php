@@ -119,15 +119,17 @@ class solicitudController extends Controller
 
         foreach ($data['personas'] as $key => $value) {
           $objeto = $solicitudToCreate->clientes()->create($value);
-          $zona = [];
-          $zona['scl_scz_id'] = $objeto['scl_id'];
-          $zona['scz_zon_id'] = $value['scz_zon_id'];
-          $zona['scz_porcentaje'] = 100;
-          $zona['scz_porcentaje_real'] = null;
-          $zona['scz_vdescuento'] = null;
-          $zona['scz_vesperado'] = null;
-          $zona['scz_estado'] = 1;
-          $objetoZonas = $objeto->clientesZonas()->create($zona);
+          if($data['sci_tipopersona'] == 1){
+            $zona = [];
+            $zona['scl_scz_id'] = $objeto['scl_id'];
+            $zona['scz_zon_id'] = $value['scz_zon_id'];
+            $zona['scz_porcentaje'] = 100;
+            $zona['scz_porcentaje_real'] = null;
+            $zona['scz_vdescuento'] = null;
+            $zona['scz_vesperado'] = null;
+            $zona['scz_estado'] = 1;
+            $objetoZonas = $objeto->clientesZonas()->create($zona);
+          }        
 
           foreach ($value['solicitud']['referencias'] as $clave => $dato) {
             $objeto->clientesReferencias()->create($dato);
@@ -190,16 +192,22 @@ class solicitudController extends Controller
         $solicitudToCreate = TSolicitudctlinv::find($id);
         foreach ($data['personas'] as $key => $value) {
           $objeto = $solicitudToCreate->clientes()->create($value);
-          $zona = [];
-          $zona['scl_scz_id'] = $objeto['scl_id'];
-          $zona['scz_zon_id'] = $value['clientes_zonas']['scz_zon_id'];
-          $zona['scz_porcentaje'] = 100;
-          $zona['scz_porcentaje_real'] = null;
-          $zona['scz_vdescuento'] = null;
-          $zona['scz_vesperado'] = null;
-          $zona['scz_estado'] = 1;
-          $objetoZonas = $objeto->clientesZonas()->create($zona);
-
+          if($data['sci_tipopersona'] == 1){
+            $zona = [];
+            $zona['scl_scz_id'] = $objeto['scl_id'];
+            if(isset($value['clientes_zonas']['scz_zon_id'])){
+              $zona['scz_zon_id'] = $value['clientes_zonas']['scz_zon_id'];
+            }else{
+              $zona['scz_zon_id'] = $value['scz_zon_id'];
+            }
+            $zona['scz_porcentaje'] = 100;
+            $zona['scz_porcentaje_real'] = null;
+            $zona['scz_vdescuento'] = null;
+            $zona['scz_vesperado'] = null;
+            $zona['scz_estado'] = 1;
+            $objetoZonas = $objeto->clientesZonas()->create($zona);
+          }
+         
           foreach ($value['solicitud']['referencias'] as $clave => $dato) {
             $objeto->clientesReferencias()->create($dato);
           }
