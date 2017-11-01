@@ -1,4 +1,10 @@
 <!-- Modal -->
+<style>
+.col-sm-6{
+  padding-right: 0px;
+  padding-left: 0px;
+}
+</style>
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog" style="width:80%;" role="document">
       <div class="modal-content panel-primary">
@@ -40,6 +46,46 @@
             </md-tab>
             <md-tab label="Info. de Solicitud">
               <md-content class="md-padding">
+
+                <div class="row">
+                  <h4>Datos basicos de la solicitud</h4>
+                  <div class="col-sm-6">
+                    <ul class="list-group">
+                      <li class="list-group-item">
+                        <label>No. Solicitud: </label> @{{solicitud.sci_id}}
+                      </li>
+                      <li class="list-group-item">
+                        <label>Fecha de solicitud: </label> @{{solicitud.sci_fecha}}
+                      </li>
+                      <li class="list-group-item">
+                        <label>Tipo de Salida: </label> @{{solicitud.tipo_salida.tsd_descripcion}}
+                      </li>
+                      <li class="list-group-item">
+                        <label>Tipo de Persona: </label> @{{solicitud.tipo_persona.tpe_tipopersona}}
+                      </li>
+                      <li class="list-group-item">
+                        <label>Observaciones: </label> @{{solicitud.sci_observaciones}}
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col-sm-6">
+                    <ul class="list-group">
+                      <li class="list-group-item">
+                        <label>Estado: </label> @{{solicitud.estado.soe_descripcion}}
+                      </li>
+                      <li class="list-group-item">
+                        <label>Facturar a: </label> @{{solicitud.facturara.tercero.razonSocialTercero}}
+                      </li>
+                      <li class="list-group-item">
+                        <label>Motivo: </label>@{{solicitud.sci_mts_id}}
+                      </li>
+                      <li class="list-group-item">
+                        <label>Carga a gasto: </label>@{{solicitud.cargara.cga_descripcion}}
+                      </li>
+                      <li class="list-group-item"><label>&nbsp;</label></li>
+                    </ul>
+                  </div>
+                </div>
 
 
               </md-content>
