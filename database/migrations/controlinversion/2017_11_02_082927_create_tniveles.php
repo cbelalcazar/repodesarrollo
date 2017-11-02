@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTperniveles extends Migration
+class CreateTniveles extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,9 @@ class CreateTperniveles extends Migration
      */
     public function up()
     {
-        Schema::connection('bd_controlinversion')->create('t_perniveles', function (Blueprint $table) {
+        Schema::connection('bd_controlinversion')->create('t_niveles', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('pern_usuario')->nullable();
-            $table->string('pern_nombre');
-            $table->string('pern_cedula');
-            $table->integer('pern_zona')->nullable();
-            $table->integer('pern_jefe')->nullable();
-            $table->integer('pern_nomnivel');
+            $table->string('niv_nombre');
             $table->timestamps();
         });
     }

@@ -46,6 +46,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('vendedores','controlinversion\vendedorController');
     Route::get('vendedoresGetInfo','controlinversion\vendedorController@getInfo');
 
+    // Rutas para niveles de aprobacion
+    Route::resource('nivelesAutorizacion','controlinversion\nivelesAutorizacionController');
+    Route::get('nivelesAutorizacionGetInfo','controlinversion\nivelesAutorizacionController@nivelesAutorizacionGetInfo');
+ 
 
   });
 
