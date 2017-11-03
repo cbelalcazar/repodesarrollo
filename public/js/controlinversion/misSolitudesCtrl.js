@@ -4,6 +4,7 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 	$scope.progress = true;
 	$scope.count = [];
 	$scope.elaboracion = "0";
+	$scope.solicitud =  {};
 
 	$scope.getInfo = function(){
 		$scope.todas = [];
@@ -36,6 +37,7 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 		$scope.dtOptions = DTOptionsBuilder.newOptions()
 										.withOption('aaSorting', [[0, 'desc']]);
 
+
 		$scope.dtColumnDefs0 = [
 		DTColumnDefBuilder.newColumnDef(0).withClass('text-center'),
 		DTColumnDefBuilder.newColumnDef(1).withClass('text-center').withOption('width', '100px'),
@@ -46,6 +48,8 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 		DTColumnDefBuilder.newColumnDef(6).withClass('text-center').withOption('width','60px'),
 		DTColumnDefBuilder.newColumnDef(7).withClass('text-left'),
 		DTColumnDefBuilder.newColumnDef(8).notSortable().withClass('text-center').withOption('width', '69px')];
+
+
 
 		$scope.dtColumnDefs1 = [
 		DTColumnDefBuilder.newColumnDef(0).withClass('text-center'),
@@ -64,6 +68,11 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 	};
 
 	$scope.getInfo();
+
+	$scope.setSolicitud = function(solicitud){
+		console.log(solicitud);
+		$scope.solicitud = solicitud;
+	}
 
 	$scope.terminarSolicitud = function(solicitud){
 		window.location = solicitud.rutaEdit;
