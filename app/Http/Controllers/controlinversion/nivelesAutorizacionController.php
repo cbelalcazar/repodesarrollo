@@ -5,9 +5,13 @@ namespace App\Http\Controllers\controlinversion;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Genericas\Tercero;
+use App\Models\Genericas\TLineas;
+use App\Models\Genericas\TCanal;
 use App\Models\controlinversion\TNiveles;
 use App\Models\controlinversion\TPerniveles;
+use App\Models\controlinversion\TCanalpernivel;
 use App\Models\BESA\VendedorZona;
+
 
 class nivelesAutorizacionController extends Controller
 {
@@ -35,7 +39,13 @@ class nivelesAutorizacionController extends Controller
             }
         }
         $terceros = $tercerosSinUsuario;
-        $response = compact('terceros', 'niveles', 'VendedorZona');
+        $lineas = TLineas::where('lin_txt_estado', 'Si')->get();
+        $canales = TCanal::whereIn('can_id', ['20','AL','DR'])->get();
+        $canalPernivel = TCanalpernivel::all();
+        $perniveles = TPerniveles::all();
+
+
+        $response = compact('terceros', 'niveles', 'VendedorZona', 'lineas', 'canales', 'canalPernivel', 'perniveles');
         // ['terceros' => [{},{},...n{}], 'niveles' => [{},{},...n{}], 'VendedorZona' => [{},{},...n{}]]
         return response()->json($response); 
     }
@@ -64,8 +74,20 @@ class nivelesAutorizacionController extends Controller
         $persona->pern_nombre = $data['selectedItem']['razonSocialTercero'];
         $persona->pern_cedula = $data['selectedItem']['idTercero'];
         $persona->pern_nomnivel = $data['nivel']['id'];
-
         $persona->save();
+
+        if($persona->pern_nomnivel == 3){
+            foreach ($data['canales'] as $key => $value) {
+
+                foreach ($data['lineas'] as $clave => $valor) {
+                    $canal = new TCanalpernivel;
+                    $canal->cap_idcanal = trim($value['can_id']);
+                    $canal->cap_idlinea = $valor['lin_id'];
+                    $canal->cap_idpernivel = $persona['id'];
+                    $canal->save();
+                }
+            }
+        }
 
         return $persona;
     }

@@ -15,7 +15,8 @@ class CreateTcanalpernivel extends Migration
     {
         Schema::connection('bd_controlinversion')->create('t_canalpernivel', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('cap_nombre');
+            $table->string('cap_idcanal');
+            $table->integer('cap_idlinea');
             $table->integer('cap_idpernivel')->unsigned();
             $table->timestamps();
         });
