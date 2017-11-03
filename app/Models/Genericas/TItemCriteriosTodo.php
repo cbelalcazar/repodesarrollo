@@ -86,6 +86,8 @@ class TItemcriteriosTodo extends Model
         'ite_desc_refcomp2'
     ];
 
-
+    public function LineaItemCriterio(){
+      return $this->hasOne('App\Models\controlinversion\TLineascc', 'lcc_codigo', 'ite_cod_linea');
+    }
 
 }

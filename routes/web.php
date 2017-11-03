@@ -36,6 +36,7 @@ Route::group(['middleware' => ['auth']], function () {
     //solicitud de creacion de obsequios y muestras
   	Route::resource('solicitud','controlinversion\solicitudController');
   	Route::get('solicitudGetInfo','controlinversion\solicitudController@solicitudGetInfo');
+    Route::get('solicitud/{id}/correcion','controlinversion\solicitudController@correciones')->name('solicitud.correcion');
     Route::get('consultarReferencia/{referencia}','controlinversion\solicitudController@consultarInformacionReferencia');
     Route::post('consultarReferencias','controlinversion\solicitudController@consultarInformacionReferencias');
 

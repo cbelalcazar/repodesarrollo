@@ -89,6 +89,7 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDi
 			$scope.colaboradores = angular.copy(res.colaboradores);
 			$scope.vendedoresBesa = angular.copy(res.vendedoresBesa);
 			$scope.items = angular.copy(res.item);
+			$scope.canales = angular.copy(res.canales);
 			$scope.userLogged = angular.copy(res.userLogged);
 			$scope.progress = false;
 
@@ -97,6 +98,7 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDi
 			if($scope.inicializacion != undefined){
 
 				$scope.solicitud = $scope.inicializacion[0];
+
 				$scope.solicitud.tipoPersonaOriginal = $scope.solicitud.sci_tsd_id;
 				$scope.solicitud.clientes.forEach(function(cliente){
 
@@ -144,10 +146,19 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDi
 				if(cargagasto1.length > 0){
 					$scope.solicitud['cargagasto1'] = cargagasto1[0];
 				}
-				var lineas1 = $filter('filter')($scope.lineasproducto, {lcc_codigo : $scope.solicitud.sci_cargarlinea});
-				if(lineas1.length > 0){
-					$scope.solicitud['lineas1'] = lineas1[0];
+
+				if($scope.solicitud.cargagasto1.cga_id == 1){
+					var lineas1 = $filter('filter')($scope.lineasproducto, {lcc_codigo : $scope.solicitud.sci_cargarlinea});
+					if(lineas1.length > 0){
+						$scope.solicitud['lineas1'] = lineas1[0];
+					}
 				}
+
+				var canal = $filter('filter')($scope.canales, {can_id : $scope.solicitud.sci_can_id});
+				if(canal.length > 0){
+					$scope.solicitud['sci_canal'] = canal[0];
+				}
+
 				var tipopersona1 = $filter('filter')($scope.tipopersona, {tpe_id : $scope.solicitud.sci_tipopersona});
 				if(tipopersona1.length > 0){
 					$scope.solicitud['tipopersona1'] = tipopersona1[0];
@@ -165,12 +176,20 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDi
 
 					persona.solicitud.referencias = persona.clientes_referencias;
 					persona.solicitud.referencias.map(function(referencia){
+
+						if($scope.solicitud.tipopersona1.tpe_id == 1){
+							persona.scz_zon_id = angular.copy(persona.clientes_zonas.scz_zon_id);
+						}
+
 						var referenciaDescripcion = $filter('filter')($scope.items,{srf_referencia: referencia.srf_referencia});
 						if(referenciaDescripcion.length > 0){
 							referencia.referenciaDescripcion = referenciaDescripcion[0].referenciaDescripcion;
 						}
-						referencia.originalLinea = referencia.srf_lin_id_gasto.toString();
-						referencia.srf_lin_id_gasto = referencia.srf_lin_id_gasto.toString();
+
+						var lineaRefe = $filter('filter')($scope.lineasproducto, {lcc_codigo : referencia.srf_lin_id_gasto});
+						referencia.originalLinea = angular.copy(referencia.referencia.linea_item_criterio.lcc_codigo);
+						delete referencia.referencia;
+						referencia.linea = $scope.solicitud.lineas1 != undefined ? $scope.solicitud.lineas1 : lineaRefe[0];
 						referencia.referenciaValorTotal = referencia.srf_unidades * referencia.srf_preciouni;
 
 						return referencia;
@@ -192,6 +211,9 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDi
 				}
 			}
 
+			console.log(response.data);
+			console.log($scope.solicitud);
+
 		}, function(errorResponse){
 
 			console.log(errorResponse);
@@ -204,18 +226,38 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDi
 
 $scope.onChangeOpcionCargaGasto = function(){
 
-	if($scope.solicitud.cargagasto1.cga_id == 2){
 		if($scope.selectedColaboradores.length > 0){
 			$scope.selectedColaboradores.forEach(function(colaborador){
-				if(colaborador.solicitud.referencias.length > 0){
+
+			if(colaborador.solicitud.referencias.length > 0){
 					colaborador.solicitud.referencias.map(function(referencia){
-						referencia.srf_lin_id_gasto = referencia.originalLinea;
+
+						if($scope.solicitud.cargagasto1.cga_id == 2 || $scope.solicitud.cargagasto1.cga_id == 1){
+
+								if($scope.solicitud.cargagasto1.cga_id== 2){
+
+									referencia.srf_lin_id_gasto = referencia.originalLinea;
+									var lineaRefe = $filter('filter')($scope.lineasproducto, {lcc_codigo : referencia.originalLinea});
+									referencia.linea =  lineaRefe[0];
+
+								}else if($scope.solicitud.cargagasto1.cga_id== 1){
+
+									if($scope.solicitud.lineas1 != undefined){
+										referencia.linea = $scope.solicitud.lineas1;
+										referencia.srf_lin_id_gasto = $scope.solicitud.lineas1.lcc_codigo;
+									}else{
+										var lineaRefe = $filter('filter')($scope.lineasproducto, {lcc_codigo : referencia.originalLinea});
+										referencia.linea =  lineaRefe[0];
+									}
+
+								}
+						}
 						return referencia;
 					})
 				}
 			})
 		}
-	}
+
 }
 
 $scope.onChangeLineaCargaGasto = function(){
@@ -225,11 +267,16 @@ $scope.onChangeLineaCargaGasto = function(){
 			if(colaborador.solicitud.referencias.length > 0){
 				colaborador.solicitud.referencias.map(function(referencia){
 					referencia.srf_lin_id_gasto = $scope.solicitud.lineas1.lcc_codigo;
+					referencia.linea = $scope.solicitud.lineas1;
 					return referencia;
 				})
 			}
 		})
 	}
+}
+
+$scope.onChangeLineaReferencia = function(referencia){
+	referencia.srf_lin_id_gasto = referencia.linea.lcc_codigo;
 }
 
 $scope.onCantidadChange = function(referencia){
@@ -278,6 +325,7 @@ $scope.agregarReferenciaTodos = function(){
 
 	$scope.progress = true;
 	$scope.cantPersonasFull = 0;
+	console.log($scope.solicitud);
 
 	$http.get($scope.refUrl+"/"+$scope.objeto.referenciaGeneral.srf_referencia).then(function(response){
 
@@ -289,6 +337,14 @@ $scope.agregarReferenciaTodos = function(){
 			$scope.objeto.referenciaGeneral.srf_estado = 1;
 			$scope.objeto.referenciaGeneral.referenciaValorTotal = $scope.objeto.referenciaGeneral.srf_unidades == 0 ? 0 : $scope.objeto.referenciaGeneral.srf_unidades * $scope.objeto.referenciaGeneral.srf_preciouni;
 			$scope.objeto.referenciaGeneral.originalLinea = angular.copy($scope.objeto.referenciaGeneral.srf_lin_id_gasto);
+
+			if($scope.solicitud.cargagasto1.cga_id == 1 && $scope.solicitud.lineas1 != undefined){
+				$scope.objeto.referenciaGeneral.linea = $scope.solicitud.lineas1;
+				$scope.objeto.referenciaGeneral.srf_lin_id_gasto = $scope.solicitud.lineas1.lcc_codigo;
+			}else{
+				var lineaRefe = $filter('filter')($scope.lineasproducto, {lcc_codigo : $scope.objeto.referenciaGeneral.originalLinea});
+				$scope.objeto.referenciaGeneral.linea =  lineaRefe[0];
+			}
 
 			if(colaborador.solicitud.referencias.length > 0){
 
@@ -339,6 +395,14 @@ $scope.agregarReferenciaVendedor = function(colaborador,ev){
 		colaborador.referenciaSearchItem.referenciaValorTotal = colaborador.referenciaSearchItem.referenciaValorTotal = colaborador.referenciaSearchItem.srf_unidades == 0 ? 0 : colaborador.referenciaSearchItem.srf_unidades * colaborador.referenciaSearchItem.srf_preciouni;;
 		colaborador.referenciaSearchItem.originalLinea = angular.copy(colaborador.referenciaSearchItem.srf_lin_id_gasto);
 
+		if($scope.solicitud.cargagasto1.cga_id == 1 && $scope.solicitud.lineas1 != undefined){
+			colaborador.referenciaSearchItem.linea = $scope.solicitud.lineas1;
+			colaborador.referenciaSearchItem.srf_lin_id_gasto = $scope.solicitud.lineas1.lcc_codigo;
+		}else{
+			var lineaRefe = $filter('filter')($scope.lineasproducto, {lcc_codigo : colaborador.referenciaSearchItem.originalLinea});
+			colaborador.referenciaSearchItem.linea =  lineaRefe[0];
+		}
+
 
 		if(colaborador.solicitud.referencias.length > 0){
 
@@ -378,54 +442,72 @@ $scope.agregarReferenciaVendedor = function(colaborador,ev){
 
 }
 
+$scope.setSolicitudToSave = function(){
+	//Variables que se toman desde el formulario
+	$scope.solicitud.sci_tsd_id = $scope.solicitud.tiposalida1.tsd_id;
+	$scope.solicitud.sci_mts_id = $scope.solicitud.motivoSalida.id;
+	$scope.solicitud.sci_usuario = $scope.userLogged.idTerceroUsuario;
+
+	if($scope.solicitud.cargagasto1.cga_id== 1 && $scope.solicitud.lineas1 != undefined){
+			$scope.solicitud.sci_cargarlinea = $scope.solicitud.lineas1.lcc_codigo;
+	}else{
+			$scope.solicitud.sci_cargarlinea = "";
+	}
+
+	if($scope.solicitud.sci_canal != undefined){
+		$scope.solicitud.sci_can_id = $scope.solicitud.sci_canal.can_id;
+		$scope.solicitud.sci_can_desc = $scope.solicitud.sci_canal.can_txt_descrip;
+	}else{
+		$scope.solicitud.sci_can_id = null;
+	}
+
+	$scope.solicitud.sci_tipopersona = $scope.solicitud.tipopersona1.tpe_id;
+	$scope.solicitud.sci_cargara = $scope.solicitud.cargagasto1.cga_id;
+	$scope.solicitud.sci_nombre = $scope.solicitud.facturarA.tercero.razonSocialTercero;
+	$scope.solicitud.sci_facturara = $scope.solicitud.facturarA.tercero.nitTercero;
+
+	$scope.solicitud.personas = $scope.selectedColaboradores;
+	$scope.solicitud.sci_ventaesperada = 0;
+	$scope.solicitud.personas.forEach(function(persona){
+		$scope.solicitud.sci_ventaesperada += persona.scl_ventaesperada;
+	});
+
+	Math.round($scope.solicitud.sci_ventaesperada);
+
+	//Variables que el valor es predeterminado
+	$scope.solicitud.sci_soe_id = 0;
+	$scope.solicitud.sci_tdc_id = 0;
+	$scope.solicitud.sci_solicitante = 0;
+	$scope.solicitud.sci_periododes_ini = null;
+	$scope.solicitud.sci_periododes_fin = null;
+	$scope.solicitud.sci_descuento_estimado = null;
+	$scope.solicitud.sci_tipo = 3;
+	$scope.solicitud.sci_tipono = 0;
+	$scope.solicitud.sci_tipononumero = "";
+	$scope.solicitud.sci_toc_id = 0;
+	$scope.solicitud.sci_planoobmu = 0;
+	$scope.solicitud.sci_planoobmufecha = null;
+	$scope.solicitud.sci_cerradaautomatica = 0;
+	$scope.solicitud.sci_fechacierreautomatica = null;
+	$scope.solicitud.sci_motivodescuento = null;
+	$scope.solicitud.sci_duplicar = null;
+	$scope.solicitud.sci_nduplicar = null;
+	$scope.solicitud.sci_cduplicar = 0;
+	$scope.solicitud.sci_todocanal = null;
+	$scope.solicitud.sci_direccion = 0;
+	$scope.solicitud.sci_ciudad = 0;
+	$scope.solicitud.sci_totalref = null;
+	$scope.solicitud.sci_planoprov = 0;
+	$scope.solicitud.sci_planoprovfecha = null;
+	console.log($scope.solicitud);
+}
+
 $scope.saveSolicitud = function(){
 
 	$scope.progress = true;
-			//Variables que se toman desde el formulario
-			$scope.solicitud.sci_tsd_id = $scope.solicitud.tiposalida1.tsd_id;
-			$scope.solicitud.sci_mts_id = $scope.solicitud.motivoSalida.id;
-			$scope.solicitud.sci_usuario = $scope.userLogged.idTerceroUsuario;
-			$scope.solicitud.sci_cargarlinea = $scope.solicitud.lineas1.lcc_codigo;
-			$scope.solicitud.sci_tipopersona = $scope.solicitud.tipopersona1.tpe_id;
-			$scope.solicitud.sci_cargara = $scope.solicitud.cargagasto1.cga_id;
-			$scope.solicitud.sci_nombre = $scope.solicitud.facturarA.tercero.razonSocialTercero;
-			$scope.solicitud.sci_facturara = $scope.solicitud.facturarA.tercero.nitTercero;
 
-			$scope.solicitud.personas = $scope.selectedColaboradores;
-			$scope.solicitud.sci_ventaesperada = 0;
-			$scope.solicitud.personas.forEach(function(persona){
-				$scope.solicitud.sci_ventaesperada += persona.scl_ventaesperada;
-			});
+			$scope.setSolicitudToSave();
 
-			Math.round($scope.solicitud.sci_ventaesperada);
-
-			//Variables que el valor es predeterminado
-			$scope.solicitud.sci_can_id = null;
-			$scope.solicitud.sci_soe_id = 0;
-			$scope.solicitud.sci_tdc_id = 0;
-			$scope.solicitud.sci_solicitante = 0;
-			$scope.solicitud.sci_periododes_ini = null;
-			$scope.solicitud.sci_periododes_fin = null;
-			$scope.solicitud.sci_descuento_estimado = null;
-			$scope.solicitud.sci_tipo = 3;
-			$scope.solicitud.sci_tipono = 0;
-			$scope.solicitud.sci_tipononumero = "";
-			$scope.solicitud.sci_toc_id = 0;
-			$scope.solicitud.sci_planoobmu = 0;
-			$scope.solicitud.sci_planoobmufecha = null;
-			$scope.solicitud.sci_cerradaautomatica = 0;
-			$scope.solicitud.sci_fechacierreautomatica = null;
-			$scope.solicitud.sci_motivodescuento = null;
-			$scope.solicitud.sci_duplicar = null;
-			$scope.solicitud.sci_nduplicar = null;
-			$scope.solicitud.sci_cduplicar = 0;
-			$scope.solicitud.sci_todocanal = null;
-			$scope.solicitud.sci_direccion = 0;
-			$scope.solicitud.sci_ciudad = 0;
-			$scope.solicitud.sci_totalref = null;
-			$scope.solicitud.sci_planoprov = 0;
-			$scope.solicitud.sci_planoprovfecha = null;
-			console.log($scope.solicitud);
 			if($scope.inicializacion == undefined){
 
 				$http.post($scope.resource,$scope.solicitud).then(function(response){
@@ -456,12 +538,53 @@ $scope.saveSolicitud = function(){
 				.then(function(response){
 					console.log(response.data);
 					$scope.progress = false;
+
+					var successMessage = $mdDialog.alert()
+					.parent(angular.element(document.querySelector('#popupContainer')))
+					.clickOutsideToClose(false)
+					.title('Actualización exitosa!')
+					.textContent('Se ha actualizado la información de la solicitud con id: '+ response.data.solicitudToCreate.sci_id+' correctamente.')
+					.ariaLabel('Lucky day')
+					.ok('OK')
+
+					$mdDialog.show(successMessage).then(function() {
+						// $scope.progress = true;
+						// window.location = response.data.routeSuccess;
+					})
+
 				});
 
 
 			}
 
 		}
+
+$scope.enviarSolicitud = function(){
+
+	$scope.setSolicitudToSave();
+	$scope.solicitud.sci_soe_id = 1;
+	$http.put($scope.resource+"/"+$scope.solicitud.sci_id,$scope.solicitud)
+	.then(function(response){
+		console.log(response.data);
+		$scope.progress = false;
+
+		var successMessage = $mdDialog.alert()
+		.parent(angular.element(document.querySelector('#popupContainer')))
+		.clickOutsideToClose(false)
+		.title('Envio de solicitud!')
+		.textContent('Se ha enviado la información de la solicitud con id: '+ response.data.solicitudToCreate.sci_id+' correctamente.')
+		.ariaLabel('Lucky day')
+		.ok('OK')
+
+		$mdDialog.show(successMessage).then(function() {
+			$scope.progress = true;
+			window.location = response.data.routeSuccess;
+		})
+
+	});
+
+
+}
 /*
 *Filtra el arreglo de selección de colaboradores por zonas dado el caso que sean vendedores
 */
@@ -488,7 +611,7 @@ $scope.filtrapersona = function(){
       .title('Alerta!')
       .textContent('Al cambiar esta opcion se van a limpiar todos los colaboradores')
       .ariaLabel('')
-      .ok('Acepto!')
+      .ok('Acepto')
       .cancel('Cancelar');
 
       $mdDialog.show(confirm).then(function() {
@@ -498,7 +621,7 @@ $scope.filtrapersona = function(){
       	$scope.primeraCarga = 0;
       	$scope.getInfo();
       });
-		
+
 	}
 	$scope.primeraCarga = 1;
 	$scope.colaboradoresGeneral = [];
@@ -513,6 +636,120 @@ $scope.filtrapersona = function(){
 		$scope.colaboradoresGeneral = $scope.vendedoresBesa;
 
 	}
+
+}
+
+$scope.onZonaChange= function(){
+
+	// if($scope.zonasSelected.length > 0){
+	//
+	// 	if($scope.selectedColaboradores.length > 0){
+	//
+	// 			$scope.zonasSelected.forEach(function(zona){
+	//
+	// 				var vendedoresToRemove = $filter('filter')($scope.selectedColaboradores, {scz_zon_id: zona.id});
+	//
+	// 				if(vendedoresToRemove.length > 0){
+	// 					vendedoresToRemove.forEach(function(colaborador){
+	//
+	// 						for(var x in $scope.selectedColaboradores){
+	// 							var ref = $scope.selectedColaboradores[x];
+	// 							if(ref['NomZona'] == colaborador.NomZona){
+	//
+	// 								if(colaborador.solicitud.referencias.length >0){
+	// 									 colaborador.solicitud.referencias = [];
+	// 								}
+	//
+	// 								$scope.selectedColaboradores.splice(x, 1);
+	//
+	// 							}
+	// 						}
+	//
+	// 					})
+	// 				}
+	//
+	// 			})
+	//
+	//
+	// 		}
+	// 	}
+
+}
+
+$scope.seleccionarVendedoresZona = function(zona){
+
+
+	if(zona.isChecked == true){
+
+		var filterColaboradoresGeneral = $filter('filter')($scope.colaboradoresGeneral, {NomZona: zona.descripcion});
+
+		filterColaboradoresGeneral.forEach(function(colaborador){
+
+			if(colaborador.solicitud == undefined){
+				colaborador.solicitud = {};
+				colaborador.solicitud.referencias = [];
+			}
+
+			colaborador.cantidadTotalReferencias = 0;
+			colaborador.cantidadSolicitadaTotal = 0;
+			colaborador.scl_ventaesperada = 0;
+			colaborador.scl_desestimado = null;
+			colaborador.scl_por = null;
+			colaborador.scl_estado = 1;
+
+
+			var colaboradorExist = $filter('filter')($scope.selectedColaboradores, {scl_cli_id: colaborador.scl_cli_id});
+			if(colaboradorExist.length > 0 ){
+				if(colaborador.scl_cli_id != colaboradorExist[0].scl_cli_id){
+					$scope.selectedColaboradores.push(colaborador);
+					$scope.solicitud.personas.push(colaborador);
+				}
+			}else{
+				$scope.selectedColaboradores.push(colaborador);
+				$scope.solicitud.personas.push(colaborador);
+			}
+
+
+			$scope.selectedColaboradores.map(function(colaborador){
+
+				$scope.sumaCantidadSolicitada(colaborador);
+
+				if(colaborador.cantidadTotalReferencias > 0 && colaborador.cantidadSolicitadaTotal > 0){
+					$scope.cantPersonasFull += 1;
+				}
+
+			});
+
+			if($scope.cantPersonasFull == $scope.selectedColaboradores.length){
+				$scope.solicitud.canBeProccess = true;
+			}else{
+				$scope.solicitud.canBeProccess = false;
+			}
+		});
+	}else{
+		if($scope.selectedColaboradores.length > 0){
+
+			var vendedoresToRemove = $filter('filter')($scope.selectedColaboradores, {NomZona: zona.descripcion});
+			vendedoresToRemove.forEach(function(colaborador){
+				console.log(colaborador);
+				for(var x in $scope.selectedColaboradores){
+					var ref = $scope.selectedColaboradores[x];
+					if(ref['NomZona'] == colaborador.NomZona){
+
+						if(colaborador.solicitud.referencias.length >0){
+							 colaborador.solicitud.referencias = [];
+						}
+
+						$scope.selectedColaboradores.splice(x, 1);
+
+					}
+				}
+
+			})
+		}
+	}
+
+	console.log($scope.solicitud.personas);
 
 }
 
@@ -537,7 +774,7 @@ $scope.onSearchQueryChange = function(colaboradorText){
 }
 
 $scope.onAddColaboradores = function(colaborador){
-
+	console.log(colaborador);
 	if(colaborador.solicitud == undefined){
 		colaborador.solicitud = {};
 		colaborador.solicitud.referencias = [];
@@ -661,10 +898,19 @@ $scope.read = function (workbook) {
 							referencia1.referenciaValorTotal =  referencia1.srf_preciouni * referencia1.srf_unidades;
 							referencia1.originalLinea = angular.copy(referencia1.srf_lin_id_gasto);
 
+							if($scope.solicitud.cargagasto1.cga_id == 1 && $scope.solicitud.lineas1 != undefined){
+								referencia1.linea = $scope.solicitud.lineas1;
+								referencia1.srf_lin_id_gasto = $scope.solicitud.lineas1.lcc_codigo;
+							}else{
+								var lineaRefe = $filter('filter')($scope.lineasproducto, {lcc_codigo : referencia1.originalLinea});
+								referencia1.linea =  lineaRefe[0];
+							}
+
 							if(colaborador.solicitud.referencias.length > 0){
 
 								var objetoExiste = $filter('filter')(colaborador.solicitud.referencias,{srf_referencia: referencia1.srf_referencia });
 								if(objetoExiste.length == 0){
+									console.log(referencia1);
 									colaborador.solicitud.referencias.push(angular.copy(referencia1));
 								}
 

@@ -70,7 +70,7 @@
 	          			<td>@{{elabora.tipo_persona.tpe_tipopersona}}</td>
 	          			<td>@{{elabora.cargara.cga_descripcion}}</td>
 	          			<td>@{{elabora.sci_observaciones}}</td>
-	          			<td><button class="btn btn-info" type="button"><i class="glyphicon glyphicon-eye-open"></i></button></td>
+	          			<td><button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(elabora)"><i class="glyphicon glyphicon-eye-open"></i></button></td>
 	          			<td><button class="btn btn-success" ng-click="terminarSolicitud(elabora)" type="button"><i class="glyphicon glyphicon-check"></i></button></td>
 	          			<td><button class="btn btn-danger" type="button"><i class="glyphicon glyphicon-remove"></i></button></td>
 	          		</tr>
@@ -107,7 +107,7 @@
 	          			<td>@{{corre.tipo_persona.tpe_tipopersona}}</td>
 	          			<td>@{{corre.cargara.cga_descripcion}}</td>
 	          			<td>@{{corre.sci_observaciones}}</td>
-									<td><button class="btn btn-info" type="button"><i class="glyphicon glyphicon-eye-open"></i></button></td>
+									<td><button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(corre)"><i class="glyphicon glyphicon-eye-open"></i></button></td>
 	          			<td><button class="btn btn-warning" type="button"><i class="glyphicon glyphicon-edit"></i></button></td>
 	          			<td><button class="btn btn-danger" type="button"><i class="glyphicon glyphicon-remove"></i></button></td>
 	          		</tr>
@@ -142,7 +142,7 @@
 	          			<td>@{{anul.tipo_persona.tpe_tipopersona}}</td>
 	          			<td>@{{anul.cargara.cga_descripcion}}</td>
 	          			<td>@{{anul.sci_observaciones}}</td>
-	          			<td><button class="btn btn-info" type="button"><i class="glyphicon glyphicon-eye-open"></i></button></td>
+	          			<td><button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(anul)"><i class="glyphicon glyphicon-eye-open"></i></button></td>
 	          		</tr>
 	          	</tbody>
 	          </table>
@@ -174,7 +174,7 @@
 	          			<td>@{{solic.tipo_persona.tpe_tipopersona}}</td>
 	          			<td>@{{solic.cargara.cga_descripcion}}</td>
 	          			<td>@{{solic.sci_observaciones}}</td>
-	          			<td><button class="btn btn-info" type="button"><i class="glyphicon glyphicon-eye-open"></i></button></td>
+	          			<td><button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(solic)"><i class="glyphicon glyphicon-eye-open"></i></button></td>
 	          		</tr>
 	          	</tbody>
 	          </table>
@@ -207,7 +207,7 @@
 	          			<td>@{{aprob.tipo_persona.tpe_tipopersona}}</td>
 	          			<td>@{{aprob.cargara.cga_descripcion}}</td>
 	          			<td>@{{aprob.sci_observaciones}}</td>
-	          			<td><button class="btn btn-info" type="button"><i class="glyphicon glyphicon-eye-open"></i></button></td>
+	          			<td><button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(aprob)"><i class="glyphicon glyphicon-eye-open"></i></button></td>
 	          		</tr>
 	          	</tbody>
 	          </table>
@@ -239,7 +239,7 @@
 	          			<td>@{{cerr.tipo_persona.tpe_tipopersona}}</td>
 	          			<td>@{{cerr.cargara.cga_descripcion}}</td>
 	          			<td>@{{cerr.sci_observaciones}}</td>
-	          			<td><button class="btn btn-info" type="button"><i class="glyphicon glyphicon-eye-open"></i></button></td>
+	          			<td><button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(cerr)"><i class="glyphicon glyphicon-eye-open"></i></button></td>
 	          		</tr>
 	          	</tbody>
 	          </table>

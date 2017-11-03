@@ -3,8 +3,33 @@
 @include('includes.titulo')
 <style media="screen">
 	md-select {
-
 		margin-top:  5px !important;
+	}
+	.layout-column {
+	  -webkit-box-orient: horizontal;
+	  flex-direction: column !important;
+		display: -webkit-inline-box;
+	}
+	md-checkbox:last-of-type {
+    padding-right: 15px !important;
+	}
+	checkbox-enabled[selected] .md-icon {
+    background-color: rgba(33,150,243,0.87) !important;
+	}
+	md-checkbox.md-checked .md-icon {
+    background-color: rgba(33,150,243,0.87) !important;
+	}
+	md-checkbox.md-default-theme.md-checked .md-ink-ripple, md-checkbox.md-checked .md-ink-ripple {
+	    color: rgba(33,150,243,0.87) !important;
+	}
+	md-checkbox.md-default-theme.md-checked .md-icon:after, md-checkbox.md-checked .md-icon:after {
+    border-color: rgba(255,255,255,0.87);
+	}
+	md-checkbox .md-label {
+    color: #3ea4f5;
+	}
+	.layout-wrap {
+    padding-top: 4px !important;
 	}
 </style>
 @if(isset($solicitud))
@@ -82,6 +107,18 @@
 						<!-- @{{solicitud.tipopersona1}} -->
 					</div>
 				</div>
+				<!--Campo canal de solicitud-->
+
+				<div class="row">
+					<div class="form-group col-md-6">
+						<label>Canal: </label>
+						<select required class='form-control' ng-model='solicitud.sci_canal' ng-options='opt.can_txt_descrip for opt in canales track by opt.can_id'>
+							<option value=''>Seleccione...</option>
+						</select>
+						<!-- @{{solicitud.tiposalida1}} -->
+					</div>
+				</div>
+
 				<!-- Campo Observaciones -->
 				<div class="form-group">
 					<label>Observaciones: </label>
@@ -101,7 +138,7 @@
 					<div ng-if="solicitud.tipopersona1.tpe_tipopersona == 'Vendedor'" class="form-group col-md-6">
 
 						<label>Zonas: </label>
-						<md-select ng-model="solicitud.zonasSelected"
+						<md-select ng-change="onZonaChange()" ng-model="solicitud.zonasSelected"
 						aria-label="zonas de vendedores"
 						data-md-container-class="selectdemoSelectHeader"
 						multiple
@@ -117,7 +154,30 @@
 			</div>
 
 
-			<div class="row">
+			<div ng-if="(solicitud.tipopersona1.tpe_tipopersona == 'Vendedor' && solicitud.zonasSelected.length > 0) || (solicitud.tipopersona1.tpe_tipopersona != 'Vendedor')" class="row">
+
+				<div class="form-group col-md-12" ng-if="solicitud.tipopersona1.tpe_tipopersona == 'Vendedor'">
+					<label>Seleccionar Todos Por Zona: </label>
+					<br>
+					<div layout="row" layout-wrap>
+				    <div flex="100" layout="column">
+				      <div>
+				        <fieldset class="demo-fieldset" >
+				          <div layout="column" layout-wrap flex>
+
+										<div class="demo-select-all-checkboxes" flex="100" ng-repeat="zona in solicitud.zonasSelected | orderBy:'id'">
+											 <md-checkbox ng-model="zona.isChecked" ng-change="seleccionarVendedoresZona(zona)">
+												@{{ zona.descripcion }}
+											 </md-checkbox>
+										</div>
+
+								 </div>
+							 </fieldset>
+						 </div>
+						</div>
+					</div>
+			 </div>
+
 				<div class="form-group col-md-12" ng-if="solicitud.tipopersona1.tpe_tipopersona != undefined">
 					<label>Despachar a: </label>
 					<md-chips ng-model="selectedColaboradores" md-autocomplete-snap
@@ -129,15 +189,15 @@
 					md-selected-item="selectedItem"
 					md-search-text="colaboradorText"
 					md-items="item in onSearchQueryChange(colaboradorText) | map: filtrarVendedorZona | remove: undefined"
-					md-item-text="[item.scl_cli_id, item.scl_nombre].join(' - ')"
+					md-item-text="(solicitud.tipopersona1.tpe_id == 1) ? ['Z'+item.scz_zon_id, item.scl_nombre].join(' - ') : [item.scl_cli_id, item.scl_nombre].join(' - ')"
 					md-min-length="1"
 					md-no-cache="true"
 					placeholder="Buscar un/a colaborador/a...">
-					<span md-highlight-text="searchText">@{{[item.scl_cli_id, item.scl_nombre].join(' - ')}}</span>
+					<span md-highlight-text="searchText">@{{(solicitud.tipopersona1.tpe_id == 1) ? ['Z'+item.scz_zon_id, item.scl_nombre].join(' - ') : [item.scl_cli_id, item.scl_nombre].join(' - ')}}</span>
 				</md-autocomplete>
 				<md-chip-template>
 					<span>
-						@{{[$chip.scl_cli_id, $chip.scl_nombre].join(' - ')}}
+						@{{(solicitud.tipopersona1.tpe_id == 1) ? ['Z'+$chip.scz_zon_id, $chip.scl_nombre].join(' - ') : [$chip.scl_cli_id, $chip.scl_nombre].join(' - ') }}
 					</span>
 				</md-chip-template>
 			</md-chips>
@@ -219,10 +279,10 @@
 						<tbody>
 							<tr ng-repeat="persona in selectedColaboradores">
 								<td>@{{persona.scl_nombre}}</td>
-								<td ng-if="esVendedor" style="text-align:center;">@{{persona.NomZona}}</td>
+								<td ng-if="esVendedor" style="text-align:center;">ZONA @{{persona.scz_zon_id}}</td>
 								<td style="text-align:right;">@{{persona.cantidadTotalReferencias}}</td>
 								<td style="text-align:right;">@{{sumaCantidadSolicitada(persona)}}</td>
-								<td style="text-align:right;">@{{sumaValorTotal(persona) | currency: "$" : 2}}</td>
+								<td style="text-align:right;">@{{sumaValorTotal(persona) | currency: "$"}}</td>
 								<!-- <td style="text-align:center;"><button type="button" class="btn btn-info"><i class="glyphicon glyphicon-eye-open"></i></button></td> -->
 								<td style="text-align:center;"><button type="button" ng-click="eliminarPersona(persona)" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button></td>
 							</tr>
@@ -278,14 +338,14 @@
 		<tr ng-repeat="referencia in persona.solicitud.referencias">
 			<td>@{{[referencia.srf_referencia,referencia.referenciaDescripcion].join(" - ")}}</td>
 			<td>@{{referencia.srf_estadoref}}</td>
-			<td>@{{referencia.srf_preciouni | currency: "$" : 2}}</td>
+			<td style="text-align:right;">@{{referencia.srf_preciouni | currency: "$"}}</td>
 			<td style="width: 76px;">
 				<input class="form-control inputCantMinimized inputCantMinimized-success" type="number" ng-model="referencia.srf_unidades" ng-change="onCantidadChange(referencia)" min="1" maxlength="20" minlength="1"/>
 			</td>
 			<td>
-				<select required class='form-control' ng-model='referencia.srf_lin_id_gasto' ng-value="referencia.srf_lin_id_gasto" ng-options='opt3.lineas_producto.NomLinea for opt3 in lineasproducto track by opt3.lineas_producto.CodLinea'></select>
+				<select required class='form-control' ng-model='referencia.linea' ng-change="onChangeLineaReferencia(referencia)" ng-options='opt3.lineas_producto.NomLinea for opt3 in lineasproducto track by opt3.lineas_producto.CodLinea'></select>
 			</td>
-			<td>@{{referencia.referenciaValorTotal  | currency: "$" : 2}}</td>
+			<td style="text-align:right;">@{{referencia.referenciaValorTotal  | currency: "$"}}</td>
 			<td>
 				<button type="button" ng-click="eliminarReferencia(persona,referencia)" class="btn btn-danger">
 					<i class="glyphicon glyphicon-remove"></i>
@@ -298,7 +358,7 @@
 
 <div ng-if="selectedColaboradores.length > 0" class="modal-footer">
 	<button class="btn btn-primary" ng-disabled="!solicitud.canBeProccess" type="submit">Guardar</button>
-	<button class="btn btn-success" ng-disabled="!solicitud.canBeProccess"  type="button">Enviar</button>
+	<button class="btn btn-success" ng-click="enviarSolicitud()" ng-disabled="(!solicitud.canBeProccess)"  type="button">Guardar y Enviar</button>
 	<button class="btn btn-secondary" onclick="window.location='{{route("misSolicitudes")}}'" type="button">Cerrar</button>
 </div>
 
