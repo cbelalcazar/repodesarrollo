@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Genericas\Tercero;
 use App\Models\Genericas\TLineas;
 use App\Models\Genericas\TCanal;
+use App\Models\Aplicativos\User;
 use App\Models\controlinversion\TNiveles;
 use App\Models\controlinversion\TPerniveles;
 use App\Models\controlinversion\TCanalpernivel;
@@ -38,23 +39,28 @@ class nivelesAutorizacionController extends Controller
             }
         }
         $terceros = $tercerosSinUsuario;
+        $VendedorZona = VendedorZona::select('NitVendedor as idTercero', 'NomVendedor as razonSocialTercero')->where('estado', 1)->get();
+        $usuarios = User::all();
 
-        $VendedorZona = VendedorZona::with('usuario')->select('NitVendedor as idTercero', 'NomVendedor as razonSocialTercero')->where('estado', 1)->get();
-        $VendedorZonaSinUsuario = [];
+        $VendedorConUsuario = [];
         foreach ($VendedorZona as $key => $value) {
-            if($value['usuario'] != null){
-                array_push($VendedorZonaSinUsuario, $value);
+            $listObjetEncontr = $usuarios->where('idTerceroUsuario', $value['idTercero'])->all();
+            $listObjetEncontr = array_values($listObjetEncontr);
+            if (count($listObjetEncontr) > 0) {
+                $value->usuario = $listObjetEncontr[0];
+                array_push($VendedorConUsuario, $value);
             }
+            
         }
-        $VendedorZona = $VendedorZonaSinUsuario;
-        
+
+        $VendedorZona = $VendedorConUsuario;
         $lineas = TLineas::where('lin_txt_estado', 'Si')->get();
         $canales = TCanal::whereIn('can_id', ['20','AL','DR'])->get();
         $canalPernivel = TCanalpernivel::all();
-        $perniveles = TPerniveles::all();
+        $perniveles = TPerniveles::with('children')->get();
 
 
-        $response = compact('terceros', 'niveles', 'VendedorZona', 'lineas', 'canales', 'canalPernivel', 'perniveles');
+        $response = compact('terceros', 'niveles', 'VendedorZona', 'lineas', 'canales', 'canalPernivel', 'perniveles', 'usuarios');
         // ['terceros' => [{},{},...n{}], 'niveles' => [{},{},...n{}], 'VendedorZona' => [{},{},...n{}]]
         return response()->json($response); 
     }

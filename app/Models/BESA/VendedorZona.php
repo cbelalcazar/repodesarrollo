@@ -29,7 +29,4 @@ class VendedorZona extends Model
         'ger_zona'
     ];
 
-    public function usuario(){
-        return $this->hasOne('App\Models\aplicativos\User', 'idTerceroUsuario', 'NitVendedor');
-    }
 }

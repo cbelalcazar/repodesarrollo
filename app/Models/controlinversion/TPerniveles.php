@@ -24,5 +24,9 @@ class TPerniveles extends Model
         'pern_nomnivel'    
     ];
 
+    public function children()
+    {
+        return $this->belongsTo('App\Models\controlinversion\TPerniveles','pern_jefe');
+    }
         
 }
