@@ -30,8 +30,7 @@ class nivelesAutorizacionController extends Controller
     public function nivelesAutorizacionGetInfo()
     {
         $terceros = Tercero::with('usuario')->where('indxEstadoTercero', 1)->get();
-        $niveles = TNiveles::all();
-        $VendedorZona = VendedorZona::with('usuario')->select('NitVendedor as idTercero', 'NomVendedor as razonSocialTercero')->where('estado', 1)->get();
+        $niveles = TNiveles::all();       
         $tercerosSinUsuario = [];
         foreach ($terceros as $key => $value) {
             if($value['usuario'] != null){
@@ -39,6 +38,16 @@ class nivelesAutorizacionController extends Controller
             }
         }
         $terceros = $tercerosSinUsuario;
+
+        $VendedorZona = VendedorZona::with('usuario')->select('NitVendedor as idTercero', 'NomVendedor as razonSocialTercero')->where('estado', 1)->get();
+        $VendedorZonaSinUsuario = [];
+        foreach ($VendedorZona as $key => $value) {
+            if($value['usuario'] != null){
+                array_push($VendedorZonaSinUsuario, $value);
+            }
+        }
+        $VendedorZona = $VendedorZonaSinUsuario;
+        
         $lineas = TLineas::where('lin_txt_estado', 'Si')->get();
         $canales = TCanal::whereIn('can_id', ['20','AL','DR'])->get();
         $canalPernivel = TCanalpernivel::all();
@@ -74,9 +83,23 @@ class nivelesAutorizacionController extends Controller
         $persona->pern_nombre = $data['selectedItem']['razonSocialTercero'];
         $persona->pern_cedula = $data['selectedItem']['idTercero'];
         $persona->pern_nomnivel = $data['nivel']['id'];
-        $persona->save();
+
+
+        if($persona->pern_nomnivel == 4 || $persona->pern_nomnivel == 2){
+           $persona->save();
+        }
+
+        if($persona->pern_nomnivel == 1){            
+           $persona->pern_jefe = $data['jefe']['id'];
+           $persona->pern_tipopersona = $data['tipo']['id'];
+           $persona->save();
+        }        
+
+
 
         if($persona->pern_nomnivel == 3){
+            $persona->pern_jefe = $data['jefe']['id'];
+            $persona->save();
             foreach ($data['canales'] as $key => $value) {
 
                 foreach ($data['lineas'] as $clave => $valor) {

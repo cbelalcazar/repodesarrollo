@@ -56,10 +56,19 @@
         </div>
         <!-- End autocomplete -->
 
+          <!-- Combo Jefe -->
+          <div class="form-group" ng-if="objeto.selectedItem != undefined && (objeto.nivel.id == 3 || objeto.nivel.id == 1)">
+            <label>Seleccionar persona siguiente nivel:</label>
+            <select ng-model="objeto.jefe" ng-options='pniv.pern_nombre for pniv in filtroNiveles(objeto.nivel.niv_idpadre) track by pniv.id' required class="form-control">
+              <option value="">Seleccione...</option>
+            </select>
+          </div>
+          <!-- End Jefe -->
+
 
 
         <!-- Canales -->
-        <div ng-if="objeto.nivel.id == 3" class="panel panel-primary">
+        <div ng-if="objeto.nivel.id == 3 && objeto.jefe != undefined" class="panel panel-primary">
           <div class="panel-heading">Favor agregar canales:</div>
           
 

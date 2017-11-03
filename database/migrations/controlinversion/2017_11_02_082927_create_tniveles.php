@@ -16,6 +16,7 @@ class CreateTniveles extends Migration
         Schema::connection('bd_controlinversion')->create('t_niveles', function (Blueprint $table) {
             $table->increments('id');
             $table->string('niv_nombre');
+            $table->integer('niv_idpadre')->nullable();
             $table->timestamps();
         });
     }

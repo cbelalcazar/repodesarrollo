@@ -16,7 +16,8 @@ class TNiveles extends Model
 	public $timestamps = true;
 
     protected $fillable = [
-        'niv_nombre'
+        'niv_nombre',
+        'niv_idpadre'
     ];
 
     protected $guarded = [];

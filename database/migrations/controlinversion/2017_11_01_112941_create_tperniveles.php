@@ -18,7 +18,7 @@ class CreateTperniveles extends Migration
             $table->string('pern_usuario')->nullable();
             $table->string('pern_nombre');
             $table->string('pern_cedula');
-            $table->integer('pern_zona')->nullable();
+            $table->integer('pern_tipopersona')->nullable();
             $table->integer('pern_jefe')->nullable();
             $table->integer('pern_nomnivel');
             $table->timestamps();

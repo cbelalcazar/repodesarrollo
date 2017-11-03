@@ -1,4 +1,4 @@
-app.controller('nivelesautorizacionCtrl', ['$scope', '$http', '$filter', '$window',function ($scope, $http, $filter, $window) {
+app.controller('nivelesautorizacionCtrl', ['$scope', '$http', '$filter', '$window', 'DTOptionsBuilder', 'DTColumnDefBuilder', function ($scope, $http, $filter, $window, DTOptionsBuilder, DTColumnDefBuilder) {
 	$scope.getUrl = "nivelesAutorizacionGetInfo";
 	$scope.url = "nivelesAutorizacion";
 	$scope.objeto = {};
@@ -30,21 +30,42 @@ app.controller('nivelesautorizacionCtrl', ['$scope', '$http', '$filter', '$windo
 
 
 	$scope.getInfo = function(){
+		$scope.perniveles = [];
 		$http.get($scope.getUrl).then(function(response){			
 			var res = response.data;
 			$scope.terceros = angular.copy(res.terceros);
 			$scope.niveles = angular.copy(res.niveles);
 			$scope.VendedorZona = angular.copy(res.VendedorZona);
+			console.log($scope.VendedorZona);
 			$scope.arregloFiltrar = angular.copy($scope.terceros);
 			$scope.lineas = angular.copy(res.lineas);
 			$scope.canales = angular.copy(res.canales);
 			$scope.canalPernivel = angular.copy(res.canalPernivel);
 			$scope.perniveles = angular.copy(res.perniveles);
+			
+
+			// Filtros para cada pestaña/nivel
+			console.log($scope.perniveles);
+			$scope.nivelUno = $filter('filter')($scope.perniveles, {pern_nomnivel : 1});
+			$scope.nivelDos = $filter('filter')($scope.perniveles, {pern_nomnivel : 2});
+			$scope.nivelTres = $filter('filter')($scope.perniveles, {pern_nomnivel : 3});
+			$scope.nivelCuatro = $filter('filter')($scope.perniveles, {pern_nomnivel : 4});
 			$scope.progress = false;
 		},function(errorResponse){
 			console.log(errorResponse);
 			$scope.getInfo();
 		});
+
+
+		$scope.dtOptions = DTOptionsBuilder.newOptions()
+		.withOption('aaSorting', [[0, 'desc']]);
+
+		$scope.dtColumnDefs0 = [
+		DTColumnDefBuilder.newColumnDef(0).withClass('text-center'),
+		DTColumnDefBuilder.newColumnDef(1).withClass('text-center'),
+		DTColumnDefBuilder.newColumnDef(2).withClass('text-center'),
+		DTColumnDefBuilder.newColumnDef(3).withClass('text-center')];
+
 	};
 
 	$scope.getInfo();
@@ -81,7 +102,8 @@ app.controller('nivelesautorizacionCtrl', ['$scope', '$http', '$filter', '$windo
 	}
 
 	$scope.save = function(){
-		if ($scope.objeto.canales.length > 0 && $scope.objeto.lineas.length > 0) {
+
+		if (($scope.objeto.canales.length > 0 && $scope.objeto.lineas.length > 0 && $scope.objeto.nivel.id == 3) || ($scope.objeto.nivel.id != 3)) {
 			$scope.progress = true;
 			$http.post($scope.url, $scope.objeto).then(function(response){
 				$window.location.reload();						
@@ -138,6 +160,10 @@ app.controller('nivelesautorizacionCtrl', ['$scope', '$http', '$filter', '$windo
     		}
     	}
     	
+    }
+
+    $scope.filtroNiveles = function(idNivel){
+    	return $filter('filter')($scope.perniveles, { pern_nomnivel : idNivel});
     }
 
 }])

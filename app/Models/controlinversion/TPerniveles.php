@@ -19,7 +19,7 @@ class TPerniveles extends Model
         'pern_usuario',
         'pern_nombre',
         'pern_cedula',
-        'pern_zona',
+        'pern_tipopersona',
         'pern_jefe',
         'pern_nomnivel'    
     ];
