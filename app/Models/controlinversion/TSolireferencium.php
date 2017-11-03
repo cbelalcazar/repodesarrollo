@@ -31,5 +31,13 @@ class TSolireferencium extends Model
 
     protected $guarded = [];
 
+    public function LineaProducto(){
+      return $this->hasOne('App\Models\controlinversion\TLineascc', 'lcc_codigo', 'srf_lin_id_gasto');
+    }
+
+    public function referencia(){
+      return $this->hasOne('App\Models\Genericas\TItemCriteriosTodo', 'ite_referencia', 'srf_referencia');
+    }
+
 
 }

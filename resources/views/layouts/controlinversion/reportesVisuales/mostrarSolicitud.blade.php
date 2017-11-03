@@ -4,6 +4,10 @@
   padding-right: 0px;
   padding-left: 0px;
 }
+
+.md-tab {
+    max-width: min-content !important;
+}
 </style>
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog" style="width:80%;" role="document">
@@ -46,48 +50,158 @@
             </md-tab>
             <md-tab label="Info. de Solicitud">
               <md-content class="md-padding">
+                <md-tabs>
+                  <md-tab label="Datos Básicos">
+                    <md-content class="md-padding">
+                      <div class="row">
+                        <div class="col-sm-6">
+                          <ul class="list-group">
+                            <li class="list-group-item">
+                              <label>No. Solicitud: </label> @{{solicitud.sci_id}}
+                            </li>
+                            <li class="list-group-item">
+                              <label>Fecha de solicitud: </label> @{{solicitud.sci_fecha}}
+                            </li>
+                            <li class="list-group-item">
+                              <label>Tipo de Salida: </label> @{{solicitud.tipo_salida.tsd_descripcion}}
+                            </li>
+                            <li class="list-group-item">
+                              <label>Tipo de Persona: </label> @{{solicitud.tipo_persona.tpe_tipopersona}}
+                            </li>
+                            <li class="list-group-item">
+                              <label>Observaciones: </label> @{{solicitud.sci_observaciones}}
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="col-sm-6">
+                          <ul class="list-group">
+                            <li class="list-group-item">
+                              <label>Estado: </label> @{{solicitud.estado.soe_descripcion}}
+                            </li>
+                            <li class="list-group-item">
+                              <label>Facturar a: </label> @{{solicitud.facturara.tercero.razonSocialTercero}}
+                            </li>
+                            <li class="list-group-item">
+                              <label>Motivo: </label>@{{solicitud.sci_mts_id}}
+                            </li>
+                            <li class="list-group-item">
+                              <label>Carga a gasto: </label>@{{solicitud.cargara.cga_descripcion}}
+                            </li>
+                            <li class="list-group-item"><label>&nbsp;</label></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </md-content>
+                  </md-tab>
+                  <md-tab label="Gasto Cargado a Lineas">
+                    <md-content class="md-padding">
 
-                <div class="row">
-                  <h4>Datos basicos de la solicitud</h4>
-                  <div class="col-sm-6">
-                    <ul class="list-group">
-                      <li class="list-group-item">
-                        <label>No. Solicitud: </label> @{{solicitud.sci_id}}
-                      </li>
-                      <li class="list-group-item">
-                        <label>Fecha de solicitud: </label> @{{solicitud.sci_fecha}}
-                      </li>
-                      <li class="list-group-item">
-                        <label>Tipo de Salida: </label> @{{solicitud.tipo_salida.tsd_descripcion}}
-                      </li>
-                      <li class="list-group-item">
-                        <label>Tipo de Persona: </label> @{{solicitud.tipo_persona.tpe_tipopersona}}
-                      </li>
-                      <li class="list-group-item">
-                        <label>Observaciones: </label> @{{solicitud.sci_observaciones}}
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="col-sm-6">
-                    <ul class="list-group">
-                      <li class="list-group-item">
-                        <label>Estado: </label> @{{solicitud.estado.soe_descripcion}}
-                      </li>
-                      <li class="list-group-item">
-                        <label>Facturar a: </label> @{{solicitud.facturara.tercero.razonSocialTercero}}
-                      </li>
-                      <li class="list-group-item">
-                        <label>Motivo: </label>@{{solicitud.sci_mts_id}}
-                      </li>
-                      <li class="list-group-item">
-                        <label>Carga a gasto: </label>@{{solicitud.cargara.cga_descripcion}}
-                      </li>
-                      <li class="list-group-item"><label>&nbsp;</label></li>
-                    </ul>
-                  </div>
-                </div>
+                      <div class="table-responsive">
+                      <table class="table table-striped table-bordered">
+                        <thead>
+                          <tr>
+                            <th class="text-center">Linea Codigo</th>
+                            <th class="text-center">Nombre de Linea</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr ng-if="solicitud.cargaralinea == null" ng-repeat="linea in lineasSolicitud">
+                            <td class="text-center">@{{linea.linea_producto.lineas_producto.CodLinea}}</td>
+                            <td class="text-center">@{{linea.linea_producto.lineas_producto.NomLinea}}</td>
+                          </tr>
+                          <tr ng-if="solicitud.cargaralinea != null">
+                            <td class="text-center">@{{solicitud.cargaralinea.lineas_producto.CodLinea}}</td>
+                            <td class="text-center">@{{solicitud.cargaralinea.lineas_producto.NomLinea}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
 
+                    </md-content>
+                  </md-tab>
+                  <md-tab ng-if="solicitud.sci_tipopersona == 1" label="Zonas">
+                    <md-content class="md-padding">
 
+                      <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                          <thead>
+                            <tr>
+                              <th colspan="2" class="text-center">Zonas</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="zona in zonasSolicitud">
+                              <td class="text-center">ZONA @{{zona.scz_zon_id}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </md-content>
+                  </md-tab>
+                  <md-tab label="Vendedores o Colaboradores">
+                    <md-content class="md-padding">
+
+                      <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                          <thead>
+                            <tr>
+                              <th class="text-center">Colaborador ID</th>
+                              <th class="text-center">Nombre Colaborador</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="colaborador in solicitud.clientes">
+                              <td class="text-center">@{{colaborador.scl_cli_id}}</td>
+                              <td class="text-center">@{{colaborador.scl_nombre}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </md-content>
+                  </md-tab>
+                  <md-tab label="Referencias">
+                    <md-content class="md-padding">
+
+                      <md-tabs md-no-pagination="false">
+
+                        <md-tab
+                          ng-repeat="cliente in solicitud.clientes"
+                          label="@{{cliente.scl_nombre}}">
+                          <md-content>
+                            <div class="table-responsive">
+                              <table class="table table-striped table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th class="text-center">Referencia</th>
+                                    <th class="text-center">Estado</th>
+                                    <th class="text-center">Precio Unit.</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th class="text-center">Linea a Cargar Gasto</th>
+                                    <th class="text-center">Valor Total</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr ng-repeat="referencia in cliente.clientes_referencias">
+                                    <td class="text-left">@{{[referencia.referencia.ite_referencia,referencia.referencia.ite_descripcion].join(' - ')}}</td>
+                                    <td class="text-left">@{{referencia.srf_estadoref}}</td>
+                                    <td class="text-right">@{{referencia.srf_preciouni | currency: '$'}}</td>
+                                    <td class="text-right">@{{referencia.srf_unidades}}</td>
+                                    <td class="text-left">@{{referencia.linea_producto.lineas_producto.NomLinea}}</td>
+                                    <td class="text-right">@{{(referencia.srf_preciouni * referencia.srf_unidades) | currency: '$'}}</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </md-content>
+                        </md-tab>
+
+                      </md-tabs>
+
+                    </md-content>
+                  </md-tab>
+                </md-tabs>
               </md-content>
             </md-tab>
           </md-tabs>

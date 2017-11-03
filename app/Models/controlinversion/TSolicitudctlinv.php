@@ -54,7 +54,8 @@ class TSolicitudctlinv extends Model
         'sci_nombre',
         'sci_ciudad',
         'sci_direccion',
-        'sci_facturara'
+        'sci_facturara',
+        'sci_can_desc'
     ];
 
     protected $guarded = [];
@@ -81,6 +82,10 @@ class TSolicitudctlinv extends Model
 
     public function facturara(){
       return $this->hasOne('App\Models\controlinversion\TFacturara', 'fca_idTercero', 'sci_facturara');
+    }
+
+    public function cargaralinea(){
+      return $this->hasOne('App\Models\controlinversion\TLineascc', 'lcc_codigo', 'sci_cargarlinea');
     }
 
 

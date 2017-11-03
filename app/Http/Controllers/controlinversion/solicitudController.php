@@ -14,10 +14,13 @@ use App\Models\controlinversion\TTipopersona;
 use App\Models\controlinversion\TCargagasto;
 use App\Models\controlinversion\TLineascc;
 use App\Models\Genericas\Tercero;
+use App\Models\Genericas\TCanal;
 use App\Models\Genericas\TItemCriteriosTodo;
 use App\Models\BESA\VendedorZona;
 use App\Models\BESA\PreciosReferencias;
 use Illuminate\Support\Facades\Auth;
+
+ini_set('max_execution_time', 300);
 
 
 class solicitudController extends Controller
@@ -31,6 +34,8 @@ class solicitudController extends Controller
      */
     public function solicitudGetInfo()
     {
+
+
         $userLogged = Auth::user();
 
         $personas = TFacturara::with('tercero')->get();
@@ -45,6 +50,8 @@ class solicitudController extends Controller
 
         $pruebita = TSolicliente::with('clientesZonas')->get();
 
+        $canales = TCanal::all();
+
 
         $colaboradores = Tercero::select('idTercero','idTercero as scl_cli_id', 'razonSocialTercero as scl_nombre')->with('Cliente.Sucursales')->where([['indxEstadoTercero', '1'], ['indxEmpleadoTercero', '1']])->orderBy('razonSocialTercero')->get();
         $colaboradores = $colaboradores->filter(function($value, $key){
@@ -58,10 +65,11 @@ class solicitudController extends Controller
         'ite_nom_estado as srf_estadoref',
         'ite_nom_linea as referenciaLinea',
         'ite_cod_linea as srf_lin_id_gasto')
+        ->with('LineaItemCriterio')
         ->where('ite_cod_tipoinv', '1051')
         ->get();
 
-        $response = compact('personas','tiposalida', 'tipopersona', 'cargagasto', 'lineasproducto', 'colaboradores', 'users', 'item', 'vendedoresBesa', 'userLogged', 'pruebita');
+        $response = compact('personas','tiposalida', 'tipopersona', 'cargagasto', 'lineasproducto', 'colaboradores', 'users', 'item', 'vendedoresBesa', 'userLogged', 'pruebita', 'canales');
         return response()->json($response);
     }
 
@@ -129,7 +137,7 @@ class solicitudController extends Controller
             $zona['scz_vesperado'] = null;
             $zona['scz_estado'] = 1;
             $objetoZonas = $objeto->clientesZonas()->create($zona);
-          }        
+          }
 
           foreach ($value['solicitud']['referencias'] as $clave => $dato) {
             $objeto->clientesReferencias()->create($dato);
@@ -164,7 +172,26 @@ class solicitudController extends Controller
     {
       $ruta = 'Control de Inversion // Editar Solicitud';
       $titulo = 'EDITAR SOLICITUD';
-      $solicitud = TSolicitudctlinv::with('clientes.clientesReferencias')->with('clientes.clientesZonas')->where('sci_id', $id)->get();
+      $solicitud = TSolicitudctlinv::with('clientes.clientesReferencias','clientes.clientesReferencias.referencia.LineaItemCriterio','clientes.clientesZonas')->where('sci_id', $id)->get();
+      $solicitud[0]['sci_soe_id'] = 1;
+
+      $response = compact('ruta', 'titulo', 'solicitud');
+
+      return view('layouts.controlinversion.solicitud.formsolicitud', $response);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function correciones($id)
+    {
+      $ruta = 'Control de Inversion // Corregir Solicitud';
+      $titulo = 'CORRECIÓN DE SOLICITUD';
+      $solicitud = TSolicitudctlinv::with('clientes.clientesReferencias','clientes.clientesReferencias.referencia.LineaItemCriterio','clientes.clientesZonas')->where('sci_id', $id)->get();
+      $solicitud[0]['isCorrecion'] = true;
       $response = compact('ruta', 'titulo', 'solicitud');
 
       return view('layouts.controlinversion.solicitud.formsolicitud', $response);
@@ -180,6 +207,7 @@ class solicitudController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
+        $routeSuccess = route('misSolicitudes');
         $solicitudPrincipal = TSolicitudctlinv::find($id)->update($data);
         $clientes = TSolicliente::where('scl_sci_id', $id)->get();
 
@@ -207,12 +235,12 @@ class solicitudController extends Controller
             $zona['scz_estado'] = 1;
             $objetoZonas = $objeto->clientesZonas()->create($zona);
           }
-         
+
           foreach ($value['solicitud']['referencias'] as $clave => $dato) {
             $objeto->clientesReferencias()->create($dato);
           }
         }
-        $response = compact('solicitudToCreate');
+        $response = compact('solicitudToCreate','routeSuccess');
         return response()->json($response);
     }
 
@@ -253,7 +281,7 @@ class solicitudController extends Controller
         //esto debe filtrar por usuario campo sci_usuario y sci_tipo 3,7 idTerceroUsuario
         $userLogged = Auth::user();
 
-        $solicitudes = TSolicitudctlinv::with('clientes.clientesReferencias', 'clientes.clientesZonas', 'estado', 'tipoSalida', 'tipoPersona', 'cargara', 'facturara.tercero')->where('sci_usuario',$userLogged->idTerceroUsuario)->orderBy('sci_id', 'desc')->get();
+        $solicitudes = TSolicitudctlinv::with('clientes.clientesReferencias.LineaProducto.LineasProducto', 'clientes.clientesReferencias.referencia' ,'clientes.clientesZonas', 'estado', 'tipoSalida', 'tipoPersona', 'cargara', 'facturara.tercero','cargaralinea.LineasProducto')->where('sci_usuario',$userLogged->idTerceroUsuario)->orderBy('sci_id', 'desc')->get();
 
         $solicitudes->map(function($solicitud){
             $id = $solicitud->sci_id;
