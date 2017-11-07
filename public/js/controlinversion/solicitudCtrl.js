@@ -61,6 +61,7 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDi
 	$scope.esVendedor = false;
 	$scope.colaboradorText;
 	$scope.filtrado = [];
+	$scope.userNivel = {};
 	//se declaran variables que se utilizaran en el formulario de ediccion
 	$scope.inicializacion;
 	$scope.cantPersonasFull = 0;
@@ -81,6 +82,32 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDi
 		$http.get($scope.url).then(function(response){
 
 			var res = response.data;
+
+
+			$scope.userNivel = res.fullUser;
+			$scope.solicitud.userNivel = res.fullUser;
+
+
+			if($scope.solicitud.userNivel != undefined) {
+				if($scope.solicitud.userNivel.length == 0){
+					var successMessage = $mdDialog.alert()
+					.parent(angular.element(document.querySelector('#popupContainer')))
+					.clickOutsideToClose(false)
+					.title('Privilegios Insuficientes!')
+					.textContent('Su usuario no tiene los privilegios suficientes para crear una nueva solicitud')
+					.ariaLabel('Lucky day')
+					.ok('OK')
+
+
+					$mdDialog.show(successMessage).then(function() {
+						$scope.progress = true;
+						window.location = res.rutaNoAutoriza;
+					})
+				}
+
+			}
+
+
 			$scope.personas = angular.copy(res.personas);
 			$scope.tiposalida = angular.copy(res.tiposalida);
 			$scope.tipopersona = angular.copy(res.tipopersona);
@@ -98,6 +125,7 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDi
 			if($scope.inicializacion != undefined){
 
 				$scope.solicitud = $scope.inicializacion[0];
+				$scope.solicitud.userNivel = $scope.userNivel;
 
 				$scope.solicitud.tipoPersonaOriginal = $scope.solicitud.sci_tsd_id;
 				$scope.solicitud.clientes.forEach(function(cliente){
@@ -515,6 +543,8 @@ $scope.saveSolicitud = function(){
 					var data = response.data;
 					$scope.progress = false;
 
+					console.log(data);
+
 					var successMessage = $mdDialog.alert()
 					.parent(angular.element(document.querySelector('#popupContainer')))
 					.clickOutsideToClose(false)
@@ -563,6 +593,7 @@ $scope.enviarSolicitud = function(){
 
 	$scope.setSolicitudToSave();
 	$scope.solicitud.sci_soe_id = 1;
+
 	$http.put($scope.resource+"/"+$scope.solicitud.sci_id,$scope.solicitud)
 	.then(function(response){
 		console.log(response.data);

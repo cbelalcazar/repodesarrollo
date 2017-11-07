@@ -50,7 +50,11 @@ Route::group(['middleware' => ['auth']], function () {
     // Rutas para niveles de aprobacion
     Route::resource('nivelesAutorizacion','controlinversion\nivelesAutorizacionController');
     Route::get('nivelesAutorizacionGetInfo','controlinversion\nivelesAutorizacionController@nivelesAutorizacionGetInfo');
- 
+
+    // Aprobacion de Solicitudes
+    Route::resource('aprobacion','controlinversion\autorizacionController');
+    Route::get('aprobacionGetInfo','controlinversion\autorizacionController@solicitudesAprobacionGetInfo');
+
 
   });
 

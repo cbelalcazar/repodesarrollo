@@ -21,12 +21,16 @@ class TPerniveles extends Model
         'pern_cedula',
         'pern_tipopersona',
         'pern_jefe',
-        'pern_nomnivel'    
+        'pern_nomnivel'
     ];
 
     public function children()
     {
         return $this->belongsTo('App\Models\controlinversion\TPerniveles','pern_jefe');
     }
-        
+	
+    public function tperjefe(){
+		return $this->hasOne('App\Models\controlinversion\TPerniveles', 'id', 'pern_jefe');
+	}
+    
 }
