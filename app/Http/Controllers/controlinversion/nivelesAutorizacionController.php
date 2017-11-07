@@ -30,7 +30,7 @@ class nivelesAutorizacionController extends Controller
     public function nivelesAutorizacionGetInfo()
     {
         $terceros = Tercero::with('usuario')->where('indxEstadoTercero', 1)->get();
-        $niveles = TNiveles::all();       
+        $niveles = TNiveles::all();
         $tercerosSinUsuario = [];
         foreach ($terceros as $key => $value) {
             if($value['usuario'] != null){
@@ -47,8 +47,8 @@ class nivelesAutorizacionController extends Controller
             }
         }
         $VendedorZona = $VendedorZonaSinUsuario;
-        
-        $lineas = TLineas::where('lin_txt_estado', 'Si')->get();
+
+        $lineas = TLineas::all();
         $canales = TCanal::whereIn('can_id', ['20','AL','DR'])->get();
         $canalPernivel = TCanalpernivel::all();
         $perniveles = TPerniveles::all();
@@ -56,7 +56,7 @@ class nivelesAutorizacionController extends Controller
 
         $response = compact('terceros', 'niveles', 'VendedorZona', 'lineas', 'canales', 'canalPernivel', 'perniveles');
         // ['terceros' => [{},{},...n{}], 'niveles' => [{},{},...n{}], 'VendedorZona' => [{},{},...n{}]]
-        return response()->json($response); 
+        return response()->json($response);
     }
 
     /**
@@ -89,11 +89,11 @@ class nivelesAutorizacionController extends Controller
            $persona->save();
         }
 
-        if($persona->pern_nomnivel == 1){            
+        if($persona->pern_nomnivel == 1){
            $persona->pern_jefe = $data['jefe']['id'];
            $persona->pern_tipopersona = $data['tipo']['id'];
            $persona->save();
-        }        
+        }
 
 
 
