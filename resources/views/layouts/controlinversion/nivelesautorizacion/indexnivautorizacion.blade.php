@@ -2,9 +2,9 @@
 @section('content')
 @include('includes.titulo')
 <div ng-controller="nivelesautorizacionCtrl as ctrl" ng-cloak class="container-fluid">
-		
+	<link rel="stylesheet" href="{{url('/css/controlinversion/nivelesAutorizacion.css')}}">
 	<md-content>
-	<button class="btn-sm btn-success" data-toggle="modal" data-target="#modal">Agregar&nbsp;<i class="glyphicon glyphicon-plus"></i></button>
+	<button class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal"><i class="glyphicon glyphicon-plus"></i>&nbsp;Agregar</button>
 		<md-tabs md-dynamic-height md-border-bottom>
 			<!-- Tab nivel 4 -->
 			<md-tab label="Nivel 4">
@@ -23,7 +23,11 @@
 								<td>@{{nivel.pern_usuario}}</td>
 								<td>@{{nivel.pern_nombre}}</td>
 								<td>@{{nivel.pern_cedula}}</td>
-								<td>vacio</td>
+								<td>
+									<button  ng-click="inactivar(nivel)" class="btn btn-danger">
+										<i class="glyphicon glyphicon-remove"></i>
+									</button>
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -50,7 +54,14 @@
 								<td>@{{nivel.pern_nombre}}</td>
 								<td>@{{nivel.pern_cedula}}</td>
 								<td>@{{nivel.children.pern_nombre}}</td>
-								<td>vacio</td>
+								<td>
+									<button  ng-click="inactivar(nivel)" class="btn btn-danger">
+										<i class="glyphicon glyphicon-remove"></i>
+									</button>
+									<button   data-toggle="modal" data-target="#modal" ng-click="actualizar(nivel)" class="btn btn-warning">
+										<i class="glyphicon glyphicon-edit"></i>
+									</button>
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -75,7 +86,11 @@
 								<td>@{{nivel.pern_usuario}}</td>
 								<td>@{{nivel.pern_nombre}}</td>
 								<td>@{{nivel.pern_cedula}}</td>
-								<td>vacio</td>
+								<td>
+									<button  ng-click="inactivar(nivel)" class="btn btn-danger">
+										<i class="glyphicon glyphicon-remove"></i>
+									</button>
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -104,7 +119,11 @@
 								<td>@{{nivel.pern_cedula}}</td>
 								<td>@{{pintarTipoPersona(nivel.pern_tipopersona)}}</td>
 								<td>@{{nivel.children.pern_nombre}}</td>
-								<td>vacio</td>
+								<td>
+									<button  ng-click="inactivar(nivel)" class="btn btn-danger">
+										<i class="glyphicon glyphicon-remove"></i>
+									</button>
+								</td>
 							</tr>
 						</tbody>
 					</table>

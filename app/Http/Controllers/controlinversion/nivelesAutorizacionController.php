@@ -55,10 +55,9 @@ class nivelesAutorizacionController extends Controller
         
         $VendedorZona = $VendedorConUsuario;
         $lineas = TLineas::where('lin_txt_estado', 'Si')->get();
-
         $canales = TCanal::whereIn('can_id', ['20','AL','DR'])->get();
         $canalPernivel = TCanalpernivel::all();
-        $perniveles = TPerniveles::with('children')->get();
+        $perniveles = TPerniveles::with('children', 'canales')->get();
 
 
         $response = compact('terceros', 'niveles', 'VendedorZona', 'lineas', 'canales', 'canalPernivel', 'perniveles', 'usuarios');
@@ -164,6 +163,7 @@ class nivelesAutorizacionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $personaNivel = TPerniveles::find($id)->delete();
+        return "true";
     }
 }
