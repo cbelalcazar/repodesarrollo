@@ -303,7 +303,10 @@ class solicitudController extends Controller
     public function destroy($id)
     {
         $solicitud = TSolicitudctlinv::find($id);
-        return
+        $solicitud->sci_soe_id = 3;
+        $solicitud->save();
+        
+        return response()->json($solicitud);
     }
 
 

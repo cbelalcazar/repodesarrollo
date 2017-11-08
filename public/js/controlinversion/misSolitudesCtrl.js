@@ -1,6 +1,7 @@
-app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'DTOptionsBuilder', 'DTColumnDefBuilder', function($scope,  $filter, $http, $window, DTOptionsBuilder, DTColumnDefBuilder){
+app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'DTOptionsBuilder', 'DTColumnDefBuilder', '$mdDialog', function($scope,  $filter, $http, $window, DTOptionsBuilder, DTColumnDefBuilder, $mdDialog){
 
 	$scope.getInfoMisolicitudes = "getInfoMisolicitudes";
+	$scope.anularUrl = "misSolicitudes/anular";
 	$scope.progress = true;
 	$scope.count = [];
 	$scope.elaboracion = "0";
@@ -124,7 +125,29 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 	}
 
 	$scope.anularSolicitud = function(solicitud){
-		console.log(solicitud);
+
+		var confirm = $mdDialog.confirm()
+			.title('Anular Solicitud')
+			.textContent('¿Esta seguro(a) de querer anular esta solicitud?, Despues de anulada no podra realizar ninguna acción sobre está solicitud.')
+			.ariaLabel('Lucky day')
+			.ok('Continuar')
+			.cancel('Cancelar');
+
+			$mdDialog.show(confirm).then(function() {
+				$scope.progress = true;
+				$http.delete($scope.anularUrl+"/"+solicitud.sci_id).then(function(response){
+					console.log(response.data);
+					$scope.getInfo();
+
+				});
+
+			}, function() {
+
+
+			});
+
+
+
 	}
 
 

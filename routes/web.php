@@ -41,6 +41,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('consultarReferencias','controlinversion\solicitudController@consultarInformacionReferencias');
 
     Route::get('misSolicitudes','controlinversion\solicitudController@misSolicitudes')->name('misSolicitudes');
+    Route::delete('misSolicitudes/anular/{id}','controlinversion\solicitudController@destroy');
     Route::get('getInfoMisolicitudes','controlinversion\solicitudController@getInfoMisolicitudes');
 
     //gestion catalogo de vendedores por zona
