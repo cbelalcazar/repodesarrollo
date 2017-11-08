@@ -80,19 +80,22 @@ class solicitudController extends Controller
 
 
 
-    public function consultarInformacionReferencia($referencia){
-      $infoRefe = PreciosReferencias::consultarReferencia($referencia);
+    public function consultarInformacionReferencia(Request $request){
+
+      $data = $request->all();
+      $infoRefe = PreciosReferencias::consultarReferencia($data['srf_referencia']);
       $response = compact('infoRefe');
       return response()->json($response);
+
     }
 
 
     public function consultarInformacionReferencias(Request $request){
 
-      //return response()->json($request->all());
       $infoRefes = PreciosReferencias::consultarReferencias($request);
       $response = compact('infoRefes');
       return response()->json($response);
+
     }
 
 
@@ -299,7 +302,8 @@ class solicitudController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $solicitud = TSolicitudctlinv::find($id);
+        return
     }
 
 

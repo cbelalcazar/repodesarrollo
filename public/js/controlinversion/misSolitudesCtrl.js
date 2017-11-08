@@ -101,20 +101,6 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 			if(solicitud.clientes.length > 0){
 					solicitud.clientes.forEach(function(cliente){
 
-						// if($scope.solicitud.sci_tipopersona == 1){
-						// 	if($scope.zonasSolicitud.length == 0){
-						// 		$scope.zonasSolicitud.push(cliente.clientes_zonas);
-						// 	}else{
-						// 		var filterZonas = $filter('filter')($scope.zonasSolicitud, {scz_zon_id: cliente.cliente_zonas.scz_zon_id});
-						// 		if(filterZonas.length == 0){
-						// 			$scope.zonasSolicitud.push(cliente.cliente_zonas);
-						// 		}else if(filterZonas[0].scz_zon_id != cliente.cliente_zonas.scz_zon_id){
-						// 			$scope.zonasSolicitud.push(cliente.cliente_zonas);
-						// 		}
-						// 	}
-						// 	console.log($scope.zonasSolicitud);
-						// }
-
 						cliente.clientes_referencias.forEach(function(referencia){
 							if($scope.lineasSolicitud.length == 0){
 									$scope.lineasSolicitud.push(referencia);
@@ -135,6 +121,10 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 
 	$scope.terminarSolicitud = function(solicitud){
 		window.location = solicitud.rutaEdit;
+	}
+
+	$scope.anularSolicitud = function(solicitud){
+		console.log(solicitud);
 	}
 
 
