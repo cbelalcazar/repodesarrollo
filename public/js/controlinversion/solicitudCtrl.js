@@ -564,6 +564,7 @@ $scope.saveSolicitud = function(){
 				});
 			}else{
 
+				$scope.solicitud.accion = "Actualizar";
 				$http.put($scope.resource+"/"+$scope.solicitud.sci_id,$scope.solicitud)
 				.then(function(response){
 					console.log(response.data);
@@ -578,8 +579,8 @@ $scope.saveSolicitud = function(){
 					.ok('OK')
 
 					$mdDialog.show(successMessage).then(function() {
-						// $scope.progress = true;
-						// window.location = response.data.routeSuccess;
+						$scope.progress = true;
+						window.location = response.data.routeSuccess;
 					})
 
 				});
@@ -593,6 +594,7 @@ $scope.enviarSolicitud = function(){
 
 	$scope.setSolicitudToSave();
 	$scope.solicitud.sci_soe_id = 1;
+	$scope.solicitud.accion = "Aprobar";
 
 	$http.put($scope.resource+"/"+$scope.solicitud.sci_id,$scope.solicitud)
 	.then(function(response){

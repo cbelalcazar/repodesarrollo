@@ -8,9 +8,12 @@ use App\Models\Genericas\Tercero;
 use App\Models\Genericas\TLineas;
 use App\Models\Genericas\TCanal;
 use App\Models\controlinversion\TNiveles;
+use App\Models\controlinversion\TSolestado;
 use App\Models\controlinversion\TPerniveles;
 use App\Models\controlinversion\TCanalpernivel;
+use App\Models\controlinversion\TSolipernivel;
 use App\Models\BESA\VendedorZona;
+use Illuminate\Support\Facades\Auth;
 
 
 class autorizacionController extends Controller
@@ -32,6 +35,46 @@ class autorizacionController extends Controller
   public function solicitudesAprobacionGetInfo()
   {
 
+    $userLogged = Auth::user();
+    $userExistPernivel = TPerniveles::where('pern_cedula', $userLogged->idTerceroUsuario)->get();
+    $estados = TSolestado::whereIn('soe_id', ['5','2','3'])->get();
+
+    if(count($userExistPernivel) > 0){
+
+      if($userExistPernivel[0]->pern_nomnivel == 2 || $userExistPernivel[0]->pern_nomnivel == 3){
+
+        if($userExistPernivel[0]->pern_nomnivel == 2){
+
+            $solicitudesPorAceptar = TSolipernivel::where('sni_usrnivel', $userExistPernivel[0]->id)
+            ->where('sni_estado',0)->with(
+              'solicitud.tipoSalida',
+              'solicitud.tpernivel',
+              'solicitud.cargara',
+              'solicitud.cargaralinea.lineasProducto',
+              'solicitud.clientes.clientesReferencias.referencia',
+              'solicitud.clientes.clientesReferencias.lineaProducto.lineasProducto',
+              'solicitud.clientes.clientesZonas',
+              'solicitud.estado',
+              'solicitud.facturara.tercero',
+              'solicitud.tipoPersona'
+              )->get();
+
+        }elseif($userExistPernivel[0]->pern_nomnivel == 3){
+          $solicitudesPorAceptar = "No hay nada por ahora";
+        }
+
+      }else{
+          return response()->json(['Message' => 'El usuario no tiene privilegios suficientes para aprobar solicitudes'],203);
+      }
+
+    }else{
+      return response()->json(['Message' => 'El usuario no tiene privilegios suficientes para aprobar solicitudes'],203);
+    }
+
+    $response = compact('userLogged','userExistPernivel', 'solicitudesPorAceptar', 'estados');
+
+
+    return response()->json($response);
 
 
   }

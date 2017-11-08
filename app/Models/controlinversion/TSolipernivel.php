@@ -27,5 +27,9 @@ class TSolipernivel extends Model
       return $this->hasOne('App\Models\controlinversion\TPerniveles', 'id', 'sni_usrnivel');
     }
 
+    public function solicitud(){
+      return $this->hasOne('App\Models\controlinversion\TSolicitudctlinv', 'sci_id', 'sni_sci_id');
+    }
+
 
 }

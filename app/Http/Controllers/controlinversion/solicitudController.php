@@ -154,6 +154,7 @@ class solicitudController extends Controller
 
         $solicitudPorNivel = new TSolipernivel;
         $solicitudPorNivel->sni_usrnivel = $data['userNivel'][0]['id'];
+        $solicitudPorNivel->sni_cedula = $data['userNivel'][0]['pern_cedula'];
         $solicitudPorNivel->sni_sci_id = $solicitudToCreate->sci_id;
         $solicitudPorNivel->sni_estado = 0;
         $solicitudPorNivel->sni_orden = null;
@@ -221,14 +222,15 @@ class solicitudController extends Controller
     {
 
         $data = $request->all();
-
         $routeSuccess = route('misSolicitudes');
         $solicitudPrincipal = TSolicitudctlinv::find($id)->update($data);
-
         $solicitudPorNivel = TSolipernivel::with('tpernivel.tperjefe')->where('sni_usrnivel', $data['userNivel'][0]['id'])
         ->where('sni_sci_id',$id)->get();
 
-        if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 1){
+
+        if($data['accion'] == "Aprobar"){
+
+          if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 1){
 
             $solicitudPorNivelPendiente =  TSolipernivel::find($solicitudPorNivel[0]['id']);
             $solicitudPorNivelPendiente->sni_estado = 1;
@@ -236,53 +238,55 @@ class solicitudController extends Controller
 
             $nuevaSolicitudPorNivel = new TSolipernivel;
             $nuevaSolicitudPorNivel->sni_usrnivel = $solicitudPorNivel[0]['tpernivel']['tperjefe']['id'];
+            $nuevaSolicitudPorNivel->sni_cedula = $solicitudPorNivel[0]['tpernivel']['tperjefe']['pern_cedula'];
             $nuevaSolicitudPorNivel->sni_sci_id = $id;
             $nuevaSolicitudPorNivel->sni_estado = 0;
             $nuevaSolicitudPorNivel->sni_orden = null;
             $nuevaSolicitudPorNivel->save();
 
+          }else if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 2){
 
-            $clientes = TSolicliente::where('scl_sci_id', $id)->get();
+          }else if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 3){
 
-            foreach ($clientes as $key => $cliente) {
-              $cliente->clientesZonas()->delete();
-              $cliente->clientesReferencias()->delete();
-              $cliente->delete();
-            }
+          }else if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 4){
 
-            $solicitudToCreate = TSolicitudctlinv::find($id);
-            foreach ($data['personas'] as $key => $value) {
-              $objeto = $solicitudToCreate->clientes()->create($value);
-              if($data['sci_tipopersona'] == 1){
-                $zona = [];
-                $zona['scl_scz_id'] = $objeto['scl_id'];
-                if(isset($value['clientes_zonas']['scz_zon_id'])){
-                  $zona['scz_zon_id'] = $value['clientes_zonas']['scz_zon_id'];
-                }else{
-                  $zona['scz_zon_id'] = $value['scz_zon_id'];
-                }
-                $zona['scz_porcentaje'] = 100;
-                $zona['scz_porcentaje_real'] = null;
-                $zona['scz_vdescuento'] = null;
-                $zona['scz_vesperado'] = null;
-                $zona['scz_estado'] = 1;
-                $objetoZonas = $objeto->clientesZonas()->create($zona);
-              }
-
-              foreach ($value['solicitud']['referencias'] as $clave => $dato) {
-                $objeto->clientesReferencias()->create($dato);
-              }
-            }
-
-        }else if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 2){
-
-        }else if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 3){
-
-        }else if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 4){
+          }
 
         }
 
-        //return response()->json(["message" => $solicitudPorNivel[0]['tpernivel'], "userNivel" => $data['userNivel'][0]['id'], "id" => $id]);
+        $clientes = TSolicliente::where('scl_sci_id', $id)->get();
+
+        foreach ($clientes as $key => $cliente) {
+          $cliente->clientesZonas()->delete();
+          $cliente->clientesReferencias()->delete();
+          $cliente->delete();
+        }
+
+        $solicitudToCreate = TSolicitudctlinv::find($id);
+
+        foreach ($data['personas'] as $key => $value) {
+          $objeto = $solicitudToCreate->clientes()->create($value);
+          if($data['sci_tipopersona'] == 1){
+            $zona = [];
+            $zona['scl_scz_id'] = $objeto['scl_id'];
+            if(isset($value['clientes_zonas']['scz_zon_id'])){
+              $zona['scz_zon_id'] = $value['clientes_zonas']['scz_zon_id'];
+            }else{
+              $zona['scz_zon_id'] = $value['scz_zon_id'];
+            }
+            $zona['scz_porcentaje'] = 100;
+            $zona['scz_porcentaje_real'] = null;
+            $zona['scz_vdescuento'] = null;
+            $zona['scz_vesperado'] = null;
+            $zona['scz_estado'] = 1;
+            $objetoZonas = $objeto->clientesZonas()->create($zona);
+          }
+
+          foreach ($value['solicitud']['referencias'] as $clave => $dato) {
+            $objeto->clientesReferencias()->create($dato);
+          }
+        }
+
         $response = compact('solicitudToCreate','routeSuccess');
         return response()->json($response);
     }

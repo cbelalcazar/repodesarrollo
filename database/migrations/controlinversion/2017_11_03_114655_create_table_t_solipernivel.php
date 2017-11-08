@@ -17,6 +17,7 @@ class CreateTableTSolipernivel extends Migration
 
           $table->increments('id');
           $table->integer('sni_usrnivel')->unsigned()->comment('Id del usuario creado en t_perniveles');
+          $table->string('sni_cedula')->length(50)->comment('cedula del usuario que debe aprobar la solicitud');
           $table->integer('sni_sci_id')->length(11)->comment('Id de solicitud que se va aprobar');
           $table->tinyInteger('sni_estado')->length(1)->comment('Estado de aprobacion donde [0] es Pendiente por Aprobar y [1] es Aprobada');
           $table->integer('sni_orden')->nullable()->comment('Orden de aprobacion para personas de nivel 3');

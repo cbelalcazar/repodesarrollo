@@ -16,7 +16,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title">Detalle de la Solicitud - Obsequios y Muestras</h4>
+          <h4 class="modal-title">Detalle de la Solicitud - @{{solicitud.tipo_salida.tsd_descripcion}}</h4>
         </div>
 
         <div class="modal-body">
