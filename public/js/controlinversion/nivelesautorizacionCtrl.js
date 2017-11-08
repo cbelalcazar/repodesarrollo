@@ -163,7 +163,12 @@ app.controller('nivelesautorizacionCtrl', ['$scope', '$http', '$filter', '$windo
     }
 
     $scope.filtroNiveles = function(idNivel){
-    	return $filter('filter')($scope.perniveles, { pern_nomnivel : idNivel});
+    	return $filter('filter')($scope.perniveles, {pern_nomnivel : idNivel});
+    }
+
+    $scope.pintarTipoPersona = function(idVista){
+    	var desc_vista = $filter('filter')($scope.tipoPersona, {id : idVista});
+    	return desc_vista[0].tip_descripcion;
     }
 
 }])

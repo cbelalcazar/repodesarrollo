@@ -24,9 +24,13 @@ class TPerniveles extends Model
         'pern_nomnivel'
     ];
 
-		public function tperjefe(){
-			return $this->hasOne('App\Models\controlinversion\TPerniveles', 'id', 'pern_jefe');
-		}
-
-
+    public function children()
+    {
+        return $this->belongsTo('App\Models\controlinversion\TPerniveles','pern_jefe');
+    }
+	
+    public function tperjefe(){
+		return $this->hasOne('App\Models\controlinversion\TPerniveles', 'id', 'pern_jefe');
+	}
+    
 }

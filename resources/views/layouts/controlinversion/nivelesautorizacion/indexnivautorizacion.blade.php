@@ -29,7 +29,7 @@
 					</table>
 				</md-content>
 			</md-tab>
-			<!-- End tab nivel4 -->
+			<!-- End tab nive4 -->
 			
 			<!-- Tab nivel 3 -->
 			<md-tab label="Nivel 3">
@@ -49,7 +49,7 @@
 								<td>@{{nivel.pern_usuario}}</td>
 								<td>@{{nivel.pern_nombre}}</td>
 								<td>@{{nivel.pern_cedula}}</td>
-								<td>@{{nivel.pern_jefe}}</td>
+								<td>@{{nivel.children.pern_nombre}}</td>
 								<td>vacio</td>
 							</tr>
 						</tbody>
@@ -102,8 +102,8 @@
 								<td>@{{nivel.pern_usuario}}</td>
 								<td>@{{nivel.pern_nombre}}</td>
 								<td>@{{nivel.pern_cedula}}</td>
-								<td>@{{nivel.pern_tipopersona}}</td>
-								<td>@{{nivel.pern_jefe}}</td>
+								<td>@{{pintarTipoPersona(nivel.pern_tipopersona)}}</td>
+								<td>@{{nivel.children.pern_nombre}}</td>
 								<td>vacio</td>
 							</tr>
 						</tbody>
