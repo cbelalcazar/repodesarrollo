@@ -17,7 +17,8 @@ class TCanalpernivel extends Model
 
     protected $fillable = [
         'cap_idcanal',
-        'cap_idpernivel'  
+        'cap_idpernivel', 
+        'cap_idlinea'
     ];
 
         

@@ -15,7 +15,7 @@
           <!-- Combo niveles -->
           <div class="form-group">
             <label>Seleccionar nivel:</label>
-            <select ng-model="objeto.nivel"  ng-change="nivelesCambio()"  ng-options='nivel.niv_nombre for nivel in niveles track by nivel.id' required class="form-control">
+            <select ng-model="objeto.nivel" ng-disabled="objeto.id != undefined" ng-change="nivelesCambio()"  ng-options='nivel.niv_nombre for nivel in niveles track by nivel.id' required class="form-control">
               <option value="">Seleccione...</option>
             </select>
           </div>
@@ -37,6 +37,7 @@
               Ya existe la persona que intenta crear, la debe buscar y agregar
             </div>
             <md-autocomplete
+            ng-disabled="objeto.id != undefined"
             md-no-cache="true"
             md-selected-item="objeto.selectedItem"
             md-search-text="objeto.searchText"
