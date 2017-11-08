@@ -68,7 +68,7 @@
                       <label>Observaciones:</label>
                     </div>
                     <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xl-8">
-                      <textarea class="form-control" ng-model="solicitud.sci_observaciones" cols="50" rows="3"></textarea>
+                      <textarea class="form-control" ng-model="solicitud.observacionEnvio" cols="50" rows="3"></textarea>
                     </div>
                   </div>
 

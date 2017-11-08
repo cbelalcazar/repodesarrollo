@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\controlinversion;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class TSolhistorico extends Model
 {
+    protected $connection = "bd_controlinversion";
+
     protected $table = 't_solhistorico';
 
     protected $primaryKey = 'soh_id';

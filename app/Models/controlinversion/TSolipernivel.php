@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class TSolipernivel extends Model
 {
     protected $connection = "bd_controlinversion";
+    
     protected $table = 't_solipernivel';
 
     public $timestamps = true;
@@ -18,7 +19,8 @@ class TSolipernivel extends Model
         'sni_usrnivel',
         'sni_sci_id',
         'sni_estado',
-        'sni_orden'
+        'sni_orden',
+        'sni_cedula'
     ];
 
     protected $guarded = [];
