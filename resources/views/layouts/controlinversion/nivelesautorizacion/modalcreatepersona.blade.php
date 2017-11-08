@@ -116,7 +116,7 @@
 
           <div class="panel-body">
             <div class="input-group">
-              <select ng-model="linea" ng-options='lin.lin_txt_descrip for lin in lineas track by lin.lin_id' class="form-control">
+              <select ng-model="linea" ng-options='[lin.lin_id,lin.lin_txt_descrip].join(" - ") for lin in lineas track by lin.lin_id' class="form-control">
                 <option value="">Seleccione...</option>
               </select>
               <span class="input-group-btn">

@@ -54,7 +54,7 @@ class nivelesAutorizacionController extends Controller
         }
         
         $VendedorZona = $VendedorConUsuario;
-        $lineas = TLineas::where('lin_txt_estado', 'Si')->get();
+        $lineas = TLineas::all();
         $canales = TCanal::whereIn('can_id', ['20','AL','DR'])->get();
         $canalPernivel = TCanalpernivel::all();
         $perniveles = TPerniveles::with('children', 'canales')->get();

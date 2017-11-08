@@ -30,7 +30,7 @@
           <td class="text-center">N/A</td>
           <td class="text-right">@{{solicitud.solicitud.sci_ventaesperada | currency: "$"}}</td>
           <td><button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(solicitud.solicitud)"><i class="glyphicon glyphicon-eye-open"></i></button></td>
-          <td><button class="btn btn-success" type="button" data-toggle="modal" data-target="#modalAprobar" ng-click="setSolicitud(solicitud.solicitud)"><i class="glyphicon glyphicon-check"></i></button></td>
+          <td><button class="btn btn-success" type="button" data-toggle="modal" data-target="#modalAprobar" ng-click="setSolicitud(solicitud.solicitud, 1)"><i class="glyphicon glyphicon-check"></i></button></td>
         </tr>
       </tbody>
     </table>
