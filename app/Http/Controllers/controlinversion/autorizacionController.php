@@ -35,7 +35,7 @@ class autorizacionController extends Controller
       return view('layouts.controlinversion.solicitud.autorizacionSolicitud', compact('ruta', 'titulo'));
   }
 
-  public function solicitudesAprobacionGetInfo()
+  public static function solicitudesAprobacionGetInfo()
   {
 
     $userLogged = Auth::user();
@@ -48,20 +48,7 @@ class autorizacionController extends Controller
 
         if($userExistPernivel[0]->pern_nomnivel == 2){
 
-            $solicitudesPorAceptar = TSolipernivel::where('sni_usrnivel', $userExistPernivel[0]->id)
-            ->where('sni_estado',0)->with(
-              'solicitud.tipoSalida',
-              'solicitud.tpernivel',
-              'solicitud.cargara',
-              'solicitud.cargaralinea.lineasProducto',
-              'solicitud.clientes.clientesReferencias.referencia',
-              'solicitud.clientes.clientesReferencias.lineaProducto.lineasProducto',
-              'solicitud.clientes.clientesZonas',
-              'solicitud.estado',
-              'solicitud.facturara.tercero',
-              'solicitud.tipoPersona',
-               'solicitud.clientes.clientesReferencias'
-              )->get();
+            $solicitudesPorAceptar = TSolipernivel::getSolicitudesPorAceptar(false,null);
 
         }elseif($userExistPernivel[0]->pern_nomnivel == 3){
           $solicitudesPorAceptar = "No hay nada por ahora";
@@ -99,10 +86,21 @@ class autorizacionController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(Request $request)
+  public static function store(Request $request)
   {
     $data = $request->all();
 
+    //return response()->json("hola");
+
+    /*if($dataValidacion != null){
+
+      $data = $dataValidacion;
+      $data = TSolipernivel::getSolicitudesPorAceptar(true,$data['sci_id']);
+
+      $data['estadoSolicitud']['soe_id'] = $data['sci_soe_id'];
+      $data['observacionEnvio'] = "";
+
+    }*/
     // Valida el estado de la solicitud, si es 3 se debe anular en la tabla y retornar exito
     if($data['estadoSolicitud']['soe_id'] == 3){
       $actualizoEstadoSolicitud =  TSolicitudctlinv::where('sci_id', $data['sci_id'])->update(['sci_soe_id' => 3]);
@@ -131,7 +129,7 @@ class autorizacionController extends Controller
 
     // Si no hay nadie que apruebe retorno error
     if (count($quienesSon) == 0) {
-      return "errorNoExisteNivelTres";      
+      return "errorNoExisteNivelTres";
     }else{
 
       // Si no, creo la ruta de aprobacion
@@ -213,6 +211,8 @@ class autorizacionController extends Controller
   {
       //
   }
+
+
 
 
 }
