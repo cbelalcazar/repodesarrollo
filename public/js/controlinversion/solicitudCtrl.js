@@ -648,7 +648,12 @@ $scope.enviarSolicitud = function(){
 	$scope.progress = true;
 	$scope.setSolicitudToSave();
 	$scope.solicitud.sci_soe_id = 1;
-	$scope.solicitud.accion = "Aprobar";
+
+	if($scope.inicializacion != undefined){
+			$scope.solicitud.accion = "Aprobar";
+	}else{
+		$scope.solicitud.accion = "Crear"
+	}
 
 	$http.put($scope.resource+"/"+$scope.solicitud.sci_id,$scope.solicitud)
 	.then(function(response){

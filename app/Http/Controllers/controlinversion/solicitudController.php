@@ -15,12 +15,15 @@ use App\Models\controlinversion\TCargagasto;
 use App\Models\controlinversion\TLineascc;
 use App\Models\controlinversion\TSolipernivel;
 use App\Models\controlinversion\TPerniveles;
+use App\Models\controlinversion\TSolhistorico;
 use App\Models\Genericas\Tercero;
 use App\Models\Genericas\TCanal;
 use App\Models\Genericas\TItemCriteriosTodo;
 use App\Models\BESA\VendedorZona;
 use App\Models\BESA\PreciosReferencias;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+
 
 ini_set('max_execution_time', 300);
 
@@ -134,34 +137,46 @@ class solicitudController extends Controller
         $routeSuccess = route('misSolicitudes');
         $data = $request->all();
 
-        $solicitudToCreate = TSolicitudctlinv::create($data);
-
-        foreach ($data['personas'] as $key => $value) {
-          $objeto = $solicitudToCreate->clientes()->create($value);
-          if($data['sci_tipopersona'] == 1){
-            $zona = [];
-            $zona['scl_scz_id'] = $objeto['scl_id'];
-            $zona['scz_zon_id'] = $value['scz_zon_id'];
-            $zona['scz_porcentaje'] = 100;
-            $zona['scz_porcentaje_real'] = null;
-            $zona['scz_vdescuento'] = null;
-            $zona['scz_vesperado'] = null;
-            $zona['scz_estado'] = 1;
-            $objetoZonas = $objeto->clientesZonas()->create($zona);
-          }
-
-          foreach ($value['solicitud']['referencias'] as $clave => $dato) {
-            $objeto->clientesReferencias()->create($dato);
-          }
-        }
-
-        $solicitudPorNivel = new TSolipernivel;
-        $solicitudPorNivel->sni_usrnivel = $data['userNivel'][0]['id'];
-        $solicitudPorNivel->sni_cedula = $data['userNivel'][0]['pern_cedula'];
-        $solicitudPorNivel->sni_sci_id = $solicitudToCreate->sci_id;
-        $solicitudPorNivel->sni_estado = 0;
-        $solicitudPorNivel->sni_orden = null;
-        $solicitudPorNivel->save();
+        //return response()->json($data);
+        $solicitudToCreate = $this->guardarSolicitud($data);
+        // $solicitudToCreate = TSolicitudctlinv::create($data);
+        //
+        // foreach ($data['personas'] as $key => $value) {
+        //   $objeto = $solicitudToCreate->clientes()->create($value);
+        //   if($data['sci_tipopersona'] == 1){
+        //     $zona = [];
+        //     $zona['scl_scz_id'] = $objeto['scl_id'];
+        //     $zona['scz_zon_id'] = $value['scz_zon_id'];
+        //     $zona['scz_porcentaje'] = 100;
+        //     $zona['scz_porcentaje_real'] = null;
+        //     $zona['scz_vdescuento'] = null;
+        //     $zona['scz_vesperado'] = null;
+        //     $zona['scz_estado'] = 1;
+        //     $objetoZonas = $objeto->clientesZonas()->create($zona);
+        //   }
+        //
+        //   foreach ($value['solicitud']['referencias'] as $clave => $dato) {
+        //     $objeto->clientesReferencias()->create($dato);
+        //   }
+        // }
+        //
+        // $solicitudPorNivel = new TSolipernivel;
+        // $solicitudPorNivel->sni_usrnivel = $data['userNivel'][0]['id'];
+        // $solicitudPorNivel->sni_cedula = $data['userNivel'][0]['pern_cedula'];
+        // $solicitudPorNivel->sni_sci_id = $solicitudToCreate->sci_id;
+        // $solicitudPorNivel->sni_estado = 0;
+        // $solicitudPorNivel->sni_orden = null;
+        // $solicitudPorNivel->save();
+        //
+        // $registroHistorico = new TSolhistorico;
+        // $registroHistorico->soh_sci_id = $solicitudToCreate->sci_id;
+        // $registroHistorico->soh_soe_id = $solicitudToCreate->sci_soe_id;
+        // $registroHistorico->soh_idTercero_envia = $data['userNivel'][0]['pern_cedula'];
+        // $registroHistorico->soh_idTercero_recibe = $data['userNivel'][0]['pern_cedula'];
+        // $registroHistorico->soh_observacion = "CREACION DE SOLICITUD";
+        // $registroHistorico->soh_fechaenvio = Carbon::now();
+        // $registroHistorico->soh_estadoenvio = 1;
+        // $registroHistorico->save();
 
         $response = compact('solicitudToCreate', 'routeSuccess');
         return response()->json($response);
@@ -226,12 +241,36 @@ class solicitudController extends Controller
 
         $data = $request->all();
         $routeSuccess = route('misSolicitudes');
-        $solicitudPrincipal = TSolicitudctlinv::find($id)->update($data);
-        $solicitudPorNivel = TSolipernivel::with('tpernivel.tperjefe')->where('sni_usrnivel', $data['userNivel'][0]['id'])
-        ->where('sni_sci_id',$id)->get();
+        $solicitudPorNivel = [];
+        $solicitudPrincipal = [];
 
+        if($data['accion'] == "Actualizar"){
+
+          $solicitudPrincipal = TSolicitudctlinv::find($id)->update($data);
+
+          $solicitudPorNivel = TSolipernivel::with('tpernivel.tperjefe')->where('sni_usrnivel', $data['userNivel'][0]['id'])
+          ->where('sni_sci_id',$id)->get();
+
+        }
+
+        if($data['accion'] == "Crear"){
+
+          $solicitudAEnviar = $this->guardarSolicitud($data);
+
+          $solicitudPorNivel = TSolipernivel::with('tpernivel.tperjefe')->where('sni_usrnivel', $data['userNivel'][0]['id'])
+          ->where('sni_sci_id',$solicitudAEnviar->sci_id)->get();
+
+          $data['accion'] = "Aprobar";
+
+        }
 
         if($data['accion'] == "Aprobar"){
+
+          if($id != "undefined"){
+            $id = $id;
+          }elseif($id == "undefined" && isset($solicitudAEnviar->sci_id)){
+            $id = $solicitudAEnviar->sci_id;
+          }
 
           if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 1){
 
@@ -246,6 +285,16 @@ class solicitudController extends Controller
             $nuevaSolicitudPorNivel->sni_estado = 0;
             $nuevaSolicitudPorNivel->sni_orden = null;
             $nuevaSolicitudPorNivel->save();
+
+            $registroHistorico = new TSolhistorico;
+            $registroHistorico->soh_sci_id = $id;
+            $registroHistorico->soh_soe_id = $data['sci_soe_id'];
+            $registroHistorico->soh_idTercero_envia = $data['userNivel'][0]['pern_cedula'];
+            $registroHistorico->soh_idTercero_recibe = $solicitudPorNivel[0]['tpernivel']['tperjefe']['pern_cedula'];
+            $registroHistorico->soh_observacion = "ENVIO DE SOLICITUD";
+            $registroHistorico->soh_fechaenvio = Carbon::now();
+            $registroHistorico->soh_estadoenvio = 1;
+            $registroHistorico->save();
 
           }else if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 2){
 
@@ -305,7 +354,7 @@ class solicitudController extends Controller
         $solicitud = TSolicitudctlinv::find($id);
         $solicitud->sci_soe_id = 3;
         $solicitud->save();
-        
+
         return response()->json($solicitud);
     }
 
@@ -347,6 +396,51 @@ class solicitudController extends Controller
         return response()->json($response);
     }
 
+
+    public function guardarSolicitud($data){
+
+      $solicitudToCreate = TSolicitudctlinv::create($data);
+
+      foreach ($data['personas'] as $key => $value) {
+        $objeto = $solicitudToCreate->clientes()->create($value);
+        if($data['sci_tipopersona'] == 1){
+          $zona = [];
+          $zona['scl_scz_id'] = $objeto['scl_id'];
+          $zona['scz_zon_id'] = $value['scz_zon_id'];
+          $zona['scz_porcentaje'] = 100;
+          $zona['scz_porcentaje_real'] = null;
+          $zona['scz_vdescuento'] = null;
+          $zona['scz_vesperado'] = null;
+          $zona['scz_estado'] = 1;
+          $objetoZonas = $objeto->clientesZonas()->create($zona);
+        }
+
+        foreach ($value['solicitud']['referencias'] as $clave => $dato) {
+          $objeto->clientesReferencias()->create($dato);
+        }
+      }
+
+      $solicitudPorNivel = new TSolipernivel;
+      $solicitudPorNivel->sni_usrnivel = $data['userNivel'][0]['id'];
+      $solicitudPorNivel->sni_cedula = $data['userNivel'][0]['pern_cedula'];
+      $solicitudPorNivel->sni_sci_id = $solicitudToCreate->sci_id;
+      $solicitudPorNivel->sni_estado = 0;
+      $solicitudPorNivel->sni_orden = null;
+      $solicitudPorNivel->save();
+
+      $registroHistorico = new TSolhistorico;
+      $registroHistorico->soh_sci_id = $solicitudToCreate->sci_id;
+      $registroHistorico->soh_soe_id = $solicitudToCreate->sci_soe_id;
+      $registroHistorico->soh_idTercero_envia = $data['userNivel'][0]['pern_cedula'];
+      $registroHistorico->soh_idTercero_recibe = $data['userNivel'][0]['pern_cedula'];
+      $registroHistorico->soh_observacion = "CREACION DE SOLICITUD";
+      $registroHistorico->soh_fechaenvio = Carbon::now();
+      $registroHistorico->soh_estadoenvio = 1;
+      $registroHistorico->save();
+
+      return $solicitudToCreate;
+
+    }
 
 
 
