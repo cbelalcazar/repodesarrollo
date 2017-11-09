@@ -7,6 +7,7 @@ use App\Models\controlinversion\TSolicliente;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\controlinversion\autorizacionController as AutorizacionCtrl;
 use App\Models\BESA\lineasProducto;
 use App\Models\controlinversion\TFacturara;
 use App\Models\controlinversion\TTiposalida;
@@ -253,25 +254,45 @@ class solicitudController extends Controller
 
         }
 
+        //Secuencia guardar y enviar, ingresa primero a crear la solicitud y por consiguiente continua a aprobación inmediatamente
         if($data['accion'] == "Crear"){
 
-          $solicitudAEnviar = $this->guardarSolicitud($data);
+          //Se obtiene la información de la solicitud enviada para ejecutar las transacciones de creación y actualización
+          $dataSolicitudToCreate = $data;
+          $dataSolicitudToUpdate = $data; //La solicitud que viene desde el boton guardar y enviar por defecto viene en estado solicitud(1)
+          $dataSolicitudToCreate['sci_soe_id'] = 0; //El estado de una solicitud en creación debe ser 0 porque estaria en principio en estado EN ELABORACION
+          $solicitudAEnviar = $this->guardarSolicitud($dataSolicitudToCreate);//Se crea la solicitud en estado 0
 
+          //Actualizamos la solicitud para que este en estado de Solicitud(1) en secuencia de Enviar
+          $solicitudPrincipal = TSolicitudctlinv::find($solicitudAEnviar->sci_id)->update($data);//Se pasa data porque su estado originalmente desde la vista viene en Solicitud(1)
+
+          /**
+          *Buscamos la ruta de aprobación existente para esta solicitud, en este momento la solicitud esta en creación
+          *Por ende se busca por el id de la solicitud y el id del usuario que esta creando la solicitud
+          *Cabe aclarar que este usuario debe estar registrado en la tabla t_perniveles
+          */
           $solicitudPorNivel = TSolipernivel::with('tpernivel.tperjefe')->where('sni_usrnivel', $data['userNivel'][0]['id'])
           ->where('sni_sci_id',$solicitudAEnviar->sci_id)->get();
 
+          //Se cambia la acción para que pueda continuar al paso siguiente que es el de aprobación
           $data['accion'] = "Aprobar";
 
         }
 
         if($data['accion'] == "Aprobar"){
 
+          /*
+          *Si una solicitud esta en creación al ejecutar guardar y enviar el id de la solicitud todavia no existe
+          *Por ende viene undefined y con esta validación al id se le asigna el id de la solicitud que se creo en el
+          *Paso anterior de Crear
+          */
           if($id != "undefined"){
             $id = $id;
           }elseif($id == "undefined" && isset($solicitudAEnviar->sci_id)){
             $id = $solicitudAEnviar->sci_id;
           }
 
+          //Pasos de envio de personas de nivel 1
           if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 1){
 
             $solicitudPorNivelPendiente =  TSolipernivel::find($solicitudPorNivel[0]['id']);
@@ -297,6 +318,10 @@ class solicitudController extends Controller
             $registroHistorico->save();
 
           }else if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 2){
+
+            /*$response = compact('data','solicitudAEnviar');
+             $autorizacionSolicitud = AutorizacionCtrl::store($request, $data);
+             return response()->json($autorizacionSolicitud);*/
 
           }else if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 3){
 
