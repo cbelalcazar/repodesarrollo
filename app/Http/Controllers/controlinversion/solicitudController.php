@@ -319,9 +319,14 @@ class solicitudController extends Controller
 
           }else if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 2){
 
-            /*$response = compact('data','solicitudAEnviar');
-             $autorizacionSolicitud = AutorizacionCtrl::store($request, $data);
-             return response()->json($autorizacionSolicitud);*/
+             $response = compact('data','solicitudAEnviar');
+             //return response()->json($response);
+
+             $dataNivel2 = $data;
+             $dataNivel2['sci_id'] = $solicitudAEnviar->sci_id;
+             $autorizacionSolicitud = AutorizacionCtrl::store($request, $dataNivel2);
+             //dd($autorizacionSolicitud);
+             //return response()->json($autorizacionSolicitud);
 
           }else if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 3){
 

@@ -47,11 +47,31 @@ class autorizacionController extends Controller
       if($userExistPernivel[0]->pern_nomnivel == 2 || $userExistPernivel[0]->pern_nomnivel == 3){
 
         if($userExistPernivel[0]->pern_nomnivel == 2){
-
+           $todasSolicitudes = TSolipernivel::where('sni_estado', 0)->get();
             $solicitudesPorAceptar = TSolipernivel::getSolicitudesPorAceptar(false,null,$userExistPernivel[0]->id);
-
+            // necesito validar si en el arreglo todas la solicitudes existe alguna en estado cero con el mismo numero de solicitud y con sni_orden menor
         }elseif($userExistPernivel[0]->pern_nomnivel == 3){
-          $solicitudesPorAceptar = "No hay nada por ahora";
+          $todasSolicitudes = TSolipernivel::where('sni_estado', 0)->whereNotNull('sni_orden')->get();
+          $solicitudesPorAceptar = TSolipernivel::getSolicitudesPorAceptar(false,null,$userExistPernivel[0]->id);
+          // necesito validar si en el arreglo todas la solicitudes existe alguna en estado cero con el mismo numero de solicitud y con sni_orden menor
+
+          $array = [];
+          foreach ($solicitudesPorAceptar as $key => $solicitud) {
+
+            $filterTodas = [];
+            foreach ($todasSolicitudes as $key => $tsoli) {
+              if($tsoli->sni_sci_id == $solicitud->sni_sci_id && $tsoli->sni_orden < $solicitud->sni_orden){
+                array_push($filterTodas, $tsoli);
+              };
+            }
+
+            if(count($filterTodas) > 0){
+              array_push($array, null);
+            }elseif(count($filterTodas) == 0){
+              array_push($array, $solicitud);
+            }
+          }
+          $solicitudesPorAceptar = collect($array)->filter()->all();
         }
 
       }else{
@@ -86,21 +106,21 @@ class autorizacionController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public static function store(Request $request)
+  public static function store(Request $request, $dataValidacion = null)
   {
     $data = $request->all();
+    //return response()->json($data);
 
-    //return response()->json("hola");
-
-    /*if($dataValidacion != null){
+    if($dataValidacion != null){
 
       $data = $dataValidacion;
-      $data = TSolipernivel::getSolicitudesPorAceptar(true,$data['sci_id']);
 
-      $data['estadoSolicitud']['soe_id'] = $data['sci_soe_id'];
+      $data = TSolipernivel::getSolicitudesPorAceptar(true, $data['sci_id'], $data['userNivel'][0]['id']);
+      $data = $data[0];
+      $data['estadoSolicitud'] = $data['solicitud']['estado'];
       $data['observacionEnvio'] = "";
 
-    }*/
+    }
     // Valida el estado de la solicitud, si es 3 se debe anular en la tabla y retornar exito
     if($data['estadoSolicitud']['soe_id'] == 3){
       $actualizoEstadoSolicitud =  TSolicitudctlinv::where('sci_id', $data['sci_id'])->update(['sci_soe_id' => 3]);
@@ -117,6 +137,7 @@ class autorizacionController extends Controller
       return 'exito';
     }
 
+    $userExistPernivel = TPerniveles::with('tperjefe')->where('pern_cedula', $data['usuarioLogeado']['idTerceroUsuario'])->get();
     // Obtengo el canal
     $canal = $data['sci_can_id'];
     $clientes = $data['clientes'];
@@ -130,8 +151,43 @@ class autorizacionController extends Controller
     // Si no hay nadie que apruebe retorno error
     if (count($quienesSon) == 0) {
       return "errorNoExisteNivelTres";
-    }else{
+    }elseif($userExistPernivel[0]['pern_nomnivel'] == 3){
 
+      $user = TSolipernivel::where([['sni_cedula', $data['usuarioLogeado']['idTerceroUsuario']], ['sni_sci_id', $data['sci_id']]])->update(['sni_estado' => 1]);
+      $existenMasPasos = TSolipernivel::where([['sni_sci_id', $data['sci_id']], ['sni_estado', 0]])->whereNotNull('sni_orden')->get();
+
+      if(count($existenMasPasos) == 0){
+
+        $solicitudUpdateNew = TSolicitudctlinv::where('sci_id', $data['sci_id'])->update(['sci_soe_id' => 5]);
+        $grabo = TSolipernivel::create(['sni_usrnivel' => $userExistPernivel[0]['pern_jefe'], 'sni_cedula' => $userExistPernivel[0]['tperjefe']['pern_cedula'], 'sni_sci_id' => $data['sci_id'], 'sni_estado' => 0, 'sni_orden' => null]);
+        //$userExistPernivel[0]['pern_nomnivel']
+
+        // Genero el historico de aprobacion de nivel 3 a nivel 4
+        // $historico = new TSolhistorico;
+        // $historico->soh_sci_id = $data['sci_id'];
+        // $historico->soh_soe_id = $data['sci_soe_id'];
+        // $historico->soh_idTercero_envia = $data['usuarioLogeado']['idTerceroUsuario'];
+        // $historico->soh_idTercero_recibe = $personaNiveles[0]['pern_cedula'];
+        //
+        // if(isset($data['observacionEnvio'])){
+        //   if ($data['observacionEnvio'] == "") {
+        //     $data['observacionEnvio'] = "SIN OBSERVACION";
+        //   }
+        // }else{
+        //   $data['observacionEnvio'] = "SIN OBSERVACION";
+        // }
+        //
+        // $historico->soh_observacion =  $data['observacionEnvio'];
+        // $historico->soh_fechaenvio = Carbon::now();
+        // $historico->soh_estadoenvio = 1;
+        // $historico->save();
+
+      }
+
+
+
+    }else{
+      //Validar si el usuario logeado es de nivel 2
       // Si no, creo la ruta de aprobacion
       $quienesSonAgrupados = $quienesSon->groupBy('cap_idpernivel')->keys()->all();
       $personaNiveles = TPerniveles::whereIn('id', $quienesSonAgrupados)->get();
@@ -152,9 +208,15 @@ class autorizacionController extends Controller
       $historico->soh_soe_id = $data['sci_soe_id'];
       $historico->soh_idTercero_envia = $data['usuarioLogeado']['idTerceroUsuario'];
       $historico->soh_idTercero_recibe = $personaNiveles[0]['pern_cedula'];
-      if ($data['observacionEnvio'] == "") {
+
+      if(isset($data['observacionEnvio'])){
+        if ($data['observacionEnvio'] == "") {
+          $data['observacionEnvio'] = "SIN OBSERVACION";
+        }
+      }else{
         $data['observacionEnvio'] = "SIN OBSERVACION";
       }
+
       $historico->soh_observacion =  $data['observacionEnvio'];
       $historico->soh_fechaenvio = Carbon::now();
       $historico->soh_estadoenvio = 1;

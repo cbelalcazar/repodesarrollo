@@ -57,8 +57,8 @@ class TSolipernivel extends Model
 
       }elseif($unaSolaReferencia == true && $idSolcitud != null){
 
-        $solicitudesPorAceptar = TSolipernivel::where('sni_usrnivel', $userExistPernivel[0]->id)
-        ->where('sni_estado',0)->where('sni_sci_id', $idSolcitud)->with(
+        $solicitudesPorAceptar = TSolipernivel::where('sni_usrnivel', $idUsuario)
+        ->where('sni_sci_id', $idSolcitud)->whereIn('sni_estado',[1,0])->with(
           'solicitud.tipoSalida',
           'solicitud.tpernivel',
           'solicitud.cargara',

@@ -88,6 +88,11 @@ class TSolicitudctlinv extends Model
       return $this->hasOne('App\Models\controlinversion\TLineascc', 'lcc_codigo', 'sci_cargarlinea');
     }
 
+    public function tpernivel(){
+      return $this->hasOne('App\Models\controlinversion\TPerniveles', 'pern_cedula', 'sci_usuario');
+    }
+
+
     public function historico(){
       return $this->hasMany('App\Models\controlinversion\TSolhistorico', 'soh_sci_id', 'sci_id');
     }
