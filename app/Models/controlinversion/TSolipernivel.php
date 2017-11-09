@@ -34,13 +34,13 @@ class TSolipernivel extends Model
     }
 
 
-    public static function getSolicitudesPorAceptar($unaSolaReferencia, $idSolcitud = null){
+    public static function getSolicitudesPorAceptar($unaSolaReferencia, $idSolcitud = null, $idUsuario = null){
 
       $solicitudesPorAceptar = [];
 
       if($unaSolaReferencia == false){
 
-        $solicitudesPorAceptar = TSolipernivel::where('sni_usrnivel', $userExistPernivel[0]->id)
+        $solicitudesPorAceptar = TSolipernivel::where('sni_usrnivel', $idUsuario )
         ->where('sni_estado',0)->with(
           'solicitud.tipoSalida',
           'solicitud.tpernivel',

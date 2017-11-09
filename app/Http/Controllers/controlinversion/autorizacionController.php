@@ -48,7 +48,7 @@ class autorizacionController extends Controller
 
         if($userExistPernivel[0]->pern_nomnivel == 2){
 
-            $solicitudesPorAceptar = TSolipernivel::getSolicitudesPorAceptar(false,null);
+            $solicitudesPorAceptar = TSolipernivel::getSolicitudesPorAceptar(false,null,$userExistPernivel[0]->id);
 
         }elseif($userExistPernivel[0]->pern_nomnivel == 3){
           $solicitudesPorAceptar = "No hay nada por ahora";
