@@ -384,7 +384,7 @@ class solicitudController extends Controller
         //esto debe filtrar por usuario campo sci_usuario y sci_tipo 3,7 idTerceroUsuario
         $userLogged = Auth::user();
 
-        $solicitudes = TSolicitudctlinv::with('clientes.clientesReferencias.LineaProducto.LineasProducto', 'clientes.clientesReferencias.referencia' ,'clientes.clientesZonas', 'estado', 'tipoSalida', 'tipoPersona', 'cargara', 'facturara.tercero','cargaralinea.LineasProducto')->where('sci_usuario',$userLogged->idTerceroUsuario)->orderBy('sci_id', 'desc')->get();
+        $solicitudes = TSolicitudctlinv::with('clientes.clientesReferencias.LineaProducto.LineasProducto', 'clientes.clientesReferencias.referencia' ,'clientes.clientesZonas', 'estado', 'tipoSalida', 'tipoPersona', 'cargara', 'facturara.tercero','cargaralinea.LineasProducto', 'historico', 'historico.estado', 'historico.perNivelEnvia', 'historico.perNivelRecibe')->where('sci_usuario',$userLogged->idTerceroUsuario)->orderBy('sci_id', 'desc')->get();
 
         $solicitudes->map(function($solicitud){
             $id = $solicitud->sci_id;

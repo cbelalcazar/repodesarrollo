@@ -29,5 +29,16 @@ class TSolhistorico extends Model
 
     protected $guarded = [];
 
+    public function estado(){
+      return $this->hasOne('App\Models\controlinversion\TSolestado', 'soe_id', 'soh_soe_id');
+    }
+
+    public function perNivelEnvia(){
+      return $this->hasOne('App\Models\Genericas\Tercero', 'idTercero', 'soh_idTercero_envia');
+    }
+
+    public function perNivelRecibe(){
+      return $this->hasOne('App\Models\Genericas\Tercero', 'idTercero', 'soh_idTercero_recibe');
+    }
         
 }

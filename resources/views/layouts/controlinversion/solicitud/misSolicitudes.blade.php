@@ -251,9 +251,9 @@
 
 			 @include('layouts.controlinversion.reportesVisuales.mostrarSolicitud')
 
-	     <div ng-if="progress" class="progress">
+     	<div ng-if="progress" class="progress">
 	    	<md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
-			</div>
+		</div>
 </div>
 @endsection
 

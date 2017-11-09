@@ -11,10 +11,6 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 
 	$scope.getInfo = function(){
 		$scope.todas = [];
-
-		console.log("Inicie");
-
-
 		$http.get($scope.getInfoMisolicitudes).then(function(response){
 			data = response.data;
 			$scope.todas = angular.copy(data.solicitudes);
@@ -24,7 +20,6 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 					fecha_ini = fecha_ini.getTime() + fecha_ini.getTimezoneOffset()*60*1000;
 					solicitud.sci_fecha = new Date(fecha_ini);
 			}, this);
-
 			$scope.elaboracion =  $filter('filter')($scope.todas, {sci_soe_id : 0});
 			$scope.solicitud =  $filter('filter')($scope.todas, {sci_soe_id : 1});
 			$scope.correcciones =  $filter('filter')($scope.todas, {sci_soe_id : 2});
