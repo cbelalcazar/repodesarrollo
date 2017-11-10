@@ -108,7 +108,7 @@
 	          			<td>@{{corre.cargara.cga_descripcion}}</td>
 	          			<td>@{{corre.sci_observaciones}}</td>
 									<td><button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(corre)"><i class="glyphicon glyphicon-eye-open"></i></button></td>
-	          			<td><button class="btn btn-warning" type="button"><i class="glyphicon glyphicon-edit"></i></button></td>
+	          			<td><button class="btn btn-warning" ng-click="corregirSolicitud(corre)" type="button"><i class="glyphicon glyphicon-edit"></i></button></td>
 	          			<td><button class="btn btn-danger" ng-click="anularSolicitud(corre)" type="button"><i class="glyphicon glyphicon-remove"></i></button></td>
 	          		</tr>
 	          	</tbody>

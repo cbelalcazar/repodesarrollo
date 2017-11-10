@@ -137,7 +137,7 @@ class autorizacionController extends Controller
       $solipornivel->sni_usrnivel = $objetoGuardar->sni_usrnivel;
       $solipornivel->sni_cedula = $objetoGuardar->sni_cedula;
       $solipornivel->sni_sci_id = $objetoGuardar->sni_sci_id;
-      $solipornivel->sni_estado = $objetoGuardar->sni_estado;
+      $solipornivel->sni_estado = 0;
       $solipornivel->sni_orden= $objetoGuardar->sni_orden;
       $solipornivel->save();
     //dd($objetoGuardar);

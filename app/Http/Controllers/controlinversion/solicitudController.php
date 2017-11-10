@@ -415,6 +415,10 @@ class solicitudController extends Controller
 
         $solicitudes->map(function($solicitud){
             $id = $solicitud->sci_id;
+
+            if($solicitud->sci_soe_id == 2){
+              $solicitud->rutaCorrecion = route('solicitud.correcion', ['id' => $id]);
+            }
             $solicitud->rutaEdit = route('solicitud.edit', ['id' => $id]);
             return $solicitud;
         });

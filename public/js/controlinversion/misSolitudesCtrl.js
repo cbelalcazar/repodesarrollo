@@ -119,6 +119,10 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 		window.location = solicitud.rutaEdit;
 	}
 
+	$scope.corregirSolicitud = function(solicitud){
+		window.location = solicitud.rutaCorrecion;
+	}
+
 	$scope.anularSolicitud = function(solicitud){
 
 		var confirm = $mdDialog.confirm()
