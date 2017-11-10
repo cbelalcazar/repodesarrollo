@@ -132,8 +132,18 @@ class autorizacionController extends Controller
       $actualizoEstadoSolicitud =  TSolicitudctlinv::where('sci_id', $data['sci_id'])->update(['sci_soe_id' => 2]);
       $objetoGuardar = TSolipernivel::where('sni_sci_id', $data['sci_id'])->orderBy('id', 'asc')->first();
       $borrapermisos = TSolipernivel::where('sni_sci_id', $data['sci_id'])->orderBy('id', 'asc')->delete();
-      $borrapermisos;
-      $creacion = TSolipernivel::create($objetoGuardar);
+
+      $solipornivel = new TSolipernivel;
+      $solipornivel->sni_usrnivel = $objetoGuardar->sni_usrnivel;
+      $solipornivel->sni_cedula = $objetoGuardar->sni_cedula;
+      $solipornivel->sni_sci_id = $objetoGuardar->sni_sci_id;
+      $solipornivel->sni_estado = $objetoGuardar->sni_estado;
+      $solipornivel->sni_orden= $objetoGuardar->sni_orden;
+      $solipornivel->save();
+    //dd($objetoGuardar);
+
+
+      //$creacion = TSolipernivel::create($objetoGuardar);
 
       return 'exito';
     }

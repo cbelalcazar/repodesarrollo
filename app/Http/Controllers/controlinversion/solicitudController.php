@@ -244,8 +244,11 @@ class solicitudController extends Controller
         $routeSuccess = route('misSolicitudes');
         $solicitudPorNivel = [];
         $solicitudPrincipal = [];
+
         $solicitudPorNivel = TSolipernivel::with('tpernivel.tperjefe')->where('sni_usrnivel', $data['userNivel'][0]['id'])
         ->where('sni_sci_id',$id)->get();
+
+      //  dd($solicitudPorNivel);
 
 
 

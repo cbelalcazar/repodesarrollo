@@ -89,7 +89,7 @@ function($scope,  $filter, $http, $window, DTOptionsBuilder, DTColumnDefBuilder)
         $scope.progress = false;
         alert("No se encuentra ninguna persona para realizar la aprobacion en niveles de autorizacion");
       }else{
-        $window.location.reload();
+        // $window.location.reload();
       }
     }, function(errorResponse){
 
