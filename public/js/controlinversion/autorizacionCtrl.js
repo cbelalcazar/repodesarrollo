@@ -85,7 +85,7 @@ function($scope,  $filter, $http, $window, DTOptionsBuilder, DTColumnDefBuilder)
       var data = response.data;
       console.log('Respuesta:');
       if (data == 'errorNoExisteNivelTres') {
-        // Muestro mensaje de error 
+        // Muestro mensaje de error
         $scope.progress = false;
         alert("No se encuentra ninguna persona para realizar la aprobacion en niveles de autorizacion");
       }else{

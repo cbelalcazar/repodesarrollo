@@ -205,7 +205,7 @@ class solicitudController extends Controller
     {
       $ruta = 'Control de Inversion // Editar Solicitud';
       $titulo = 'EDITAR SOLICITUD';
-      $solicitud = TSolicitudctlinv::with('clientes.clientesReferencias','clientes.clientesReferencias.referencia.LineaItemCriterio','clientes.clientesZonas')->where('sci_id', $id)->get();
+      $solicitud = TSolicitudctlinv::with('clientes.clientesReferencias','clientes.clientesReferencias.referencia.LineaItemCriterio','clientes.clientesZonas', 'clientes.clientesReferencias.referencia')->where('sci_id', $id)->get();
       $solicitud[0]['sci_soe_id'] = 1;
 
       $response = compact('ruta', 'titulo', 'solicitud');
@@ -244,16 +244,16 @@ class solicitudController extends Controller
         $routeSuccess = route('misSolicitudes');
         $solicitudPorNivel = [];
         $solicitudPrincipal = [];
+        $solicitudPorNivel = TSolipernivel::with('tpernivel.tperjefe')->where('sni_usrnivel', $data['userNivel'][0]['id'])
+        ->where('sni_sci_id',$id)->get();
 
+
+
+        //Actualiza la información de la solicitud
         if($data['accion'] == "Actualizar"){
 
           $solicitudPrincipal = TSolicitudctlinv::find($id)->update($data);
-
-          $solicitudPorNivel = TSolipernivel::with('tpernivel.tperjefe')->where('sni_usrnivel', $data['userNivel'][0]['id'])
-          ->where('sni_sci_id',$id)->get();
-
         }
-
         //Secuencia guardar y enviar, ingresa primero a crear la solicitud y por consiguiente continua a aprobación inmediatamente
         if($data['accion'] == "Crear"){
 
@@ -262,10 +262,6 @@ class solicitudController extends Controller
           $dataSolicitudToUpdate = $data; //La solicitud que viene desde el boton guardar y enviar por defecto viene en estado solicitud(1)
           $dataSolicitudToCreate['sci_soe_id'] = 0; //El estado de una solicitud en creación debe ser 0 porque estaria en principio en estado EN ELABORACION
           $solicitudAEnviar = $this->guardarSolicitud($dataSolicitudToCreate);//Se crea la solicitud en estado 0
-
-          //Actualizamos la solicitud para que este en estado de Solicitud(1) en secuencia de Enviar
-          $solicitudPrincipal = TSolicitudctlinv::find($solicitudAEnviar->sci_id)->update($data);//Se pasa data porque su estado originalmente desde la vista viene en Solicitud(1)
-
           /**
           *Buscamos la ruta de aprobación existente para esta solicitud, en este momento la solicitud esta en creación
           *Por ende se busca por el id de la solicitud y el id del usuario que esta creando la solicitud
@@ -273,14 +269,12 @@ class solicitudController extends Controller
           */
           $solicitudPorNivel = TSolipernivel::with('tpernivel.tperjefe')->where('sni_usrnivel', $data['userNivel'][0]['id'])
           ->where('sni_sci_id',$solicitudAEnviar->sci_id)->get();
-
           //Se cambia la acción para que pueda continuar al paso siguiente que es el de aprobación
           $data['accion'] = "Aprobar";
 
         }
 
         if($data['accion'] == "Aprobar"){
-
           /*
           *Si una solicitud esta en creación al ejecutar guardar y enviar el id de la solicitud todavia no existe
           *Por ende viene undefined y con esta validación al id se le asigna el id de la solicitud que se creo en el
@@ -291,6 +285,9 @@ class solicitudController extends Controller
           }elseif($id == "undefined" && isset($solicitudAEnviar->sci_id)){
             $id = $solicitudAEnviar->sci_id;
           }
+
+          //Actualizamos la solicitud para que este en estado de Solicitud(1) en secuencia de Enviar
+          $solicitudPrincipal = TSolicitudctlinv::find($id)->update($data);//Se pasa data porque su estado originalmente desde la vista viene en Solicitud(1)
 
           //Pasos de envio de personas de nivel 1
           if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 1){
@@ -319,12 +316,9 @@ class solicitudController extends Controller
 
           }else if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 2){
 
-             $response = compact('data','solicitudAEnviar');
-             //return response()->json($response);
-
              $dataNivel2 = $data;
-             $dataNivel2['sci_id'] = $solicitudAEnviar->sci_id;
-             $autorizacionSolicitud = AutorizacionCtrl::store($request, $dataNivel2);
+             $dataNivel2['sci_id'] = $id;
+             $autorizacionSolicitud = AutorizacionCtrl::store($request, $id);
              //dd($autorizacionSolicitud);
              //return response()->json($autorizacionSolicitud);
 

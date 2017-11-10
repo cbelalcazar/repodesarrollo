@@ -106,28 +106,29 @@ class autorizacionController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public static function store(Request $request, $dataValidacion = null)
+  public static function store(Request $request, $idSolicitud = null)
   {
     $data = $request->all();
     //return response()->json($data);
 
-    if($dataValidacion != null){
+    if($idSolicitud != null){
 
-      $data = $dataValidacion;
-
-      $data = TSolipernivel::getSolicitudesPorAceptar(true, $data['sci_id'], $data['userNivel'][0]['id']);
-      $data = $data[0];
-      $data['estadoSolicitud'] = $data['solicitud']['estado'];
+      //$data = $dataValidacion;
+      $nivelesAutorizaNew = TSolipernivel::getSolicitudesPorAceptar(true, $idSolicitud, $data['userNivel'][0]['id']);
+      $data = $nivelesAutorizaNew[0]['solicitud'];
+      $data['estadoSolicitud'] = $nivelesAutorizaNew[0]['solicitud']['estado'];
       $data['observacionEnvio'] = "";
+      $data['usuarioLogeado'] = Auth::user();
+      //echo "<pre>";print_r($data['usuarioLogeado']);exit;
 
     }
+      $userExistPernivel = TPerniveles::with('tperjefe')->where('pern_cedula', $data['usuarioLogeado']['idTerceroUsuario'])->get();
     // Valida el estado de la solicitud, si es 3 se debe anular en la tabla y retornar exito
     if($data['estadoSolicitud']['soe_id'] == 3){
       $actualizoEstadoSolicitud =  TSolicitudctlinv::where('sci_id', $data['sci_id'])->update(['sci_soe_id' => 3]);
       return 'exito';
-    }
-    // Valida el estado de la solicitud, si es 3 se debe ponerla en estado correcciones y retornar exito
-    if($data['estadoSolicitud']['soe_id'] == 2){
+    }elseif($data['estadoSolicitud']['soe_id'] == 2){
+      // Valida el estado de la solicitud, si es 3 se debe ponerla en estado correcciones y retornar exito
       $actualizoEstadoSolicitud =  TSolicitudctlinv::where('sci_id', $data['sci_id'])->update(['sci_soe_id' => 2]);
       $objetoGuardar = TSolipernivel::where('sni_sci_id', $data['sci_id'])->orderBy('id', 'asc')->first();
       $borrapermisos = TSolipernivel::where('sni_sci_id', $data['sci_id'])->orderBy('id', 'asc')->delete();
@@ -137,16 +138,33 @@ class autorizacionController extends Controller
       return 'exito';
     }
 
-    $userExistPernivel = TPerniveles::with('tperjefe')->where('pern_cedula', $data['usuarioLogeado']['idTerceroUsuario'])->get();
+    //echo "<pre>--";print_r($data['sci_soe_id'] == 0 && $userExistPernivel[0]['pern_nomnivel'] == 2);exit;
+
+    if($data['sci_soe_id'] == 0 && $userExistPernivel[0]['pern_nomnivel'] == 2){
+
+      $actualizoEstadoSolicitud =  TSolicitudctlinv::where('sci_id', $data['sci_id'])->update(['sci_soe_id' => 1]);
+
+    }
+
+
     // Obtengo el canal
     $canal = $data['sci_can_id'];
     $clientes = $data['clientes'];
 
     // Obtengo las lineas de todas las referencias asociadas a cada cliente
-    $lineasSolicitud = collect($data['clientes'])->pluck('clientes_referencias')->flatten(1)->groupBy('referencia.ite_cod_linea')->keys()->all();
 
+    // $data = TSolipernivel::getSolicitudesPorAceptar(true, $data['sci_id'], $data['userNivel'][0]['id'])[0];
+    // dd($data);
+    if($idSolicitud == null){
+        $lineasSolicitud = collect($data['clientes'])->pluck('clientes_referencias')->flatten(1)->groupBy('referencia.ite_cod_linea')->keys()->all();
+    }else{
+        $lineasSolicitud = collect($data['clientes'])->pluck('clientesReferencias')->flatten(1)->groupBy('referencia.ite_cod_linea')->keys()->all();
+    }
+
+    //echo "<pre>--";print_r(collect($data['clientes'])->pluck('clientesReferencias')->flatten(1)->groupBy('referencia.ite_cod_linea')->keys()->all());exit;
     // Obtengo de los niveles de aprobacion las personas que aprueban para esa linea en ese canal
     $quienesSon = TCanalpernivel::where('cap_idcanal', trim($canal))->whereIn('cap_idlinea',$lineasSolicitud)->get();
+    //echo "<pre>--";print_r(count($quienesSon) == 0);exit;
 
     // Si no hay nadie que apruebe retorno error
     if (count($quienesSon) == 0) {
