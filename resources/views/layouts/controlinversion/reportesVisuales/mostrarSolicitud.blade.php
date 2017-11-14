@@ -43,12 +43,10 @@
                       <td>@{{hist.soh_fechaenvio | date:'dd-MM-yyy HH:mm:ss'}}</td>
                       <td>@{{hist.estado.soe_descripcion}}</td>
                       <td>
-                        @{{hist.soh_idTercero_envia}} - @{{hist.per_nivel_envia.razonSocialTercero
-                        }}
+                         @{{hist.per_nivel_envia.razonSocialTercero}}
                       </td>
                       <td>
-                        @{{hist.soh_idTercero_recibe}} - @{{hist.per_nivel_recibe.razonSocialTercero
-                        }}
+                        @{{hist.per_nivel_recibe.razonSocialTercero}}
                       </td>
                       <td>@{{hist.soh_observacion}}</td>
                     </tr>
@@ -92,7 +90,7 @@
                               <label>Facturar a: </label> @{{solicitud.facturara.tercero.razonSocialTercero}}
                             </li>
                             <li class="list-group-item">
-                              <label>Motivo: </label> 
+                              <label>Motivo: </label>
                               <span ng-if="solicitud.sci_mts_id == 7">Salida de obsequios y muestras mercadeo</span>
                               <span ng-if="solicitud.sci_mts_id == 8">Salida Eventos de Mercadeo</span>
                               <span ng-if="solicitud.sci_mts_id == 10">Salida Probadores Mercadeo</span>

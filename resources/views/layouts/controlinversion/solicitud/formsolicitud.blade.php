@@ -42,7 +42,7 @@
 			<div class="panel-heading">
 				Datos de la Solicitud
 			</div>
-			<form name="solicitudForm" ng-submit="solicitudForm.$valid && saveSolicitud()" novalidate>
+			<form name="solicitudForm" ng-submit="solicitudForm.$valid && saveSolicitud()" novalidate  ng-keydown="chk_keys($event);">
 				<div class="panel-body">
 					<div class="row">
 						<div class="form-group col-md-2">
@@ -76,14 +76,14 @@
 				<div class="row">
 					<div class="form-group col-md-6">
 						<label>Tipo de Salida: </label>
-						<select required class='form-control' ng-model='solicitud.tiposalida1' ng-options='opt.tsd_descripcion for opt in tiposalida track by opt.tsd_codigo'>
+						<select id="tsd_id" required class='form-control' ng-model='solicitud.tiposalida1' ng-options='opt.tsd_descripcion for opt in tiposalida track by opt.tsd_codigo'>
 							<option value=''>Seleccione...</option>
 						</select>
 						<!-- @{{solicitud.tiposalida1}} -->
 					</div>
 					<div class="form-group col-md-6">
 						<label>Motivo de Salida: </label>
-						<select required class='form-control' ng-model='solicitud.motivoSalida' ng-options='opt.descripcion for opt in motivoSalida track by opt.id'>
+						<select id="mts_id" required class='form-control' ng-model='solicitud.motivoSalida' ng-options='opt.descripcion for opt in motivoSalida track by opt.id'>
 							<option value=''>Seleccione...</option>
 						</select>
 						<!-- @{{solicitud.tiposalida1}} -->
@@ -93,7 +93,7 @@
 				<div class="row">
 					<div class="form-group col-md-6">
 						<label>Cargar Gastos a: </label>
-						<select required class='form-control' ng-model='solicitud.cargagasto1' ng-change="onChangeOpcionCargaGasto()" ng-options='opt2.cga_descripcion for opt2 in cargagasto track by opt2.cga_id'>
+						<select id="cga_id" required class='form-control' ng-model='solicitud.cargagasto1' ng-change="onChangeOpcionCargaGasto()" ng-options='opt2.cga_descripcion for opt2 in cargagasto track by opt2.cga_id'>
 							<option value=''>Seleccione...</option>
 						</select>
 						<!-- @{{solicitud.tipopersona1}} -->
@@ -101,7 +101,7 @@
 
 					<div class="form-group col-md-6" ng-if="solicitud.cargagasto1.cga_descripcion == 'Linea'">
 						<label>Línea: </label>
-						<select required class='form-control' ng-change="onChangeLineaCargaGasto()" ng-model='solicitud.lineas1' ng-options='opt3.lineas_producto.NomLinea for opt3 in lineasproducto track by opt3.lineas_producto.CodLinea'>
+						<select id="linea_id" required class='form-control' ng-change="onChangeLineaCargaGasto()" ng-model='solicitud.lineas1' ng-options='opt3.lineas_producto.NomLinea for opt3 in lineasproducto track by opt3.lineas_producto.CodLinea'>
 							<option value=''>Seleccione...</option>
 						</select>
 						<!-- @{{solicitud.tipopersona1}} -->
@@ -112,7 +112,7 @@
 				<div class="row">
 					<div class="form-group col-md-6">
 						<label>Canal: </label>
-						<select required class='form-control' ng-model='solicitud.sci_canal' ng-options='opt.can_txt_descrip for opt in canales track by opt.can_id'>
+						<select id="cnl_id" required class='form-control' ng-change="onChangeCanal()" ng-model='solicitud.sci_canal' ng-options='opt.can_txt_descrip for opt in canales track by opt.can_id'>
 							<option value=''>Seleccione...</option>
 						</select>
 						<!-- @{{solicitud.tiposalida1}} -->
@@ -122,7 +122,7 @@
 				<!-- Campo Observaciones -->
 				<div class="form-group">
 					<label>Observaciones: </label>
-					<textarea class="form-control" ng-model="solicitud.sci_observaciones" cols="50" rows="3"></textarea>
+					<textarea id="txtObservacion" class="form-control" ng-model="solicitud.sci_observaciones" cols="50" rows="3"></textarea>
 				</div>
 				<!-- Campo Tipo Persona -->
 
@@ -130,7 +130,7 @@
 
 					<div class="form-group col-md-6">
 						<label>Tipo de Persona: </label>
-						<select required class='form-control' ng-model='solicitud.tipopersona1' ng-change="filtrapersona()" ng-options='opt1.tpe_tipopersona for opt1 in tipopersona track by opt1.tpe_id'>
+						<select id="tps_id" required class='form-control' ng-model='solicitud.tipopersona1' ng-change="filtrapersona()" ng-options='opt1.tpe_tipopersona == "Vendedor" ? opt1.tpe_tipopersona : "Otros..." for opt1 in tipopersona track by opt1.tpe_id'>
 							<option value=''>Seleccione...</option>
 						</select>
 					</div>
@@ -138,7 +138,7 @@
 					<div ng-if="solicitud.tipopersona1.tpe_tipopersona == 'Vendedor'" class="form-group col-md-6">
 
 						<label>Zonas: </label>
-						<md-select ng-change="onZonaChange()" ng-model="solicitud.zonasSelected"
+						<md-select id="zonaSelect" ng-change="onZonaChange()" ng-model="solicitud.zonasSelected"
 						aria-label="zonas de vendedores"
 						data-md-container-class="selectdemoSelectHeader"
 						multiple
@@ -343,7 +343,7 @@
 				<input class="form-control inputCantMinimized inputCantMinimized-success" type="number" ng-model="referencia.srf_unidades" ng-change="onCantidadChange(referencia)" min="1" maxlength="20" minlength="1"/>
 			</td>
 			<td>
-				<select required class='form-control' ng-model='referencia.linea' ng-change="onChangeLineaReferencia(referencia)" ng-options='opt3.lineas_producto.NomLinea for opt3 in lineasproducto track by opt3.lineas_producto.CodLinea'></select>
+				<select ng-disabled="true" required class='form-control' ng-model='referencia.linea' ng-change="onChangeLineaReferencia(referencia)" ng-options='opt3.lineas_producto.NomLinea for opt3 in lineasproducto track by opt3.lineas_producto.CodLinea'></select>
 			</td>
 			<td style="text-align:right;">@{{referencia.referenciaValorTotal  | currency: "$"}}</td>
 			<td>

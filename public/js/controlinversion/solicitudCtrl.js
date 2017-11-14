@@ -67,9 +67,39 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDi
 	$scope.cantPersonasFull = 0;
 	$scope.primeraCarga = 0;
 	$scope.lineaExist = [];
+	$scope.historialTpe = [];
+	$scope.historialCanal = [];
+	$scope.isInitialiazing = false;
 
 
+	document.oncontextmenu = function() {
+		 return false
+	}
 
+	$scope.chk_keys = function(ev){
+
+	  if(ev.keyCode == 17){
+
+			var element  = document.getElementById(ev.target.id);
+			element.disabled = true;
+
+
+			var successMessage = $mdDialog.alert()
+			.parent(angular.element(document.querySelector('#popupContainer')))
+			.clickOutsideToClose(false)
+			.title('Acción no permitida')
+			.textContent('No puede utilizar las teclas de control sobre este formulario.')
+			.ariaLabel('Lucky day')
+			.ok('OK')
+
+			$mdDialog.show(successMessage).then(function() {
+					element.disabled = false;
+			})
+
+			return false;
+
+	 }
+	}
 
 	$scope.getInfo = function(){
 
@@ -119,6 +149,7 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDi
 			$scope.items = angular.copy(res.item);
 			$scope.canales = angular.copy(res.canales);
 			$scope.userLogged = angular.copy(res.userLogged);
+			$scope.canalPernivel = angular.copy(res.canalPernivel);
 			$scope.progress = false;
 
 
@@ -185,12 +216,20 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDi
 
 				var canal = $filter('filter')($scope.canales, {can_id : $scope.solicitud.sci_can_id});
 				if(canal.length > 0){
+					canal[0].isFirts = true;
+					canal[0].isLast = true;
 					$scope.solicitud['sci_canal'] = canal[0];
+					$scope.historialCanal.push($scope.solicitud['sci_canal']);
 				}
 
 				var tipopersona1 = $filter('filter')($scope.tipopersona, {tpe_id : $scope.solicitud.sci_tipopersona});
 				if(tipopersona1.length > 0){
+
+					tipopersona1[0].isFirts = true;
+					tipopersona1[0].isLast = true;
 					$scope.solicitud['tipopersona1'] = tipopersona1[0];
+					$scope.isInitialiazing = false;
+					$scope.historialTpe.push($scope.solicitud['tipopersona1']);
 					$scope.filtrapersona();
 				}
 
@@ -697,26 +736,57 @@ $scope.filtrarVendedorZona = function(item){
 *será filtrado desde $scope.colaboradores
 */
 $scope.filtrapersona = function(){
-	if($scope.primeraCarga == 1){
 
-	   var confirm = $mdDialog.confirm()
-      .title('Alerta!')
-      .textContent('Al cambiar esta opcion se van a limpiar todos los colaboradores')
-      .ariaLabel('')
-      .ok('Acepto')
-      .cancel('Cancelar');
+	var tipoPersona = angular.copy($scope.solicitud.tipopersona1);
+	tipoPersona.isFirts = false;
 
-      $mdDialog.show(confirm).then(function() {
-      	$scope.selectedColaboradores = [];
-      }, function() {
-      	$scope.progress = true;
-      	$scope.primeraCarga = 0;
-      	$scope.getInfo();
-      });
+	if($scope.historialTpe.length == 0 && $scope.selectedColaboradores.length == 0){
+
+		tipoPersona.isFirts = true;
+		tipoPersona.isLast = true;
+		$scope.historialTpe.push(tipoPersona);
+
+	}else if($scope.historialTpe.length > 0 && $scope.selectedColaboradores.length == 0){
+
+		$scope.historialTpe[$scope.historialTpe.length-1].isLast = false;
+		tipoPersona.isLast = true;
+		$scope.historialTpe.push(tipoPersona);
+
+	}else if($scope.historialTpe.length > 0 && $scope.selectedColaboradores.length > 0){
+
+		$scope.historialTpe[$scope.historialTpe.length-1].isLast = false;
+		tipoPersona.isLast = true;
 
 	}
-	$scope.primeraCarga = 1;
-	$scope.colaboradoresGeneral = [];
+
+	if($scope.selectedColaboradores.length > 0 && $scope.isInitialiazing == true){
+
+			 var ultimaSeleccion = $filter('filter')($scope.historialTpe, {isLast: false});
+
+		   var confirm = $mdDialog.confirm()
+	      .title('Alerta!')
+	      .textContent('Al cambiar esta opcion se van a limpiar todos los colaboradores')
+	      .ariaLabel('')
+	      .ok('Acepto')
+	      .cancel('Cancelar');
+
+	      $mdDialog.show(confirm).then(function() {
+
+					$scope.historialTpe.push(tipoPersona);
+	      	$scope.selectedColaboradores = [];
+
+	      }, function() {
+
+					$scope.solicitud.tipopersona1 =  ultimaSeleccion[ultimaSeleccion.length - 1];
+
+	      });
+
+		$scope.colaboradoresGeneral = [];
+
+	}else{
+		$scope.isInitialiazing = true;
+	}
+
 	if($scope.solicitud.tipopersona1.tpe_tipopersona != 'Vendedor'){
 
 		$scope.esVendedor = false;
@@ -726,6 +796,83 @@ $scope.filtrapersona = function(){
 
 		$scope.esVendedor = true;
 		$scope.colaboradoresGeneral = $scope.vendedoresBesa;
+
+	}
+
+}
+
+$scope.onChangeCanal = function(){
+
+
+	var canal = angular.copy($scope.solicitud.sci_canal);
+	canal.isFirts = false;
+
+	if($scope.historialCanal.length == 0 && $scope.selectedColaboradores.length == 0){
+
+		canal.isFirts = true;
+		canal.isLast = true;
+		$scope.historialCanal.push(canal);
+
+	}else if($scope.historialCanal.length > 0 && $scope.selectedColaboradores.length == 0){
+
+		$scope.historialCanal[$scope.historialCanal.length-1].isLast = false;
+		canal.isLast = true;
+		$scope.historialCanal.push(canal);
+
+	}else if($scope.historialCanal.length > 0 && $scope.selectedColaboradores.length > 0){
+
+		$scope.historialCanal[$scope.historialCanal.length-1].isLast = false;
+		canal.isLast = true;
+
+	}
+
+
+	if($scope.selectedColaboradores.length > 0){
+
+		var tieneReferenciasError = false;
+		var arregloErrores = [];
+
+		$scope.selectedColaboradores.forEach(function(colaborador){
+			if(colaborador.solicitud.referencias.length > 0){
+
+					colaborador.solicitud.referencias.forEach(function(refe){
+
+						var filtro = $filter('filter')($scope.canalPernivel, {cap_idlinea: refe.originalLinea, cap_idcanal: $scope.solicitud.sci_canal.can_id.trim()});
+
+						console.log("Entre----> " + refe.originalLinea + " Canal: " + $scope.solicitud.sci_canal.can_id);
+
+						if(filtro.length == 0){
+							console.log("EntreError----> " + refe.originalLinea + " Canal: " + $scope.solicitud.sci_canal.can_id);
+							arregloErrores.push(refe);
+							tieneReferenciasError = true;
+						}
+
+					})
+
+			}
+
+		});
+
+		if(tieneReferenciasError == true){
+
+			var error = $mdDialog.alert()
+			 .title('Error!')
+			 .textContent('No existe ruta de aprobación para las lineas de esta solicitud en el canal ' + $scope.solicitud.sci_canal.can_txt_descrip)
+			 .ariaLabel('')
+			 .ok('Acepto')
+
+			 $mdDialog.show(error).then(function() {
+
+				 var ultimo = $filter('filter')($scope.historialCanal, {isLast : false});
+				 $scope.solicitud.sci_canal = $scope.historialCanal[$scope.historialCanal.length - 1];
+
+			 });
+
+
+		}else{
+			$scope.historialCanal.push(canal);
+		}
+
 
 	}
 

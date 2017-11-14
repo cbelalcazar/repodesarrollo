@@ -17,6 +17,7 @@ use App\Models\controlinversion\TLineascc;
 use App\Models\controlinversion\TSolipernivel;
 use App\Models\controlinversion\TPerniveles;
 use App\Models\controlinversion\TSolhistorico;
+use App\Models\controlinversion\TCanalpernivel;
 use App\Models\Genericas\Tercero;
 use App\Models\Genericas\TCanal;
 use App\Models\Genericas\TItemCriteriosTodo;
@@ -49,7 +50,7 @@ class solicitudController extends Controller
 
         $tiposalida = TTiposalida::where('tsd_estado', '1')->get();
 
-        $tipopersona = TTipopersona::where('tpe_estado', '1')->get();
+        $tipopersona = TTipopersona::where('tpe_estado', '1')->whereIn('tpe_id',[1,3])->get();
 
         $cargagasto = TCargagasto::where('cga_estado', '1')->get();
 
@@ -60,6 +61,8 @@ class solicitudController extends Controller
         $canales = TCanal::whereIn('can_id', ['20','AL','DR'])->get();
 
         $fullUser = TPerniveles::where('pern_cedula', $userLogged->idTerceroUsuario)->get();
+
+        $canalPernivel =  TCanalpernivel::all();
 
 
         $colaboradores = Tercero::select('idTercero','idTercero as scl_cli_id', 'razonSocialTercero as scl_nombre')->with('Cliente.Sucursales')->where([['indxEstadoTercero', '1'], ['indxEmpleadoTercero', '1']])->orderBy('razonSocialTercero')->get();
@@ -78,7 +81,7 @@ class solicitudController extends Controller
         ->where('ite_cod_tipoinv', '1051')
         ->get();
 
-        $response = compact('personas','tiposalida', 'tipopersona', 'cargagasto', 'lineasproducto', 'colaboradores', 'users', 'item', 'vendedoresBesa', 'userLogged', 'pruebita', 'canales', 'fullUser', 'rutaNoAutoriza');
+        $response = compact('personas','tiposalida', 'tipopersona', 'cargagasto', 'lineasproducto', 'colaboradores', 'users', 'item', 'vendedoresBesa', 'userLogged', 'pruebita', 'canales', 'fullUser', 'rutaNoAutoriza' , 'canalPernivel');
         return response()->json($response);
     }
 
@@ -138,47 +141,7 @@ class solicitudController extends Controller
         $routeSuccess = route('misSolicitudes');
         $data = $request->all();
 
-        //return response()->json($data);
         $solicitudToCreate = $this->guardarSolicitud($data);
-        // $solicitudToCreate = TSolicitudctlinv::create($data);
-        //
-        // foreach ($data['personas'] as $key => $value) {
-        //   $objeto = $solicitudToCreate->clientes()->create($value);
-        //   if($data['sci_tipopersona'] == 1){
-        //     $zona = [];
-        //     $zona['scl_scz_id'] = $objeto['scl_id'];
-        //     $zona['scz_zon_id'] = $value['scz_zon_id'];
-        //     $zona['scz_porcentaje'] = 100;
-        //     $zona['scz_porcentaje_real'] = null;
-        //     $zona['scz_vdescuento'] = null;
-        //     $zona['scz_vesperado'] = null;
-        //     $zona['scz_estado'] = 1;
-        //     $objetoZonas = $objeto->clientesZonas()->create($zona);
-        //   }
-        //
-        //   foreach ($value['solicitud']['referencias'] as $clave => $dato) {
-        //     $objeto->clientesReferencias()->create($dato);
-        //   }
-        // }
-        //
-        // $solicitudPorNivel = new TSolipernivel;
-        // $solicitudPorNivel->sni_usrnivel = $data['userNivel'][0]['id'];
-        // $solicitudPorNivel->sni_cedula = $data['userNivel'][0]['pern_cedula'];
-        // $solicitudPorNivel->sni_sci_id = $solicitudToCreate->sci_id;
-        // $solicitudPorNivel->sni_estado = 0;
-        // $solicitudPorNivel->sni_orden = null;
-        // $solicitudPorNivel->save();
-        //
-        // $registroHistorico = new TSolhistorico;
-        // $registroHistorico->soh_sci_id = $solicitudToCreate->sci_id;
-        // $registroHistorico->soh_soe_id = $solicitudToCreate->sci_soe_id;
-        // $registroHistorico->soh_idTercero_envia = $data['userNivel'][0]['pern_cedula'];
-        // $registroHistorico->soh_idTercero_recibe = $data['userNivel'][0]['pern_cedula'];
-        // $registroHistorico->soh_observacion = "CREACION DE SOLICITUD";
-        // $registroHistorico->soh_fechaenvio = Carbon::now();
-        // $registroHistorico->soh_estadoenvio = 1;
-        // $registroHistorico->save();
-
         $response = compact('solicitudToCreate', 'routeSuccess');
         return response()->json($response);
 
@@ -321,11 +284,17 @@ class solicitudController extends Controller
 
              $dataNivel2 = $data;
              $dataNivel2['sci_id'] = $id;
-             $autorizacionSolicitud = AutorizacionCtrl::store($request, $id);
+             $autorizacionSolicitud = AutorizacionCtrl::store($request, $id, false);
              //dd($autorizacionSolicitud);
              //return response()->json($autorizacionSolicitud);
 
           }else if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 3){
+
+            $dataNivel3 = $data;
+            $dataNivel3['sci_id'] = $id;
+            $autorizacionSolicitud = AutorizacionCtrl::store($request, $id, true);
+
+            // return response()->json(['message'=> 'nivel3 autorizando']);
 
           }else if($solicitudPorNivel[0]['tpernivel']['pern_nomnivel'] == 4){
 
@@ -456,7 +425,11 @@ class solicitudController extends Controller
       $solicitudPorNivel->sni_cedula = $data['userNivel'][0]['pern_cedula'];
       $solicitudPorNivel->sni_sci_id = $solicitudToCreate->sci_id;
       $solicitudPorNivel->sni_estado = 0;
-      $solicitudPorNivel->sni_orden = null;
+      if($data['userNivel'][0]['pern_nomnivel'] == 3){
+        $solicitudPorNivel->sni_orden = 1;
+      }else{
+        $solicitudPorNivel->sni_orden = null;
+      }
       $solicitudPorNivel->save();
 
       $registroHistorico = new TSolhistorico;

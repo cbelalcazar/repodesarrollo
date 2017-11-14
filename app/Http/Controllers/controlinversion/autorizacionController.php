@@ -106,7 +106,7 @@ class autorizacionController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public static function store(Request $request, $idSolicitud = null)
+  public static function store(Request $request, $idSolicitud = null, $isCreatingL3 = null)
   {
     $data = $request->all();
     //return response()->json($data);
@@ -119,6 +119,17 @@ class autorizacionController extends Controller
       $data['estadoSolicitud'] = $nivelesAutorizaNew[0]['solicitud']['estado'];
       $data['observacionEnvio'] = "";
       $data['usuarioLogeado'] = Auth::user();
+
+      if($isCreatingL3 != null){
+
+        if($isCreatingL3 == true){
+          $data['isCreating'] = true;
+        }else{
+          $data['isCreating'] = false;
+        }
+
+      }
+
       //echo "<pre>";print_r($data['usuarioLogeado']);exit;
 
     }
@@ -140,10 +151,6 @@ class autorizacionController extends Controller
       $solipornivel->sni_estado = 0;
       $solipornivel->sni_orden= $objetoGuardar->sni_orden;
       $solipornivel->save();
-    //dd($objetoGuardar);
-
-
-      //$creacion = TSolipernivel::create($objetoGuardar);
 
       return 'exito';
     }
@@ -163,56 +170,101 @@ class autorizacionController extends Controller
 
     // Obtengo las lineas de todas las referencias asociadas a cada cliente
 
-    // $data = TSolipernivel::getSolicitudesPorAceptar(true, $data['sci_id'], $data['userNivel'][0]['id'])[0];
-    // dd($data);
     if($idSolicitud == null){
         $lineasSolicitud = collect($data['clientes'])->pluck('clientes_referencias')->flatten(1)->groupBy('referencia.ite_cod_linea')->keys()->all();
     }else{
         $lineasSolicitud = collect($data['clientes'])->pluck('clientesReferencias')->flatten(1)->groupBy('referencia.ite_cod_linea')->keys()->all();
     }
 
-    //echo "<pre>--";print_r(collect($data['clientes'])->pluck('clientesReferencias')->flatten(1)->groupBy('referencia.ite_cod_linea')->keys()->all());exit;
     // Obtengo de los niveles de aprobacion las personas que aprueban para esa linea en ese canal
     $quienesSon = TCanalpernivel::where('cap_idcanal', trim($canal))->whereIn('cap_idlinea',$lineasSolicitud)->get();
-    //echo "<pre>--";print_r(count($quienesSon) == 0);exit;
 
     // Si no hay nadie que apruebe retorno error
     if (count($quienesSon) == 0) {
+
       return "errorNoExisteNivelTres";
+
     }elseif($userExistPernivel[0]['pern_nomnivel'] == 3){
 
-      $user = TSolipernivel::where([['sni_cedula', $data['usuarioLogeado']['idTerceroUsuario']], ['sni_sci_id', $data['sci_id']]])->update(['sni_estado' => 1]);
-      $existenMasPasos = TSolipernivel::where([['sni_sci_id', $data['sci_id']], ['sni_estado', 0]])->whereNotNull('sni_orden')->get();
+        if(!isset($data['isCreating'])){
+          $data['isCreating'] = false;
+        }
 
-      if(count($existenMasPasos) == 0){
+        if($data['isCreating'] == false){
 
-        $solicitudUpdateNew = TSolicitudctlinv::where('sci_id', $data['sci_id'])->update(['sci_soe_id' => 5]);
-        $grabo = TSolipernivel::create(['sni_usrnivel' => $userExistPernivel[0]['pern_jefe'], 'sni_cedula' => $userExistPernivel[0]['tperjefe']['pern_cedula'], 'sni_sci_id' => $data['sci_id'], 'sni_estado' => 0, 'sni_orden' => null]);
-        //$userExistPernivel[0]['pern_nomnivel']
+          $user = TSolipernivel::where([['sni_cedula', $data['usuarioLogeado']['idTerceroUsuario']], ['sni_sci_id', $data['sci_id']]])->update(['sni_estado' => 1]);
+          $existenMasPasos = TSolipernivel::where([['sni_sci_id', $data['sci_id']], ['sni_estado', 0]])->whereNotNull('sni_orden')->get();
 
-        // Genero el historico de aprobacion de nivel 3 a nivel 4
-        // $historico = new TSolhistorico;
-        // $historico->soh_sci_id = $data['sci_id'];
-        // $historico->soh_soe_id = $data['sci_soe_id'];
-        // $historico->soh_idTercero_envia = $data['usuarioLogeado']['idTerceroUsuario'];
-        // $historico->soh_idTercero_recibe = $personaNiveles[0]['pern_cedula'];
-        //
-        // if(isset($data['observacionEnvio'])){
-        //   if ($data['observacionEnvio'] == "") {
-        //     $data['observacionEnvio'] = "SIN OBSERVACION";
-        //   }
-        // }else{
-        //   $data['observacionEnvio'] = "SIN OBSERVACION";
-        // }
-        //
-        // $historico->soh_observacion =  $data['observacionEnvio'];
-        // $historico->soh_fechaenvio = Carbon::now();
-        // $historico->soh_estadoenvio = 1;
-        // $historico->save();
+          // Genero el historico de aprobacion de nivel 3 a nivel 4
+          $historico = new TSolhistorico;
+          $historico->soh_sci_id = $data['sci_id'];
+          $historico->soh_idTercero_envia = $data['usuarioLogeado']['idTerceroUsuario'];
 
-      }
+          if(isset($data['observacionEnvio'])){
+            if ($data['observacionEnvio'] == "") {
+              $data['observacionEnvio'] = "SIN OBSERVACION";
+            }
+          }else{
+            $data['observacionEnvio'] = "SIN OBSERVACION";
+          }
+
+          $historico->soh_observacion =  $data['observacionEnvio'];
+          $historico->soh_fechaenvio = Carbon::now();
+          $historico->soh_estadoenvio = 1;
 
 
+          if(count($existenMasPasos) == 0){
+
+            $solicitudUpdateNew = TSolicitudctlinv::where('sci_id', $data['sci_id'])->update(['sci_soe_id' => 5]);
+            $grabo = TSolipernivel::create(['sni_usrnivel' => $userExistPernivel[0]['pern_jefe'], 'sni_cedula' => $userExistPernivel[0]['tperjefe']['pern_cedula'], 'sni_sci_id' => $data['sci_id'], 'sni_estado' => 0, 'sni_orden' => null]);
+            $historico->soh_idTercero_recibe = $userExistPernivel[0]['tperjefe']['pern_cedula'];
+            $historico->soh_soe_id = 5;
+
+          }else{
+            $historico->soh_soe_id = $data['sci_soe_id'];
+            $historico->soh_idTercero_recibe = $existenMasPasos[0]['sni_cedula'];
+          }
+
+          $historico->save();
+        }else{
+
+          $userSoliPernivel = TSolipernivel::where([['sni_cedula', $data['usuarioLogeado']['idTerceroUsuario']], ['sni_sci_id', $data['sci_id']]])->get();
+          //Se crean los demas nivel 3 pendientes por aprobar
+          $quienesSonAgrupados = $quienesSon->groupBy('cap_idpernivel')->keys()->all();
+          $personaNiveles = TPerniveles::whereIn('id', $quienesSonAgrupados)->get();
+          $contador = $userSoliPernivel[0]['sni_orden'] + 1;
+
+          // Actualizo estado anterior
+          $update = TSolipernivel::where([['sni_cedula', $data['usuarioLogeado']['idTerceroUsuario']], ['sni_sci_id', $data['sci_id']]])->update(['sni_estado' => 1]);
+
+          // Creo nuevos pasos de aprobacion para personas de nivel 3
+          foreach ($personaNiveles as $key => $value) {
+            $grabo = TSolipernivel::create(['sni_usrnivel' => $value['id'], 'sni_cedula' => $value['pern_cedula'], 'sni_sci_id' => $data['sci_id'], 'sni_estado' => 0, 'sni_orden' => $contador]);
+            $contador++;
+          }
+
+          // Genero el historico de aprobacion de nivel 3 a nivel 3
+          $historico = new TSolhistorico;
+          $historico->soh_sci_id = $data['sci_id'];
+          $historico->soh_soe_id = $data['sci_soe_id'];
+          $historico->soh_idTercero_envia = $data['usuarioLogeado']['idTerceroUsuario'];
+          $historico->soh_idTercero_recibe = $personaNiveles[0]['pern_cedula'];
+
+          if(isset($data['observacionEnvio'])){
+            if ($data['observacionEnvio'] == "") {
+              $data['observacionEnvio'] = "SIN OBSERVACION";
+            }
+          }else{
+            $data['observacionEnvio'] = "SIN OBSERVACION";
+          }
+
+          $historico->soh_observacion =  $data['observacionEnvio'];
+          $historico->soh_fechaenvio = Carbon::now();
+          $historico->soh_estadoenvio = 1;
+          $historico->save();
+
+
+        }
 
     }else{
       //Validar si el usuario logeado es de nivel 2
