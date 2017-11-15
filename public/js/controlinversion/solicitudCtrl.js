@@ -77,29 +77,20 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDi
 		 return false
 	}
 
-	$scope.chk_keys = function(ev){
+	document.onpaste = function(){
 
-	  if(ev.keyCode == 17){
+		var invalidAccion = $mdDialog.alert()
+		.parent(angular.element(document.querySelector('#popupContainer')))
+		.clickOutsideToClose(false)
+		.title('Acción no permitida')
+		.textContent('No puede copiar y pegar en este formulario.')
+		.ariaLabel('Lucky day')
+		.ok('OK')
 
-			var element  = document.getElementById(ev.target.id);
-			element.disabled = true;
+		$mdDialog.show(invalidAccion);
 
+		return false;
 
-			var successMessage = $mdDialog.alert()
-			.parent(angular.element(document.querySelector('#popupContainer')))
-			.clickOutsideToClose(false)
-			.title('Acción no permitida')
-			.textContent('No puede utilizar las teclas de control sobre este formulario.')
-			.ariaLabel('Lucky day')
-			.ok('OK')
-
-			$mdDialog.show(successMessage).then(function() {
-					element.disabled = false;
-			})
-
-			return false;
-
-	 }
 	}
 
 	$scope.getInfo = function(){
@@ -1210,7 +1201,8 @@ $scope.read = function (workbook) {
 							referencia1.srf_porcentaje = 0;
 							referencia1.srf_estado = 1;
 							referencia1.referenciaValorTotal =  referencia1.srf_preciouni * referencia1.srf_unidades;
-							referencia1.originalLinea = angular.copy(referencia1.srf_lin_id_gasto);
+							//referencia1.originalLinea = angular.copy(referencia1.srf_lin_id_gasto);
+							referencia1.originalLinea = referencia1.originalLinea == undefined ? angular.copy(referencia1.srf_lin_id_gasto): angular.copy(referencia1.originalLinea);
 
 							if($scope.solicitud.cargagasto1.cga_id == 1 && $scope.solicitud.lineas1 != undefined){
 								referencia1.linea = $scope.solicitud.lineas1;

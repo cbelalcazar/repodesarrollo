@@ -42,7 +42,7 @@
 			<div class="panel-heading">
 				Datos de la Solicitud
 			</div>
-			<form name="solicitudForm" ng-submit="solicitudForm.$valid && saveSolicitud()" novalidate  ng-keydown="chk_keys($event);">
+			<form name="solicitudForm" ng-submit="solicitudForm.$valid && saveSolicitud()" novalidate >
 				<div class="panel-body">
 					<div class="row">
 						<div class="form-group col-md-2">

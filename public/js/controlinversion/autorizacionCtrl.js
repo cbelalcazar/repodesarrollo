@@ -7,6 +7,7 @@ function($scope,  $filter, $http, $window, DTOptionsBuilder, DTColumnDefBuilder)
   $scope.url  = 'aprobacion';
   $scope.zonasSolicitud = [];
   $scope.lineasSolicitud = [];
+  $scope.solicitudes = {};
 
 
 	$scope.getInfo = function(){
@@ -16,8 +17,9 @@ function($scope,  $filter, $http, $window, DTOptionsBuilder, DTColumnDefBuilder)
       var res = response.data;
       $scope.usuarioLogeado = angular.copy(res.userLogged);
       $scope.solicitudes = angular.copy(res.solicitudesPorAceptar);
+      console.log($scope.solicitudes);
 
-      $scope.solicitudes.map(function(solicitud) {
+      $scope.solicitudes.forEach(function(solicitud) {
 
           var fecha_ini = new Date(solicitud.solicitud.sci_fecha);
           fecha_ini = fecha_ini.getTime() + fecha_ini.getTimezoneOffset()*60*1000;
@@ -32,7 +34,7 @@ function($scope,  $filter, $http, $window, DTOptionsBuilder, DTColumnDefBuilder)
 
           });
 
-          return solicitud;
+          //return solicitud;
 
       }, this);
 
@@ -80,7 +82,7 @@ function($scope,  $filter, $http, $window, DTOptionsBuilder, DTColumnDefBuilder)
               if($scope.lineasSolicitud.length == 0){
                 $scope.lineasSolicitud.push(referencia);
               }else{
-                
+
                 var filterLineas = $filter('filter')($scope.lineasSolicitud, {linea_producto : {lcc_codigo: referencia.linea_producto.lcc_codigo}});
 
                 if(filterLineas.length == 0){

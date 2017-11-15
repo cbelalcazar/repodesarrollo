@@ -13,15 +13,15 @@
 	          <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
 	          	<thead>
 	          		<tr>
-	          			<td>No</td>
-	          			<td>Estado</td>
-	          			<td>Fecha</td>
-	          			<td>Facturar A</td>
-	          			<td>Tipo de salida</td>
-	          			<td>Tipo de persona</td>
-	          			<td>Cargar a</td>
-	          			<td>Observaciones</td>
-	          			<td></td>
+	          			<th>No</th>
+	          			<th>Estado</th>
+	          			<th>Fecha</th>
+	          			<th>Facturar A</th>
+	          			<th>Tipo de salida</th>
+	          			<th>Tipo de persona</th>
+	          			<th>Cargar a</th>
+	          			<th>Observaciones</th>
+	          			<th></th>
 	          		</tr>
 	          	</thead>
 	          	<tbody>
@@ -47,17 +47,17 @@
 	           <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs1" class="row-border hover">
 	          	<thead>
 	          		<tr>
-	          			<td>No</td>
-	          			<td>Estado</td>
-	          			<td>Fecha</td>
-	          			<td>Facturar A</td>
-	          			<td>Tipo de salida</td>
-	          			<td>Tipo de persona</td>
-	          			<td>Cargar a</td>
-	          			<td>Observaciones</td>
-	          			<td></td>
-	          			<td></td>
-	          			<td></td>
+	          			<th>No</th>
+	          			<th>Estado</th>
+	          			<th>Fecha</th>
+	          			<th>Facturar A</th>
+	          			<th>Tipo de salida</th>
+	          			<th>Tipo de persona</th>
+	          			<th>Cargar a</th>
+	          			<th>Observaciones</th>
+	          			<th></th>
+	          			<th></th>
+	          			<th></th>
 	          		</tr>
 	          	</thead>
 	          	<tbody>
@@ -84,17 +84,17 @@
 	           <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs1" class="row-border hover">
 	          	<thead>
 	          		<tr>
-	          			<td>No</td>
-	          			<td>Estado</td>
-	          			<td>Fecha</td>
-	          			<td>Facturar A</td>
-	          			<td>Tipo de salida</td>
-	          			<td>Tipo de persona</td>
-	          			<td>Cargar a</td>
-	          			<td>Observaciones</td>
-	          			<td></td>
-	          			<td></td>
-	          			<td></td>
+	          			<th>No</th>
+	          			<th>Estado</th>
+	          			<th>Fecha</th>
+	          			<th>Facturar A</th>
+	          			<th>Tipo de salida</th>
+	          			<th>Tipo de persona</th>
+	          			<th>Cargar a</th>
+	          			<th>Observaciones</th>
+	          			<th></th>
+	          			<th></th>
+	          			<th></th>
 	          		</tr>
 	          	</thead>
 	          	<tbody>
@@ -121,15 +121,15 @@
 	         <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
 	          	<thead>
 	          		<tr>
-	          			<td>No</td>
-	          			<td>Estado</td>
-	          			<td>Fecha</td>
-	          			<td>Facturar A</td>
-	          			<td>Tipo de salida</td>
-	          			<td>Tipo de persona</td>
-	          			<td>Cargar a</td>
-	          			<td>Observaciones</td>
-	          			<td></td>
+	          			<th>No</th>
+	          			<th>Estado</th>
+	          			<th>Fecha</th>
+	          			<th>Facturar A</th>
+	          			<th>Tipo de salida</th>
+	          			<th>Tipo de persona</th>
+	          			<th>Cargar a</th>
+	          			<th>Observaciones</th>
+	          			<th></th>
 	          		</tr>
 	          	</thead>
 	          	<tbody>
@@ -186,15 +186,15 @@
 	           <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
 	          	<thead>
 	          		<tr>
-	          			<td>No</td>
-	          			<td>Estado</td>
-	          			<td>Fecha</td>
-	          			<td>Facturar A</td>
-	          			<td>Tipo de salida</td>
-	          			<td>Tipo de persona</td>
-	          			<td>Cargar a</td>
-	          			<td>Observaciones</td>
-	          			<td></td>
+	          			<th>No</th>
+	          			<th>Estado</th>
+	          			<th>Fecha</th>
+	          			<th>Facturar A</th>
+	          			<th>Tipo de salida</th>
+	          			<th>Tipo de persona</th>
+	          			<th>Cargar a</th>
+	          			<th>Observaciones</th>
+	          			<th></th>
 	          		</tr>
 	          	</thead>
 	          	<tbody>
@@ -218,15 +218,15 @@
 	          <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
 	          	<thead>
 	          		<tr>
-	          			<td>No</td>
-	          			<td>Estado</td>
-	          			<td>Fecha</td>
-	          			<td>Facturar A</td>
-	          			<td>Tipo de salida</td>
-	          			<td>Tipo de persona</td>
-	          			<td>Cargar a</td>
-	          			<td>Observaciones</td>
-	          			<td></td>
+	          			<th>No</th>
+	          			<th>Estado</th>
+	          			<th>Fecha</th>
+	          			<th>Facturar A</th>
+	          			<th>Tipo de salida</th>
+	          			<th>Tipo de persona</th>
+	          			<th>Cargar a</th>
+	          			<th>Observaciones</th>
+	          			<th></th>
 	          		</tr>
 	          	</thead>
 	          	<tbody>

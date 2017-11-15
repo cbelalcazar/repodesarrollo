@@ -15,6 +15,7 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 			data = response.data;
 			$scope.todas = angular.copy(data.solicitudes);
 			console.log($scope.todas);
+
 			$scope.todas.map(function(solicitud) {
 
 					var fecha_ini = new Date(solicitud.sci_fecha);
@@ -33,6 +34,7 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 
 					return solicitud;
 			}, this);
+			
 			$scope.elaboracion =  $filter('filter')($scope.todas, {sci_soe_id : 0});
 			$scope.solicitudes =  $filter('filter')($scope.todas, {sci_soe_id : 1});
 			$scope.correcciones =  $filter('filter')($scope.todas, {sci_soe_id : 2});
@@ -118,7 +120,7 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 							}else{
 
 								var filterLineas = $filter('filter')($scope.lineasSolicitud, {linea_producto : {lcc_codigo: referencia.linea_producto.lcc_codigo}});
-		
+
 								if(filterLineas.length == 0){
 									$scope.lineasSolicitud.push(referencia);
 								}else if(filterLineas[0].linea_producto.lcc_codigo != referencia.linea_producto.lcc_codigo){

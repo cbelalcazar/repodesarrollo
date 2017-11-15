@@ -51,9 +51,10 @@ class autorizacionController extends Controller
 
         if($userExistPernivel[0]->pern_nomnivel == 2){
            $todasSolicitudes = TSolipernivel::where('sni_estado', 0)->get();
-            $solicitudesPorAceptar = TSolipernivel::getSolicitudesPorAceptar(false,null,$userExistPernivel[0]->id);
+           $solicitudesPorAceptar = TSolipernivel::getSolicitudesPorAceptar(false,null,$userExistPernivel[0]->id);
             // necesito validar si en el arreglo todas la solicitudes existe alguna en estado cero con el mismo numero de solicitud y con sni_orden menor
         }elseif($userExistPernivel[0]->pern_nomnivel == 3){
+
           $todasSolicitudes = TSolipernivel::where('sni_estado', 0)->whereNotNull('sni_orden')->get();
           $solicitudesPorAceptar = TSolipernivel::getSolicitudesPorAceptar(false,null,$userExistPernivel[0]->id);
           // necesito validar si en el arreglo todas la solicitudes existe alguna en estado cero con el mismo numero de solicitud y con sni_orden menor
@@ -69,12 +70,14 @@ class autorizacionController extends Controller
             }
 
             if(count($filterTodas) > 0){
-              array_push($array, null);
+              //array_push($array, null);
             }elseif(count($filterTodas) == 0){
               array_push($array, $solicitud);
             }
           }
+
           $solicitudesPorAceptar = collect($array)->filter()->all();
+
         }
 
       }else{
@@ -154,6 +157,34 @@ class autorizacionController extends Controller
       $solipornivel->sni_estado = 0;
       $solipornivel->sni_orden= $objetoGuardar->sni_orden;
       $solipornivel->save();
+
+      // Genero el historico de correcion
+      $historico = new TSolhistorico;
+      $historico->soh_sci_id = $data['sci_id'];
+      $historico->soh_soe_id = 2;
+      $historico->soh_idTercero_envia = $data['usuarioLogeado']['idTerceroUsuario'];
+      $historico->soh_idTercero_recibe = $solipornivel->sni_cedula;
+
+      if(isset($data['observacionEnvio'])){
+        if ($data['observacionEnvio'] == "") {
+          $data['observacionEnvio'] = "SIN OBSERVACION";
+        }
+      }else{
+        $data['observacionEnvio'] = "SIN OBSERVACION";
+      }
+
+      $historico->soh_observacion =  $data['observacionEnvio'];
+      $historico->soh_fechaenvio = Carbon::now();
+      $historico->soh_estadoenvio = 1;
+      $historico->save();
+
+      $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado')->where('soh_id',$historico->soh_id)->first();
+      $correo = ['omolaya@bellezaexpress.com'];
+      Mail::to($correo)->send(new notificacionEstadoSolicitud($dataSolicitud));
+
+      if(Mail::failures()){
+          return response()->json(Mail::failures());
+      }
 
       return 'exito';
     }
