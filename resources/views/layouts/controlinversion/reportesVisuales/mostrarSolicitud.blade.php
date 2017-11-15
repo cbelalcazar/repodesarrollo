@@ -91,14 +91,16 @@
                             </li>
                             <li class="list-group-item">
                               <label>Motivo: </label>
-                              <span ng-if="solicitud.sci_mts_id == 7">Salida de obsequios y muestras mercadeo</span>
-                              <span ng-if="solicitud.sci_mts_id == 8">Salida Eventos de Mercadeo</span>
-                              <span ng-if="solicitud.sci_mts_id == 10">Salida Probadores Mercadeo</span>
+                              <span ng-if="solicitud.sci_mts_id == 7"> Salida de obsequios y muestras mercadeo</span>
+                              <span ng-if="solicitud.sci_mts_id == 8"> Salida Eventos de Mercadeo</span>
+                              <span ng-if="solicitud.sci_mts_id == 10"> Salida Probadores Mercadeo</span>
                             </li>
                             <li class="list-group-item">
                               <label>Carga a gasto: </label>@{{solicitud.cargara.cga_descripcion}}
                             </li>
-                            <li class="list-group-item"><label>&nbsp;</label></li>
+                            <li class="list-group-item">
+                              <label>Canal: </label> @{{solicitud.sci_can_desc}}
+                            </li>
                           </ul>
                         </div>
                       </div>

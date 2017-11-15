@@ -39,7 +39,7 @@
                       <label>Fecha de Solicitud</label>
                     </div>
                     <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xl-8">
-                      @{{solicitud.sci_fecha}}
+                      @{{solicitud.sci_fecha | date: 'dd/MM/yyyy'}}
                     </div>
                   </div>
 
