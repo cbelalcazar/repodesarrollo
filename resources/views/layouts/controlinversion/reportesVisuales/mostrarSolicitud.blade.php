@@ -40,7 +40,7 @@
                   </thead>
                   <tbody>
                     <tr ng-repeat="hist in solicitud.historico">
-                      <td>@{{hist.soh_fechaenvio | date:'dd-MM-yyy HH:mm:ss'}}</td>
+                      <td>@{{hist.soh_fechaenvio  | date: 'dd/MM/yyyy HH:mm a'}}</td>
                       <td>@{{hist.estado.soe_descripcion}}</td>
                       <td>
                          @{{hist.per_nivel_envia.razonSocialTercero}}
@@ -68,7 +68,7 @@
                               <label>No. Solicitud: </label> @{{solicitud.sci_id}}
                             </li>
                             <li class="list-group-item">
-                              <label>Fecha de solicitud: </label> @{{solicitud.sci_fecha}}
+                              <label>Fecha de solicitud: </label> @{{solicitud.sci_fecha | date: 'dd/MM/yyyy' }}
                             </li>
                             <li class="list-group-item">
                               <label>Tipo de Salida: </label> @{{solicitud.tipo_salida.tsd_descripcion}}
@@ -204,7 +204,10 @@
                                   </tr>
                                 </tbody>
                               </table>
+                              <hr>
+                              <h3 class="text-right" style="font-weight: bold;">Total: @{{cliente.scl_ventaesperada | currency: '$' }}</h3>
                             </div>
+
                           </md-content>
                         </md-tab>
 

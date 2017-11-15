@@ -16,6 +16,26 @@ function($scope,  $filter, $http, $window, DTOptionsBuilder, DTColumnDefBuilder)
       var res = response.data;
       $scope.usuarioLogeado = angular.copy(res.userLogged);
       $scope.solicitudes = angular.copy(res.solicitudesPorAceptar);
+
+      $scope.solicitudes.map(function(solicitud) {
+
+          var fecha_ini = new Date(solicitud.solicitud.sci_fecha);
+          fecha_ini = fecha_ini.getTime() + fecha_ini.getTimezoneOffset()*60*1000;
+          solicitud.solicitud.sci_fecha = new Date(fecha_ini);
+
+          solicitud.solicitud.historico.map(function(hist){
+
+            var fecha_hist = new Date(hist.soh_fechaenvio);
+            fecha_hist = fecha_hist.getTime() + fecha_hist.getTimezoneOffset()*60*1000;
+            hist.soh_fechaenvio = new Date(fecha_hist);
+            return hist;
+
+          });
+
+          return solicitud;
+
+      }, this);
+
       $scope.estados = angular.copy(res.estados);
       $scope.progress= false;
     }, function(errorResponse){
@@ -60,12 +80,14 @@ function($scope,  $filter, $http, $window, DTOptionsBuilder, DTColumnDefBuilder)
               if($scope.lineasSolicitud.length == 0){
                 $scope.lineasSolicitud.push(referencia);
               }else{
-                var filterLineas = $filter('filter')($scope.lineasSolicitud, {srf_referencia : referencia.srf_referencia});
+                
+                var filterLineas = $filter('filter')($scope.lineasSolicitud, {linea_producto : {lcc_codigo: referencia.linea_producto.lcc_codigo}});
+
                 if(filterLineas.length == 0){
                   $scope.lineasSolicitud.push(referencia);
-                }else if(filterLineas[0].srf_referencia != referencia.srf_referencia){
-                  $scope.lineasSolicitud.push(referencia);
-                }
+                }else if(filterLineas[0].linea_producto.lcc_codigo != referencia.linea_producto.lcc_codigo){
+									$scope.lineasSolicitud.push(referencia);
+								}
               }
             });
           });

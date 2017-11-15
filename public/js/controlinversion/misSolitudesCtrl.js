@@ -15,13 +15,26 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 			data = response.data;
 			$scope.todas = angular.copy(data.solicitudes);
 			console.log($scope.todas);
-			$scope.todas.forEach(function(solicitud) {
+			$scope.todas.map(function(solicitud) {
+
 					var fecha_ini = new Date(solicitud.sci_fecha);
 					fecha_ini = fecha_ini.getTime() + fecha_ini.getTimezoneOffset()*60*1000;
 					solicitud.sci_fecha = new Date(fecha_ini);
+
+					solicitud.historico.map(function(hist){
+
+						var fecha_hist = new Date(hist.soh_fechaenvio);
+						fecha_hist = fecha_hist.getTime() + fecha_hist.getTimezoneOffset()*60*1000;
+						hist.soh_fechaenvio = new Date(fecha_hist);
+						return hist;
+
+					});
+
+
+					return solicitud;
 			}, this);
 			$scope.elaboracion =  $filter('filter')($scope.todas, {sci_soe_id : 0});
-			$scope.solicitud =  $filter('filter')($scope.todas, {sci_soe_id : 1});
+			$scope.solicitudes =  $filter('filter')($scope.todas, {sci_soe_id : 1});
 			$scope.correcciones =  $filter('filter')($scope.todas, {sci_soe_id : 2});
 			$scope.anulada =  $filter('filter')($scope.todas, {sci_soe_id : 3});
 			$scope.aprobacion =  $filter('filter')($scope.todas, {sci_soe_id : 4});
@@ -95,21 +108,27 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 		if(solicitud.cargaralinea == null){
 
 			if(solicitud.clientes.length > 0){
+
 					solicitud.clientes.forEach(function(cliente){
 
 						cliente.clientes_referencias.forEach(function(referencia){
+							console.log(referencia);
 							if($scope.lineasSolicitud.length == 0){
 									$scope.lineasSolicitud.push(referencia);
 							}else{
-								var filterLineas = $filter('filter')($scope.lineasSolicitud, {srf_referencia : referencia.srf_referencia});
+
+								var filterLineas = $filter('filter')($scope.lineasSolicitud, {linea_producto : {lcc_codigo: referencia.linea_producto.lcc_codigo}});
+		
 								if(filterLineas.length == 0){
 									$scope.lineasSolicitud.push(referencia);
-								}else if(filterLineas[0].srf_referencia != referencia.srf_referencia){
+								}else if(filterLineas[0].linea_producto.lcc_codigo != referencia.linea_producto.lcc_codigo){
 									$scope.lineasSolicitud.push(referencia);
 								}
+
 							}
 						});
 					});
+
 				}
 		}
 

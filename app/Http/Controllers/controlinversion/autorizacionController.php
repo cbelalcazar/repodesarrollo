@@ -18,6 +18,9 @@ use App\Models\BESA\VendedorZona;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
+use Mail;
+use App\Mail\notificacionEstadoSolicitud;
+
 
 class autorizacionController extends Controller
 {
@@ -226,6 +229,18 @@ class autorizacionController extends Controller
           }
 
           $historico->save();
+
+
+          $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado')->where('soh_id',$historico->soh_id)->first();
+
+          $correo = ['jdmarcillo@bellezaexpress.com'];
+          Mail::to($correo)->send(new notificacionEstadoSolicitud($dataSolicitud));
+
+          if(Mail::failures()){
+              return response()->json(Mail::failures());
+          }
+
+
         }else{
 
           $userSoliPernivel = TSolipernivel::where([['sni_cedula', $data['usuarioLogeado']['idTerceroUsuario']], ['sni_sci_id', $data['sci_id']]])->get();
@@ -238,9 +253,15 @@ class autorizacionController extends Controller
           $update = TSolipernivel::where([['sni_cedula', $data['usuarioLogeado']['idTerceroUsuario']], ['sni_sci_id', $data['sci_id']]])->update(['sni_estado' => 1]);
 
           // Creo nuevos pasos de aprobacion para personas de nivel 3
+
+          $personasAgregadas = [];
+
           foreach ($personaNiveles as $key => $value) {
-            $grabo = TSolipernivel::create(['sni_usrnivel' => $value['id'], 'sni_cedula' => $value['pern_cedula'], 'sni_sci_id' => $data['sci_id'], 'sni_estado' => 0, 'sni_orden' => $contador]);
-            $contador++;
+            if($value['pern_cedula'] != $data['usuarioLogeado']['idTerceroUsuario']){
+              array_push($personasAgregadas, $value);
+              $grabo = TSolipernivel::create(['sni_usrnivel' => $value['id'], 'sni_cedula' => $value['pern_cedula'], 'sni_sci_id' => $data['sci_id'], 'sni_estado' => 0, 'sni_orden' => $contador]);
+              $contador++;
+            }
           }
 
           // Genero el historico de aprobacion de nivel 3 a nivel 3
@@ -248,7 +269,7 @@ class autorizacionController extends Controller
           $historico->soh_sci_id = $data['sci_id'];
           $historico->soh_soe_id = $data['sci_soe_id'];
           $historico->soh_idTercero_envia = $data['usuarioLogeado']['idTerceroUsuario'];
-          $historico->soh_idTercero_recibe = $personaNiveles[0]['pern_cedula'];
+          $historico->soh_idTercero_recibe = $personasAgregadas[0]['pern_cedula'];
 
           if(isset($data['observacionEnvio'])){
             if ($data['observacionEnvio'] == "") {
@@ -263,6 +284,14 @@ class autorizacionController extends Controller
           $historico->soh_estadoenvio = 1;
           $historico->save();
 
+          $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado')->where('soh_id',$historico->soh_id)->first();
+
+          $correo = ['jdmarcillo@bellezaexpress.com'];
+          Mail::to($correo)->send(new notificacionEstadoSolicitud($dataSolicitud));
+
+          if(Mail::failures()){
+              return response()->json(Mail::failures());
+          }
 
         }
 
@@ -302,6 +331,14 @@ class autorizacionController extends Controller
       $historico->soh_estadoenvio = 1;
       $historico->save();
 
+      $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado')->where('soh_id',$historico->soh_id)->first();
+
+      $correo = ['jdmarcillo@bellezaexpress.com'];
+      Mail::to($correo)->send(new notificacionEstadoSolicitud($dataSolicitud));
+
+      if(Mail::failures()){
+          return response()->json(Mail::failures());
+      }
 
     }
 

@@ -52,7 +52,11 @@ class TSolipernivel extends Model
           'solicitud.estado',
           'solicitud.facturara.tercero',
           'solicitud.tipoPersona',
-           'solicitud.clientes.clientesReferencias'
+          'solicitud.clientes.clientesReferencias',
+          'solicitud.historico',
+          'solicitud.historico.estado',
+          'solicitud.historico.perNivelEnvia',
+          'solicitud.historico.perNivelRecibe'
           )->get();
 
       }elseif($unaSolaReferencia == true && $idSolcitud != null){
@@ -69,7 +73,11 @@ class TSolipernivel extends Model
           'solicitud.estado',
           'solicitud.facturara.tercero',
           'solicitud.tipoPersona',
-           'solicitud.clientes.clientesReferencias'
+          'solicitud.clientes.clientesReferencias',
+          'solicitud.historico',
+          'solicitud.historico.estado',
+          'solicitud.historico.perNivelEnvia',
+          'solicitud.historico.perNivelRecibe'
           )->get();
 
       }

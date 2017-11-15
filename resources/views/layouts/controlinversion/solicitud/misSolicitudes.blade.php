@@ -148,33 +148,33 @@
 	          </table>
 	      </md-tab>
 
-	      <md-tab label="Solicitud (@{{solicitud.length}})">
+	      <md-tab label="Solicitud (@{{solicitudes.length}})">
 	        <md-content class="md-padding ()">
 	         <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
 	          	<thead>
 	          		<tr>
-	          			<td>No</td>
-	          			<td>Estado</td>
-	          			<td>Fecha</td>
-	          			<td>Facturar A</td>
-	          			<td>Tipo de salida</td>
-	          			<td>Tipo de persona</td>
-	          			<td>Cargar a</td>
-	          			<td>Observaciones</td>
-	          			<td></td>
+	          			<th>No</th>
+	          			<th>Estado</th>
+	          			<th>Fecha</th>
+	          			<th>Facturar A</th>
+	          			<th>Tipo de salida</th>
+	          			<th>Tipo de persona</th>
+	          			<th>Cargar a</th>
+	          			<th>Observaciones</th>
+	          			<th></th>
 	          		</tr>
 	          	</thead>
 	          	<tbody>
-	          		<tr ng-repeat="solic in solicitud">
-	          			<td>@{{solic.sci_id}}</td>
-	          			<td>@{{solic.estado.soe_descripcion}}</td>
-	          			<td>@{{solic.sci_fecha | date: 'dd/MM/yyyy'}}</td>
-	          			<td>@{{solic.facturara.tercero.razonSocialTercero}}</td>
-	          			<td>@{{solic.tipo_salida.tsd_descripcion}}</td>
-	          			<td>@{{solic.tipo_persona.tpe_tipopersona}}</td>
-	          			<td>@{{solic.cargara.cga_descripcion}}</td>
-	          			<td>@{{solic.sci_observaciones}}</td>
-	          			<td><button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(solic)"><i class="glyphicon glyphicon-eye-open"></i></button></td>
+	          		<tr ng-repeat="solicY in solicitudes">
+	          			<td>@{{solicY.sci_id}}</td>
+	          			<td>@{{solicY.estado.soe_descripcion}}</td>
+	          			<td>@{{solicY.sci_fecha | date: 'dd/MM/yyyy'}}</td>
+	          			<td>@{{solicY.facturara.tercero.razonSocialTercero}}</td>
+	          			<td>@{{solicY.tipo_salida.tsd_descripcion}}</td>
+	          			<td>@{{solicY.tipo_persona.tpe_tipopersona}}</td>
+	          			<td>@{{solicY.cargara.cga_descripcion}}</td>
+	          			<td>@{{solicY.sci_observaciones}}</td>
+	          			<td><button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(solicY)"><i class="glyphicon glyphicon-eye-open"></i></button></td>
 	          		</tr>
 	          	</tbody>
 	          </table>

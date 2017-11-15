@@ -70,6 +70,7 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDi
 	$scope.historialTpe = [];
 	$scope.historialCanal = [];
 	$scope.isInitialiazing = false;
+	$scope.mensajeErrorCargue = "";
 
 
 	document.oncontextmenu = function() {
@@ -412,61 +413,89 @@ $scope.agregarReferenciaTodos = function(){
 
 					$http.post($scope.refUrl, $scope.objeto.referenciaGeneral).then(function(response){
 
-						$scope.selectedColaboradores.map(function(colaborador){
+						var tieneReferenciasError = false;
+						var filtro = $filter('filter')($scope.canalPernivel, {cap_idlinea: response.data.infoRefe[0].cod_linea, cap_idcanal: $scope.solicitud.sci_canal.can_id.trim()});
 
-							$scope.objeto.referenciaGeneral.srf_preciouni = response.data.infoRefe.length > 0 ? response.data.infoRefe[0].precio : 1;
-							$scope.objeto.referenciaGeneral.srf_unidades = 1;
-							$scope.objeto.referenciaGeneral.srf_porcentaje = 0;
-							$scope.objeto.referenciaGeneral.srf_estado = 1;
-							$scope.objeto.referenciaGeneral.referenciaValorTotal = $scope.objeto.referenciaGeneral.srf_unidades == 0 ? 0 : $scope.objeto.referenciaGeneral.srf_unidades * $scope.objeto.referenciaGeneral.srf_preciouni;
-							$scope.objeto.referenciaGeneral.originalLinea = $scope.objeto.referenciaGeneral.originalLinea == undefined ? angular.copy($scope.objeto.referenciaGeneral.srf_lin_id_gasto): angular.copy($scope.objeto.referenciaGeneral.originalLinea);
-
-							if($scope.solicitud.cargagasto1.cga_id == 1 && $scope.solicitud.lineas1 != undefined){
-								$scope.objeto.referenciaGeneral.linea = $scope.solicitud.lineas1;
-								$scope.objeto.referenciaGeneral.srf_lin_id_gasto = $scope.solicitud.lineas1.lcc_codigo;
-							}else{
-								//var lineaRefe = $filter('filter')($scope.lineasproducto, {lcc_codigo : $scope.objeto.referenciaGeneral.originalLinea});
-								$scope.objeto.referenciaGeneral.linea =  $scope.lineaExist[0];
-							}
-
-							if(colaborador.solicitud.referencias.length > 0){
-
-								var objetoExiste = $filter('filter')(colaborador.solicitud.referencias,{srf_referencia: $scope.objeto.referenciaGeneral.srf_referencia });
-								if(objetoExiste.length == 0){
-									colaborador.solicitud.referencias.push(angular.copy($scope.objeto.referenciaGeneral));
-								}
-
-							}else{
-								colaborador.solicitud.referencias.push(angular.copy($scope.objeto.referenciaGeneral));
-							}
-
-							colaborador.cantidadTotalReferencias = colaborador.solicitud.referencias.length;
-
-							$scope.sumaCantidadSolicitada(colaborador);
-
-							if(colaborador.cantidadTotalReferencias > 0 && colaborador.cantidadSolicitadaTotal > 0){
-								$scope.cantPersonasFull += 1;
-							}
-
-							return colaborador;
-						})
-
-						if($scope.cantPersonasFull == $scope.selectedColaboradores.length){
-							$scope.solicitud.canBeProccess = true;
-						}else{
-							$scope.solicitud.canBeProccess = false;
+						console.log(filtro);
+						if(filtro.length == 0){
+							tieneReferenciasError = true;
 						}
 
-						$scope.objeto.referenciaGeneral = "";
+						if(tieneReferenciasError == true){
 
-						$scope.progress = false;
+							$scope.progress = false;
+							var error = $mdDialog.alert()
+							 .title('Error!')
+							 .textContent('No existe ruta de aprobación para la linea de esta referencia en el canal ' + $scope.solicitud.sci_canal.can_txt_descrip)
+							 .ariaLabel('')
+							 .ok('Acepto')
+
+							 $mdDialog.show(error).then(function() {
+								 $scope.objeto.referenciaGeneral = "";
+							 });
+
+
+						}else{
+
+								$scope.selectedColaboradores.map(function(colaborador){
+
+									$scope.objeto.referenciaGeneral.srf_preciouni = response.data.infoRefe.length > 0 ? response.data.infoRefe[0].precio : 1;
+									$scope.objeto.referenciaGeneral.srf_unidades = 1;
+									$scope.objeto.referenciaGeneral.srf_porcentaje = 0;
+									$scope.objeto.referenciaGeneral.srf_estado = 1;
+									$scope.objeto.referenciaGeneral.referenciaValorTotal = $scope.objeto.referenciaGeneral.srf_unidades == 0 ? 0 : $scope.objeto.referenciaGeneral.srf_unidades * $scope.objeto.referenciaGeneral.srf_preciouni;
+									$scope.objeto.referenciaGeneral.originalLinea = $scope.objeto.referenciaGeneral.originalLinea == undefined ? angular.copy($scope.objeto.referenciaGeneral.srf_lin_id_gasto): angular.copy($scope.objeto.referenciaGeneral.originalLinea);
+
+									if($scope.solicitud.cargagasto1.cga_id == 1 && $scope.solicitud.lineas1 != undefined){
+										$scope.objeto.referenciaGeneral.linea = $scope.solicitud.lineas1;
+										$scope.objeto.referenciaGeneral.srf_lin_id_gasto = $scope.solicitud.lineas1.lcc_codigo;
+									}else{
+										//var lineaRefe = $filter('filter')($scope.lineasproducto, {lcc_codigo : $scope.objeto.referenciaGeneral.originalLinea});
+										$scope.objeto.referenciaGeneral.linea =  $scope.lineaExist[0];
+									}
+
+									if(colaborador.solicitud.referencias.length > 0){
+
+										var objetoExiste = $filter('filter')(colaborador.solicitud.referencias,{srf_referencia: $scope.objeto.referenciaGeneral.srf_referencia });
+										if(objetoExiste.length == 0){
+											colaborador.solicitud.referencias.push(angular.copy($scope.objeto.referenciaGeneral));
+										}
+
+									}else{
+										colaborador.solicitud.referencias.push(angular.copy($scope.objeto.referenciaGeneral));
+									}
+
+									colaborador.cantidadTotalReferencias = colaborador.solicitud.referencias.length;
+
+									$scope.sumaCantidadSolicitada(colaborador);
+
+									if(colaborador.cantidadTotalReferencias > 0 && colaborador.cantidadSolicitadaTotal > 0){
+										$scope.cantPersonasFull += 1;
+									}
+
+									return colaborador;
+								})
+
+								if($scope.cantPersonasFull == $scope.selectedColaboradores.length){
+									$scope.solicitud.canBeProccess = true;
+								}else{
+									$scope.solicitud.canBeProccess = false;
+								}
+
+								$scope.objeto.referenciaGeneral = "";
+
+								$scope.progress = false;
+
+						}
 
 					});
+
 				}else{
 					$mdDialog.show(alertaLineaNoExiste).then(function(){
 						$scope.objeto.referenciaGeneral = "";
 					});
 				}
+
 			}else{
 				$mdDialog.show(alertaLineaNoExiste).then(function(){
 					$scope.objeto.referenciaGeneral = "";
@@ -496,56 +525,82 @@ $scope.agregarReferenciaVendedor = function(colaborador,ev){
 
 				$http.post($scope.refUrl, colaborador.referenciaSearchItem).then(function(response){
 
-					colaborador.referenciaSearchItem.srf_preciouni = response.data.infoRefe.length > 0 ? response.data.infoRefe[0].precio : 1;
-					colaborador.referenciaSearchItem.srf_unidades = 1;
-					colaborador.referenciaSearchItem.srf_porcentaje = 0;
-					colaborador.referenciaSearchItem.srf_estado = 1;
-					colaborador.referenciaSearchItem.referenciaValorTotal = colaborador.referenciaSearchItem.referenciaValorTotal = colaborador.referenciaSearchItem.srf_unidades == 0 ? 0 : colaborador.referenciaSearchItem.srf_unidades * colaborador.referenciaSearchItem.srf_preciouni;
-					colaborador.referenciaSearchItem.originalLinea= colaborador.referenciaSearchItem.originalLinea == undefined ? angular.copy(colaborador.referenciaSearchItem.srf_lin_id_gasto): angular.copy(colaborador.referenciaSearchItem.originalLinea);
+							var tieneReferenciasError = false;
+							var filtro = $filter('filter')($scope.canalPernivel, {cap_idlinea: response.data.infoRefe[0].cod_linea, cap_idcanal: $scope.solicitud.sci_canal.can_id.trim()});
+
+							console.log(filtro);
+							if(filtro.length == 0){
+								tieneReferenciasError = true;
+							}
+
+							if(tieneReferenciasError == true){
+
+								$scope.progress = false;
+								var error = $mdDialog.alert()
+								 .title('Error!')
+								 .textContent('No existe ruta de aprobación para la linea de esta referencia en el canal ' + $scope.solicitud.sci_canal.can_txt_descrip)
+								 .ariaLabel('')
+								 .ok('Acepto')
+
+								 $mdDialog.show(error).then(function() {
+									 colaborador.referenciaSearchItem = "";
+								 });
 
 
-					if($scope.solicitud.cargagasto1.cga_id == 1 && $scope.solicitud.lineas1 != undefined){
-						colaborador.referenciaSearchItem.linea = $scope.solicitud.lineas1;
-						colaborador.referenciaSearchItem.srf_lin_id_gasto = $scope.solicitud.lineas1.lcc_codigo;
-					}else{
-						//var lineaRefe = $filter('filter')($scope.lineasproducto, {lcc_codigo : colaborador.referenciaSearchItem.originalLinea});
-						colaborador.referenciaSearchItem.linea =  $scope.lineaExist[0];
-					}
+							}else{
+
+									colaborador.referenciaSearchItem.srf_preciouni = response.data.infoRefe.length > 0 ? response.data.infoRefe[0].precio : 1;
+									colaborador.referenciaSearchItem.srf_unidades = 1;
+									colaborador.referenciaSearchItem.srf_porcentaje = 0;
+									colaborador.referenciaSearchItem.srf_estado = 1;
+									colaborador.referenciaSearchItem.referenciaValorTotal = colaborador.referenciaSearchItem.referenciaValorTotal = colaborador.referenciaSearchItem.srf_unidades == 0 ? 0 : colaborador.referenciaSearchItem.srf_unidades * colaborador.referenciaSearchItem.srf_preciouni;
+									colaborador.referenciaSearchItem.originalLinea= colaborador.referenciaSearchItem.originalLinea == undefined ? angular.copy(colaborador.referenciaSearchItem.srf_lin_id_gasto): angular.copy(colaborador.referenciaSearchItem.originalLinea);
 
 
-					if(colaborador.solicitud.referencias.length > 0){
+									if($scope.solicitud.cargagasto1.cga_id == 1 && $scope.solicitud.lineas1 != undefined){
+										colaborador.referenciaSearchItem.linea = $scope.solicitud.lineas1;
+										colaborador.referenciaSearchItem.srf_lin_id_gasto = $scope.solicitud.lineas1.lcc_codigo;
+									}else{
+										//var lineaRefe = $filter('filter')($scope.lineasproducto, {lcc_codigo : colaborador.referenciaSearchItem.originalLinea});
+										colaborador.referenciaSearchItem.linea =  $scope.lineaExist[0];
+									}
 
-						var objetoExiste = $filter('filter')(colaborador.solicitud.referencias,{srf_referencia: colaborador.referenciaSearchItem.srf_referencia });
-						if(objetoExiste.length == 0){
-							colaborador.solicitud.referencias.push(angular.copy(colaborador.referenciaSearchItem));
-						}
 
-					}else{
-						colaborador.solicitud.referencias.push(angular.copy(colaborador.referenciaSearchItem));
-					}
+									if(colaborador.solicitud.referencias.length > 0){
 
-					colaborador.cantidadTotalReferencias = colaborador.solicitud.referencias.length;
+										var objetoExiste = $filter('filter')(colaborador.solicitud.referencias,{srf_referencia: colaborador.referenciaSearchItem.srf_referencia });
+										if(objetoExiste.length == 0){
+											colaborador.solicitud.referencias.push(angular.copy(colaborador.referenciaSearchItem));
+										}
 
-					$scope.selectedColaboradores.map(function(colaborador){
+									}else{
+										colaborador.solicitud.referencias.push(angular.copy(colaborador.referenciaSearchItem));
+									}
 
-						$scope.sumaCantidadSolicitada(colaborador);
+									colaborador.cantidadTotalReferencias = colaborador.solicitud.referencias.length;
 
-						if(colaborador.cantidadTotalReferencias > 0 && colaborador.cantidadSolicitadaTotal > 0){
-							$scope.cantPersonasFull += 1;
-						}
+									$scope.selectedColaboradores.map(function(colaborador){
 
-					});
+										$scope.sumaCantidadSolicitada(colaborador);
 
-					if($scope.cantPersonasFull == $scope.selectedColaboradores.length){
-						$scope.solicitud.canBeProccess = true;
-					}else{
-						$scope.solicitud.canBeProccess = false;
-					}
+										if(colaborador.cantidadTotalReferencias > 0 && colaborador.cantidadSolicitadaTotal > 0){
+											$scope.cantPersonasFull += 1;
+										}
 
-					colaborador.referenciaSearchItem="";
-					$scope.progress = false;
+									});
 
-				});
+									if($scope.cantPersonasFull == $scope.selectedColaboradores.length){
+										$scope.solicitud.canBeProccess = true;
+									}else{
+										$scope.solicitud.canBeProccess = false;
+									}
+
+									colaborador.referenciaSearchItem="";
+									$scope.progress = false;
+
+							}
+
+						});
 
 			}else{
 				$mdDialog.show(alertaLineaNoExiste).then(function(){
@@ -839,10 +894,7 @@ $scope.onChangeCanal = function(){
 
 						var filtro = $filter('filter')($scope.canalPernivel, {cap_idlinea: refe.originalLinea, cap_idcanal: $scope.solicitud.sci_canal.can_id.trim()});
 
-						console.log("Entre----> " + refe.originalLinea + " Canal: " + $scope.solicitud.sci_canal.can_id);
-
 						if(filtro.length == 0){
-							console.log("EntreError----> " + refe.originalLinea + " Canal: " + $scope.solicitud.sci_canal.can_id);
 							arregloErrores.push(refe);
 							tieneReferenciasError = true;
 						}
@@ -1093,6 +1145,7 @@ $scope.read = function (workbook) {
 		var codigosReferencia = [];
 		var referenciasFiltradas = [];
 		$scope.referenciasError = [];
+		$scope.referenciasErrorRuta = [];
 
 
 		data.forEach(function(referencia){
@@ -1100,13 +1153,35 @@ $scope.read = function (workbook) {
 		});
 		//Los codigos de referencias del archivo se filtran con los items del autocomplete de referencias para descartar los que no estan
 		codigosReferencia.forEach(function(codigo){
+
 			var objetoRefe = $filter('filter')($scope.items, {srf_referencia : codigo.REFERENCIA});
+
 			if(objetoRefe.length > 0 && codigo.CANTIDAD > 0){
-				objetoRefe[0].srf_unidades = parseInt(codigo.CANTIDAD);
-				referenciasFiltradas.push(objetoRefe[0]);
+
+				var tieneReferenciasError = false;
+				var filtro = $filter('filter')($scope.canalPernivel, {cap_idlinea: objetoRefe[0].srf_lin_id_gasto, cap_idcanal: $scope.solicitud.sci_canal.can_id.trim()});
+
+				if(filtro.length == 0){
+					tieneReferenciasError = true;
+				}
+
+				if(tieneReferenciasError == true){
+
+					objetoRefe[0].codigo = codigo;
+					$scope.referenciasErrorRuta.push(objetoRefe[0]);
+					$scope.mensajeErrorCargue = "<h5>Error Ruta Aprobación: No existe ruta de aprobación para la linea de estas referencias en el canal " + $scope.solicitud.sci_canal.can_txt_descrip +"</h5>";
+
+				}else{
+
+					objetoRefe[0].srf_unidades = parseInt(codigo.CANTIDAD);
+					referenciasFiltradas.push(objetoRefe[0]);
+
+				}
+
 			}else{
 				$scope.referenciasError.push(codigo);
 			}
+
 		})
 		//se reinicializa la variable codigosReferencia para agregar solo las referencias que se encuentran en el autocomplete
 		codigosReferencia = [];
@@ -1115,7 +1190,7 @@ $scope.read = function (workbook) {
 			codigosReferencia.push(referencia.srf_referencia);
 		});
 		//se realiza la consulta de los precios por un arreglo de referenciasFiltradas y se agregan
-		if($scope.referenciasError.length == 0){
+		if($scope.referenciasError.length == 0 && $scope.referenciasErrorRuta.length == 0){
 
 			$scope.cantPersonasFull = 0;
 
@@ -1149,7 +1224,6 @@ $scope.read = function (workbook) {
 
 								var objetoExiste = $filter('filter')(colaborador.solicitud.referencias,{srf_referencia: referencia1.srf_referencia });
 								if(objetoExiste.length == 0){
-									console.log(referencia1);
 									colaborador.solicitud.referencias.push(angular.copy(referencia1));
 								}
 
@@ -1182,15 +1256,45 @@ $scope.read = function (workbook) {
 
 		}else{
 
-			var encabezado = "<br><h5>Se ha presentado un error al intentar cargar las siguientes referencias:</h5>";
-			var error = "<h5>Error: Las referencias no existen o su cantidad no es valida, por favor verifique su información.</h5><br>";
-
+			var encabezado = "";
+			var error = "<h5>Error: Las referencias no existen o su cantidad no es valida, por favor verifique su información.</h5>";
 			var text = "";
-			$scope.referenciasError.forEach(function(refe){
-				text += '<md-list-item><pre style="color:red;">REFERENCIA: '+ refe.REFERENCIA +' CANTIDAD: '+refe.CANTIDAD+' FILA: '+ (refe.__rowNum__ +1)+'</pre></md-list-item>';
-			})
 
-			encabezado += error;
+			if($scope.referenciasErrorRuta.length > 0 && $scope.referenciasError.length == 0){
+
+				text = "<h3>Referencias con error de ruta de aprobacion</h3>"
+				text += $scope.mensajeErrorCargue;
+				$scope.referenciasErrorRuta.forEach(function(refe){
+					text += '<md-list-item><pre style="color:red;">REFERENCIA: '+ refe.codigo.REFERENCIA +' CANTIDAD: '+refe.codigo.CANTIDAD+' FILA: '+ (refe.codigo.__rowNum__ +1)+' Linea: '+ refe.referenciaLinea +'</pre></md-list-item>';
+				});
+
+
+			}else if($scope.referenciasErrorRuta.length == 0 && $scope.referenciasError.length > 0){
+
+				text = "<h3>Referencias con error de existencia o cantidades invalidas.</h3>"
+				text += error;
+				$scope.referenciasError.forEach(function(refe){
+					text += '<md-list-item><pre style="color:red;">REFERENCIA: '+ refe.REFERENCIA +' CANTIDAD: '+refe.CANTIDAD+' FILA: '+ (refe.__rowNum__ +1)+'</pre></md-list-item>';
+				})
+
+			}else if($scope.referenciasErrorRuta.length > 0 && $scope.referenciasError.length > 0){
+
+				text = "<h3>Referencias con error de ruta de aprobacion</h3>"
+				text += $scope.mensajeErrorCargue;
+				$scope.referenciasErrorRuta.forEach(function(refe){
+					text += '<md-list-item><pre style="color:red;">REFERENCIA: '+ refe.codigo.REFERENCIA +' CANTIDAD: '+refe.codigo.CANTIDAD+' FILA: '+ (refe.codigo.__rowNum__ +1)+' Linea: '+ refe.referenciaLinea +'</pre></md-list-item>';
+				});
+
+				text += "<h3>Referencias con error de existencia o cantidades invalidas.</h3>"
+				text += error;
+				$scope.referenciasError.forEach(function(refe){
+					text += '<md-list-item><pre style="color:red;">REFERENCIA: '+ refe.REFERENCIA +' CANTIDAD: '+refe.CANTIDAD+' FILA: '+ (refe.__rowNum__ +1)+'</pre></md-list-item>';
+				})
+
+			}
+
+			// encabezado += error;
+			// encabezado += "<br>";
 			encabezado += text;
 
 

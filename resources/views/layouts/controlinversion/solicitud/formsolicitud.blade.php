@@ -154,7 +154,7 @@
 			</div>
 
 
-			<div ng-if="(solicitud.tipopersona1.tpe_tipopersona == 'Vendedor' && solicitud.zonasSelected.length > 0) || (solicitud.tipopersona1.tpe_tipopersona != 'Vendedor')" class="row">
+			<div ng-if="((solicitud.tipopersona1.tpe_tipopersona == 'Vendedor' && solicitud.zonasSelected.length > 0) || (solicitud.tipopersona1.tpe_tipopersona != 'Vendedor')) && solicitudForm.$valid" class="row">
 
 				<div class="form-group col-md-12" ng-if="solicitud.tipopersona1.tpe_tipopersona == 'Vendedor'">
 					<label>Seleccionar Todos Por Zona: </label>
