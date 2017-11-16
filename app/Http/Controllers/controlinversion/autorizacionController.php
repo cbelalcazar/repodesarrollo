@@ -112,7 +112,7 @@ class autorizacionController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public static function store(Request $request, $idSolicitud = null, $isCreatingL3 = null)
+  public static function store(Request $request, $idSolicitud = null, $isCreating = null)
   {
     $data = $request->all();
     //return response()->json($data);
@@ -126,9 +126,9 @@ class autorizacionController extends Controller
       $data['observacionEnvio'] = "";
       $data['usuarioLogeado'] = Auth::user();
 
-      if($isCreatingL3 != null){
+      if($isCreating != null){
 
-        if($isCreatingL3 == true){
+        if($isCreating == true){
           $data['isCreating'] = true;
         }else{
           $data['isCreating'] = false;
@@ -142,8 +142,32 @@ class autorizacionController extends Controller
       $userExistPernivel = TPerniveles::with('tperjefe')->where('pern_cedula', $data['usuarioLogeado']['idTerceroUsuario'])->get();
     // Valida el estado de la solicitud, si es 3 se debe anular en la tabla y retornar exito
     if($data['estadoSolicitud']['soe_id'] == 3){
+
       $actualizoEstadoSolicitud =  TSolicitudctlinv::where('sci_id', $data['sci_id'])->update(['sci_soe_id' => 3]);
+      $solcitudesPorNivelParaAnular = TSolipernivel::where('sni_sci_id', $data['sci_id'])->update(['sni_estado' => 3]);
+
+      // Genero el historico de correcion
+      $historico = new TSolhistorico;
+      $historico->soh_sci_id = $data['sci_id'];
+      $historico->soh_soe_id = 3;
+      $historico->soh_idTercero_envia = $data['usuarioLogeado']['idTerceroUsuario'];
+      $historico->soh_idTercero_recibe = $data['usuarioLogeado']['idTerceroUsuario'];
+
+      if(isset($data['observacionEnvio'])){
+        if ($data['observacionEnvio'] == "") {
+          $data['observacionEnvio'] = "SIN OBSERVACION";
+        }
+      }else{
+        $data['observacionEnvio'] = "SIN OBSERVACION";
+      }
+
+      $historico->soh_observacion =  $data['observacionEnvio'];
+      $historico->soh_fechaenvio = Carbon::now();
+      $historico->soh_estadoenvio = 1;
+      $historico->save();
+
       return 'exito';
+
     }elseif($data['estadoSolicitud']['soe_id'] == 2){
       // Valida el estado de la solicitud, si es 3 se debe ponerla en estado correcciones y retornar exito
       $actualizoEstadoSolicitud =  TSolicitudctlinv::where('sci_id', $data['sci_id'])->update(['sci_soe_id' => 2]);
@@ -178,7 +202,7 @@ class autorizacionController extends Controller
       $historico->soh_estadoenvio = 1;
       $historico->save();
 
-      $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado')->where('soh_id',$historico->soh_id)->first();
+      $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado', 'solicitud', 'solicitud.clientes', 'solicitud.clientes.clientesReferencias', 'solicitud.clientes.clientesReferencias.referencia', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio.LineasProducto')->where('soh_id',$historico->soh_id)->first();
       $correo = ['omolaya@bellezaexpress.com'];
       Mail::to($correo)->send(new notificacionEstadoSolicitud($dataSolicitud));
 
@@ -262,7 +286,7 @@ class autorizacionController extends Controller
           $historico->save();
 
 
-          $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado')->where('soh_id',$historico->soh_id)->first();
+          $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado', 'solicitud', 'solicitud.clientes', 'solicitud.clientes.clientesReferencias', 'solicitud.clientes.clientesReferencias.referencia', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio.LineasProducto')->where('soh_id',$historico->soh_id)->first();
 
           $correo = ['omolaya@bellezaexpress.com'];
           Mail::to($correo)->send(new notificacionEstadoSolicitud($dataSolicitud));
@@ -302,12 +326,10 @@ class autorizacionController extends Controller
           $historico->soh_idTercero_envia = $data['usuarioLogeado']['idTerceroUsuario'];
           $historico->soh_idTercero_recibe = $personasAgregadas[0]['pern_cedula'];
 
-          if(isset($data['observacionEnvio'])){
-            if ($data['observacionEnvio'] == "") {
-              $data['observacionEnvio'] = "SIN OBSERVACION";
-            }
+          if($data['sci_observaciones'] != null && trim($data['sci_observaciones']) != ""){
+            $data['observacionEnvio'] = $data['sci_observaciones'];
           }else{
-            $data['observacionEnvio'] = "SIN OBSERVACION";
+            $data['observacionEnvio'] = "ENVIO DE SOLICITUD";
           }
 
           $historico->soh_observacion =  $data['observacionEnvio'];
@@ -315,7 +337,7 @@ class autorizacionController extends Controller
           $historico->soh_estadoenvio = 1;
           $historico->save();
 
-          $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado')->where('soh_id',$historico->soh_id)->first();
+          $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado', 'solicitud', 'solicitud.clientes', 'solicitud.clientes.clientesReferencias', 'solicitud.clientes.clientesReferencias.referencia', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio.LineasProducto')->where('soh_id',$historico->soh_id)->first();
 
           $correo = ['omolaya@bellezaexpress.com'];
           Mail::to($correo)->send(new notificacionEstadoSolicitud($dataSolicitud));
@@ -327,6 +349,10 @@ class autorizacionController extends Controller
         }
 
     }else{
+
+      if(!isset($data['isCreating'])){
+        $data['isCreating'] = false;
+      }
       //Validar si el usuario logeado es de nivel 2
       // Si no, creo la ruta de aprobacion
       $quienesSonAgrupados = $quienesSon->groupBy('cap_idpernivel')->keys()->all();
@@ -349,12 +375,28 @@ class autorizacionController extends Controller
       $historico->soh_idTercero_envia = $data['usuarioLogeado']['idTerceroUsuario'];
       $historico->soh_idTercero_recibe = $personaNiveles[0]['pern_cedula'];
 
-      if(isset($data['observacionEnvio'])){
-        if ($data['observacionEnvio'] == "") {
+      if($data['isCreating'] == false){
+
+        if(isset($data['observacionEnvio'])){
+
+          if ($data['observacionEnvio'] == "") {
+            $data['observacionEnvio'] = "SIN OBSERVACION";
+          }
+
+        }else{
+
           $data['observacionEnvio'] = "SIN OBSERVACION";
+
         }
+
       }else{
-        $data['observacionEnvio'] = "SIN OBSERVACION";
+
+        if($data['sci_observaciones'] != null && trim($data['sci_observaciones']) != ""){
+          $data['observacionEnvio'] = $data['sci_observaciones'];
+        }else{
+          $data['observacionEnvio'] = "ENVIO DE SOLICITUD";
+        }
+
       }
 
       $historico->soh_observacion =  $data['observacionEnvio'];
@@ -362,7 +404,7 @@ class autorizacionController extends Controller
       $historico->soh_estadoenvio = 1;
       $historico->save();
 
-      $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado')->where('soh_id',$historico->soh_id)->first();
+      $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado', 'solicitud', 'solicitud.clientes', 'solicitud.clientes.clientesReferencias', 'solicitud.clientes.clientesReferencias.referencia', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio.LineasProducto')->where('soh_id',$historico->soh_id)->first();
 
       $correo = ['omolaya@bellezaexpress.com'];
       Mail::to($correo)->send(new notificacionEstadoSolicitud($dataSolicitud));

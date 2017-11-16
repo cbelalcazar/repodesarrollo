@@ -31,8 +31,31 @@ class notificacionEstadoSolicitud extends Mailable
     public function build()
     {
         $style = ['body-line' => 'margin: 0 20px 12px; font-size: 13px; line-height: 21px; color: #4f4f4f; font-family: sans-serif;'];
-        $titulo = 'Solicitud en Espera de Aprobación';
+        $titulo = 'Solicitud de Muestras y Obsequios';
         $dataSolicitud = $this->dataSolicitud;
+
+        $arrayLineas = [];
+
+        foreach ($dataSolicitud['solicitud']['clientes'] as $cliente) {
+          foreach ($cliente['clientesReferencias'] as $refe) {
+            if(count($arrayLineas) == 0){
+              array_push($arrayLineas, $refe['referencia']['LineaItemCriterio']['LineasProducto']);
+            }else{
+
+              $filter = [];
+              $filter = collect($arrayLineas)->filter(function($linea) use($refe){
+                return $linea['CodLinea'] == $refe['referencia']['LineaItemCriterio']['LineasProducto']['CodLinea'];
+              })->all();
+
+              if(count($filter) == 0){
+                array_push($arrayLineas, $refe['referencia']['LineaItemCriterio']['LineasProducto']);
+              }
+
+            }
+          }
+        }
+
+        $dataSolicitud['lineasCorreo'] = $arrayLineas;
 
         return $this->subject('Solicitudes Obsequios y Muestras')
         ->view('emails.controlinversion.notificacionEstadoSolicitud')

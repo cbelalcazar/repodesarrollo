@@ -29,6 +29,10 @@ class TSolhistorico extends Model
 
     protected $guarded = [];
 
+    public function solicitud(){
+      return $this->hasOne('App\Models\controlinversion\TSolicitudctlinv', 'sci_id', 'soh_sci_id');
+    }
+
     public function estado(){
       return $this->hasOne('App\Models\controlinversion\TSolestado', 'soe_id', 'soh_soe_id');
     }
@@ -40,5 +44,5 @@ class TSolhistorico extends Model
     public function perNivelRecibe(){
       return $this->hasOne('App\Models\Genericas\Tercero', 'idTercero', 'soh_idTercero_recibe');
     }
-        
+
 }

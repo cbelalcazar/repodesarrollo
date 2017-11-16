@@ -39,7 +39,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr ng-repeat="hist in solicitud.historico">
+                    <tr ng-repeat="hist in solicitud.historico | orderBy : hist.soh_fechaenvio : true">
                       <td>@{{hist.soh_fechaenvio  | date: 'dd/MM/yyyy HH:mm a'}}</td>
                       <td>@{{hist.estado.soe_descripcion}}</td>
                       <td>

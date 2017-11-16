@@ -278,14 +278,26 @@ class solicitudController extends Controller
             $registroHistorico->soh_soe_id = $data['sci_soe_id'];
             $registroHistorico->soh_idTercero_envia = $data['userNivel'][0]['pern_cedula'];
             $registroHistorico->soh_idTercero_recibe = $solicitudPorNivel[0]['tpernivel']['tperjefe']['pern_cedula'];
-            $registroHistorico->soh_observacion = "ENVIO DE SOLICITUD";
+
+            if(isset($data['sci_observaciones'])){
+
+              if($data['sci_observaciones'] != null && trim($data['sci_observaciones']) != ""){
+                $registroHistorico->soh_observacion = $data['sci_observaciones'];
+              }else{
+                $registroHistorico->soh_observacion = "ENVIO DE SOLICITUD";
+              }
+
+            }else{
+              $registroHistorico->soh_observacion = "ENVIO DE SOLICITUD";
+            }
+
             $registroHistorico->soh_fechaenvio = Carbon::now();
             $registroHistorico->soh_estadoenvio = 1;
             $registroHistorico->save();
 
-            $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado')->where('soh_id',$registroHistorico->soh_id)->first();
+            $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado', 'solicitud', 'solicitud.clientes', 'solicitud.clientes.clientesReferencias', 'solicitud.clientes.clientesReferencias.referencia', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio.LineasProducto')->where('soh_id',$registroHistorico->soh_id)->first();
 
-            $correo = ['omolaya@bellezaexpress.com'];
+            $correo = ['jdmarcillo@bellezaexpress.com'];
             Mail::to($correo)->send(new notificacionEstadoSolicitud($dataSolicitud));
 
             if(Mail::failures()){
@@ -296,7 +308,7 @@ class solicitudController extends Controller
 
              $dataNivel2 = $data;
              $dataNivel2['sci_id'] = $id;
-             $autorizacionSolicitud = AutorizacionCtrl::store($request, $id, false);
+             $autorizacionSolicitud = AutorizacionCtrl::store($request, $id, true);
              //dd($autorizacionSolicitud);
              //return response()->json($autorizacionSolicitud);
 
@@ -359,11 +371,27 @@ class solicitudController extends Controller
      */
     public function destroy($id)
     {
-        $solicitud = TSolicitudctlinv::find($id);
-        $solicitud->sci_soe_id = 3;
-        $solicitud->save();
 
-        return response()->json($solicitud);
+      $userLogged = Auth::user();
+
+      $actualizoEstadoSolicitud =  TSolicitudctlinv::where('sci_id', $id)->update(['sci_soe_id' => 3]);
+      $solcitudesPorNivelParaAnular = TSolipernivel::where('sni_sci_id', $id)->update(['sni_estado' => 3]);
+
+      // Genero el historico de correcion
+      $historico = new TSolhistorico;
+      $historico->soh_sci_id = $id;
+      $historico->soh_soe_id = 3;
+      $historico->soh_idTercero_envia = $userLogged->idTerceroUsuario;
+      $historico->soh_idTercero_recibe = $userLogged->idTerceroUsuario;
+      $historico->soh_observacion =  "SOLICITUD ANULADA";
+      $historico->soh_fechaenvio = Carbon::now();
+      $historico->soh_estadoenvio = 1;
+      $historico->save();
+
+      $solicitud = TSolicitudctlinv::find($id);
+
+      return response()->json($solicitud);
+
     }
 
 
