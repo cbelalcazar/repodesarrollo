@@ -35,6 +35,7 @@ class notificacionEstadoSolicitud extends Mailable
         $dataSolicitud = $this->dataSolicitud;
 
         $arrayLineas = [];
+        $textoLineas = "";
 
         foreach ($dataSolicitud['solicitud']['clientes'] as $cliente) {
           foreach ($cliente['clientesReferencias'] as $refe) {
@@ -55,7 +56,17 @@ class notificacionEstadoSolicitud extends Mailable
           }
         }
 
-        $dataSolicitud['lineasCorreo'] = $arrayLineas;
+        foreach ($arrayLineas as $key => $linea) {
+
+          if($key < (count($arrayLineas)-1)){
+              $textoLineas .=  $linea['NomLinea']. ", ";
+          }elseif($key == (count($arrayLineas)-1)){
+              $textoLineas .= $linea['NomLinea'].".";
+          }
+
+        }
+
+        $dataSolicitud['lineasCorreo'] = $textoLineas;
 
         return $this->subject('Solicitudes Obsequios y Muestras')
         ->view('emails.controlinversion.notificacionEstadoSolicitud')

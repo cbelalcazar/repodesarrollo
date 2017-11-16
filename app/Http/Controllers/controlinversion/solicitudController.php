@@ -297,7 +297,7 @@ class solicitudController extends Controller
 
             $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado', 'solicitud', 'solicitud.clientes', 'solicitud.clientes.clientesReferencias', 'solicitud.clientes.clientesReferencias.referencia', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio.LineasProducto')->where('soh_id',$registroHistorico->soh_id)->first();
 
-            $correo = ['omolaya@bellezaexpress.com'];
+            $correo = ['jdmarcillo@bellezaexpress.com'];
             Mail::to($correo)->send(new notificacionEstadoSolicitud($dataSolicitud));
 
             if(Mail::failures()){
