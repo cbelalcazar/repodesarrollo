@@ -1264,6 +1264,7 @@ $scope.read = function (workbook) {
 			}else if($scope.referenciasErrorRuta.length == 0 && $scope.referenciasError.length > 0){
 
 				text = "<h3>Referencias con error de existencia o cantidades invalidas.</h3>"
+				
 				text += error;
 				$scope.referenciasError.forEach(function(refe){
 					text += '<md-list-item><pre style="color:red;">REFERENCIA: '+ refe.REFERENCIA +' CANTIDAD: '+refe.CANTIDAD+' FILA: '+ (refe.__rowNum__ +1)+'</pre></md-list-item>';
