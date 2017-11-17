@@ -112,7 +112,7 @@
 				<div class="row">
 					<div class="form-group col-md-6">
 						<label>Canal: </label>
-						<select id="cnl_id" required class='form-control' ng-change="onChangeCanal()" ng-model='solicitud.sci_canal' ng-options='opt.can_txt_descrip for opt in canales track by opt.can_id'>
+						<select id="cnl_id" ng-disabled="(solicitud.cargagasto1.cga_id == 1 && solicitud.lineas1 == undefined) || (solicitud.cargagasto1 == undefined)" required class='form-control' ng-change="onChangeCanal()" ng-model='solicitud.sci_canal' ng-options='opt.can_txt_descrip for opt in canales track by opt.can_id'>
 							<option value=''>Seleccione...</option>
 						</select>
 						<!-- @{{solicitud.tiposalida1}} -->

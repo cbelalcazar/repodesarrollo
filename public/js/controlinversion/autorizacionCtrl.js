@@ -70,7 +70,6 @@ function($scope,  $filter, $http, $window, DTOptionsBuilder, DTColumnDefBuilder)
         })
       }
 
-      if(solicitud.cargaralinea == null){
 
         if(solicitud.clientes.length > 0){
 
@@ -94,7 +93,7 @@ function($scope,  $filter, $http, $window, DTOptionsBuilder, DTColumnDefBuilder)
             });
           });
         }
-      }
+
     }else if(boton == 1){
       $scope.solicitud = solicitud;
     }

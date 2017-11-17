@@ -118,14 +118,14 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr ng-if="solicitud.cargaralinea == null" ng-repeat="linea in lineasSolicitud">
+                          <tr ng-repeat="linea in lineasSolicitud">
                             <td class="text-center">@{{linea.linea_producto.lineas_producto.CodLinea}}</td>
                             <td class="text-center">@{{linea.linea_producto.lineas_producto.NomLinea}}</td>
                           </tr>
-                          <tr ng-if="solicitud.cargaralinea != null">
+                          <!-- <tr ng-if="solicitud.cargaralinea != null">
                             <td class="text-center">@{{solicitud.cargaralinea.lineas_producto.CodLinea}}</td>
                             <td class="text-center">@{{solicitud.cargaralinea.lineas_producto.NomLinea}}</td>
-                          </tr>
+                          </tr> -->
                         </tbody>
                       </table>
                     </div>

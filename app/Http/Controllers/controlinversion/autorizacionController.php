@@ -234,6 +234,12 @@ class autorizacionController extends Controller
         $lineasSolicitud = collect($data['clientes'])->pluck('clientesReferencias')->flatten(1)->groupBy('referencia.ite_cod_linea')->keys()->all();
     }
 
+    if(trim($data['sci_cargarlinea']) != ""){
+      $lineaGeneral = (int)trim($data['sci_cargarlinea']);
+      array_push($lineasSolicitud,$lineaGeneral);
+    }
+
+
     // Obtengo de los niveles de aprobacion las personas que aprueban para esa linea en ese canal
     $quienesSon = TCanalpernivel::where('cap_idcanal', trim($canal))->whereIn('cap_idlinea',$lineasSolicitud)->get();
 

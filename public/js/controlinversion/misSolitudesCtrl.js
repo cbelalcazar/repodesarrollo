@@ -34,7 +34,7 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 
 					return solicitud;
 			}, this);
-			
+
 			$scope.elaboracion =  $filter('filter')($scope.todas, {sci_soe_id : 0});
 			$scope.solicitudes =  $filter('filter')($scope.todas, {sci_soe_id : 1});
 			$scope.correcciones =  $filter('filter')($scope.todas, {sci_soe_id : 2});
@@ -107,32 +107,30 @@ app.controller('misSolitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'D
 			console.log($scope.zonasSolicitud);
 		}
 
-		if(solicitud.cargaralinea == null){
 
-			if(solicitud.clientes.length > 0){
+		if(solicitud.clientes.length > 0){
 
-					solicitud.clientes.forEach(function(cliente){
+				solicitud.clientes.forEach(function(cliente){
 
-						cliente.clientes_referencias.forEach(function(referencia){
-							console.log(referencia);
-							if($scope.lineasSolicitud.length == 0){
-									$scope.lineasSolicitud.push(referencia);
-							}else{
+					cliente.clientes_referencias.forEach(function(referencia){
+						console.log(referencia);
+						if($scope.lineasSolicitud.length == 0){
+								$scope.lineasSolicitud.push(referencia);
+						}else{
 
-								var filterLineas = $filter('filter')($scope.lineasSolicitud, {linea_producto : {lcc_codigo: referencia.linea_producto.lcc_codigo}});
+							var filterLineas = $filter('filter')($scope.lineasSolicitud, {linea_producto : {lcc_codigo: referencia.linea_producto.lcc_codigo}});
 
-								if(filterLineas.length == 0){
-									$scope.lineasSolicitud.push(referencia);
-								}else if(filterLineas[0].linea_producto.lcc_codigo != referencia.linea_producto.lcc_codigo){
-									$scope.lineasSolicitud.push(referencia);
-								}
-
+							if(filterLineas.length == 0){
+								$scope.lineasSolicitud.push(referencia);
+							}else if(filterLineas[0].linea_producto.lcc_codigo != referencia.linea_producto.lcc_codigo){
+								$scope.lineasSolicitud.push(referencia);
 							}
-						});
-					});
 
-				}
-		}
+						}
+					});
+				});
+
+			}
 
 	}
 

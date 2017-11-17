@@ -69,6 +69,8 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDi
 	$scope.lineaExist = [];
 	$scope.historialTpe = [];
 	$scope.historialCanal = [];
+	$scope.historialCanal2 = [];
+	$scope.historialLinea = [];
 	$scope.isInitialiazing = false;
 	$scope.mensajeErrorCargue = "";
 
@@ -286,6 +288,15 @@ app.controller('solicitudCtrl', ['$scope', '$filter', '$http', '$window', '$mdDi
 
 $scope.onChangeOpcionCargaGasto = function(){
 
+		if($scope.solicitud.cargagasto1.cga_id== 2){
+
+			if($scope.solicitud.lineas1 != undefined){
+				delete $scope.solicitud.lineas1;
+				$scope.historialLinea = [];
+			}
+
+		}
+
 		if($scope.selectedColaboradores.length > 0){
 			$scope.selectedColaboradores.forEach(function(colaborador){
 
@@ -322,17 +333,92 @@ $scope.onChangeOpcionCargaGasto = function(){
 
 $scope.onChangeLineaCargaGasto = function(){
 
-	if($scope.selectedColaboradores.length > 0){
-		$scope.selectedColaboradores.forEach(function(colaborador){
-			if(colaborador.solicitud.referencias.length > 0){
-				colaborador.solicitud.referencias.map(function(referencia){
-					referencia.srf_lin_id_gasto = $scope.solicitud.lineas1.lcc_codigo;
-					referencia.linea = $scope.solicitud.lineas1;
-					return referencia;
+	var linea = angular.copy($scope.solicitud.lineas1);
+	linea.isFirts = false;
+
+	if($scope.historialLinea.length == 0 && $scope.solicitud.sci_canal == undefined){
+
+		linea.isFirts = true;
+		linea.isLast = true;
+		$scope.historialLinea.push(linea);
+
+	}else if($scope.historialLinea.length > 0 && $scope.solicitud.sci_canal == undefined){
+
+		$scope.historialLinea[$scope.historialLinea.length-1].isLast = false;
+		linea.isLast = true;
+		$scope.historialLinea.push(linea);
+
+	}else if($scope.historialLinea.length > 0 && $scope.solicitud.sci_canal != undefined){
+
+		$scope.historialLinea[$scope.historialLinea.length-1].isLast = false;
+		linea.isLast = true;
+
+	}
+
+	if($scope.solicitud.sci_canal != undefined){
+
+				var tieneReferenciasError = false;
+				var filtro = $filter('filter')($scope.canalPernivel, {cap_idlinea: $scope.solicitud.lineas1.lcc_codigo, cap_idcanal: $scope.solicitud.sci_canal.can_id.trim()});
+
+				if(filtro.length == 0){
+					tieneReferenciasError = true;
+				}
+
+				if(tieneReferenciasError == true){
+
+						var error = $mdDialog.alert()
+					 .title('Error!')
+					 .textContent('No existe ruta de aprobación para la linea de esta solicitud en el canal ' + $scope.solicitud.sci_canal.can_txt_descrip)
+					 .ariaLabel('')
+					 .ok('Acepto')
+
+					 $mdDialog.show(error).then(function() {
+						 $scope.solicitud.lineas1 = $scope.historialLinea[$scope.historialLinea.length - 1];
+					 });
+
+				}else{
+
+					$scope.historialLinea.push(linea);
+
+					if($scope.selectedColaboradores.length > 0){
+
+						$scope.selectedColaboradores.forEach(function(colaborador){
+
+							if(colaborador.solicitud.referencias.length > 0){
+
+								colaborador.solicitud.referencias.map(function(referencia){
+									referencia.srf_lin_id_gasto = $scope.solicitud.lineas1.lcc_codigo;
+									referencia.linea = $scope.solicitud.lineas1;
+									return referencia;
+								})
+
+							}
+
+						})
+					}
+
+				}
+		}else{
+
+			if($scope.selectedColaboradores.length > 0){
+
+				$scope.selectedColaboradores.forEach(function(colaborador){
+
+					if(colaborador.solicitud.referencias.length > 0){
+
+						colaborador.solicitud.referencias.map(function(referencia){
+							referencia.srf_lin_id_gasto = $scope.solicitud.lineas1.lcc_codigo;
+							referencia.linea = $scope.solicitud.lineas1;
+							return referencia;
+						})
+
+					}
+
 				})
 			}
-		})
-	}
+
+		}
+
 }
 
 $scope.onChangeLineaReferencia = function(referencia){
@@ -876,7 +962,9 @@ $scope.onChangeCanal = function(){
 	if($scope.selectedColaboradores.length > 0){
 
 		var tieneReferenciasError = false;
+		var errorLineaGeneral = false
 		var arregloErrores = [];
+		$scope.historialCanal2 = [];
 
 		$scope.selectedColaboradores.forEach(function(colaborador){
 			if(colaborador.solicitud.referencias.length > 0){
@@ -896,7 +984,19 @@ $scope.onChangeCanal = function(){
 
 		});
 
-		if(tieneReferenciasError == true){
+		if($scope.solicitud.cargagasto1 != undefined && $scope.solicitud.lineas1 != undefined){
+
+			if($scope.solicitud.cargagasto1.cga_id == 1){
+
+				var filtro = $filter('filter')($scope.canalPernivel, {cap_idlinea: $scope.solicitud.lineas1.lcc_codigo, cap_idcanal: $scope.solicitud.sci_canal.can_id.trim()});
+				if(filtro.length == 0){
+					errorLineaGeneral = true;
+				}
+
+			}
+		}
+
+		if(tieneReferenciasError == true && errorLineaGeneral == false){
 
 			var error = $mdDialog.alert()
 			 .title('Error!')
@@ -912,8 +1012,94 @@ $scope.onChangeCanal = function(){
 			 });
 
 
+		}else if(tieneReferenciasError == false && errorLineaGeneral == true){
+
+			var error = $mdDialog.alert()
+			 .title('Error!')
+			 .textContent('No existe ruta de aprobación en el canal ' + $scope.solicitud.sci_canal.can_txt_descrip + ' para la linea seleccionada en esta solicitud.')
+			 .ariaLabel('')
+			 .ok('Acepto')
+
+			 $mdDialog.show(error).then(function() {
+
+				 var ultimo = $filter('filter')($scope.historialCanal, {isLast : false});
+				 $scope.solicitud.sci_canal = $scope.historialCanal[$scope.historialCanal.length - 1];
+
+			 });
+
+		}else if(tieneReferenciasError == true && errorLineaGeneral == true){
+
+			var error = $mdDialog.alert()
+			 .title('Error!')
+			 .textContent('No existe ruta de aprobación en el canal ' + $scope.solicitud.sci_canal.can_txt_descrip +' para la linea seleccionada en esta solicitud y las lineas de las referencias de cada colaborador.')
+			 .ariaLabel('')
+			 .ok('Acepto')
+
+			 $mdDialog.show(error).then(function() {
+
+				 var ultimo = $filter('filter')($scope.historialCanal, {isLast : false});
+				 $scope.solicitud.sci_canal = $scope.historialCanal[$scope.historialCanal.length - 1];
+
+			 });
+
 		}else{
 			$scope.historialCanal.push(canal);
+		}
+
+
+	}else{
+
+		var canal = angular.copy($scope.solicitud.sci_canal);
+		var errorLineaGeneral = false;
+		canal.isFirts = false;
+		$scope.historialCanal = [];
+
+		if($scope.historialCanal2.length == 0 && $scope.solicitud.lineas1 == undefined){
+
+			canal.isFirts = true;
+			canal.isLast = true;
+			$scope.historialCanal2.push(canal);
+
+		}else if($scope.historialCanal2.length > 0 && $scope.solicitud.lineas1 == undefined){
+
+			$scope.historialCanal2[$scope.historialCanal2.length-1].isLast = false;
+			canal.isLast = true;
+			$scope.historialCanal2.push(canal);
+
+		}else if($scope.historialCanal2.length > 0 && $scope.solicitud.lineas1 != undefined){
+
+			$scope.historialCanal2[$scope.historialCanal2.length-1].isLast = false;
+			canal.isLast = true;
+
+		}
+
+
+		if($scope.solicitud.cargagasto1 != undefined && $scope.solicitud.lineas1 != undefined){
+
+			if($scope.solicitud.cargagasto1.cga_id == 1){
+
+				var filtro = $filter('filter')($scope.canalPernivel, {cap_idlinea: $scope.solicitud.lineas1.lcc_codigo, cap_idcanal: $scope.solicitud.sci_canal.can_id.trim()});
+				if(filtro.length == 0){
+					errorLineaGeneral = true;
+				}
+
+				if(errorLineaGeneral == true){
+
+					var error = $mdDialog.alert()
+					 .title('Error!')
+					 .textContent('No existe ruta de aprobación en el canal ' + $scope.solicitud.sci_canal.can_txt_descrip + ' para la linea seleccionada en esta solicitud.')
+					 .ariaLabel('')
+					 .ok('Acepto')
+
+					 $mdDialog.show(error).then(function() {
+						 $scope.solicitud.sci_canal = $scope.historialCanal2[$scope.historialCanal2.length - 1];
+					 });
+
+				}else{
+					$scope.historialCanal2.push(canal);
+				}
+
+			}
 		}
 
 
@@ -1264,7 +1450,7 @@ $scope.read = function (workbook) {
 			}else if($scope.referenciasErrorRuta.length == 0 && $scope.referenciasError.length > 0){
 
 				text = "<h3>Referencias con error de existencia o cantidades invalidas.</h3>"
-				
+
 				text += error;
 				$scope.referenciasError.forEach(function(refe){
 					text += '<md-list-item><pre style="color:red;">REFERENCIA: '+ refe.REFERENCIA +' CANTIDAD: '+refe.CANTIDAD+' FILA: '+ (refe.__rowNum__ +1)+'</pre></md-list-item>';
