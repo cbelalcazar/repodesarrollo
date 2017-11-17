@@ -3,7 +3,7 @@
 <style>
   body {
     font-family: Arial, Helvetica, sans-serif !important;
-    font-size: 10px !important;
+    font-size: 15px !important;
   }
 </style>
 

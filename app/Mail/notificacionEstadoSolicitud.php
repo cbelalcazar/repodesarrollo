@@ -37,6 +37,10 @@ class notificacionEstadoSolicitud extends Mailable
         $arrayLineas = [];
         $textoLineas = "";
 
+        if($dataSolicitud['solicitud']['sci_cargarlinea'] != ""){
+          array_push($arrayLineas, $dataSolicitud['solicitud']['cargaralinea']['LineasProducto']);
+        }
+
         foreach ($dataSolicitud['solicitud']['clientes'] as $cliente) {
           foreach ($cliente['clientesReferencias'] as $refe) {
             if(count($arrayLineas) == 0){
@@ -55,6 +59,7 @@ class notificacionEstadoSolicitud extends Mailable
             }
           }
         }
+
 
         foreach ($arrayLineas as $key => $linea) {
 
