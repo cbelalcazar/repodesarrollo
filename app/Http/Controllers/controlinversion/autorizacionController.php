@@ -202,7 +202,7 @@ class autorizacionController extends Controller
       $historico->soh_estadoenvio = 1;
       $historico->save();
 
-      $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado', 'solicitud', 'solicitud.clientes', 'solicitud.clientes.clientesReferencias', 'solicitud.clientes.clientesReferencias.referencia', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio.LineasProducto')->where('soh_id',$historico->soh_id)->first();
+      $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado', 'solicitud', 'solicitud.clientes', 'solicitud.clientes.clientesReferencias', 'solicitud.clientes.clientesReferencias.referencia', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio.LineasProducto', 'solicitud.cargaralinea', 'solicitud.cargaralinea.LineasProducto')->where('soh_id',$historico->soh_id)->first();
       $correo = ['omolaya@bellezaexpress.com'];
       Mail::to($correo)->send(new notificacionEstadoSolicitud($dataSolicitud));
 
@@ -292,7 +292,7 @@ class autorizacionController extends Controller
           $historico->save();
 
 
-          $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado', 'solicitud', 'solicitud.clientes', 'solicitud.clientes.clientesReferencias', 'solicitud.clientes.clientesReferencias.referencia', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio.LineasProducto')->where('soh_id',$historico->soh_id)->first();
+                $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado', 'solicitud', 'solicitud.clientes', 'solicitud.clientes.clientesReferencias', 'solicitud.clientes.clientesReferencias.referencia', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio.LineasProducto', 'solicitud.cargaralinea', 'solicitud.cargaralinea.LineasProducto')->where('soh_id',$historico->soh_id)->first();
 
           $correo = ['omolaya@bellezaexpress.com'];
           Mail::to($correo)->send(new notificacionEstadoSolicitud($dataSolicitud));
@@ -343,7 +343,7 @@ class autorizacionController extends Controller
           $historico->soh_estadoenvio = 1;
           $historico->save();
 
-          $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado', 'solicitud', 'solicitud.clientes', 'solicitud.clientes.clientesReferencias', 'solicitud.clientes.clientesReferencias.referencia', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio.LineasProducto')->where('soh_id',$historico->soh_id)->first();
+          $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado', 'solicitud', 'solicitud.clientes', 'solicitud.clientes.clientesReferencias', 'solicitud.clientes.clientesReferencias.referencia', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio.LineasProducto', 'solicitud.cargaralinea', 'solicitud.cargaralinea.LineasProducto')->where('soh_id',$historico->soh_id)->first();
 
           $correo = ['omolaya@bellezaexpress.com'];
           Mail::to($correo)->send(new notificacionEstadoSolicitud($dataSolicitud));
@@ -410,7 +410,7 @@ class autorizacionController extends Controller
       $historico->soh_estadoenvio = 1;
       $historico->save();
 
-      $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado', 'solicitud', 'solicitud.clientes', 'solicitud.clientes.clientesReferencias', 'solicitud.clientes.clientesReferencias.referencia', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio.LineasProducto')->where('soh_id',$historico->soh_id)->first();
+      $dataSolicitud = TSolhistorico::with('perNivelEnvia', 'perNivelRecibe', 'estado', 'solicitud', 'solicitud.clientes', 'solicitud.clientes.clientesReferencias', 'solicitud.clientes.clientesReferencias.referencia', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio', 'solicitud.clientes.clientesReferencias.referencia.LineaItemCriterio.LineasProducto', 'solicitud.cargaralinea', 'solicitud.cargaralinea.LineasProducto')->where('soh_id',$historico->soh_id)->first();
 
       $correo = ['omolaya@bellezaexpress.com'];
       Mail::to($correo)->send(new notificacionEstadoSolicitud($dataSolicitud));
