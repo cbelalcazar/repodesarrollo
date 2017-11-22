@@ -14,7 +14,7 @@ use App\Models\controlinversion\TCanalpernivel;
 use App\Models\controlinversion\TSolipernivel;
 use App\Models\controlinversion\TSolhistorico;
 use App\Models\controlinversion\TSolicitudctlinv;
-use App\Models\BESA\VendedorZona;
+use App\Models\BESA\VendedorZona; 
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
