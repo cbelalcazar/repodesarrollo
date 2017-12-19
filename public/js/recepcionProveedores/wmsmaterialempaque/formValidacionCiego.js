@@ -8,6 +8,8 @@ app.controller('formValidacionCiegoCtrl', ['$scope', '$http', '$filter', '$mdDia
 	$scope.novedad = ['Normal', 'Sobrante', 'Error de auxiliar', 'Faltante'];
 	$scope.novedades = [];
 	$scope.mensajes = false;
+	$scope.elemento = {};
+	$scope.ordenesSoloRefSeleccionada = [];
 
 
 	// El get info se manda a ejecutar cuando se activa el evento ng-init que inicializa la variable con el id del documento ciego
@@ -15,10 +17,13 @@ app.controller('formValidacionCiegoCtrl', ['$scope', '$http', '$filter', '$mdDia
 		$http.post($scope.urlGetInfo, $scope.entm_int_id).then(function(response){
 			res = response.data;
 			$scope.entrada = angular.copy(res.entrada);
+			$scope.tiposDocumentos = angular.copy(res.tiposDocumentos);
 			$scope.progress = false;
 			if ($scope.entrada.entm_txt_factura == 0) {
 				$scope.entrada.entm_txt_factura = "";
 			}
+		}, function(errorResponse){
+			$scope.getInfo();
 		});
 	}
 
@@ -30,10 +35,36 @@ app.controller('formValidacionCiegoCtrl', ['$scope', '$http', '$filter', '$mdDia
 	}
 
 
+	$scope.agregarOCaReferencia = function(referencia){
+		$scope.progress = true;
+		$scope.elemento.referencia = referencia;
+		$scope.elemento.proveedor = $scope.entrada.t_cita.cit_nitproveedor;
+
+		$http.post('../../generarProgramacion', $scope.elemento).then(function(response){
+			res = response.data;
+			$scope.ocProveedor = angular.copy(res.respuesta); 
+			$scope.ordenesSoloRefSeleccionada = $filter('filter')($scope.ocProveedor.ordenes, {Referencia : $scope.elemento.referencia.rec_txt_referencia});
+			$scope.progress = false;
+
+			if ($scope.ordenesSoloRefSeleccionada.length == 0) {
+				$mdDialog.show(
+			      $mdDialog.alert()
+			        .parent(angular.element(document.querySelector('#popupContainer')))
+			        .clickOutsideToClose(true)
+			        .title('Referencia sin OC')
+			        .textContent('Actualmente no se encuentra ninguna orden de compra para la referencia seleccionada')
+			        .ariaLabel('')
+			        .ok('Entendido')
+			    );
+			}
+		});
+	}
+
 	$scope.save = function(){
-		console.log($scope.entrada);
+		$scope.progress = true;
 		$http.post($scope.urlGuardarEntrada, $scope.entrada).then(function(response){
 			res = response.data;
+			$scope.progress = false;
 		});
 	}
 
@@ -63,6 +94,36 @@ app.controller('formValidacionCiegoCtrl', ['$scope', '$http', '$filter', '$mdDia
 		}
 		return false;
 	}
+
+	$scope.redondea = function(numero){
+		return Math.trunc(numero);
+	}
+
+	$scope.realizarTrim = function(elemento){
+		return elemento.trim();
+	}
+
+	$scope.formatoFecha = function(fecha){
+		return 'Fecha Entrega: ' + $filter('date')(new Date(fecha), 'MM/dd/yyyy');
+	}
+
+	$scope.validarUnidades = function(unidades, oc, elemento){
+		if (unidades > Math.trunc(oc.ocACargar.CantPendiente)) {
+			oc.ocACargar = null;
+			$mdDialog.show(
+		      $mdDialog.alert()
+		        .parent(angular.element(document.querySelector('#popupContainer')))
+		        .clickOutsideToClose(true)
+		        .title('')
+		        .textContent('El total de unidades es mayor a la cantidad pendiente de la orden de compra')
+		        .ariaLabel('')
+		        .ok('Entendido')
+		    );
+		}
+	}
+
+	
+
 
 	
 }])

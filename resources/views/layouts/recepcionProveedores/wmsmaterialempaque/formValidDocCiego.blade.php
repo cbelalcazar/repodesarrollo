@@ -37,6 +37,13 @@
 					<label>Fecha <strong class="text-danger">(*)</strong>:</label>
 					<input type="text" ng-model="entrada.entm_txt_fecha" class="form-control" disabled required>
 				</div>
+				<!-- tipoDocumento -->
+				<div class="form-group">
+					<label>Tipo documento <strong class="text-danger">(*)</strong>:</label>
+					<select ng-model="entrada.entm_txt_tipo_documento" class="form-control" ng-options="[opt.f021_id, opt.f021_descripcion].join(' - ') for opt in tiposDocumentos track by opt.f021_id" required>
+						<option value="">Seleccione...</option>
+					</select>
+				</div>
 				<!-- Proveedor -->
 				<div class="form-group">
 					<label>Proveedor <strong class="text-danger">(*)</strong>:</label>
@@ -103,7 +110,7 @@
 						<th>Numero cajas <strong class="text-danger">(*)</strong>:</th>
 						<th>Saldo <strong class="text-danger">(*)</strong>:</th>
 						<th>Estiba</th>
-						<th>Estado</th>
+						<th>Orden de compra</th>
 						<th>Acciones</th>
 					</tr>
 					<tr ng-repeat="value in obj">
@@ -115,7 +122,7 @@
 							<span class="has-error" ng-if="menorACero(value.rec_int_undempaque)"><p><small>Debe ser mayor a cero</small></p></span>  
 						</td>
 						<td>
-							<input type="number"  min="0" ng-change="calcular(value)" ng-model="value.rec_int_cantidad" class="form-control" required>
+							<input ng-change="value.ocACargar = null" type="number"  min="0" ng-change="calcular(value)" ng-model="value.rec_int_cantidad" class="form-control" required>
 							<span class="has-error" ng-if="menorACero(value.rec_int_cantidad)"><p><small>Debe ser mayor a cero</small></p></span>  
 						</td>
 						<td>
@@ -125,7 +132,20 @@
 							<input type="text" ng-model="value.rec_int_saldo" class="form-control" disabled required>
 						</td>
 						<td>@{{value.rec_int_estiba}}</td>
-						<td>@{{value.rec_int_idestado}}</td>
+						<td ng-if="value.programacion != null">@{{value.programacion.prg_tipo_doc_oc}} - @{{value.programacion.prg_num_orden_compra}}</td>
+						<td ng-if="value.programacion == null">
+
+							<button type="button" ng-if="ordenesSoloRefSeleccionada.length == 0" class="btn btn-warning btn-sm" ng-click="agregarOCaReferencia(value)" ><i class="glyphicon glyphicon-plus"></i>
+								Agregar
+								<md-tooltip md-direction="bottom">
+								Agregar orden de compra a referencia
+								</md-tooltip> 							
+							</button>
+
+							<select class="form-control" ng-if="ordenesSoloRefSeleccionada.length > 0" ng-model="value.ocACargar" ng-change="validarUnidades(value.rec_int_cantidad, value, this)" ng-options="[realizarTrim(opt.CO), opt.TipoDocto, opt.ConsDocto, 'Cantidad: ' + redondea(opt.CantPendiente), formatoFecha(opt.f421_fecha_entrega)].join('-') for opt in ordenesSoloRefSeleccionada track by [opt.CO, opt.TipoDocto, opt.ConsDocto].join('-')">
+								<option value="">Seleccione</option>
+							</select>
+						</td>
 						<td>
 							<button class="btn btn-danger btn-sm" ng-click="showConfirm($event, obj)" >
 								<i class="glyphicon glyphicon-trash"></i>
@@ -156,7 +176,7 @@
 				<!-- Observaciones -->
 				<div class="form-group">
 					<label>Observaciones</label>
-					<textarea class="form-control" ng-model="entrada.observaciones" cols="30" rows="2"></textarea>
+					<textarea class="form-control" ng-model="entrada.entm_txt_observaciones" cols="30" rows="2"></textarea>
 				</div>
 			</div>
 		</div>
@@ -175,17 +195,17 @@
 					<td>M/CIA SIN DOCUMENTO</td>
 					<td>
 						<div class="radio">
-						  <label><input type="radio" ng-model="entrada.novedades.mercSinDocumento" value="factura">Factura</label>
+						  <label><input type="radio" ng-model="entrada.entm_txt_nmcdindocuemnto" value="FACTURA">Factura</label>
 						</div>
 					</td>
 					<td>
 						<div class="radio">
-						  <label><input type="radio" ng-model="entrada.novedades.mercSinDocumento" value="certCalidad">Certificado de calidad</label>
+						  <label><input type="radio" ng-model="entrada.entm_txt_nmcdindocuemnto" value=" CERTIFICADO DE CALIDAD">Certificado de calidad</label>
 						</div>
 					</td>
 					<td>
 						<div class="radio">
-						  <label><input type="radio" ng-model="entrada.novedades.mercSinDocumento" value="remision">Remisión</label>
+						  <label><input type="radio" ng-model="entrada.entm_txt_nmcdindocuemnto" value="REMISION">Remisión</label>
 						</div>
 					</td>
 				</tr>
@@ -196,34 +216,34 @@
 					<td rowspan="2"><div class="vcenter">INCONSISTENCIAS EN FACTURACION</div></td>
 					<td>
 						<div class="radio">
-						  <label><input type="radio" ng-model="entrada.novedades.inconEnFacturacion" value="sinRef">Sin referencia</label>
+						  <label><input type="radio" ng-model="entrada.entm_txt_nincofactura" value="SIN REFERENCIAS">Sin referencia</label>
 						</div>
 					</td>
 					<td>
 						<div class="radio">
-						  <label><input type="radio" ng-model="entrada.novedades.inconEnFacturacion" value="errDescProduct">Error en descripcion del producto</label>
+						  <label><input type="radio" ng-model="entrada.entm_txt_nincofactura" value="ERROR EN DESCRIPCION DE PRODUCTOS">Error en descripcion del producto</label>
 						</div>
 					</td>
 					<td>
 						<div class="radio">
-						  <label><input type="radio" ng-model="entrada.novedades.inconEnFacturacion" value="mciaNoPedida">M/cia no pedida</label>
+						  <label><input type="radio" ng-model="entrada.entm_txt_nincofactura" value="MERCANCIA NO PEDIDA">M/cia no pedida</label>
 						</div>
 					</td>
 				</tr>
 				<tr>
 					<td>
 						<div class="radio">
-						  <label><input type="radio" ng-model="entrada.novedades.inconEnFacturacion" value="ordenCompra">Orden de compra</label>
+						  <label><input type="radio" ng-model="entrada.entm_txt_nincofactura" value="ORDEN DE COMPRA">Orden de compra</label>
 						</div>
 					</td>
 					<td>
 						<div class="radio">
-						  <label><input type="radio" ng-model="entrada.novedades.inconEnFacturacion" value="difMoneda">Diferencia en moneda</label>
+						  <label><input type="radio" ng-model="entrada.entm_txt_nincofactura" value="DIFERENCIA EN MONEDAS">Diferencia en moneda</label>
 						</div>
 					</td>
 					<td>
 						<div class="radio">
-						  <label><input type="radio" ng-model="entrada.novedades.inconEnFacturacion" value="difPrecios">Diferencia en precios</label>
+						  <label><input type="radio" ng-model="entrada.entm_txt_nincofactura" value="DIFERENCIA EN PRECIOS">Diferencia en precios</label>
 						</div>
 					</td>
 				</tr>				
@@ -234,17 +254,17 @@
 					<td>M/CIA MAL ROTULADA</td>
 					<td>
 						<div class="radio">
-						  <label><input type="radio" ng-model="entrada.novedades.mercMalRotulada" value="referencia">Referencias</label>
+						  <label><input type="radio" ng-model="entrada.entm_txt_nmcmalrotulada" value="REFERENCIAS">Referencias</label>
 						</div>
 					</td>
 					<td>
 						<div class="radio">
-						  <label><input type="radio" ng-model="entrada.novedades.mercMalRotulada" value="descripcion">Descripción</label>
+						  <label><input type="radio" ng-model="entrada.entm_txt_nmcmalrotulada" value="DESCRIPCION">Descripción</label>
 						</div>
 					</td>
 					<td>
 						<div class="radio">
-						  <label><input type="radio" ng-model="entrada.novedades.mercMalRotulada" value="cantidades">Cantidades</label>
+						  <label><input type="radio" ng-model="entrada.entm_txt_nmcmalrotulada" value="CANTIDADES">Cantidades</label>
 						</div>
 					</td>
 				</tr>
@@ -255,12 +275,12 @@
 					<td>DIFERENCIAS EN UNIDADES</td>
 					<td>
 						<div class="radio">
-						  <label><input type="radio" ng-model="entrada.novedades.difUnidades" value="sobrante">Sobrante</label>
+						  <label><input type="radio" ng-model="entrada.entm_txt_ndiferenciaunidad" value="SOBRANTE">Sobrante</label>
 						</div>
 					</td>
 					<td colspan="2">
 						<div class="radio">
-						  <label><input type="radio" ng-model="entrada.novedades.difUnidades" value="faltante">Faltante</label>
+						  <label><input type="radio" ng-model="entrada.entm_txt_ndiferenciaunidad" value="FALTANTE">Faltante</label>
 						</div>
 					</td>
 				</tr>
@@ -270,7 +290,7 @@
 					<td>05</td>
 					<td colspan="4">
 						<div class="radio">
-						  <label><input type="radio" ng-model="entrada.novedades.averias" value="averias">AVERIAS</label>
+						  <label><input type="radio" ng-model="entrada.entm_txt_naverias" value="Si">AVERIAS</label>
 						</div>
 					</td>
 				</tr>
@@ -280,7 +300,7 @@
 					<td>06</td>
 					<td colspan="4">
 						<div class="radio">
-						  <label><input type="radio" ng-model="entrada.novedades.otros" value="otros">OTROS</label>
+						  <label><input type="radio" ng-model="entrada.entm_txt_notros" value="Si">OTROS</label>
 						</div>
 					</td>
 				</tr>

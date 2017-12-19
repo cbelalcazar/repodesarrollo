@@ -59,6 +59,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('docEntradaAlmacenGetInfo', 'recepcionProveedores\docEntradaAlmacenController@docEntradaAlmacenGetInfo');
 		Route::post('formValidacionCiegoGetInfo', 'recepcionProveedores\docEntradaAlmacenController@formValidacionCiegoGetInfo');
 		Route::post('guardarEntrada', 'recepcionProveedores\docEntradaAlmacenController@guardarEntrada');
+		Route::post('generarProgramacion', 'recepcionProveedores\docEntradaAlmacenController@generarProgramacion');
 		
 		
 	});

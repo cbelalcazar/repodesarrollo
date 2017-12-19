@@ -44,7 +44,8 @@ class TProgramacion extends Model
     'prg_cantidadempaques',
     'prg_unidadreferencia',
     'prg_idcita', 
-    'prg_envioCorreo'
+    'prg_envioCorreo',
+    'prg_centro_operacion'
     ];
 
     protected $guarded = [];

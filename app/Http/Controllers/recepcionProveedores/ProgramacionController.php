@@ -34,6 +34,7 @@ class ProgramacionController extends Controller
         'prg_fecha_ordenCompra' => 'required',
         'prg_consecutivoRefOc' => 'required',
         'prg_estado' => 'required',
+        'prg_centro_operacion' => 'required',
         ];
 
     }
@@ -58,6 +59,7 @@ class ProgramacionController extends Controller
         'prg_fecha_ordenCompra.required' => 'Ingresar fecha entrega orden de compra',
         'prg_consecutivoRefOc.required' => 'Ingresar consecutivo por referencia orden de compra',
         'prg_estado.required' => 'Ingresar estado orden de compra',
+        'prg_centro_operacion.required' => 'Ingresar centro de operacion de la orden de compra',
         ];
     }
 
@@ -95,10 +97,15 @@ class ProgramacionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function referenciasPorOc(Request $request)
+    public function referenciasPorOc(Request $request, $data = null)
     {
         // Obtengo el proveedor
-        $proveedor = $request->proveedor; 
+        if ($data == null) {
+            $proveedor = $request->proveedor; 
+        }else{
+            $proveedor['nitTercero'] = $data['proveedor'];
+        }
+
         $refExcluir = [];
         // Consulto las referencias de este proveedor que actualmente tienen alguna programacion sin terminar (*OJOOOOO SIN FILTRO DE ESTADO TODAVIAAA*)
         $refExcluir = TProgramacion::refExcluir($proveedor);
@@ -110,8 +117,14 @@ class ProgramacionController extends Controller
         $referencias = TProgramacion::referenciasOrOc($proveedor['nitTercero'], 2, $refExcluir, $refProgramables);
         $ordenes = TProgramacion::referenciasOrOc($proveedor['nitTercero'], 1, $refExcluir, $refProgramables);
         // Retorno la informacion a la vista.
-        $response = compact('proveedor', 'referencias', 'ordenes', 'refExcluir', 'refProgramables');
-        return response()->json($response);
+        $response = compact('proveedor', 'referencias', 'ordenes', 'refExcluir', 'refProgramables'); 
+        if ($data == null) {            
+            return response()->json($response);        
+        }else{
+            return $response;
+        }
+        
+        
     }
 
     /**

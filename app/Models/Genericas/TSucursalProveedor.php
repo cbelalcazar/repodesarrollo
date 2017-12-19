@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class TSucursalProveedor extends Model
 {
+	protected $connection = 'genericas';
+
     protected $table = 't_sucursalproveedor';
 
     protected $primaryKey = 'suc_id';

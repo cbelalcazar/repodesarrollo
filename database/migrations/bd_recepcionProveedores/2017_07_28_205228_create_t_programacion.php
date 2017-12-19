@@ -80,6 +80,11 @@ class CreateTProgramacion extends Migration
 
             $table->string('prg_consecutivoRefOc')
                   ->comment('Campo que guarda el f421rowid del unoe para identificar cada item de la orden de compra');
+
+            $table->string('prg_centro_operacion')
+                  ->comment('Campo que guarda centro de operacion de la orden de compra');
+
+                  
       
             $table->softDeletes();
 

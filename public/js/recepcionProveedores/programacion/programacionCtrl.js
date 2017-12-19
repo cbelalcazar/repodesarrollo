@@ -51,7 +51,8 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
      'prg_tipoempaque'        : filtro[0].iref_tipoempaque + ' de ' + filtro[0].iref_pesoporempaque,
      'prg_observacion'        : $scope.objeto.observacion,
      'prg_tipo_programacion'  : filtro[0].iref_programable,
-     'prg_estado' : 1
+     'prg_estado'             : 1,
+     'prg_centro_operacion'   : $scope.objeto.ordenObj.CO.trim()
    }
    // Envia el objeto al controlador de laravel
    $http.post($scope.Url, $scope.objProg).then(function(response){
@@ -427,7 +428,6 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
   $scope.dtColumnDefs2 = [];
 
   // FUNCIONES PARA EL MANEJO DE CALENDARIOS
-
   $scope.cambiarFormato = function(fecha){
     return new Date(fecha);
   }
@@ -441,10 +441,10 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
   //Animacion de sombras 
   this.elevation = 1;
   this.nextElevation = function() {
-        if (++this.elevation == 25) {
-          this.elevation = 1;
-        }
-      };
+    if (++this.elevation == 25) {
+      this.elevation = 1;
+    }
+  };
   $interval(this.nextElevation.bind(this), 50);
 
   $scope.filtroDobleEstado = function(item){

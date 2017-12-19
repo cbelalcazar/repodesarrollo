@@ -46,7 +46,8 @@ class TEntradawm extends Model
         'entm_txt_naverias',
         'entm_txt_notros',
         'entm_txt_sinnovedad',
-        'entm_txt_cita'
+        'entm_txt_cita',
+        'entm_txt_tipo_documento'
     ];
 
     protected $guarded = [];
@@ -54,4 +55,13 @@ class TEntradawm extends Model
     public function TRefentrada(){
         return $this->hasMany('App\Models\bd_wmsmaterialempaque\TRefentrada', 'rec_int_identradacedi', 'entm_int_id');
     }        
+
+    public function TCita(){
+        return $this->hasOne('App\Models\recepcionProveedores\TCita', 'id', 'entm_txt_cita');
+    }
+
+    public function TSucursalProveedor(){
+        return $this->hasMany('App\Models\Genericas\TSucursalProveedor', 'ter_id', 'entm_txt_idproveedor');
+    }
+    
 }
