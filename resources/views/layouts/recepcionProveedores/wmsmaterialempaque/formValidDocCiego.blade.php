@@ -111,6 +111,7 @@
 						<th>Saldo <strong class="text-danger">(*)</strong>:</th>
 						<th>Estiba</th>
 						<th>Orden de compra</th>
+						<th>Bodega / Ubicacion</th>
 						<th>Acciones</th>
 					</tr>
 					<tr ng-repeat="value in obj">
@@ -142,8 +143,16 @@
 								</md-tooltip> 							
 							</button>
 
-							<select class="form-control" ng-if="ordenesSoloRefSeleccionada.length > 0" ng-model="value.ocACargar" ng-change="validarUnidades(value.rec_int_cantidad, value, this)" ng-options="[realizarTrim(opt.CO), opt.TipoDocto, opt.ConsDocto, 'Cantidad: ' + redondea(opt.CantPendiente), formatoFecha(opt.f421_fecha_entrega)].join('-') for opt in ordenesSoloRefSeleccionada track by [opt.CO, opt.TipoDocto, opt.ConsDocto].join('-')">
-								<option value="">Seleccione</option>
+							<select class="form-control" required ng-if="ordenesSoloRefSeleccionada.length > 0" ng-model="value.ocACargar" ng-change="validarUnidades(value.rec_int_cantidad, value, this)" ng-options="[realizarTrim(opt.CO), opt.TipoDocto, opt.ConsDocto, 'Cantidad: ' + redondea(opt.CantPendiente), formatoFecha(opt.f421_fecha_entrega)].join('-') for opt in ordenesSoloRefSeleccionada track by [opt.CO, opt.TipoDocto, opt.ConsDocto].join('-')">
+								<option value="">Seleccione..</option>
+							</select>
+						</td>
+						<td>
+							<select class="form-control" ng-model="value.bodega"  ng-options="[key, opt[0].nom_bodega].join(' - ') for (key, opt) in bodegasUbica | groupBy : 'id_bodega' track by key" required>
+								<option value="">Seleccione..</option>
+							</select>
+							<select class="form-control" ng-if="value.bodega != undefined" ng-model="value.ubicacion"  ng-options="[opt.id_ubic, opt.nom_ubic].join(' - ') for (key, opt) in bodegasUbica | filter : {id_bodega : value.bodega[0].id_bodega}  track by opt.id_ubic" required>
+								<option value="">Seleccione..</option>
 							</select>
 						</td>
 						<td>
@@ -160,11 +169,7 @@
 					<tr>
 						<th colspan="2">Total de la referencia: </th>
 						<th colspan="3">Cantidad:  @{{totalReferencia(obj)}}</th>
-						<th colspan="2">Novedad: </th>
 						<th colspan="3">
-							<select class="form-control" ng-model="entrada.novPorReferencia[key]" ng-options="opt for opt in novedad track by opt">
-								<option value="">Seleccione</option>
-							</select>
 						</th>
 					</tr>				
 				</tfoot>
@@ -321,9 +326,9 @@
 			<div class="btn-group">
 				<button class="btn btn-success" type="submit" ng-disabled="formulario.$invalid">Aprobar</button>
 			</div>
-			<div class="btn-group">
+			<!-- <div class="btn-group">
 				<button class="btn btn-danger">Rechazar</button>
-			</div>
+			</div> -->
 			<div class="btn-group">
 				<button class="btn btn-info">Cancelar</button>
 			</div>	

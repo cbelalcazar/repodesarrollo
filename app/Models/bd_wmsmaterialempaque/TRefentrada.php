@@ -37,5 +37,9 @@ class TRefentrada extends Model
 
     protected $guarded = [];
 
+    public function item(){
+        return $this->hasOne('App\Models\Genericas\Item', 'referenciaItem', 'rec_txt_referencia');
+    }
+
         
 }

@@ -7,9 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Models\bd_wmsmaterialempaque\TEntradawm;
 use App\Models\bd_wmsmaterialempaque\TRefentrada;
 use App\Models\unoeereal\T021MmTiposDocumentos;
+use App\Models\BESA\BodegasUbicaciones;
 use App\Models\recepcionProveedores\TEntradaInventario;
 use App\Http\Controllers\generalPlanoSiesa\planosSiesaController;
 use App\Http\Controllers\recepcionProveedores\ProgramacionController;
+use App\Models\recepcionProveedores\TBodega;
 use DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -78,7 +80,7 @@ class docEntradaAlmacenController extends Controller
   {
     $data = $request->all();
     // esto consulta toda la informacion de la entrada
-    $entrada = TEntradawm::with('TRefentrada', 'TCita.programaciones', 'TSucursalProveedor')->where('entm_int_id', $data[0])->first();
+    $entrada = TEntradawm::with('TRefentrada', 'TCita.programaciones', 'TSucursalProveedor', 'TRefentrada.item')->where('entm_int_id', $data[0])->first();
 
     //Consulta para llenar el combobox de tipos de documentos
     $tiposDocumentos = T021MmTiposDocumentos::where([['f021_id','like','E%'], ['f021_id_flia_docto', '03']])->get();
@@ -89,6 +91,11 @@ class docEntradaAlmacenController extends Controller
     if (count($documentoSeleccionado) > 0) {
       $entrada['entm_txt_tipo_documento'] = $documentoSeleccionado[0];
     }
+
+    // Obtengo los codigos de bodega del catalogo creado
+    $catalogoBodega = TBodega::all();
+    // Obtengo las ubicaciones de las bodegas
+    $bodegasUbica = BodegasUbicaciones::whereIn('id_bodega', $catalogoBodega->pluck('bod_codigo')->all())->get();
 
     // Agrego a cada referencia su programacion 
     $referenciasConProgramacion = collect($entrada['TRefentrada'])->map(function($item, $key) use($entrada){
@@ -105,13 +112,11 @@ class docEntradaAlmacenController extends Controller
       return $item;
     });
 
-    // Consultar sucursal
-
-    // Debo consultar la informacion completa del proveedor
-
-    $response = compact('data', 'entrada', 'tiposDocumentos', 'referenciasConProgramacion');
+    $response = compact('data', 'entrada', 'tiposDocumentos', 'referenciasConProgramacion', 'bodegasUbica');
     return response()->json($response);
   }
+
+
 
   /**
    * Update the specified resource in storage.
@@ -165,7 +170,16 @@ class docEntradaAlmacenController extends Controller
 
         $cantidadTotalCajas = collect($referencias)->pluck('rec_int_cajas')->sum();        
 
-        $stringOc = explode("-", $key);        
+        $stringOc = explode("-", $key);   
+
+        //  +++debo consultar la orden de compra y obtener la sucursal para ponerla en el encabezado del plano   
+
+        $ordenCompra = DB::connection('besa')->table('102_OrdenCompra')
+            ->where('TipoDocto', $stringOc[1])
+            ->where('CO', $stringOc[0])
+            ->where('ConsDocto', $stringOc[2])
+            ->take(1)
+            ->get();  
 
         // arreglo con donde la primera posicion contiene un arreglo con el tipo del documento un string en donde se debe guardar la linea que se genera y un arreglo que debe guardar cualquier error que se presente en su comparacion con la base de datos segun la estructura del plano enviada por siesa
         $lineaEncabezado = 
@@ -197,9 +211,9 @@ class docEntradaAlmacenController extends Controller
             'f350_notas' => $information['entm_txt_observaciones'],
             'f451_id_concepto' => 'default',
             'f451_id_grupo_clase_docto' => 'default',
-            'f451_id_sucursal_prov' => '', // debo consultar la sucursal en genericas sucursal proveedor la que tenga menor numero
-            'f451_id_tercero_comprador' => '315788080', // pendiente verificar oscar
-            'f451_num_docto_referencia' => $information['entm_txt_factura'], // numero orden de compra cliente
+            'f451_id_sucursal_prov' => $ordenCompra[0]->suc_proveedor, // debo consultar la sucursal en genericas sucursal proveedor la que tenga menor numero
+            'f451_id_tercero_comprador' => '31578808', // pendiente verificar oscar
+            'f451_num_docto_referencia' => substr($information['entm_txt_factura'], 0, 12), //substring
             'f451_id_moneda_docto' => 'COP', // * pendiente verificar oscar COP
             'f451_id_moneda_conv' => 'default',
             'f451_tasa_conv' => 'default',
@@ -253,10 +267,10 @@ class docEntradaAlmacenController extends Controller
               'f470_consec_docto' => $incrPorEncabezado, // deben tener todos el mismo consecutivo del encabezado
               'f470_nro_registro' => $consecDetalle++, // * Incrementa en el numero de movimientos que tenga el archivo plano 
               'f_campo' => 'vacio',
-              'f470_id_bodega' => '', // * Catalogo bodegas entreprise 
-              'f470_id_ubicacion_aux' => '',// * ubicaciones por bodega enterprise 
+              'f470_id_bodega' => $value['ubicacion']['id_bodega'], // * Catalogo bodegas entreprise 
+              'f470_id_ubicacion_aux' => $value['ubicacion']['id_ubic'],// * ubicaciones por bodega enterprise 
               'f470_id_lote' => $value['rec_txt_lote'], // * por cada referencia su respectivo lote trefentrada -rec-txt-lote 
-              'f470_id_unidad_medida' => '', // * se obtiene de genericas item - unidad de medida 
+              'f470_id_unidad_medida' => $value['item']['unidadMedida'], // * se obtiene de genericas item - unidad de medida 
               'f421_fecha_entrega' => Carbon::parse($information['entm_txt_fechacreacion'])->format('Ymd'), // * entm_txt_fechacreacion 
               'f470_cant_base' => $value['rec_int_cantidad'], // * t_refentrada - rec_int_cantidad 
               'f470_cant_2' => 'default',
@@ -266,7 +280,7 @@ class docEntradaAlmacenController extends Controller
               'f470_codigo_barras' => 'vacio',
               'f470_id_ext1_detalle' => 'vacio',
               'f470_id_ext2_detalle' => 'vacio',
-              'f470_id_ccosto_movto' => '', // * saber que documento es para que oscar confirme si va o no va 
+              'f470_id_ccosto_movto' => '', 
               'f470_id_proyecto' => 'vacio',
               'f470_rowid' => 'default'
               ]
@@ -317,7 +331,7 @@ class docEntradaAlmacenController extends Controller
 
   public function guardarReferencia($referencia)
   {
-    unset($referencia['programacion'], $referencia['ocACargar']);
+    unset($referencia['programacion'], $referencia['ocACargar'], $referencia['item'], $referencia['bodega'], $referencia['ubicacion']);
     return TRefentrada::where('rec_int_id', $referencia['rec_int_id'])->update($referencia);
   }
 

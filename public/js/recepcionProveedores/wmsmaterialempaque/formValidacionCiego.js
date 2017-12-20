@@ -18,6 +18,8 @@ app.controller('formValidacionCiegoCtrl', ['$scope', '$http', '$filter', '$mdDia
 			res = response.data;
 			$scope.entrada = angular.copy(res.entrada);
 			$scope.tiposDocumentos = angular.copy(res.tiposDocumentos);
+			$scope.bodegasUbica = angular.copy(res.bodegasUbica);
+			console.log($scope.bodegasUbica);
 			$scope.progress = false;
 			if ($scope.entrada.entm_txt_factura == 0) {
 				$scope.entrada.entm_txt_factura = "";
