@@ -19,7 +19,12 @@ app.controller('formValidacionCiegoCtrl', ['$scope', '$http', '$filter', '$mdDia
 			$scope.entrada = angular.copy(res.entrada);
 			$scope.tiposDocumentos = angular.copy(res.tiposDocumentos);
 			$scope.bodegasUbica = angular.copy(res.bodegasUbica);
-			console.log($scope.bodegasUbica);
+			$scope.bodegasSolas = $filter('groupBy')($scope.bodegasUbica, 'id_bodega');
+			var log = [];
+			angular.forEach($scope.bodegasSolas, function(value, key) {
+			  this.push(key);
+			}, log);
+			$scope.bodegasSolas = log;
 			$scope.progress = false;
 			if ($scope.entrada.entm_txt_factura == 0) {
 				$scope.entrada.entm_txt_factura = "";
@@ -110,7 +115,9 @@ app.controller('formValidacionCiegoCtrl', ['$scope', '$http', '$filter', '$mdDia
 	}
 
 	$scope.validarUnidades = function(unidades, oc, elemento){
-		if (unidades > Math.trunc(oc.ocACargar.CantPendiente)) {
+		var cantPendiente =  Math.trunc(oc.ocACargar.CantPendiente) + (Math.trunc(oc.ocACargar.CantPendiente) * 0.1);
+		console.log(cantPendiente);
+		if (unidades > cantPendiente) {
 			oc.ocACargar = null;
 			$mdDialog.show(
 		      $mdDialog.alert()

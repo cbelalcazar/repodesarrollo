@@ -104,10 +104,24 @@ class docEntradaAlmacenController extends Controller
 
       if (count($obtengoProgramacion) > 0) {
         $item->programacion = $obtengoProgramacion[0];
+        $item->ordenCompra = DB::connection('besa')->table('102_OrdenCompra')
+            ->where('TipoDocto', $obtengoProgramacion[0]['prg_tipo_doc_oc'])
+            ->where('CO', $obtengoProgramacion[0]['prg_centro_operacion'])
+            ->where('ConsDocto', $obtengoProgramacion[0]['prg_num_orden_compra'])
+            ->take(1)
+            ->get();  
+
+        // $item->bodega = BodegasUbicaciones::where('id_bodega', $item->ordenCompra[0]->cod_bodega)->get();
+        $item->bodega = $item->ordenCompra[0]->cod_bodega;
       }
       else{
         $item->programacion = null;
+        $item->ordenCompra = null;
+        $item->bodega = null;
       }
+
+
+      
       
       return $item;
     });
@@ -128,6 +142,7 @@ class docEntradaAlmacenController extends Controller
   public function guardarEntrada(Request $request)
   {
     try {
+
       // Obtengo la informacion de la entrada
       $information = $request->all();
       // Guardo la informacion general de la entrada
@@ -142,11 +157,11 @@ class docEntradaAlmacenController extends Controller
         // Obtengo la informacion de la orden de compra si tiene programacion
         if ($value['programacion'] != null) {
           $programacion = $value['programacion'];
-          $value['refGroupBy'] = trim($programacion['prg_centro_operacion']) . '-' .  trim($programacion['prg_tipo_doc_oc']) . '-' .  trim($programacion['prg_num_orden_compra']);
+          $value['refGroupBy'] = trim($programacion['prg_centro_operacion']) . '-' .  trim($programacion['prg_tipo_doc_oc']) . '-' .  trim($programacion['prg_num_orden_compra'] . '-' .  trim($value['ordenCompra'][0]['suc_proveedor']));
           // Obtengo la informacion de orden de compra si no tiene programacion
         }elseif(isset($value['ocACargar']) && $value['ocACargar'] != null){
           $ocAcargar = $value['ocACargar'];
-          $value['refGroupBy'] = trim($ocAcargar['CO']) . '-' .  trim($ocAcargar['TipoDocto']) . '-' .  trim($ocAcargar['ConsDocto']);
+          $value['refGroupBy'] = trim($ocAcargar['CO']) . '-' .  trim($ocAcargar['TipoDocto']) . '-' .  trim($ocAcargar['ConsDocto']) . '-' .  trim($ocAcargar['suc_proveedor']);
           
         } 
         array_push($arregloReferencias, $value);              
@@ -172,14 +187,14 @@ class docEntradaAlmacenController extends Controller
 
         $stringOc = explode("-", $key);   
 
-        //  +++debo consultar la orden de compra y obtener la sucursal para ponerla en el encabezado del plano   
+        // //  +++debo consultar la orden de compra y obtener la sucursal para ponerla en el encabezado del plano   
 
-        $ordenCompra = DB::connection('besa')->table('102_OrdenCompra')
-            ->where('TipoDocto', $stringOc[1])
-            ->where('CO', $stringOc[0])
-            ->where('ConsDocto', $stringOc[2])
-            ->take(1)
-            ->get();  
+        // $ordenCompra = DB::connection('besa')->table('102_OrdenCompra')
+        //     ->where('TipoDocto', $stringOc[1])
+        //     ->where('CO', $stringOc[0])
+        //     ->where('ConsDocto', $stringOc[2])
+        //     ->take(1)
+        //     ->get();  
 
         // arreglo con donde la primera posicion contiene un arreglo con el tipo del documento un string en donde se debe guardar la linea que se genera y un arreglo que debe guardar cualquier error que se presente en su comparacion con la base de datos segun la estructura del plano enviada por siesa
         $lineaEncabezado = 
@@ -211,7 +226,7 @@ class docEntradaAlmacenController extends Controller
             'f350_notas' => $information['entm_txt_observaciones'],
             'f451_id_concepto' => 'default',
             'f451_id_grupo_clase_docto' => 'default',
-            'f451_id_sucursal_prov' => $ordenCompra[0]->suc_proveedor, // debo consultar la sucursal en genericas sucursal proveedor la que tenga menor numero
+            'f451_id_sucursal_prov' => $stringOc[3], // debo consultar la sucursal en genericas sucursal proveedor la que tenga menor numero
             'f451_id_tercero_comprador' => '31578808', // pendiente verificar oscar
             'f451_num_docto_referencia' => substr($information['entm_txt_factura'], 0, 12), //substring
             'f451_id_moneda_docto' => 'COP', // * pendiente verificar oscar COP
@@ -250,6 +265,11 @@ class docEntradaAlmacenController extends Controller
 
         // Por cada referencia de la orden de compra se genera un detalle
         foreach ($referencias as $key => $value) {
+
+            if ($value['ubicacion']['id_ubic'] == 'No Aplica') {
+              $value['ubicacion']['id_ubic'] = "";
+            }
+
             $lineaDetalle = [
               [
                 'tipoDocumento' => 'b',
@@ -271,7 +291,7 @@ class docEntradaAlmacenController extends Controller
               'f470_id_ubicacion_aux' => $value['ubicacion']['id_ubic'],// * ubicaciones por bodega enterprise 
               'f470_id_lote' => $value['rec_txt_lote'], // * por cada referencia su respectivo lote trefentrada -rec-txt-lote 
               'f470_id_unidad_medida' => $value['item']['unidadMedida'], // * se obtiene de genericas item - unidad de medida 
-              'f421_fecha_entrega' => Carbon::parse($information['entm_txt_fechacreacion'])->format('Ymd'), // * entm_txt_fechacreacion 
+              'f421_fecha_entrega' => Carbon::parse($value['ordenCompra'][0]['f421_fecha_entrega'])->format('Ymd'), // * entm_txt_fechacreacion 
               'f470_cant_base' => $value['rec_int_cantidad'], // * t_refentrada - rec_int_cantidad 
               'f470_cant_2' => 'default',
               'f470_notas' => $information['entm_txt_observaciones'], // observaciones de todo el movimiento 
@@ -331,7 +351,7 @@ class docEntradaAlmacenController extends Controller
 
   public function guardarReferencia($referencia)
   {
-    unset($referencia['programacion'], $referencia['ocACargar'], $referencia['item'], $referencia['bodega'], $referencia['ubicacion']);
+    unset($referencia['programacion'], $referencia['ocACargar'], $referencia['item'], $referencia['bodega'], $referencia['ubicacion'], $referencia['ordenCompra']);
     return TRefentrada::where('rec_int_id', $referencia['rec_int_id'])->update($referencia);
   }
 

@@ -148,10 +148,10 @@
 							</select>
 						</td>
 						<td>
-							<select class="form-control" ng-model="value.bodega"  ng-options="[key, opt[0].nom_bodega].join(' - ') for (key, opt) in bodegasUbica | groupBy : 'id_bodega' track by key" required>
+							<select class="form-control" ng-model="value.bodega" required ng-options="opt for (key, opt) in bodegasSolas track by opt" required>
 								<option value="">Seleccione..</option>
 							</select>
-							<select class="form-control" ng-if="value.bodega != undefined" ng-model="value.ubicacion"  ng-options="[opt.id_ubic, opt.nom_ubic].join(' - ') for (key, opt) in bodegasUbica | filter : {id_bodega : value.bodega[0].id_bodega}  track by opt.id_ubic" required>
+							<select class="form-control" ng-if="value.bodega != undefined" ng-model="value.ubicacion"  ng-options="[opt.id_ubic, opt.nom_ubic].join(' - ') for (key, opt) in bodegasUbica | filter : {id_bodega : value.bodega}  track by opt.id_ubic" required>
 								<option value="">Seleccione..</option>
 							</select>
 						</td>
