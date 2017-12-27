@@ -34,6 +34,9 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::group(['prefix' => 'negociaciones'], function () {
   		Route::resource('solicitud', 'negociaciones\solicitudController');
   		Route::get('solicitudGetInfo', 'negociaciones\solicitudController@solicitudGetInfo');
+
+      Route::resource('clasenegociacion', 'negociaciones\claseNegociacionController');
+      Route::get('clasenegociacionInfo', 'negociaciones\claseNegociacionController@getInfo');
 	});
 
 
