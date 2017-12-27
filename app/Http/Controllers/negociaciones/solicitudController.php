@@ -5,6 +5,12 @@ namespace App\Http\Controllers\negociaciones;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Models\negociaciones\ClaseNegociacion;
+use App\Models\negociaciones\NegociacionAnoAnterior;
+use App\Models\negociaciones\TipNegociacion;
+use App\Models\Genericas\TCliente;
+use App\Models\Genericas\TCanal;
+
 
 class solicitudController extends Controller
 {
@@ -39,7 +45,16 @@ class solicitudController extends Controller
     public function solicitudGetInfo()  
     {
         $usuario = Auth::user();
-        $response = compact('usuario');
+        $claseNegociacion = ClaseNegociacion::all();
+        $negoAnoAnterior = NegociacionAnoAnterior::all();
+        $tipNegociacion = TipNegociacion::all();
+
+        // Obtengo los clientes con sus sucursales
+        $clientesSucursales = TCliente::with('TSucursal')->where('ter_id', $usuario['idTerceroUsuario'])->get();
+        // dd($clientesSucursales['TSucursal']);
+        // $canales = TCanal::whereIn('can_id', )->get();
+
+        $response = compact('usuario', 'claseNegociacion', 'negoAnoAnterior', 'tipNegociacion', 'clientesSucursales', 'canales');
         return response()->json($response);
     }
 

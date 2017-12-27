@@ -4,18 +4,18 @@ namespace App\Models\negociaciones;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ClaseNegociacion extends Model
+class NegociacionAnoAnterior extends Model
 {
     protected $connection = 'bd_negociaciones2';
 
-    protected $table = 't_clasenegociacion';
+    protected $table = 't_negoanoanterior';
 
     public $incrementing = false;
 
     public $timestamps = false;
 
     protected $fillable = [
-        'cneg_descripcion',
+        'nant_descripcion',
     ];
 
 }
