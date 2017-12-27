@@ -130,6 +130,21 @@ return [
             'strict' => true,
             'engine' => 'InnoDB',
         ],
+
+
+        'bd_negociaciones2' => [
+            'driver' => 'mysql',
+            'host' => env('DB_NEG_HOST', 'localhost'),
+            'port' => env('DB_NEG_PORT', '3306'),
+            'database' => 'bd_negociaciones2',
+            'username' => env('DB_NEG_USERNAME', 'root'),
+            'password' => env('DB_NEG_PASSWORD', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_spanish2_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => 'InnoDB',
+        ],
     ],
 
     /*

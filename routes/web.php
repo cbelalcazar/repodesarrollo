@@ -29,4 +29,12 @@ Route::group(['middleware' => ['auth']], function () {
   });
 
   Route::get('autocomplete', ['uses' => 'GenericasController@autocomplete', 'as' => 'autocomplete']);
+
+  	// Rutas de negociaciones 
+	Route::group(['prefix' => 'negociaciones'], function () {
+  		Route::resource('solicitud', 'negociaciones\solicitudController');
+  		Route::get('solicitudGetInfo', 'negociaciones\solicitudController@solicitudGetInfo');
+	});
+
+
 });
