@@ -7,14 +7,17 @@
 		    <md-tabs md-dynamic-height md-border-bottom>
 		      <md-tab label="Información de Solicitud">
 		        <md-content class="md-padding">
+		        	<!-- fecha solicitud -->
 		          	<div class="form-group">
 						<label>Fecha de solicitud</label>
 						<input type="text" class="form-control" ng-model="objeto.sol_fecha" disabled required>
 					</div>
+					<!-- end fecha solicitud -->
+					<!-- Vendedor -->
 					<div class="form-group">
 						<label>Vendedor: @{{objeto.usuario}}</label>
-						<input type="hidden" class="form-control" ng-model="objeto.sol_ven_id">
 					</div>
+					<!-- end vendedor -->
 		        </md-content>
 		      </md-tab>
 		    </md-tabs>
