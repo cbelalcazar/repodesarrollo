@@ -4,28 +4,24 @@ namespace App\Http\Controllers\negociaciones;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\negociaciones\ClaseNegociacion;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Genericas\TCliente;
+use App\Models\Genericas\TCanal;
 
-class claseNegociacionController extends Controller
+
+class solicitudController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *1
+     *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $ruta = "NEGOCIACIONES V2 // CATALOGO - CLASE DE NEGOCIO";
-        $titulo = "Catalogo - Clase de Negocio";
+        $ruta = "NEGOCIACIONES V2 // MIS SOLICITUDES";
+        $titulo = "Mis solicitudes";
         $response = compact('ruta', 'titulo');
-        return view('layouts.negociaciones.Catalogos.claseNegociacionIndex', $response);
-    }
-        
-    public function getInfo()
-    {
-        $clases = ClaseNegociacion::all();
-        $response = compact('clases');
-        return response()->json($response);
+        return view('layouts.negociaciones.misSolicitudes', $response);
     }
 
     /**
@@ -35,7 +31,28 @@ class claseNegociacionController extends Controller
      */
     public function create()
     {
+        
+    }
 
+    /**
+     * return json with information
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function solicitudGetInfo()  
+    {
+        $usuario = Auth::user();
+        $claseNegociacion = ClaseNegociacion::all();
+        $negoAnoAnterior = NegociacionAnoAnterior::all();
+        $tipNegociacion = TipNegociacion::all();
+
+        // Obtengo los clientes con sus sucursales
+        $clientesSucursales = TCliente::with('TSucursal')->where('ter_id', $usuario['idTerceroUsuario'])->get();
+        // dd($clientesSucursales['TSucursal']);
+        // $canales = TCanal::whereIn('can_id', )->get();
+
+        $response = compact('usuario', 'claseNegociacion', 'negoAnoAnterior', 'tipNegociacion', 'clientesSucursales', 'canales');
+        return response()->json($response);
     }
 
     /**
@@ -46,9 +63,7 @@ class claseNegociacionController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-        $creacion = ClaseNegociacion::create($data);
-        return response()->json($creacion);
+        //
     }
 
     /**
@@ -82,11 +97,7 @@ class claseNegociacionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $clase = ClaseNegociacion::find($id);
-        $data = $request->all();
-        $clase->cneg_descripcion = $data['cneg_descripcion'];
-        $clase->save();
-        return response()->json($id);
+        //
     }
 
     /**
@@ -97,9 +108,6 @@ class claseNegociacionController extends Controller
      */
     public function destroy($id)
     {
-        $clase = ClaseNegociacion::find($id);
-        $clase->delete();
-        return response()->json($clase); 
+        //
     }
-
 }

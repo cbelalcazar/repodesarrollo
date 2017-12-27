@@ -4,9 +4,9 @@ namespace App\Http\Controllers\negociaciones;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\negociaciones\ClaseNegociacion;
+use App\Models\negociaciones\NegociacionAnoAnterior;
 
-class claseNegociacionController extends Controller
+class negociacionAnteriorController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,16 +15,16 @@ class claseNegociacionController extends Controller
      */
     public function index()
     {
-        $ruta = "NEGOCIACIONES V2 // CATALOGO - CLASE DE NEGOCIO";
-        $titulo = "Catalogo - Clase de Negocio";
+        $ruta = "NEGOCIACIONES V2 // CATALOGO - NEGOCIO AÑO ANTERIOR";
+        $titulo = "Catalogo - Negocio año anterior";
         $response = compact('ruta', 'titulo');
-        return view('layouts.negociaciones.Catalogos.claseNegociacionIndex', $response);
+        return view('layouts.negociaciones.Catalogos.negociacionAnoAnteriorIndex', $response);
     }
         
     public function getInfo()
     {
-        $clases = ClaseNegociacion::all();
-        $response = compact('clases');
+        $negoanos = NegociacionAnoAnterior::all();
+        $response = compact('negoanos');
         return response()->json($response);
     }
 
@@ -47,7 +47,7 @@ class claseNegociacionController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $creacion = ClaseNegociacion::create($data);
+        $creacion = NegociacionAnoAnterior::create($data);
         return response()->json($creacion);
     }
 
@@ -82,10 +82,10 @@ class claseNegociacionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $clase = ClaseNegociacion::find($id);
+        $negoano = NegociacionAnoAnterior::find($id);
         $data = $request->all();
-        $clase->cneg_descripcion = $data['cneg_descripcion'];
-        $clase->save();
+        $negoano->nant_descripcion = $data['nant_descripcion'];
+        $negoano->save();
         return response()->json($id);
     }
 
@@ -97,9 +97,9 @@ class claseNegociacionController extends Controller
      */
     public function destroy($id)
     {
-        $clase = ClaseNegociacion::find($id);
-        $clase->delete();
-        return response()->json($clase); 
+        $negoano = NegociacionAnoAnterior::find($id);
+        $negoano->delete();
+        return response()->json($negoano); 
     }
 
 }

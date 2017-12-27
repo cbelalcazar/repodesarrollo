@@ -34,9 +34,17 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::group(['prefix' => 'negociaciones'], function () {
   		Route::resource('solicitud', 'negociaciones\solicitudController');
   		Route::get('solicitudGetInfo', 'negociaciones\solicitudController@solicitudGetInfo');
-
-      Route::resource('clasenegociacion', 'negociaciones\claseNegociacionController');
+      //Rutas de Catalogos
+      Route::resource('clasenegociacion', 'negociaciones\claseNegociacionController', ['except' => ['create', 'show', 'edit']]);
       Route::get('clasenegociacionInfo', 'negociaciones\claseNegociacionController@getInfo');
+      Route::resource('negoanoanterior', 'negociaciones\negociacionAnteriorController', ['except' => ['create', 'show', 'edit']]);
+      Route::get('negoanoanteriorInfo', 'negociaciones\negociacionAnteriorController@getInfo');
+      Route::resource('tiponegociacion', 'negociaciones\tipoNegociacionController', ['except' => ['create', 'show', 'edit']]);
+      Route::get('tiponegociacionInfo', 'negociaciones\tipoNegociacionController@getInfo');
+
+      //Rutas de mis Solicitudes
+      Route::resource('missolicitudes', 'negociaciones\misSolicitudesController'):
+      Route::get('missolicitudesInfo', 'negociaciones\misSolicitudesController@getInfo');
 	});
 
 
