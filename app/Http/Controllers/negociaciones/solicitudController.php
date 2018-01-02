@@ -8,8 +8,12 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\negociaciones\ClaseNegociacion;
 use App\Models\negociaciones\NegociacionAnoAnterior;
 use App\Models\negociaciones\TipNegociacion;
-use App\Models\Genericas\TCliente;
+use App\Models\negociaciones\NegociacionPara;
+use App\Models\Genericas\TVendedor;
 use App\Models\Genericas\TCanal;
+use App\Models\Genericas\TCliente;
+use App\Models\Genericas\TListaPrecios;
+use App\Models\Genericas\TCentroOperaciones;
 
 
 class solicitudController extends Controller
@@ -44,17 +48,36 @@ class solicitudController extends Controller
      */
     public function solicitudGetInfo()  
     {
+        // obtengo usuario logueado
         $usuario = Auth::user();
         $claseNegociacion = ClaseNegociacion::all();
         $negoAnoAnterior = NegociacionAnoAnterior::all();
         $tipNegociacion = TipNegociacion::all();
+        $negociacionPara = NegociacionPara::all();
+        // Obtengo el vendedor con sus sucursales
+        $VendedorSucursales = TVendedor::with('TSucursal')
+        ->where('ter_id', $usuario['idTerceroUsuario'])
+        ->first();
+        // Obtengo los canales de cada sucursal
+        $agruCanalSucursal = collect($VendedorSucursales['TSucursal'])
+        ->groupBy('codcanal')->keys()->all();
+        // Obtengo solo los canales asociados al vendedor en sus sucursales.
+        $canales = TCanal::whereIn('can_id', $agruCanalSucursal)->get();
+        // Obtengo los id de los clientes a consultar 
+        $idClientes = collect($VendedorSucursales['TSucursal'])->groupBy('cli_id')->keys()->all();
+        // Obtengo los clientes a mostrar
+        $clientes = TCliente::whereIn('cli_id', $idClientes)->get();
 
-        // Obtengo los clientes con sus sucursales
-        $clientesSucursales = TCliente::with('TSucursal')->where('ter_id', $usuario['idTerceroUsuario'])->get();
-        // dd($clientesSucursales['TSucursal']);
-        // $canales = TCanal::whereIn('can_id', )->get();
+        $listaPrecios = TListaPrecios::all();
 
-        $response = compact('usuario', 'claseNegociacion', 'negoAnoAnterior', 'tipNegociacion', 'clientesSucursales', 'canales');
+        // Obtengo los canales de cada sucursal
+        $agruZonasSucursal = collect($VendedorSucursales['TSucursal'])
+        ->groupBy('cen_movimiento_id')->keys()->all();
+
+        $zonas = TCentroOperaciones::whereIn('cen_id', $agruZonasSucursal)->get();
+
+
+        $response = compact('usuario', 'claseNegociacion', 'negoAnoAnterior', 'tipNegociacion', 'VendedorSucursales', 'canales', 'clientes', 'idClientes', 'negociacionPara', 'agruZonasSucursal', 'zonas', 'listaPrecios');
         return response()->json($response);
     }
 

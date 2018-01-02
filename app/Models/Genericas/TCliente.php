@@ -29,7 +29,4 @@ class TCliente extends Model
         'cli_subcanal',
     ];
 
-    public function TSucursal(){
-        return $this->hasMany('App\Models\Genericas\TSucursal', 'cli_id', 'cli_id');
-    }
 }

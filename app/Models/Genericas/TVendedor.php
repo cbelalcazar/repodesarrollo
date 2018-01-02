@@ -16,4 +16,8 @@ class TVendedor extends Model
         'ven_id',
         'ter_id',
     ];
+    
+    public function TSucursal(){
+        return $this->hasMany('App\Models\Genericas\TSucursal', 'ven_id', 'ven_id');
+    }
 }
