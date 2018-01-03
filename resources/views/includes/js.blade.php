@@ -38,9 +38,13 @@ $.extend( true, $.fn.dataTable.defaults, {
 <!-- Bootstrap 3.3.7 -->
 <script src="{{url('/lib/bootstrap.min.js')}}" type="text/javascript" language="javascript"></script>
 <script src="{{url('/lib/bootstrap-datetimepicker.min.js')}}" type="text/javascript" language="javascript"></script>
+<script src="{{url('/lib/ui-bootstrap-tpls.js')}}" type="text/javascript" language="javascript"></script>
 
 <!-- Laravel Javascript Validation -->
 <script src="{{asset('vendor/jsvalidation/js/jsvalidation.js')}}" type="text/javascript" language="javascript"></script>
+
+<!-- MultiSelect -->
+<script src="{{url('/lib/angularJs/angular-bootstrap-multiselect.min.js')}}" type="text/javascript" language="javascript"></script>
 
 <!-- Dropzone -->
 <script src="{{url('/lib/dropzone.js')}}" type="text/javascript" language="javascript"></script>
