@@ -5,11 +5,10 @@ namespace App\Http\Controllers\negociaciones;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Genericas\TCliente;
-use App\Models\Genericas\TCanal;
+use App\Models\negociaciones\TSolicitudNego;
 
 
-class solicitudController extends Controller
+class misSolicitudesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -39,19 +38,12 @@ class solicitudController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function solicitudGetInfo()  
+    public function getInfo()  
     {
         $usuario = Auth::user();
-        $claseNegociacion = ClaseNegociacion::all();
-        $negoAnoAnterior = NegociacionAnoAnterior::all();
-        $tipNegociacion = TipNegociacion::all();
-
-        // Obtengo los clientes con sus sucursales
-        $clientesSucursales = TCliente::with('TSucursal')->where('ter_id', $usuario['idTerceroUsuario'])->get();
-        // dd($clientesSucursales['TSucursal']);
-        // $canales = TCanal::whereIn('can_id', )->get();
-
-        $response = compact('usuario', 'claseNegociacion', 'negoAnoAnterior', 'tipNegociacion', 'clientesSucursales', 'canales');
+        $solicitudes = TSolicitudNego::with('costo', 'costo.lineas', 'costo.lineas.lineasDetalle','estado', 'cliente', 'canal', 'listaPrecios')->where('sol_ven_id', '1144069330')->get();
+        //$solicitudes = TSolicitudNego::all();
+        $response = compact('usuario', 'solicitudes');
         return response()->json($response);
     }
 

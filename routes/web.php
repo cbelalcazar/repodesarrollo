@@ -43,8 +43,8 @@ Route::group(['middleware' => ['auth']], function () {
       Route::get('tiponegociacionInfo', 'negociaciones\tipoNegociacionController@getInfo');
 
       //Rutas de mis Solicitudes
-      Route::resource('missolicitudes', 'negociaciones\misSolicitudesController'):
-      Route::get('missolicitudesInfo', 'negociaciones\misSolicitudesController@getInfo');
+      Route::resource('misSolicitudes', 'negociaciones\misSolicitudesController');
+      Route::get('misSolicitudesInfo', 'negociaciones\misSolicitudesController@getInfo');
 	});
 
 
