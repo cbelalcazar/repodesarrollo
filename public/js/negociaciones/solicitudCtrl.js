@@ -1,3 +1,15 @@
+app.config(function($mdDateLocaleProvider) {
+    
+    $mdDateLocaleProvider.formatDate = function (date) {
+        return date ? moment(date).format('DD/MM/YYYY') : '';
+    };
+
+    $mdDateLocaleProvider.parseDate = function (dateString) {
+        var m = moment(dateString, 'DD/MM/YYYY', true);
+        return m.isValid() ? m.toDate() : new Date(NaN);
+    };
+});
+
 app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog',  function ($scope, $http, $filter, $mdDialog) {
 	
 	$scope.objeto = {};
@@ -5,6 +17,16 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog',  fun
 	$scope.objeto.sol_fecha = $filter('date')(new Date(), 'yyyy-MM-dd HH:mm:ss');
 	$scope.progress = true;
 	$scope.arrayZona = [];
+	$scope.sucursales = [];
+	$scope.labels = {
+	    "itemsSelected": "elementos seleccionados",
+	    "selectAll": "Marcar todos",
+	    "unselectAll": "Desmarcar todos",
+	    "search": "Buscar una sucursal...",
+	    "select": "Seleccionar una sucursal..."
+	}
+
+
 
 	$scope.getInfo = function(){
 		$http.get('../solicitudGetInfo').then(function(response){
@@ -77,20 +99,63 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog',  fun
 	}
 
 	$scope.removeZona = function(item) { 
-		$scope.zonas.push(item.szn_coc_id);
-		var index = $scope.arrayZona.indexOf(item);
-		$scope.arrayZona.splice(index, 1);     
+			$scope.zonas.push(item.szn_coc_id);
+			var index = $scope.arrayZona.indexOf(item);
+			$scope.arrayZona.splice(index, 1);     		
 	}
 
 	$scope.formatoDescuentoComer = function(){		
 		if ($scope.objeto.sol_cli_id != undefined) {
-			console.log($scope.listaPrecios);
-			console.log($scope.objeto.sol_cli_id.lis_id);
-			var lista = $filter('fuzzyBy')($scope.listaPrecios, {lis_id : $scope.objeto.sol_cli_id.lis_id});
-			console.log(lista);
+			var lista = $filter('where')($scope.listaPrecios, {lis_id : $scope.objeto.sol_cli_id.lis_id});
+			$scope.objeto.listaprecios = lista[0].lis_txt_descrip;
 			$scope.objeto.sol_cli_id.cli_txt_dtocome = Math.round($scope.objeto.sol_cli_id.cli_txt_dtocome);
 		}
 	}
+
+	$scope.diffmesesFacturacion = function(){
+
+		if ($scope.objeto.sol_peri_facturafin != undefined && $scope.objeto.sol_peri_facturaini != undefined && $scope.objeto.sol_peri_facturafin > $scope.objeto.sol_peri_facturaini) {
+			var fecha1 = moment($scope.objeto.sol_peri_facturafin);
+			var fecha2 = moment($scope.objeto.sol_peri_facturaini);
+			$scope.objeto.sol_mesesfactu = fecha1.diff(fecha2, 'months', true).toFixed(1);
+		}else if($scope.objeto.sol_peri_facturafin < $scope.objeto.sol_peri_facturaini){
+			$mdDialog.show(
+		      $mdDialog.alert()
+		        .parent(angular.element(document.querySelector('#popupContainer')))
+		        .clickOutsideToClose(true)
+		        .title('')
+		        .textContent('La fecha inicio del periodo de facturacion es mayor a la fecha fin')
+		        .ariaLabel('')
+		        .ok('Cerrar')
+		    );
+		    $scope.objeto.sol_mesesfactu = undefined;
+		    $scope.objeto.sol_peri_facturafin = undefined;
+		}
+		
+	}
+
+	$scope.diffmesesEjecucion = function(){
+
+		if ($scope.objeto.sol_peri_ejefin != undefined && $scope.objeto.sol_peri_ejeini != undefined && $scope.objeto.sol_peri_ejefin > $scope.objeto.sol_peri_ejeini) {
+			var fecha1 = moment($scope.objeto.sol_peri_ejefin);
+			var fecha2 = moment($scope.objeto.sol_peri_ejeini);
+			$scope.objeto.sol_meseseje = fecha1.diff(fecha2, 'months', true).toFixed(1);
+		}else if($scope.objeto.sol_peri_ejefin < $scope.objeto.sol_peri_ejeini){
+			$mdDialog.show(
+		      $mdDialog.alert()
+		        .parent(angular.element(document.querySelector('#popupContainer')))
+		        .clickOutsideToClose(true)
+		        .title('')
+		        .textContent('La fecha inicio del periodo de ejecucion es mayor a la fecha fin')
+		        .ariaLabel('')
+		        .ok('Cerrar')
+		    );
+		    $scope.objeto.sol_meseseje = undefined;
+		    $scope.objeto.sol_peri_ejefin = undefined;
+		}
+		
+	}
+
 
 
 
