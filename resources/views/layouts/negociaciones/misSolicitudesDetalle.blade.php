@@ -286,6 +286,7 @@ body {
               <md-content class="md-padding">
                 <div class="col-sm-12">
                   <div class="row">
+                    <!--Creacion de tabla No.1-->
                     <ul class="list-group">  
                         <li class="list-group-item">
                           <div class="row">
@@ -309,6 +310,7 @@ body {
                           <div class="col-md-2"></div>   
                         </li>
                       <hr>
+                      <!--Creacion de tabla No.2-->
                       <label>Impuestos Calculados (Informativo)</label>
                       <li class="list-group-item">
                         <div class="row">
@@ -355,6 +357,7 @@ body {
                     </ul>
                   </div>
                   <br>
+                  <!--Creacion de panel No.1-->
                   <label>Lineas de Negociación</label>
                   <div class="panel panel-primary">
                     <div class="panel-heading">
@@ -388,6 +391,7 @@ body {
                       </div>
                     </div>
                   </div>
+                  <!--Creacion de panel No.2-->
                   <label>Costos Adicionales</label>
                   <div class="panel panel-primary">
                     <div class="panel-heading">
@@ -416,6 +420,7 @@ body {
                       </div>
                     </div>
                   </div>
+                  <!--Creacion de panel No.3-->
                   <label>Detalle Valores Adicionales</label>
                   <div class="panel panel-primary">
                     <div class="panel-heading">
@@ -435,27 +440,62 @@ body {
                       </div>
                     </div>
                   </div>
-
                 </div>
               </md-content>
             </md-tab>
             <md-tab label="Info. Objetivos">
-
+              <md-content class="md-padding">
+                <div class="col-sm-12">
+                  <div class="row">
+                    
+                  </div>
+                </div>
+              </md-content>
             </md-tab>
             <md-tab label="Info. Eval. Real">
-
+              <md-content class="md-padding">
+                <div class="col-sm-12">
+                  <div class="row">
+                    
+                  </div>
+                </div>
+              </md-content>
             </md-tab>
             <md-tab label="Evaluación">
-
+              <md-content class="md-padding">
+                <div class="col-sm-12">
+                  <div class="row">
+                    
+                  </div>
+                </div>
+              </md-content>
             </md-tab>
             <md-tab label="Veri. de Cobro">
-
+              <md-content class="md-padding">
+                <div class="col-sm-12">
+                  <div class="row">
+                    
+                  </div>
+                </div>
+              </md-content>
             </md-tab>
             <md-tab label="His. Tesoreria">
-
+              <md-content class="md-padding">
+                <div class="col-sm-12">
+                  <div class="row">
+                    
+                  </div>
+                </div>
+              </md-content>
             </md-tab>
             <md-tab label="His.Auditoria">
-
+              <md-content class="md-padding">
+                <div class="col-sm-12">
+                  <div class="row">
+                    
+                  </div>
+                </div>
+              </md-content>
             </md-tab>
           </md-tabs>
         </div>        

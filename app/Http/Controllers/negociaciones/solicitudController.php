@@ -8,7 +8,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\negociaciones\ClaseNegociacion;
 use App\Models\negociaciones\NegociacionAnoAnterior;
 use App\Models\negociaciones\TipNegociacion;
+use App\Models\negociaciones\TipoNegociacion;
 use App\Models\negociaciones\NegociacionPara;
+use App\Models\negociaciones\EventoTemp;
+use App\Models\negociaciones\TipoServicio;
+use App\Models\negociaciones\CausalesNego;
 use App\Models\Genericas\TVendedor;
 use App\Models\Genericas\TCanal;
 use App\Models\Genericas\TCliente;
@@ -50,10 +54,15 @@ class solicitudController extends Controller
     {
         // obtengo usuario logueado
         $usuario = Auth::user();
+        // obtengo las clases de negociacion
         $claseNegociacion = ClaseNegociacion::all();
+        // obtengo las negociacion año anterior
         $negoAnoAnterior = NegociacionAnoAnterior::all();
+        // obtengo los tipos de negociacion
         $tipNegociacion = TipNegociacion::all();
+        $tipoDeNegociacion = TipoNegociacion::where('tin_estado', 1)->get();
         $negociacionPara = NegociacionPara::all();
+        $eventoTemp = EventoTemp::where('evt_estado', 1)->get();
         // Obtengo el vendedor con sus sucursales
         $VendedorSucursales = TVendedor::with('TSucursal')
         ->where('ter_id', $usuario['idTerceroUsuario'])
@@ -67,8 +76,12 @@ class solicitudController extends Controller
         $idClientes = collect($VendedorSucursales['TSucursal'])->groupBy('cli_id')->keys()->all();
         // Obtengo los clientes a mostrar
         $clientes = TCliente::whereIn('cli_id', $idClientes)->get();
-
+        // obtengo la lista de precios
         $listaPrecios = TListaPrecios::all();
+        // obtengo los tipos de serviciios
+        $tipoDeServicio = TipoServicio::where('ser_estado', 1)->get();
+        // obtengo causales de negociacion
+        $causalesNego = CausalesNego::where('can_estado', 1)->get();
 
         // Obtengo los canales de cada sucursal
         $agruZonasSucursal = collect($VendedorSucursales['TSucursal'])
@@ -76,8 +89,7 @@ class solicitudController extends Controller
 
         $zonas = TCentroOperaciones::whereIn('cen_id', $agruZonasSucursal)->get();
 
-
-        $response = compact('usuario', 'claseNegociacion', 'negoAnoAnterior', 'tipNegociacion', 'VendedorSucursales', 'canales', 'clientes', 'idClientes', 'negociacionPara', 'agruZonasSucursal', 'zonas', 'listaPrecios');
+        $response = compact('usuario', 'claseNegociacion', 'negoAnoAnterior', 'tipNegociacion', 'VendedorSucursales', 'canales', 'clientes', 'idClientes', 'negociacionPara', 'agruZonasSucursal', 'zonas', 'listaPrecios', 'eventoTemp', 'tipoDeNegociacion', 'tipoDeServicio', 'causalesNego');
         return response()->json($response);
     }
 

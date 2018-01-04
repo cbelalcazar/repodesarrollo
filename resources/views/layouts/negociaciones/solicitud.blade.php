@@ -69,7 +69,7 @@
 								<label>Canal:
 									<font color="red">*</font>
 								</label>
-								<select ng-model="objeto.sol_can_id" required class="form-control input-sm" ng-options="opt.can_txt_descrip for opt in canales track by opt.can_id">
+								<select ng-model="objeto.sol_can_id" ng-change="limpiarSucursales()" required class="form-control input-sm" ng-options="opt.can_txt_descrip for opt in canales track by opt.can_id">
 									<option value="">Seleccione..</option>
 								</select>				
 							</div>
@@ -91,13 +91,13 @@
 								<label>Negociación para:
 									<font color="red">*</font>
 								</label>
-								<select ng-change="limpiar()" ng-model="objeto.sol_tipocliente" required class="form-control input-sm" ng-options="opt.npar_descripcion for opt in negociacionPara track by opt.id">
+								<select ng-change="limpiar()" ng-model="objeto.sol_tipocliente" required class="form-control input-sm"  ng-disabled="objeto.sol_cli_id == undefined" ng-options="opt.npar_descripcion for opt in negociacionPara track by opt.id">
 									<option value="">Seleccione..</option>
 								</select>								
 							</div>
 						<!-- end negociacion para -->	
 
-						<!-- Total Zonas -->
+						<!-- Zonas -->
 							<div class="col-sm-12"  ng-if="objeto.sol_tipocliente.id == 1">
 								<div class="panel panel-primary">
 								    <div class="panel-heading">
@@ -106,35 +106,8 @@
 								    <div class="panel-body">
 								    	<div class="alert alert-warning">
 											La suma del porcentaje de participación debe ser igual a 100.
-										</div>
-										<!-- Capturar zona -->
-											<div class="col-sm-6">
-												<div class="form-group">
-													<label style="text-align: center">Zona: </label>
-													<select ng-model="objNegCliente.szn_coc_id" class="form-control input-sm" ng-options="opt.cen_txt_descripcion for opt in zonas track by opt.cen_id">
-														<option value="">Seleccione..</option>
-													</select>
-												</div>
-											</div>
-										<!-- end capturar zona -->
-
-										<!-- capturar porcentaje de participacion -->
-											<div class="col-sm-4">
-												<div class="form-group">
-													<label>Porcentaje de participación: </label>
-													<input placeholder="Maximo: @{{calcularMaximo()}}" type="number" class="form-control input-sm" ng-model="objNegCliente.szn_ppart" min="1" max="@{{calcularMaximo()}}">
-												</div>
-											</div>
-										<!-- end porcentaje de participacion -->
-
-										<!-- accion -->
-											<div class="col-sm-2">
-												<label>&nbsp;</label><br>
-												<button class="btn btn-primary btn-sm" type="button" ng-click="agregarZona(objNegCliente)"><i class="glyphicon glyphicon-plus"></i></button>
-											</div>
-										<!-- end accion -->
+										</div>										
 										<!-- tabla -->
-										<hr>
 										<table class="table table-bordered">
 											<thead>
 												<tr>
@@ -144,14 +117,40 @@
 												</tr>											
 											</thead>
 											<tbody>
+												<tr>
+													<!-- Capturar zona -->
+														<td>
+															<div class="form-group">
+																<label style="text-align: center">
+																<select ng-model="objNegCliente.szn_coc_id" class="form-control input-sm" ng-options="opt.cen_txt_descripcion for opt in zonas track by opt.cen_id">
+																	<option value="">Seleccione..</option>
+																</select>
+															</div>
+														</td>
+													<!-- end capturar zona -->
+
+													<!-- capturar porcentaje de participacion -->
+														<td>
+															<div class="form-group">
+																<input placeholder="Maximo: @{{calcularMaximo()}}" type="number" class="form-control input-sm" ng-model="objNegCliente.szn_ppart" min="1" max="@{{calcularMaximo()}}">
+															</div>
+														</td>
+													<!-- end porcentaje de participacion -->
+
+													<!-- accion -->
+														<td>
+															<button class="btn btn-success btn-sm" type="button" ng-click="agregarZona(objNegCliente)"><i class="glyphicon glyphicon-plus"></i></button>
+														</td>
+													<!-- end accion -->
+												</tr>
 												<tr ng-if="arrayZona.length == 0">
-													<td colspan="2" style="text-align: center">Favor agregar al menos una zona..</td>
+													<td colspan="3" style="text-align: center">Favor agregar al menos una zona..</td>
 												</tr>
 												<tr ng-repeat="(key, value) in arrayZona">
 													<td>@{{value.szn_coc_id.cen_txt_descripcion}}</td>
 													<td>@{{value.szn_ppart}}</td>
 													<td>
-														<button type="button" class="btn btn-danger btn-circle" ng-click="removeZona(value)"><i class="glyphicon glyphicon-remove"></i></button>
+														<button type="button" class="btn btn-danger btn-sm" ng-click="removeZona(value)"><i class="glyphicon glyphicon-remove"></i></button>
 													</td>
 												</tr>
 											</tbody>
@@ -161,20 +160,24 @@
 							</div>
 						<!-- End Zonas -->
 
-						<!-- Sucursales  ng-if="objeto.sol_tipocliente.id == 2" -->
-							<div class="col-sm-12" >
+						<!-- Sucursales  -->
+							<div class="col-sm-12" ng-if="objeto.sol_tipocliente.id == 2" >
 								<div class="panel panel-primary">
 								    <div class="panel-heading">
 										Sucursales
 								    </div>
 								    <div class="panel-body">
+								    	<div class="alert alert-warning" ng-if="arraySucursales.length > 0">
+											La suma del porcentaje de participación debe ser igual a 100 faltan @{{calculaFaltanteSucu()}}.
+										</div>		
 										<!-- multiselect -->
-											<div class="col-sm-6">
+											<div class="col-sm-10">
 												<label>Seleccionar sucursales:</label>
-												<multiselect ng-model="sucursales" options="VendedorSucursales.t_sucursal" id-prop="suc_id" display-prop="suc_txt_nombre" show-select-all="true" show-unselect-all="true" show-search="true" classes-btn="'btn-primary btn-block'" placeholder="Seleccionar una sucursal..." labels="labels"></multiselect>
+												<multiselect ng-model="objeto.sucursales" options="nuevoFiltrado" id-prop="suc_id" display-prop="descripcionConId" show-select-all="true" show-unselect-all="true" show-search="true" placeholder="Seleccionar una sucursal..." labels="labels"></multiselect>
 											</div>
-											<div class="col-sm-6">
-												<label>Participacion: </label>
+											<div class="col-sm-2">
+												<label>&nbsp;</label><br>
+												<button class="btn btn-primary" type="button" ng-click="agregarSucursales()"><i class="glyphicon glyphicon-plus"></i></button>
 											</div>
 										<!-- end multiselect -->
 								
@@ -183,20 +186,30 @@
 										<table class="table table-bordered">
 											<thead>
 												<tr>
-													<th>Zona</th>
-													<th>Porcentaje participación</th>
+													<th>Sucursal</th>
+													<th>% participacion</th>
 													<th>Acción</th>
 												</tr>											
 											</thead>
 											<tbody>
-												<tr ng-if="arrayZona.length == 0">
-													<td colspan="2" style="text-align: center">Favor agregar al menos una zona..</td>
+												<tr ng-if="arraySucursales.length == 0">
+													<td colspan="3" style="text-align: center">Favor agregar al menos una sucursal..</td>
 												</tr>
-												<tr ng-repeat="(key, value) in arrayZona">
-													<td>@{{value.szn_coc_id.cen_txt_descripcion}}</td>
-													<td>@{{value.szn_ppart}}</td>
+												<tr ng-repeat="(key, value) in arraySucursales">
+													<td>@{{value.descripcionConId}}</td>
 													<td>
-														<button type="button" class="btn btn-danger btn-circle" ng-click="removeZona(value)"><i class="glyphicon glyphicon-remove"></i></button>
+														<div class="input-group">
+													      	<span class="input-group-btn">
+													    		<button ng-click="agregarFaltante(value)" class="btn btn-success" type="button">
+																	<i class="glyphicon glyphicon-refresh"></i>
+													    			<md-tooltip md-direction="left">Sumar Faltante</md-tooltip>
+													    		</button>
+													      	</span>
+													    	<input type="number" min="0" string-to-number class="form-control" ng-model="value.porcentParti">
+													    </div>														
+													</td>
+													<td>
+														<button type="button" class="btn btn-danger btn-circle" ng-click="removeSucursal(value)"><i class="glyphicon glyphicon-remove"></i></button>
 													</td>
 												</tr>
 											</tbody>
@@ -207,28 +220,28 @@
 						<!-- End Sucursales -->
 
 						<!-- nit -->
-							<div class="form-group col-sm-4" ng-if="calcularMaximo() == 0">
+							<div class="form-group col-sm-4">
 								<label>Nit:</label>
 								<input type="text" disabled readonly class="form-control input-sm" ng-model="objeto.sol_cli_id.ter_id">
 							</div>
 						<!-- end nit -->
 
 						<!-- Descuento comercial % -->
-							<div class="form-group col-sm-4" ng-if="calcularMaximo() == 0">
+							<div class="form-group col-sm-4">
 								<label>Descuento comercial %:</label>
 								<input type="text" disabled readonly class="form-control input-sm" ng-model="objeto.sol_cli_id.cli_txt_dtocome">			
 							</div>
 						<!-- end Descuento comercial % -->
 
 						<!-- Lista de precios -->
-							<div class="form-group col-sm-4" ng-if="calcularMaximo() == 0">
+							<div class="form-group col-sm-4">
 								<label>Lista de precios: </label>
 								<input type="text" disabled readonly class="form-control input-sm" ng-model="objeto.listaprecios">					
 							</div>
 						<!-- end Lista de precios -->
 
 						<!-- Periodo de facturacion -->
-							<div ng-if="calcularMaximo() == 0">
+							<div>
 								<!-- Titulo -->
 									<div class="col-sm-12">
 										<h5>
@@ -262,7 +275,7 @@
 						<!-- End Periodo de facturacion -->
 
 						<!-- Periodo de ejecución (informativo) -->
-							<div ng-if="calcularMaximo() == 0">
+							<div>
 								<!-- Titulo -->
 									<div class="col-sm-12">
 										<h5>
@@ -295,14 +308,148 @@
 							</div>
 						<!-- End Periodo de ejecucion -->
 
-							<!-- Observaciones -->
-							<div class="form-group" ng-if="calcularMaximo() == 0">
+						<!-- Observaciones -->
+							<div class="form-group  col-sm-12">
 								<label>Observaciones: 
 									<font color="red">*</font>
 								</label>
 								<input type="text" maxlength="255" ng-model="objeto.sol_ltxt_observ" class="form-control">					
 							</div>
 						<!-- end Observaciones -->	
+
+
+						<!-- Evento o temporada -->
+							<div class="form-group col-sm-6">
+								<label>Evento o temporada: 
+									<font color="red">*</font>
+								</label>
+								<select ng-model="objeto.sol_evt_id" required class="form-control input-sm" ng-options="[opt.descTipoEvento, opt.evt_descripcion].join(' - ') for opt in arrayEventoTemp track by opt.evt_id">
+										<option value="">Seleccione..</option>
+								</select>						
+							</div>
+						<!-- end Evento o temporada -->	
+
+						<!-- Tipo de negociaciones -->
+							<div class="col-sm-12">
+								<div class="panel panel-primary">
+								    <div class="panel-heading">
+										Tipo de negociaciones
+								    </div>
+								    <div class="panel-body">								
+										<!-- tabla -->
+										<table class="table table-bordered">
+											<thead>
+												<tr>
+													<th>Descripción</th>
+													<th>Tipo de servicio</th>
+													<th>Costo</th>
+													<th>Acción</th>
+												</tr>											
+											</thead>
+											<tbody>
+												<tr>
+													<!-- Descripcion -->
+														<td>
+															<div class="form-group">
+																<select ng-model="objtipoNeg.stn_tin_id" ng-change="filtrarTiposServicios(objtipoNeg.stn_tin_id.tin_id)" class="form-control input-sm" ng-options="opt.tin_descripcion for opt in tipoDeNegociacion track by opt.tin_id">
+																	<option value="">Seleccione..</option>
+																</select>
+															</div>
+														</td>
+													<!-- end Descripcion -->
+
+													<!-- Tipo de servicio -->
+														<td>
+															<div class="form-group">
+																<select ng-model="objtipoNeg.stn_ser_id" class="form-control input-sm" ng-options="opt.ser_descripcion for opt in tipoDeServicioFilt track by opt.ser_id">
+																	<option value="">Seleccione..</option>
+																</select>
+															</div>
+														</td>
+													<!-- end Tipo de servicio -->
+
+													<!-- Costo -->
+														<td>
+															<div class="form-group">
+																<input type="number" class="form-control" ng-model="objtipoNeg.stn_costo" min="1">
+															</div>
+														</td>
+													<!-- end Costo -->
+
+													<!-- accion -->
+														<td>
+															<button class="btn btn-success btn-sm" type="button" ng-click="agregarTipoNegociacion(objtipoNeg)"><i class="glyphicon glyphicon-plus"></i></button>
+														</td>
+													<!-- end accion -->
+												</tr>
+												<tr ng-if="arrayTipoNegociacion.length == 0">
+													<td colspan="4" style="text-align: center">Favor agregar al menos tipo de negociacion</td>
+												</tr>
+												<tr ng-repeat="(key, value) in arrayTipoNegociacion">
+													<td>@{{value.stn_tin_id.tin_descripcion}}</td>
+													<td>@{{value.stn_ser_id.ser_descripcion}}</td>
+													<td>@{{value.stn_costo}}</td>
+													<td>
+														<button type="button" class="btn btn-danger btn-sm" ng-click="removeTipoNegociacion(value)"><i class="glyphicon glyphicon-remove"></i></button>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+								    </div>
+								  </div>
+							</div>
+						<!-- End Tipo de negociacion -->
+
+
+						<!-- Causales de negociación -->
+							<div class="col-sm-12">
+								<div class="panel panel-primary">
+								    <div class="panel-heading">
+										Tipo de negociaciones
+								    </div>
+								    <div class="panel-body">								
+										<!-- tabla -->
+										<table class="table table-bordered">
+											<thead>
+												<tr>
+													<th>Descripción</th>
+													<th>Acción</th>
+												</tr>											
+											</thead>
+											<tbody>
+												<tr>
+													<!-- Causales de negociacion -->
+														<td>
+															<div class="form-group">
+																<select ng-model="objCausalNego.scn_can_id" class="form-control input-sm" ng-options="opt.can_descripcion for opt in causalesNego track by opt.can_id">
+																	<option value="">Seleccione..</option>
+																</select>
+															</div>
+														</td>
+													<!-- end Descripcion -->
+
+													<!-- accion -->
+														<td>
+															<button class="btn btn-success btn-sm" type="button" ng-click="agregarCausalNegociacion(objCausalNego)"><i class="glyphicon glyphicon-plus"></i></button>
+														</td>
+													<!-- end accion -->
+												</tr>
+												<tr ng-if="arrayCausalNegociacion.length == 0">
+													<td colspan="4" style="text-align: center">Favor agregar al menos una causal de negociacion</td>
+												</tr>
+												<tr ng-repeat="(key, value) in arrayCausalNegociacion">
+													<td>@{{value.scn_can_id.can_descripcion}}</td>
+													<td>
+														<button type="button" class="btn btn-danger btn-sm" ng-click="removeCausalNegociacion(value)"><i class="glyphicon glyphicon-remove"></i></button>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+								    </div>
+								  </div>
+							</div>
+						<!-- End Causales de negociación -->
+
 
 					</div>
 		        </md-content>

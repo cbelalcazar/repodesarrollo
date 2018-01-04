@@ -21,7 +21,7 @@ class TSoliCausalNego extends Model
     ];
 
     public function causalDetalle(){
-      return $this->hasOne('App\Models\negociaciones\TCausalesNego', 'can_id', 'scn_can_id');
+      return $this->hasOne('App\Models\negociaciones\CausalesNego', 'can_id', 'scn_can_id');
     }
 
 }

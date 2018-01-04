@@ -79,7 +79,7 @@ class TSolicitudNego extends Model
     }
 
     public function evento(){
-      return $this->hasOne('App\Models\negociaciones\TEventoTemp', 'evt_id', 'sol_evt_id');
+      return $this->hasOne('App\Models\negociaciones\EventoTemp', 'evt_id', 'sol_evt_id');
     }
 
     public function clasificacion(){
