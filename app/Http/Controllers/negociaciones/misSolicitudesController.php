@@ -41,7 +41,7 @@ class misSolicitudesController extends Controller
     public function getInfo()  
     {
         $usuario = Auth::user();
-        $solicitudes = TSolicitudNego::with('costo', 'costo.lineas', 'costo.lineas.lineasDetalle','estado', 'cliente', 'canal', 'listaPrecios')->where('sol_ven_id', '1144069330')->get();
+        $solicitudes = TSolicitudNego::with('costo', 'costo.lineas', 'costo.lineas.lineasDetalle', 'costo.lineas.lineasDetalle.categorias', 'costo.motivo', 'costo.motivo.motAdicion', 'costo.detalle', 'estado', 'cliente', 'canal', 'listaPrecios', 'vendedor', 'zona', 'clasificacion', 'hisProceso', 'hisProceso.estadoHisProceso', 'hisProceso.terceroEnvia', 'hisProceso.terceroRecibe', 'costo.tipoBono.bono', 'soliZona', 'soliZona.hisZona', 'soliZona.hisZona.cOperacion', 'soliSucu', 'soliSucu.hisSucu', 'soliTipoNego', 'soliTipoNego.tipoNego', 'causal', 'causal.causalDetalle', 'evento')->where('sol_ven_id', '1144069330')->get();
         //$solicitudes = TSolicitudNego::all();
         $response = compact('usuario', 'solicitudes');
         return response()->json($response);

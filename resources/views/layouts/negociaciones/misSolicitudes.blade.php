@@ -13,7 +13,7 @@
 	          					<th class="text-center">No.</th>
 	          					<th class="text-center">Estado</th>
 	          					<th class="text-center">Fecha de Solicitud</th>
-	          					<th class="text-left">Cliente</th>
+	          					<th class="text-center">Cliente</th>
 	          					<th class="text-center">Valor</th>
 	          					<th class="text-center">Periodo de Negociacion</th>
 	          					<th class="text-center">Lineas</th>
@@ -26,9 +26,9 @@
 	          					<td class="text-center">@{{toda.estado.ser_descripcion}}</td>
 	          					<td class="text-center">@{{toda.sol_fecha}}</td>
 	          					<td class="text-left">@{{toda.cliente.razonSocialTercero_cli}}</td>
-	          					<td class="text-center">@{{toda.costo.soc_granvalor == null ? '0': toda.costo.soc_granvalor | currency : "$" : 2}}</td>
+	          					<td class="text-right">@{{toda.costo.soc_granvalor == null ? '0': toda.costo.soc_granvalor | currency : "$" : 2}}</td>
 	          					<td class="text-center">@{{toda.sol_peri_facturaini}} a @{{toda.sol_peri_facturafin}}</td>
-	          					<td class="text-center">@{{retornarCadena(toda.costo.lineas)}}</td>
+	          					<td class="text-left">@{{retornarCadena(toda.costo.lineas)}}</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(toda)">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
@@ -48,7 +48,7 @@
 	          					<th class="text-center">No.</th>
 	          					<th class="text-center">Estado</th>
 	          					<th class="text-center">Fecha de Solicitud</th>
-	          					<th class="text-left">Cliente</th>
+	          					<th class="text-center">Cliente</th>
 	          					<th class="text-center">Valor</th>
 	          					<th class="text-center">Periodo de Negociacion</th>
 	          					<th class="text-center">Lineas</th>
@@ -63,9 +63,9 @@
 	          					<td class="text-center">@{{ela.estado.ser_descripcion}}</td>
 	          					<td class="text-center">@{{ela.sol_fecha}}</td>
 	          					<td class="text-left">@{{ela.cliente.razonSocialTercero_cli}}</td>
-	          					<td class="text-center">@{{ela.costo.soc_granvalor == null ? '0': ela.costo.soc_granvalor | currency : "$" : 2}}</td>
+	          					<td class="text-right">@{{ela.costo.soc_granvalor == null ? '0': ela.costo.soc_granvalor | currency : "$" : 2}}</td>
 	          					<td class="text-center">@{{ela.sol_peri_facturaini}} a @{{ela.sol_peri_facturafin}}</td>
-	          					<td class="text-center">@{{retornarCadena(ela.costo.lineas)}}</td>
+	          					<td class="text-left">@{{retornarCadena(ela.costo.lineas)}}</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
@@ -97,7 +97,7 @@
 	          					<th class="text-center">No.</th>
 	          					<th class="text-center">Estado</th>
 	          					<th class="text-center">Fecha de Solicitud</th>
-	          					<th class="text-left">Cliente</th>
+	          					<th class="text-center">Cliente</th>
 	          					<th class="text-center">Valor</th>
 	          					<th class="text-center">Periodo de Negociacion</th>
 	          					<th class="text-center">Lineas</th>
@@ -113,9 +113,10 @@
 	          					<td class="text-center">@{{correc.estado.ser_descripcion}}</td>
 	          					<td class="text-center">@{{correc.sol_fecha}}</td>
 	          					<td class="text-left">@{{correc.cliente.razonSocialTercero_cli}}</td>
-	          					<td class="text-center">@{{correc.costo.soc_granvalor == null ? '0': correc.costo.soc_granvalor | currency : "$" : 2}}</td>
+	          					<td class="text-right">@{{correc.costo.soc_granvalor == null ? '0': correc.costo.soc_granvalor | currency : "$" : 2}}</td>
 	          					<td class="text-center">@{{correc.sol_peri_facturaini}} a @{{correc.sol_peri_facturafin}}</td>
-	          					<td class="text-center">@{{retornarCadena(correc.costo.lineas)}}</td>
+	          					<td class="text-left
+	          					">@{{retornarCadena(correc.costo.lineas)}}</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
@@ -153,7 +154,7 @@
 	          					<th class="text-center">No.</th>
 	          					<th class="text-center">Estado</th>
 	          					<th class="text-center">Fecha de Solicitud</th>
-	          					<th class="text-left">Cliente</th>
+	          					<th class="text-center">Cliente</th>
 	          					<th class="text-center">Valor</th>
 	          					<th class="text-center">Periodo de Negociacion</th>
 	          					<th class="text-center">Lineas</th>
@@ -166,9 +167,9 @@
 	      						<td class="text-center">@{{anu.estado.ser_descripcion}}</td>
 	          					<td class="text-center">@{{anu.sol_fecha}}</td>
 	          					<td class="text-left">@{{anu.cliente.razonSocialTercero_cli}}</td>
-	          					<td class="text-center">@{{anu.costo.soc_granvalor == null ? '0': anu.costo.soc_granvalor | currency : "$" : 2}}</td>
+	          					<td class="text-right">@{{anu.costo.soc_granvalor == null ? '0': anu.costo.soc_granvalor | currency : "$" : 2}}</td>
 	          					<td class="text-center">@{{anu.sol_peri_facturaini}} a @{{anu.sol_peri_facturafin}}</td>
-	          					<td class="text-center">@{{retornarCadena(anu.costo.lineas)}}</td>
+	          					<td class="text-left">@{{retornarCadena(anu.costo.lineas)}}</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
@@ -188,7 +189,7 @@
 	          					<th class="text-center">No.</th>
 	          					<th class="text-center">Estado</th>
 	          					<th class="text-center">Fecha de Solicitud</th>
-	          					<th class="text-left">Cliente</th>
+	          					<th class="text-center">Cliente</th>
 	          					<th class="text-center">Valor</th>
 	          					<th class="text-center">Periodo de Negociacion</th>
 	          					<th class="text-center">Lineas</th>
@@ -203,9 +204,9 @@
 	          					<td class="text-center">@{{solicitud.estado.ser_descripcion}}</td>
 	          					<td class="text-center">@{{solicitud.sol_fecha}}</td>
 	          					<td class="text-left">@{{solicitud.cliente.razonSocialTercero_cli}}</td>
-	          					<td class="text-center">@{{solicitud.costo.soc_granvalor == null ? '0': solicitud.costo.soc_granvalor | currency : "$" : 2}}</td>
+	          					<td class="text-right">@{{solicitud.costo.soc_granvalor == null ? '0': solicitud.costo.soc_granvalor | currency : "$" : 2}}</td>
 	          					<td class="text-center">@{{solicitud.sol_peri_facturaini}} a @{{solicitud.sol_peri_facturafin}}</td>
-	          					<td class="text-center">@{{retornarCadena(solicitud.costo.lineas)}}</td>
+	          					<td class="text-left">@{{retornarCadena(solicitud.costo.lineas)}}</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
@@ -237,7 +238,7 @@
 	          					<th class="text-center">No.</th>
 	          					<th class="text-center">Estado</th>
 	          					<th class="text-center">Fecha de Solicitud</th>
-	          					<th class="text-left">Cliente</th>
+	          					<th class="text-center">Cliente</th>
 	          					<th class="text-center">Valor</th>
 	          					<th class="text-center">Periodo de Negociacion</th>
 	          					<th class="text-center">Lineas</th>
@@ -252,9 +253,9 @@
 	          					<td class="text-center">@{{filtro.estado.ser_descripcion}}</td>
 	          					<td class="text-center">@{{filtro.sol_fecha}}</td>
 	          					<td class="text-left">@{{filtro.cliente.razonSocialTercero_cli}}</td>
-	          					<td class="text-center">@{{filtro.costo.soc_granvalor == null ? '0': filtro.costo.soc_granvalor | currency : "$" : 2}}</td>
+	          					<td class="text-right">@{{filtro.costo.soc_granvalor == null ? '0': filtro.costo.soc_granvalor | currency : "$" : 2}}</td>
 	          					<td class="text-center">@{{filtro.sol_peri_facturaini}} a @{{filtro.sol_peri_facturafin}}</td>
-	          					<td class="text-center">@{{retornarCadena(filtro.costo.lineas)}}</td>
+	          					<td class="text-left">@{{retornarCadena(filtro.costo.lineas)}}</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
@@ -286,7 +287,7 @@
 	          					<th class="text-center">No.</th>
 	          					<th class="text-center">Estado</th>
 	          					<th class="text-center">Fecha de Solicitud</th>
-	          					<th class="text-left">Cliente</th>
+	          					<th class="text-center">Cliente</th>
 	          					<th class="text-center">Valor</th>
 	          					<th class="text-center">Periodo de Negociacion</th>
 	          					<th class="text-center">Lineas</th>
@@ -301,9 +302,9 @@
 	          					<td class="text-center">@{{apro.estado.ser_descripcion}}</td>
 	          					<td class="text-center">@{{apro.sol_fecha}}</td>
 	          					<td class="text-left">@{{apro.cliente.razonSocialTercero_cli}}</td>
-	          					<td class="text-center">@{{apro.costo.soc_granvalor == null ? '0': apro.costo.soc_granvalor | currency : "$" : 2}}</td>
+	          					<td class="text-right">@{{apro.costo.soc_granvalor == null ? '0': apro.costo.soc_granvalor | currency : "$" : 2}}</td>
 	          					<td class="text-center">@{{apro.sol_peri_facturaini}} a @{{apro.sol_peri_facturafin}}</td>
-	          					<td class="text-center">@{{retornarCadena(apro.costo.lineas)}}</td>
+	          					<td class="text-left">@{{retornarCadena(apro.costo.lineas)}}</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
@@ -335,7 +336,7 @@
 	          					<th class="text-center">No.</th>
 	          					<th class="text-center">Estado</th>
 	          					<th class="text-center">Fecha de Solicitud</th>
-	          					<th class="text-left">Cliente</th>
+	          					<th class="text-center">Cliente</th>
 	          					<th class="text-center">Valor</th>
 	          					<th class="text-center">Periodo de Negociacion</th>
 	          					<th class="text-center">Lineas</th>
@@ -351,9 +352,9 @@
 	          					<td class="text-center">@{{evalu.estado.ser_descripcion}}</td>
 	          					<td class="text-center">@{{evalu.sol_fecha}}</td>
 	          					<td class="text-left">@{{evalu.cliente.razonSocialTercero_cli}}</td>
-	          					<td class="text-center">@{{evalu.costo.soc_granvalor == null ? '0': evalu.costo.soc_granvalor | currency : "$" : 2}}</td>
+	          					<td class="text-right">@{{evalu.costo.soc_granvalor == null ? '0': evalu.costo.soc_granvalor | currency : "$" : 2}}</td>
 	          					<td class="text-center">@{{evalu.sol_peri_facturaini}} a @{{evalu.sol_peri_facturafin}}</td>
-	          					<td class="text-center">@{{retornarCadena(evalu.costo.lineas)}}</td>
+	          					<td class="text-left">@{{retornarCadena(evalu.costo.lineas)}}</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
@@ -386,7 +387,7 @@
 	          					<th class="text-center">No.</th>
 	          					<th class="text-center">Estado</th>
 	          					<th class="text-center">Fecha de Solicitud</th>
-	          					<th class="text-left">Cliente</th>
+	          					<th class="text-center">Cliente</th>
 	          					<th class="text-center">Valor</th>
 	          					<th class="text-center">Periodo de Negociacion</th>
 	          					<th class="text-center">Lineas</th>
@@ -400,9 +401,9 @@
 	          					<td class="text-center">@{{cerrada.estado.ser_descripcion}}</td>
 	          					<td class="text-center">@{{cerrada.sol_fecha}}</td>
 	          					<td class="text-left">@{{cerrada.cliente.razonSocialTercero_cli}}</td>
-	          					<td class="text-center">@{{cerrada.costo.soc_granvalor == null ? '0': cerrada.costo.soc_granvalor | currency : "$" : 2}}</td>
+	          					<td class="text-right">@{{cerrada.costo.soc_granvalor == null ? '0': cerrada.costo.soc_granvalor | currency : "$" : 2}}</td>
 	          					<td class="text-center">@{{cerrada.sol_peri_facturaini}} a @{{cerrada.sol_peri_facturafin}}</td>
-	          					<td class="text-center">@{{retornarCadena(cerrada.costo.lineas)}}</td>
+	          					<td class="text-left">@{{retornarCadena(cerrada.costo.lineas)}}</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
@@ -428,7 +429,7 @@
 	          					<th class="text-center">No.</th>
 	          					<th class="text-center">Estado</th>
 	          					<th class="text-center">Fecha de Solicitud</th>
-	          					<th class="text-left">Cliente</th>
+	          					<th class="text-center">Cliente</th>
 	          					<th class="text-center">Valor</th>
 	          					<th class="text-center">Periodo de Negociacion</th>
 	          					<th class="text-center">Lineas</th>
@@ -444,9 +445,9 @@
 	          					<td class="text-center">@{{tePe.estado.ser_descripcion}}</td>
 	          					<td class="text-center">@{{tePe.sol_fecha}}</td>
 	          					<td class="text-left">@{{tePe.cliente.razonSocialTercero_cli}}</td>
-	          					<td class="text-center">@{{tePe.costo.soc_granvalor == null ? '0': tePe.costo.soc_granvalor | currency : "$" : 2}}</td>
+	          					<td class="text-right">@{{tePe.costo.soc_granvalor == null ? '0': tePe.costo.soc_granvalor | currency : "$" : 2}}</td>
 	          					<td class="text-center">@{{tePe.sol_peri_facturaini}} a @{{tePe.sol_peri_facturafin}}</td>
-	          					<td class="text-center">@{{retornarCadena(tePe.costo.lineas)}}</td>
+	          					<td class="text-left">@{{retornarCadena(tePe.costo.lineas)}}</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
@@ -481,7 +482,7 @@
 	          					<th class="text-center">No.</th>
 	          					<th class="text-center">Estado</th>
 	          					<th class="text-center">Fecha de Solicitud</th>
-	          					<th class="text-left">Cliente</th>
+	          					<th class="text-center">Cliente</th>
 	          					<th class="text-center">Valor</th>
 	          					<th class="text-center">Periodo de Negociacion</th>
 	          					<th class="text-center">Lineas</th>
@@ -494,9 +495,9 @@
 	          					<td class="text-center">@{{teCo.estado.ser_descripcion}}</td>
 	          					<td class="text-center">@{{teCo.sol_fecha}}</td>
 	          					<td class="text-left">@{{teCo.cliente.razonSocialTercero_cli}}</td>
-	          					<td class="text-center">@{{teCo.costo.soc_granvalor == null ? '0': teCo.costo.soc_granvalor | currency : "$" : 2}}</td>
+	          					<td class="text-right">@{{teCo.costo.soc_granvalor == null ? '0': teCo.costo.soc_granvalor | currency : "$" : 2}}</td>
 	          					<td class="text-center">@{{teCo.sol_peri_facturaini}} a @{{teCo.sol_peri_facturafin}}</td>
-	          					<td class="text-center">@{{retornarCadena(teCo.costo.lineas)}}</td>
+	          					<td class="text-left">@{{retornarCadena(teCo.costo.lineas)}}</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button">
 	          							<i class="glyphicon glyphicon-eye-open"></i>

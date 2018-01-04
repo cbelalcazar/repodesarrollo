@@ -61,6 +61,14 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
   	$scope.setSolicitud = function(objeto){
   		$scope.infoSolicitud = objeto;
   		$scope.date = new Date();
-  	}
 
+  		if (($scope.infoSolicitud.sol_sef_id == 2) || ($scope.infoSolicitud.sol_sef_id == 3)) {
+  			$scope.pendienteGestion = 'Evaluación';
+  		}else{
+  			$scope.pendienteGestion = 'Ninguno';	
+  		}
+
+  		$scope.ultimoProceso = $scope.infoSolicitud.his_proceso.slice(-1);
+  	}
+  	
 }]);

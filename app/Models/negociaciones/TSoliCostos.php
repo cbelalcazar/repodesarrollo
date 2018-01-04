@@ -33,4 +33,16 @@ class TSoliCostos extends Model
       return $this->hasMany('App\Models\negociaciones\TSoliCostosLineas', 'scl_soc_id', 'soc_id');
     }
 
+    public function tipoBono(){
+      return $this->hasOne('App\Models\negociaciones\TipoBonoTerc', 'tbt_id', 'soc_tbt_id');
+    }
+
+    public function motivo(){
+      return $this->hasMany('App\Models\negociaciones\TSoliCostosMotAdic', 'sca_soc_id', 'soc_id');
+    }
+
+    public function detalle(){
+      return $this->hasOne('App\Models\negociaciones\TSoliCostosDetAdic', 'scd_soc_id', 'soc_id');
+    }
+
 }

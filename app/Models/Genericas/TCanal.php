@@ -19,4 +19,8 @@ class TCanal extends Model
     protected $fillable = [
         'can_txt_descrip',
     ];
+
+    public function getCanIdAttribute($value){
+        return trim($value);
+    }
 }
