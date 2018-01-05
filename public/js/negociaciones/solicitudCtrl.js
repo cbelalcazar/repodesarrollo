@@ -121,10 +121,8 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		        .ok('Cerrar')
 		    );
 		}else{
-			$scope.arrayCausalNegociacion.push(obj);
-			// var index = $scope.causalesNego.indexOf(obj);
-			// $scope.causalesNego.splice(index, 1);     		
-			// $scope.objtipoNeg = {};
+			$scope.arrayCausalNegociacion.push(angular.copy(obj));
+			$scope.causalesNego = $filter('removeWith')($scope.causalesNego, {can_id : obj.scn_can_id.can_id});
 		}
 	}
 
@@ -142,7 +140,6 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		    );
 		}else{
 			$scope.arrayTipoNegociacion.push(obj);
-			// $scope.zonas = $filter('removeWith')($scope.zonas, {cen_id : obj.szn_coc_id.cen_id});
 			$scope.objtipoNeg = {};
 		}
 	}
@@ -178,9 +175,15 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 
 	$scope.removeTipoNegociacion = function(item) { 
 		var index = $scope.arrayTipoNegociacion.indexOf(item);
-		$scope.arrayTipoNegociacion.splice(index, 1);     		
+		$scope.arrayTipoNegociacion.splice(index, 1);  
+		$scope.objtipoNeg = {};   		
 	}
-	
+
+	$scope.removeCausalNegociacion = function(item) { 
+		var index = $scope.arrayCausalNegociacion.indexOf(item);		
+		$scope.arrayCausalNegociacion.splice(index, 1); 
+		$scope.causalesNego.push(item.scn_can_id);
+	}
 
 	$scope.removeSucursal = function(item) { 
 		$scope.nuevoFiltrado.push(item);

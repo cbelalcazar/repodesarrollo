@@ -405,7 +405,7 @@
 							<div class="col-sm-12">
 								<div class="panel panel-primary">
 								    <div class="panel-heading">
-										Tipo de negociaciones
+										Causal de negociaciones
 								    </div>
 								    <div class="panel-body">								
 										<!-- tabla -->
@@ -449,8 +449,39 @@
 								  </div>
 							</div>
 						<!-- End Causales de negociación -->
-
-
+						
+						<!-- Botones -->
+							<div class="col-sm-12">
+								
+									<div class="col-sm-6"></div>
+								
+									<div class="col-sm-6">
+										<!-- btn Save -->
+											<div class="col-sm-6"></div>
+											<div class="col-sm-2">
+												<button class="btn btn-success btn-circle btn-lg  pull-right">
+													<i class="glyphicon glyphicon-floppy-save"></i>
+												</button>
+											</div>									
+										<!-- end btn save -->
+										<!-- btn cancelar -->
+											<div class="col-sm-2">
+												<button class="btn btn-danger btn-circle btn-lg  pull-right">
+													<i class="glyphicon glyphicon-remove"></i>
+												</button>
+											</div>										
+										<!-- end btn cancelar -->
+										<!-- btn adelante -->
+											<div class="col-sm-2">
+												<button class="btn btn-primary btn-circle btn-lg  pull-right">
+													<i class="glyphicon glyphicon-chevron-right"></i>
+												</button>
+											</div>										
+										<!-- end btn adelante -->
+									</div>
+							</div>
+						<!-- End Botones -->
+						
 					</div>
 		        </md-content>
 		      </md-tab>
