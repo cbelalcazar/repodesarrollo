@@ -24,8 +24,8 @@ hr {
 }
 
 .row {
-    margin-right: 3px;
-    margin-left: 2px;
+    margin-right: 2px;
+    margin-left: 1px;
 }
 
 .md-padding {
@@ -46,9 +46,11 @@ body {
 
 .panel-body {
     padding: 5px;
+    font-size: 12px;
 }
 .panel-footer {
     padding: 5px;
+    font-size: 12px;
 }
 
 </style>
@@ -216,7 +218,7 @@ body {
                     <div class="panel-heading">
                       <div class="row">
                         <div class="col-md-9">Centro Operación</div>
-                        <div class="col-md-3">% Part.</div>
+                        <div class="col-md-3">Part.</div>
                       </div> 
                     </div>
                     <div class="panel-body">
@@ -224,12 +226,14 @@ body {
                         <div class="col-md-12">No se encontraron registros</div>
                       </div>
                       <div ng-if="infoSolicitud.sol_tipocliente == 1" class="row" ng-repeat="centroOperacion in infoSolicitud.soli_zona">
-                        <div class="col-md-9">@{{centroOperacion.szn_coc_id}} - @{{centroOperacion.his_zona.c_operacion.cen_txt_descripcion}}</div>
-                        <div class="col-md-3">@{{centroOperacion.szn_ppart}}</div>
+                        <div class="col-md-8">@{{centroOperacion.szn_coc_id}} - @{{centroOperacion.his_zona.c_operacion.cen_txt_descripcion}}</div>
+                        <div class="col-md-2" align="right">@{{centroOperacion.szn_ppart}} %</div>
+                        <div class="col-md-2"></div>
                       </div>
                       <div ng-if="infoSolicitud.sol_tipocliente == 2" class="row" ng-repeat="centroOperacion in infoSolicitud.soli_sucu">
-                        <div class="col-md-9">@{{centroOperacion.his_sucu.suc_num_codigo}}-@{{centroOperacion.his_sucu.suc_txt_nombre}} (@{{centroOperacion.his_sucu.suc_txt_direccion}})</div>
-                        <div class="col-md-3">@{{centroOperacion.ssu_ppart}}</div>
+                        <div class="col-md-8">@{{centroOperacion.his_sucu.suc_num_codigo}}-@{{centroOperacion.his_sucu.suc_txt_nombre}} (@{{centroOperacion.his_sucu.suc_txt_direccion}})</div>
+                        <div class="col-md-2" align="right">@{{centroOperacion.ssu_ppart}} %</div>
+                        <div class="col-md-2"></div>
                       </div>
                     </div>
                   </div>
@@ -311,7 +315,7 @@ body {
                         </li>
                       <hr>
                       <!--Creacion de tabla No.2-->
-                      <label>Impuestos Calculados (Informativo)</label>
+                      <label><font color="red">Impuestos Calculados (Informativo)</font></label>
                       <li class="list-group-item">
                         <div class="row">
                           <div class="col-md-8"><label>IVA:</label></div>
@@ -442,12 +446,184 @@ body {
                   </div>
                 </div>
               </md-content>
-            </md-tab>
+            </md-tab>       
+            <!--Pestaña No.4 Info. Objetivos-->
             <md-tab label="Info. Objetivos">
               <md-content class="md-padding">
                 <div class="col-sm-12">
                   <div class="row">
-                    
+                    <div class="panel panel-danger">
+                      <div class="panel-heading">
+                        <div class="row">
+                          <div class="col-md-12" align="center">Datos de Evaluación</div>
+                        </div>
+                      </div>
+                      <div class="panel-body">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="row">
+                              <div class="col-md-6" align="left"><label>Periodo de Comparación</label></div>
+                              <div class="col-md-6" align="right" ng-if="((infoSolicitud.objetivo.soo_pecomini != null) && (infoSolicitud.objetivo.soo_pecomfin != null))">@{{infoSolicitud.objetivo.soo_pecomini}} a @{{infoSolicitud.objetivo.soo_pecomfin}}</div>
+                              <div class="col-md-6" align="right" ng-if="((infoSolicitud.objetivo.soo_pecomini == null) || (infoSolicitud.objetivo.soo_pecomfin == null))">SIN INFORMACIÓN</div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-6"><label>Periodo de Facturación</label></div>
+                              <div class="col-md-6" align="right">@{{infoSolicitud.sol_peri_facturaini}} a @{{infoSolicitud.sol_peri_facturafin}}</div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-9"><label>Costo de la Negociación</label></div>
+                              <div class="col-md-3" align="right">@{{infoSolicitud.objetivo.soo_costonego | currency : "$" : 2}}</div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-9"><label>Venta Prom. Mes Lineas Periodo Comparación</label></div>
+                              <div class="col-md-3" align="right">@{{infoSolicitud.objetivo.soo_venpromeslin | currency : "$" : 2}}</div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-10"><label>Venta Estimada Lineas</label></div>
+                              <div class="col-md-2" align="right">Prueba</div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-10"><label>Venta Marginal Lineas</label></div>
+                              <div class="col-md-2" align="right">Prueba</div>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="row">
+                              <div class="col-md-10"><label>Meses</label></div>
+                              <div class="col-md-2" align="right">@{{infoSolicitud.objetivo.soo_mese}}</div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-10"><label>Meses</label></div>
+                              <div class="col-md-2" align="right">@{{infoSolicitud.sol_mesesfactu}}</div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-9"><label>% de Inversión sobra la venta Estimada Lineas</label></div>
+                              <div class="col-md-3" align="right">@{{infoSolicitud.objetivo.soo_pinventaestiline == null ? 0 : infoSolicitud.objetivo.soo_pinventaestiline | number:2}} %</div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-10"><label>Venta Prom. Mes Lineas a Activar (ult 6 meses)</label></div>
+                              <div class="col-md-2" align="right">Prueba</div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-10"><label>% Crecimiento Estimado Lineas</label></div>
+                              <div class="col-md-2" align="right">Prueba</div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-10"><label>% Crecimiento Estimado Lineas</label></div>
+                              <div class="col-md-2" align="right">Prueba</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="panel panel-primary">
+                      <div class="panel-heading">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="col-md-7">Linea</div>
+                            <div class="col-md-3">Valor Venta</div>
+                            <div class="col-md-2">Part.</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="panel-body">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="col-md-7">Prueba</div>
+                            <div class="col-md-3">Prueba</div>
+                            <div class="col-md-2">Prueba</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="panel panel-primary">
+                      <div class="panel-heading">
+                        <div class="row">
+                          <div class="col-md-12" align="center">Datos Informativos Total Cliente</div>
+                        </div>
+                      </div>
+                      <div class="panel-body">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="row">
+                              <div class="col-md-10"><label>Venta Promedio Mes Total Cliente Per. Comparación</label></div>
+                              <div class="col-md-2" align="right">Prueba</div>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="row">
+                              <div class="col-md-10"><label>Venta Promedio Mes Total Cliente (ult 6 meses)</label></div>
+                              <div class="col-md-2" align="right">Prueba</div>
+                            </div>
+                          </div>
+                          <div class="col-md-12">
+                            <div class="row">
+                              <div class="col-md-5"><label>% Crecimiento Estimado Cliente</label></div>
+                              <div class="col-md-1" align="right">Prueba</div>
+                              <div class="col-md-6"></div>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="row">
+                              <div class="col-md-10"><label>Venta Estimada del Total Cliente</label></div>
+                              <div class="col-md-2" align="right">Prueba</div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-10"><label>Venta Marginal Cliente</label></div>
+                              <div class="col-md-2" align="right">Prueba</div>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="row">
+                              <div class="col-md-10"><label>% Inversión sobre la Venta Estimada Cliente</label></div>
+                              <div class="col-md-2" align="right">Prueba</div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-10"><label>% Inversión sobre la Venta Marginal Cliente</label></div>
+                              <div class="col-md-2" align="right">Prueba</div>
+                            </div>
+                          </div>
+                          <div class="col-md-12">
+                            <div class="row">
+                              <div class="col-md-5"><label>Observaciones</label></div>
+                              <div class="col-md-7">Prueba</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="panel panel-primary">
+                      <div class="panel-heading">
+                        <div class="row">
+                          <div class="col-md-12" align="center">Datos Informativos Lineas No Incluidas</div>
+                        </div>
+                      </div>
+                      <div class="panel-body">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="col-md-4">
+                              <div class="col-md-8"><label>Venta 1 Mes Antes periodo Comparación</label></div>
+                              <div class="col-md-4">1.884.960,00</div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="col-md-8"><label>Venta Promedio Mes periodo Comparación</label></div>
+                              <div class="col-md-4">1.884.960,00</div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="col-md-8"><label>Venta 1 Mes Despues periodo Comparación  </label></div>
+                              <div class="col-md-4">1.884.960,00</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="panel-footer">
+                        <div class="row">
+                          <div class="col-md-8"></div>
+                          <div class="col-md-2"><label>Variación</label></div>
+                          <div class="col-md-2" align="right"><label>100 %</label></div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </md-content>

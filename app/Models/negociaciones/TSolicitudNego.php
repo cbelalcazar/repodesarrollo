@@ -126,4 +126,7 @@ class TSolicitudNego extends Model
       return $this->hasMany('App\Models\negociaciones\TSoliCausalNego', 'scn_sol_id', 'sol_id');
     }
 
+    public function objetivo(){
+      return $this->hasOne('App\Models\negociaciones\TSoliObjetivos', 'soo_sol_id', 'sol_id');
+    }
 }
