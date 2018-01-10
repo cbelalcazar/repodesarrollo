@@ -2,6 +2,7 @@
 @section('content')
 @include('includes.titulo')
 
+<link rel="stylesheet" type="text/css" href="{{url('/css/negociaciones/misSolicitudesCss.css')}}">
 <div ng-controller='misSolicitudesCtrl' ng-cloak class="container-fluid">
 	<md-content>
 	    <md-tabs md-dynamic-height md-border-bottom>
@@ -67,7 +68,7 @@
 	          					<td class="text-center">@{{ela.sol_peri_facturaini}} a @{{ela.sol_peri_facturafin}}</td>
 	          					<td class="text-left">@{{retornarCadena(ela.costo.lineas)}}</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-info" type="button">
+	          						<button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(ela)">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
 	          							<md-tooltip>Ver 
 	          						</button>
@@ -118,7 +119,7 @@
 	          					<td class="text-left
 	          					">@{{retornarCadena(correc.costo.lineas)}}</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-info" type="button">
+	          						<button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(correc)">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
 	          							<md-tooltip>Ver 
 	          						</button>
@@ -137,7 +138,7 @@
 	          					</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button">
-	          							<i class="glyphicon glyphicon-copy"></i>
+	          							<i class="glyphicon glyphicon-duplicate"></i>
 	          							<md-tooltip>Duplicar
 	          						</button>
 	          					</td>
@@ -171,7 +172,7 @@
 	          					<td class="text-center">@{{anu.sol_peri_facturaini}} a @{{anu.sol_peri_facturafin}}</td>
 	          					<td class="text-left">@{{retornarCadena(anu.costo.lineas)}}</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-info" type="button">
+	          						<button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(anu)">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
 	          							<md-tooltip>Ver
 	          						</button>
@@ -208,7 +209,7 @@
 	          					<td class="text-center">@{{solicitud.sol_peri_facturaini}} a @{{solicitud.sol_peri_facturafin}}</td>
 	          					<td class="text-left">@{{retornarCadena(solicitud.costo.lineas)}}</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-info" type="button">
+	          						<button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(solicitud)">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
 	          							<md-tooltip>Ver
 	          						</button>
@@ -221,7 +222,7 @@
 	          					</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button">
-	          							<i class="glyphicon glyphicon-copy"></i>
+	          							<i class="glyphicon glyphicon-duplicate"></i>
 	          							<md-tooltip>Duplicar
 	          						</button>
 	          					</td>
@@ -257,7 +258,7 @@
 	          					<td class="text-center">@{{filtro.sol_peri_facturaini}} a @{{filtro.sol_peri_facturafin}}</td>
 	          					<td class="text-left">@{{retornarCadena(filtro.costo.lineas)}}</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-info" type="button">
+	          						<button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(filtro)">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
 	          							<md-tooltip>Ver
 	          						</button>
@@ -270,7 +271,7 @@
 	          					</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button">
-	          							<i class="glyphicon glyphicon-copy"></i>
+	          							<i class="glyphicon glyphicon-duplicate"></i>
 	          							<md-tooltip>Duplicar
 	          						</button>
 	          					</td>
@@ -306,7 +307,7 @@
 	          					<td class="text-center">@{{apro.sol_peri_facturaini}} a @{{apro.sol_peri_facturafin}}</td>
 	          					<td class="text-left">@{{retornarCadena(apro.costo.lineas)}}</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-info" type="button">
+	          						<button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(apro)">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
 	          							<md-tooltip>Ver
 	          						</button>
@@ -319,7 +320,7 @@
 	          					</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button">
-	          							<i class="glyphicon glyphicon-copy"></i>
+	          							<i class="glyphicon glyphicon-duplicate"></i>
 	          							<md-tooltip>Duplicar
 	          						</button>
 	          					</td>
@@ -356,7 +357,7 @@
 	          					<td class="text-center">@{{evalu.sol_peri_facturaini}} a @{{evalu.sol_peri_facturafin}}</td>
 	          					<td class="text-left">@{{retornarCadena(evalu.costo.lineas)}}</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-info" type="button">
+	          						<button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(evalu)">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
 	          							<md-tooltip>Ver
 	          						</button>
@@ -369,11 +370,16 @@
 	          					</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button">
-	          							<i class="glyphicon glyphicon-copy"></i>
+	          							<i class="glyphicon glyphicon-duplicate"></i>
 	          							<md-tooltip>Duplicar
 	          						</button>
 	          					</td>
-	          					<td></td>
+	          					<td class="text-right">
+	          						<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#ModalExhibicion" ng-click="setSolicitud(evalu)">
+	          							<i class="glyphicon glyphicon-camera"></i>
+	          							<md-tooltip>Editar
+	          						</button>
+	          					</td>
 	          				</tr>
 	          			</tbody>
 	          		</table>
@@ -405,14 +411,14 @@
 	          					<td class="text-center">@{{cerrada.sol_peri_facturaini}} a @{{cerrada.sol_peri_facturafin}}</td>
 	          					<td class="text-left">@{{retornarCadena(cerrada.costo.lineas)}}</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-info" type="button">
+	          						<button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(cerrada)">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
 	          							<md-tooltip>Ver
 	          						</button>
 	          					</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-info" type="button">
-	          							<i class="glyphicon glyphicon-copy"></i>
+	          							<i class="glyphicon glyphicon-duplicate"></i>
 	          							<md-tooltip>Duplicar
 	          						</button>
 	          					</td>
@@ -449,7 +455,7 @@
 	          					<td class="text-center">@{{tePe.sol_peri_facturaini}} a @{{tePe.sol_peri_facturafin}}</td>
 	          					<td class="text-left">@{{retornarCadena(tePe.costo.lineas)}}</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-info" type="button">
+	          						<button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(tePe)">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
 	          							<md-tooltip>Ver 
 	          						</button>
@@ -499,7 +505,7 @@
 	          					<td class="text-center">@{{teCo.sol_peri_facturaini}} a @{{teCo.sol_peri_facturafin}}</td>
 	          					<td class="text-left">@{{retornarCadena(teCo.costo.lineas)}}</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-info" type="button">
+	          						<button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(teCo)">
 	          							<i class="glyphicon glyphicon-eye-open"></i>
 	          							<md-tooltip>Ver 
 	          						</button>
@@ -516,6 +522,7 @@
 	    <md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
 	</div>
 	@include('layouts.negociaciones.misSolicitudesDetalle')
+	@include('layouts.negociaciones.misSolicitudesExhibicion')
 </div>
 @endsection
 

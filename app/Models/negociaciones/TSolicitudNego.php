@@ -129,4 +129,28 @@ class TSolicitudNego extends Model
     public function objetivo(){
       return $this->hasOne('App\Models\negociaciones\TSoliObjetivos', 'soo_sol_id', 'sol_id');
     }
+
+    public function cumplimiento(){
+      return $this->hasOne('App\Models\negociaciones\TSoliCumplimiento', 'scu_sol_id', 'sol_id');
+    }
+
+    public function verificacionCobro(){
+      return $this->hasMany('App\Models\negociaciones\TSoliVerificacionCobro', 'svc_sol_id', 'sol_id');
+    }
+
+    public function reviExhibicion(){
+      return $this->hasMany('App\Models\negociaciones\TSoliReviExhibicion', 'sre_sol_id', 'sol_id');
+    }
+    
+    public function actaEntrega(){
+      return $this->hasMany('App\Models\negociaciones\TSoliActaEntrega', 'sae_sol_id', 'sol_id');
+    }
+
+    public function tesoHistorial(){
+      return $this->hasMany('App\Models\negociaciones\TSoliTesoreriaHis', 'sth_sol_id', 'sol_id');
+    }
+
+    public function tesoAuditoria(){
+      return $this->hasMany('App\Models\negociaciones\LogAuditoria', 'lga_sol_id', 'sol_id');
+    }
 }

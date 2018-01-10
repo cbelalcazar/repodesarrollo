@@ -67,8 +67,13 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
   		}else{
   			$scope.pendienteGestion = 'Ninguno';	
   		}
-
+  		
   		$scope.ultimoProceso = $scope.infoSolicitud.his_proceso.slice(-1);
+  		$scope.variacionObj = ($scope.infoSolicitud.objetivo.soo_vemesdespues/$scope.infoSolicitud.objetivo.soo_veprome);
+  		$scope.ventaRealMarginal = ($scope.infoSolicitud.cumplimiento.scu_venreallineas - 
+  			($scope.infoSolicitud.objetivo.soo_venpromeslin * $scope.infoSolicitud.sol_mesesfactu));
+  		$scope.ventaReal = ($scope.infoSolicitud.cumplimiento.scu_venreallineas - 
+  			($scope.infoSolicitud.objetivo.soo_venpromeslin * $scope.infoSolicitud.sol_meseseje));
   	}
   	
 }]);
