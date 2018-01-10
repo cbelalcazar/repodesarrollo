@@ -29,4 +29,8 @@ class TCliente extends Model
         'cli_subcanal',
     ];
 
+    public function tercero(){
+        return $this->hasOne('App\Models\Genericas\Tercero', 'idTercero', 'ter_id');
+    }
+
 }

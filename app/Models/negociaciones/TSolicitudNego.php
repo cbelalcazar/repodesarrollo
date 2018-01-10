@@ -13,8 +13,13 @@ class TSolicitudNego extends Model
 
     protected $table = 't_solicitudnego';
 
+    public $incrementing = true;
+
+    public $primaryKey = 'sol_id';
+
+    public $timestamps = false;
+
     protected $fillable = [
-        'sol_id',
         'sol_evt_id',  
         'sol_soc_id',  
         'sol_ser_id',  

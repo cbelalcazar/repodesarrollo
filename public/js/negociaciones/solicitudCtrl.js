@@ -26,7 +26,7 @@ app.directive('stringToNumber', function() {
 });
 
 
-app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q', '$timeout', function ($scope, $http, $filter, $mdDialog, $q, $timeout) {
+app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q', '$timeout', '$window', function ($scope, $http, $filter, $mdDialog, $q, $timeout, $window) {
 	
 	$scope.objeto = {};
 	$scope.objNegCliente = {};
@@ -121,10 +121,8 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		        .ok('Cerrar')
 		    );
 		}else{
-			$scope.arrayCausalNegociacion.push(obj);
-			// var index = $scope.causalesNego.indexOf(obj);
-			// $scope.causalesNego.splice(index, 1);     		
-			// $scope.objtipoNeg = {};
+			$scope.arrayCausalNegociacion.push(angular.copy(obj));
+			$scope.causalesNego = $filter('removeWith')($scope.causalesNego, {can_id : obj.scn_can_id.can_id});
 		}
 	}
 
@@ -142,7 +140,6 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		    );
 		}else{
 			$scope.arrayTipoNegociacion.push(obj);
-			// $scope.zonas = $filter('removeWith')($scope.zonas, {cen_id : obj.szn_coc_id.cen_id});
 			$scope.objtipoNeg = {};
 		}
 	}
@@ -178,9 +175,15 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 
 	$scope.removeTipoNegociacion = function(item) { 
 		var index = $scope.arrayTipoNegociacion.indexOf(item);
-		$scope.arrayTipoNegociacion.splice(index, 1);     		
+		$scope.arrayTipoNegociacion.splice(index, 1);  
+		$scope.objtipoNeg = {};   		
 	}
-	
+
+	$scope.removeCausalNegociacion = function(item) { 
+		var index = $scope.arrayCausalNegociacion.indexOf(item);		
+		$scope.arrayCausalNegociacion.splice(index, 1); 
+		$scope.causalesNego.push(item.scn_can_id);
+	}
 
 	$scope.removeSucursal = function(item) { 
 		$scope.nuevoFiltrado.push(item);
@@ -343,6 +346,53 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		traer.forEach( function(element, index) {
 			$scope.tipoDeServicioFilt = $filter('removeWith')($scope.tipoDeServicioFilt, {ser_id : element.stn_ser_id.ser_id});
 		});		
+	}
+
+	$scope.save = function(){
+		$scope.progress = true;
+		// creo la solicitud con estado que se encuentra la solicitud en elaboracion(0) y estado final de la solicitud(1).
+		$scope.envioPost = $scope.convertirObjeto(angular.copy($scope.objeto), 0, 1, 0);
+		$scope.envioPost.arrayZona = $scope.arrayZona;
+		$scope.envioPost.arraySucursales = $scope.arraySucursales;
+		$scope.envioPost.arrayTipoNegociacion = $scope.arrayTipoNegociacion;
+		$scope.envioPost.arrayCausalNegociacion = $scope.arrayCausalNegociacion;
+		
+		//Debo validar que arrayZonas o ArraySucursales tengan al menos un registro y que la sumatoria de los porcentajes de participacion sea igual a 100 
+
+		$http.post('../solicitud', $scope.envioPost).then(function(response){
+			var res = response.data;
+			$scope.progress = false;
+			$window.location = res.url;
+			console.log(res);
+		}, function(errorResponse){
+			alert("Error al grabar");
+		});
+	}
+
+	$scope.convertirObjeto = function(object, estadoSolicitud, estadoFinalSolicitud, estadoTesorieria){
+		var objetoNew = {};
+		objetoNew = angular.copy(object);
+		objetoNew.sol_evt_id = object.sol_evt_id.evt_id;
+		objetoNew.sol_ser_id = estadoSolicitud;	
+		objetoNew.sol_sef_id = estadoFinalSolicitud;
+		objetoNew.sol_set_id = estadoTesorieria;
+		objetoNew.sol_zona = 3; //Zona quemada la tengo que obtener de los niveles de aprobacion  **
+		objetoNew.sol_can_id = object.sol_can_id.can_id;
+		objetoNew.sol_lis_id = object.sol_cli_id.lis_id;
+		objetoNew.sol_cli_id = object.sol_cli_id.cli_id;
+		objetoNew.sol_clase = object.sol_clase.id;
+		objetoNew.sol_tipocliente = object.sol_tipocliente.id;	
+		objetoNew.sol_descomercial = object.sol_cli_id.cli_txt_dtocome;
+		objetoNew.sol_peri_facturaini = $filter('date')(object.sol_peri_facturaini, 'yyyy-MM-dd');	
+		objetoNew.sol_peri_facturafin = $filter('date')(object.sol_peri_facturafin, 'yyyy-MM-dd');	
+		objetoNew.sol_peri_ejeini = $filter('date')(object.sol_peri_ejeini, 'yyyy-MM-dd');	
+		objetoNew.sol_peri_ejefin = $filter('date')(object.sol_peri_ejefin, 'yyyy-MM-dd');	
+		objetoNew.sol_llegoacta = 2
+		objetoNew.sol_tipo = object.sol_tipo.id;	
+		objetoNew.sol_observaciones = object.sol_ltxt_observ	
+		objetoNew.sol_estadocobro = 0;
+		objetoNew.sol_huella_capitalizar = object.sol_huella_capitalizar.id;			
+		return objetoNew;
 	}
 
 }])

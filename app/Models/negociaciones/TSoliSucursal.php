@@ -13,8 +13,13 @@ class TSoliSucursal extends Model
 
     protected $table = 't_solisucursal';
 
+    public $incrementing = true;
+
+    public $primaryKey = 'ssu_id';
+
+    public $timestamps = false;
+
     protected $fillable = [
-        'ssu_id',
         'ssu_sol_id',  
         'ssu_suc_id',  
         'ssu_ppart',
