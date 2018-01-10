@@ -13,15 +13,20 @@ class TSoliTipoNego extends Model
 
     protected $table = 't_solitiponego';
 
+    public $incrementing = true;
+
+    public $primaryKey = 'stn_id';
+
+    public $timestamps = false;
+
     protected $fillable = [
-        'stn_id',
         'stn_sol_id',  
         'stn_tin_id',  
         'stn_ser_id',
         'stn_costo',
         'stn_rtfuente',
         'stn_valor_rtfuente',  
-        'stn_rtfuente_base',  
+        'stn_retfuente_base',  
         'stn_rtica',
         'stn_valor_rtica',  
         'stn_rtica_base',

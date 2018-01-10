@@ -13,8 +13,14 @@ class TSoliZona extends Model
 
     protected $table = 't_solizona';
 
+    public $incrementing = false;
+
+    protected $primaryKey = 'szn_id';
+
+    public $timestamps = false;
+
+
     protected $fillable = [
-        'szn_id',
         'szn_sol_id',  
         'szn_coc_id',  
         'szn_ppart',

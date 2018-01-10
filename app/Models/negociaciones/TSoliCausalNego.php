@@ -13,8 +13,13 @@ class TSoliCausalNego extends Model
 
     protected $table = 't_solicausalnego';
 
+    public $incrementing = true;
+
+    protected $primaryKey = 'scn_id';
+
+    public $timestamps = false;
+
     protected $fillable = [
-        'scn_id',
         'scn_sol_id',  
         'scn_can_id',  
         'scn_estado',  

@@ -34,4 +34,8 @@ class Tercero extends Model
         'fechaNacimientoTercero',
         'indxEstadoTercero'
     ];
+
+    public function contacto(){
+        return $this->hasOne('App\Models\Genericas\Contacto', 'idContacto', 'idContactoTercero');
+    }
 }
