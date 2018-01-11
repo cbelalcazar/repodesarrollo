@@ -363,7 +363,7 @@
 	          						</button>
 	          					</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-warning" type="button">
+	          						<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#ModalPeriEjecucion" ng-click="setSolicitud(evalu)">
 	          							<i class="glyphicon glyphicon-pencil"></i>
 	          							<md-tooltip>Editar Periodo 
 	          						</button>
@@ -521,6 +521,8 @@
     <div ng-if="progress" class="progress">
 	    <md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
 	</div>
+	
+	@include('layouts.negociaciones.misSolicitudesPeriEjecucion')
 	@include('layouts.negociaciones.misSolicitudesDetalle')
 	@include('layouts.negociaciones.misSolicitudesExhibicion')
 </div>
