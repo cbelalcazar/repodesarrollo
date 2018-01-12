@@ -788,7 +788,7 @@
                         </div>
                       </li>
                       <hr>
-                      <<!--Creacion de la Informacion B, consolidada en la segunda tabla-->
+                      <!--Creacion de la Informacion B, consolidada en la segunda tabla-->
                       <label>CALIFICACIÓN NEGOCIACIÓN</label>
                       <li class="list-group-item">
                         <div class="row">

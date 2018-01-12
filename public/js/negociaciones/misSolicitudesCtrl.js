@@ -74,6 +74,31 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
   			($scope.infoSolicitud.objetivo.soo_venpromeslin * $scope.infoSolicitud.sol_mesesfactu));
   		$scope.ventaReal = ($scope.infoSolicitud.cumplimiento.scu_venreallineas - 
   			($scope.infoSolicitud.objetivo.soo_venpromeslin * $scope.infoSolicitud.sol_meseseje));
+  		$scope.infoSolicitud.sol_peri_ejeini = new Date($filter('date')($scope.infoSolicitud.sol_peri_ejeini, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
+  		$scope.infoSolicitud.sol_peri_ejefin = new Date($filter('date')($scope.infoSolicitud.sol_peri_ejefin, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
+  	}
+
+  	$scope.imprimir = function(){
+  		console.log($scope.fotoGuardar);
   	}
   	
+  	$scope.diffmesesFechaEjecucion = function(){
+		if ($scope.infoSolicitud.sol_peri_ejefin != undefined && $scope.infoSolicitud.sol_peri_ejeini != undefined && $scope.infoSolicitud.sol_peri_ejefin > $scope.infoSolicitud.sol_peri_ejeini) {
+			var fecha1 = moment($scope.infoSolicitud.sol_peri_ejefin);
+			var fecha2 = moment($scope.infoSolicitud.sol_peri_ejeini);
+			$scope.infoSolicitud.sol_meseseje = fecha1.diff(fecha2, 'months', true).toFixed(1);
+		}else if($scope.infoSolicitud.sol_peri_ejefin < $scope.infoSolicitud.sol_peri_ejeini){
+			$mdDialog.show(
+		      $mdDialog.alert()
+		        .parent(angular.element(document.querySelector('#popupContainer')))
+		        .clickOutsideToClose(true)
+		        .title('ALERTA!')
+		        .textContent('La fecha inicial del periodo de ejecución no puede ser mayor a la fecha final')
+		        .ariaLabel('')
+		        .ok('Cerrar')
+		    );
+		    $scope.infoSolicitud.sol_meseseje = undefined;
+		    $scope.infoSolicitud.sol_peri_ejefin = undefined;
+		}
+	}
 }]);

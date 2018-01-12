@@ -56,3 +56,15 @@ body {
     font-size: 12px;
     padding: 12px 12px;
 }
+
+button, input, optgroup, select, textarea {
+    margin: 7px;
+}
+
+.md-datepicker-calendar-pane.md-pane-open {
+    z-index: 9999;
+}
+
+.md-dialog-container {
+    z-index: 9999;
+}
