@@ -41,6 +41,8 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 	$scope.arrayTipoNegociacion = [];
 	$scope.tipoDeServicioFilt = [];
 	$scope.sucubool = true;
+	$scope.siguiente = "";
+
 	$scope.labels = {
 	    "itemsSelected": "elementos seleccionados",
 	    "selectAll": "Marcar todos",
@@ -49,12 +51,38 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 	    "select": "Seleccionar una sucursal..."
 	}
 
+	$scope.labelsLineas = {
+	    "itemsSelected": "elementos seleccionados",
+	    "selectAll": "Marcar todos",
+	    "unselectAll": "Desmarcar todos",
+	    "search": "Buscar una lineas...",
+	    "select": "Seleccionar una lineas..."
+	}
+	$scope.pasoDosSelect = false;
+	$scope.pasoUnoSelect = false;
+
+
 
 	$scope.getInfo = function(){
-		$http.get('../solicitudGetInfo').then(function(response){
-			var res = response.data;
-			$scope.objeto.sol_ven_id = angular.copy(res.usuario.idTerceroUsuario);
-			$scope.objeto.usuario = angular.copy(res.usuario.nombre + " " + res.usuario.apellido);
+		var url = '../solicitudGetInfo';
+
+		if ($scope.objeto.siguiente == 'create') {			
+			$scope.pasoDos = true;
+			$scope.pasoTres = true;
+			$scope.pasoUnoSelect = true;
+		}else if($scope.objeto.siguiente == 'adelante.2'){			
+			$scope.pasoTres = true;
+			$scope.pasoDosSelect = true;
+		}
+
+		if ($scope.objeto.sol_id != undefined) {
+			url = '../../solicitudGetInfo' + '?id=' + $scope.objeto.sol_id;
+			$scope.pasoDos = false;
+		}
+
+		$http.get(url).then(function(response){
+			var res = response.data;	
+			$scope.urlMisSolicitudes = res.urlMisSolicitudes;		
 			$scope.claseNegociacion = angular.copy(res.claseNegociacion);			
 			$scope.negoAnoAnterior = angular.copy(res.negoAnoAnterior);
 			$scope.tipNegociacion = angular.copy(res.tipNegociacion);
@@ -68,7 +96,74 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 			$scope.eventoTemp = angular.copy(res.eventoTemp);
 			$scope.tipoDeNegociacion = angular.copy(res.tipoDeNegociacion);
 			$scope.tipoDeServicio = angular.copy(res.tipoDeServicio);
-			$scope.causalesNego = angular.copy(res.causalesNego);			
+			$scope.formaPago = angular.copy(res.formaPago);
+			$scope.causalesNego = angular.copy(res.causalesNego);
+			$scope.lineas = angular.copy(res.lineas);
+			if (res.objeto != undefined) {
+				$scope.objeto = res.objeto;
+				$scope.objeto.sol_clase = $filter('filter')($scope.claseNegociacion, {id : $scope.objeto.sol_clase})[0];
+				$scope.objeto.sol_huella_capitalizar = $filter('filter')($scope.negoAnoAnterior, {id : $scope.objeto.sol_huella_capitalizar})[0];
+				$scope.objeto.sol_tipo = $filter('filter')($scope.tipNegociacion, {id : $scope.objeto.sol_tipo})[0];
+				$scope.objeto.sol_can_id = $filter('filter')($scope.canales, {can_id : $scope.objeto.sol_can_id})[0];
+				var idCliente = $scope.objeto.sol_cli_id;
+				$scope.objeto.sol_cli_id = $filter('filter')($scope.clientes, {cli_id : $scope.objeto.sol_cli_id})[0];	
+				if ($scope.objeto.sol_cli_id == undefined) {
+					var cliente = $filter('filter')(res.clientesTodos, {cli_id : idCliente})[0]['razonSocialTercero_cli'];	
+					$scope.progress = false;
+					$scope.errorMsg = "El cliente " +  cliente + ' no se encuentra asociado al vendedor ' + res.usuario.nombre + ' ' + res.usuario.apellido + ', favor informar a cartera o anular la solicitud';
+				    var confirm = $mdDialog.confirm()
+				          .title('')
+				          .textContent($scope.errorMsg)
+				          .ariaLabel()
+				          .ok('Entendido');
+
+				    $mdDialog.show(confirm).then(function() {
+				    	$scope.progress = true;
+				      	$window.location = $scope.urlMisSolicitudes;
+				    });
+				    return true;
+				}		
+				$scope.formatoDescuentoComer();
+				$scope.objeto.sol_tipocliente = $filter('filter')($scope.negociacionPara, {id : $scope.objeto.sol_tipocliente})[0];
+				$scope.objeto.listaprecios = $filter('filter')($scope.listaPrecios, {lis_id : $scope.objeto.sol_cli_id.lis_id})[0]['lis_txt_descrip'];
+				$scope.objeto.sol_peri_facturaini = new Date($filter('date')($scope.objeto.sol_peri_facturaini, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
+				$scope.objeto.sol_peri_facturafin = new Date($filter('date')($scope.objeto.sol_peri_facturafin, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
+				$scope.objeto.sol_peri_ejeini = new Date($filter('date')($scope.objeto.sol_peri_ejeini, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
+				$scope.objeto.sol_peri_ejefin = new Date($filter('date')($scope.objeto.sol_peri_ejefin, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));				
+				$scope.objeto.sol_ltxt_observ = $scope.objeto.sol_observaciones;
+				$scope.objeto.sol_evt_id = $filter('filter')($scope.arrayEventoTemp, {evt_id : $scope.objeto.sol_evt_id})[0];
+				
+				$scope.objeto.soli_zona = $scope.objeto.soli_zona.map(function(object){
+					object.szn_coc_id = $filter('filter')($scope.zonas, {cen_id : object.szn_coc_id})[0];
+					return object;
+				});
+				$scope.arrayZona = $scope.objeto.soli_zona;
+				
+				$scope.objeto.soli_sucu = $scope.objeto.soli_sucu.map(function(object){
+					object.szn_coc_id = $filter('filter')($scope.nuevoFiltrado, {cen_id : object.szn_coc_id})[0];
+					return object;
+				});
+				$scope.arraySucursales = $scope.objeto.soli_sucu;
+
+				$scope.objeto.soli_tipo_nego = $scope.objeto.soli_tipo_nego.map(function(object){
+					object.stn_tin_id = $filter('filter')($scope.tipoDeNegociacion, {tin_id : object.stn_tin_id})[0];
+					object.stn_ser_id = $filter('filter')($scope.tipoDeServicio, {ser_id : object.stn_ser_id})[0];
+					return object;
+				});
+				$scope.arrayTipoNegociacion = $scope.objeto.soli_tipo_nego;
+
+				$scope.objeto.causal = $scope.objeto.causal.map(function(object){
+					object.scn_can_id = $filter('filter')($scope.causalesNego, {can_id : object.scn_can_id})[0];
+					$scope.causalesNego = $filter('removeWith')($scope.causalesNego, {can_id : object.scn_can_id.can_id});
+					return object;
+				});
+				$scope.arrayCausalNegociacion = $scope.objeto.causal;
+
+				
+			}						
+			$scope.objeto.sol_ven_id = angular.copy(res.usuario.idTerceroUsuario);
+			$scope.objeto.usuario = angular.copy(res.usuario.nombre + " " + res.usuario.apellido);
+
 			$scope.progress = false;
 		}, function(errorResponse){
 			$scope.getInfo();
@@ -356,17 +451,26 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		$scope.envioPost.arraySucursales = $scope.arraySucursales;
 		$scope.envioPost.arrayTipoNegociacion = $scope.arrayTipoNegociacion;
 		$scope.envioPost.arrayCausalNegociacion = $scope.arrayCausalNegociacion;
+		$scope.envioPost.redirecTo = $scope.siguiente;
 		
 		//Debo validar que arrayZonas o ArraySucursales tengan al menos un registro y que la sumatoria de los porcentajes de participacion sea igual a 100 
-
-		$http.post('../solicitud', $scope.envioPost).then(function(response){
-			var res = response.data;
-			$scope.progress = false;
-			$window.location = res.url;
-			console.log(res);
-		}, function(errorResponse){
-			alert("Error al grabar");
-		});
+		if ($scope.objeto.sol_id == undefined) {
+			$http.post('../solicitud', $scope.envioPost).then(function(response){
+				var res = response.data;
+				$window.location = res.url;
+			}, function(errorResponse){
+				alert("Error al grabar");
+			});
+		}else{
+			$http.put('../../solicitud/' + $scope.objeto.sol_id, $scope.envioPost).then(function(response){
+				var res = response.data;
+				$scope.progress = false;
+				$scope.getInfo();
+			}, function(errorResponse){
+				alert("Error al grabar");
+			});
+		}
+		
 	}
 
 	$scope.convertirObjeto = function(object, estadoSolicitud, estadoFinalSolicitud, estadoTesorieria){
@@ -394,5 +498,62 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		objetoNew.sol_huella_capitalizar = object.sol_huella_capitalizar.id;			
 		return objetoNew;
 	}
+
+
+	$scope.calcularIva = function(){
+		var valorIva = 0;
+		if($scope.objeto.soli_tipo_nego != undefined){
+			$scope.objeto.soli_tipo_nego.forEach(function(element) {		    
+				valorIva += element.stn_valor_iva;
+			});
+		}		
+		return valorIva;
+	}
+
+
+	$scope.calcularSubtotalCliente = function(){
+		var valorIva = 0;
+		var valorTipoNego = 0;
+		if($scope.objeto.soli_tipo_nego != undefined){
+			$scope.objeto.soli_tipo_nego.forEach(function(element) {		    
+				valorIva += element.stn_valor_iva;
+				valorTipoNego += element.stn_costo;
+			});
+		}
+
+		return valorIva + valorTipoNego;
+	}
+
+	$scope.calcularRetefuente = function(){
+		var valorReteFuente = 0;
+		if($scope.objeto.soli_tipo_nego != undefined){
+			$scope.objeto.soli_tipo_nego.forEach(function(element) {	
+				console.log(element);	    
+				valorReteFuente += element.stn_valor_rtfuente;
+			});
+		}		
+		return valorReteFuente;
+	}
+
+	$scope.calcularReteIca = function(){
+		var valorReteIca = 0;
+		if($scope.objeto.soli_tipo_nego != undefined){
+			$scope.objeto.soli_tipo_nego.forEach(function(element) {	
+				valorReteIca += element.stn_valor_rtica;
+			});
+		}		
+		return valorReteIca;
+	}
+
+	$scope.calcularReteIva = function(){
+		var valorReteIva = 0;
+		if($scope.objeto.soli_tipo_nego != undefined){
+			$scope.objeto.soli_tipo_nego.forEach(function(element) {	
+				valorReteIva += element.stn_valor_rtiva;
+			});
+		}		
+		return valorReteIva;
+	}
+
 
 }])
