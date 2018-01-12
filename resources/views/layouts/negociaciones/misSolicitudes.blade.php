@@ -80,7 +80,7 @@
 	          						</button>
 	          					</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-danger" type="button">
+	          						<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#ModalAnular" ng-click="setSolicitud(ela)">
 	          							<i class="glyphicon glyphicon-remove"></i>
 	          							<md-tooltip>Anular 
 	          						</button>
@@ -131,7 +131,7 @@
 	          						</button>
 	          					</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-danger" type="button">
+	          						<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#ModalAnular" ng-click="setSolicitud(correc)">
 	          							<i class="glyphicon glyphicon-remove"></i>
 	          							<md-tooltip>Anular 
 	          						</button>
@@ -215,7 +215,7 @@
 	          						</button>
 	          					</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-warning" type="button">
+	          						<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#ModalPeriEjecucion" ng-click="setSolicitud(solicitud)">
 	          							<i class="glyphicon glyphicon-pencil"></i>
 	          							<md-tooltip>Editar Periodo 
 	          						</button>
@@ -264,7 +264,7 @@
 	          						</button>
 	          					</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-warning" type="button">
+	          						<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#ModalPeriEjecucion" ng-click="setSolicitud(filtro)">
 	          							<i class="glyphicon glyphicon-pencil"></i>
 	          							<md-tooltip>Editar Periodo 
 	          						</button>
@@ -313,7 +313,7 @@
 	          						</button>
 	          					</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-warning" type="button">
+	          						<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#ModalPeriEjecucion" ng-click="setSolicitud(apro)">
 	          							<i class="glyphicon glyphicon-pencil"></i>
 	          							<md-tooltip>Editar Periodo 
 	          						</button>
@@ -470,7 +470,7 @@
 	          						
 	          					</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-success" type="button">
+	          						<button class="btn btn-success" type="button" data-toggle="modal" data-target="#ModalConfirBono" ng-click="setSolicitud(tePe)">
 	          							<i class="glyphicon glyphicon-ok"></i>
 	          							<md-tooltip>Confirmar 
 	          						</button>
@@ -521,10 +521,12 @@
     <div ng-if="progress" class="progress">
 	    <md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
 	</div>
-	
+
 	@include('layouts.negociaciones.misSolicitudesPeriEjecucion')
 	@include('layouts.negociaciones.misSolicitudesDetalle')
 	@include('layouts.negociaciones.misSolicitudesExhibicion')
+	@include('layouts.negociaciones.misSolicitudesAnular')
+	@include('layouts.negociaciones.misSolicitudesConfirBono')
 </div>
 @endsection
 

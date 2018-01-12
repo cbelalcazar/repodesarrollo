@@ -15,29 +15,30 @@
         <div class="col-sm-12">
           <label>PERIODO DE EJECUCIÓN</label>
         </div>
-        <div class="form-group col-sm-3">
-          <label>Inicio: </label>
-          <md-datepicker required ng-model="infoSolicitud.sol_peri_ejeini" md-placeholder="Enter date" ng-change="diffmesesFechaEjecucion()"></md-datepicker>                     
-        </div>
-        <div class="form-group col-sm-3">
-          <label>Fin: </label>
-          <md-datepicker required ng-model="infoSolicitud.sol_peri_ejefin" md-placeholder="Enter date"  ng-change="diffmesesFechaEjecucion()"></md-datepicker>          
-        </div>
-        <div class="form-group  col-sm-6">
-          <label class="control-label col-sm-2">Meses: </label>
-          <div class="col-sm-10"> 
-            <input required type="text" disabled readonly class="form-control input-sm" ng-model="infoSolicitud.sol_meseseje">   
+        <br>
+        <div class="row">
+          <div class="form-group col-sm-3">
+            <label>Inicio: </label>
+            <md-datepicker required ng-model="infoSolicitud.sol_peri_ejeini" md-placeholder="Enter date" ng-change="diffmesesFechaEjecucion()"></md-datepicker>                     
+          </div>
+          <div class="form-group col-sm-3">
+            <label>Fin: </label>
+            <md-datepicker required ng-model="infoSolicitud.sol_peri_ejefin" md-placeholder="Enter date"  ng-change="diffmesesFechaEjecucion()"></md-datepicker>          
+          </div>
+          <div class="form-group col-sm-3">
+            <label>Meses: </label>
+              <input required type="text" disabled readonly class="form-control input-sm" ng-model="infoSolicitud.sol_meseseje">
+          </div>
+          <div class="form-group col-sm-3">
+            <label>Observaciones: </label> 
+            <input type="text" class="form-control input-sm" ng-model="infoSolicitud.sol_observacioncameje">
           </div>
         </div>
-        <hr>
-        <div class="col-sm-12">
-          <label>Observaciones: </label> 
-          <input required type="text">
-        </div>
+        
       </div>
-      <hr>
       <div class="modal-footer">
-        <h4>Hola mama</h4>
+        <button class="btn btn-success" data-dismiss="modal" type="button">Guardar</button>
+        <button class="btn btn-danger" data-dismiss="modal" type="button">Cancelar</button>
       </div>
 		</div>
 	</div>
