@@ -13,8 +13,13 @@ class TSoliCostosLineas extends Model
 
     protected $table = 't_solicostoslineas';
 
+    public $incrementing = true;
+
+    public $primaryKey = 'scl_id';
+
+    public $timestamps = false;
+
     protected $fillable = [
-        'scl_id',
         'scl_soc_id',  
         'scl_cat_id', 
         'scl_lin_id',

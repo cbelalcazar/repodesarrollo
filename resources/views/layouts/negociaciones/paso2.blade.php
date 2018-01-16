@@ -7,53 +7,20 @@
 <md-content class="md-padding">
     <div class="container-fluid">
         <div class="col-sm-12">
-            <!-- Informacion de la solicitud -->
-            <div class="col-sm-12">
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr class="info">
-                            <td>
-                                <label>Negociacion No:</label>
-                            </td>
-                            <td>@{{objeto.sol_id}}</td>
-                            <td>
-                                <label>Cliente: </label>
-                            </td>
-                            <td>@{{objeto.sol_cli_id.razonSocialTercero_cli}}</td>
-                            <td>
-                                <label>Negociación Para: </label>
-                            </td>
-                            <td>@{{objeto.sol_tipocliente.npar_descripcion}}</td>
-                        </tr>
-                        <tr class="info">
-                            <td>
-                                <label>Periodo de Facturacion: </label>
-                            </td>
-                            <td>@{{objeto.sol_peri_facturaini | date : 'dd-MM-yyyy'}} a @{{objeto.sol_peri_facturafin | date : 'dd-MM-yyyy'}}  (@{{objeto.sol_mesesfactu}} Meses)</td>
-                            <td>
-                                <label>Periodo de Ejecución:  </label>
-                            </td>
-                            <td>@{{objeto.sol_peri_ejeini | date : 'dd-MM-yyyy'}} a @{{objeto.sol_peri_ejefin | date : 'dd-MM-yyyy'}} (@{{objeto.sol_meseseje}} Meses)</td>
-                            <td>
-                                <label>Periodo de Comparación: </label>
-                            </td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>            
+            <!-- Informacion de la solicitud -->            
+                @include('layouts.negociaciones.encabezadoNegociacion')      
             <!-- end Informacion de la solicitud -->
             <!-- Valor Negociacion cliente -->
             <div class="form-group col-sm-6">
                 <label>Valor Negociación Cliente:</label>
-                <input type="text" disabled readonly class="form-control input-sm" ng-model="objCostos.soc_valornego" ng-value="arrayTipoNegociacion | map : 'stn_costo' | sum">
+                <input type="text" readonly class="form-control input-sm" ng-model="objCostos.soc_valornego">
             </div>
             <!-- end valor negociacion cliente -->
 
             <!-- Gran total con adicionales -->
             <div class="form-group col-sm-6">
                 <label>GRAN TOTAL con Adicionales:</label>
-                <input type="text" disabled readonly class="form-control input-sm" ng-model="objCostos.soc_granvalor" ng-value="arrayTipoNegociacion | map : 'stn_costo' | sum">
+                <input type="text" readonly class="form-control input-sm" ng-model="objCostos.soc_granvalor">
             </div>
             <!-- end gran total con adicionales -->
 
@@ -68,42 +35,42 @@
             <!-- Iva -->
             <div class="form-group col-sm-6">
                 <label>Iva:</label>
-                <input type="text" disabled readonly class="form-control input-sm" ng-model="objCostos.soc_iva" ng-value="calcularIva()">
+                <input type="text" readonly class="form-control input-sm" ng-model="objCostos.soc_iva">
             </div>
             <!-- end Iva -->
 
             <!-- Subtotal Cliente -->
             <div class="form-group col-sm-6">
                 <label>Subtotal Cliente:</label>
-                <input type="text" disabled readonly class="form-control input-sm" ng-model="objCostos.soc_subtotalcliente" ng-value="calcularSubtotalCliente()">
+                <input type="text" readonly class="form-control input-sm" ng-model="objCostos.soc_subtotalcliente">
             </div>
             <!-- end Subtotal cliente -->
 
              <!-- Retencion en la fuente -->
             <div class="form-group col-sm-6">
                 <label>Retención en la Fuente:</label>
-                <input type="text" disabled readonly class="form-control input-sm" ng-model="objCostos.soc_retefte" ng-value="calcularRetefuente()">
+                <input type="text" readonly class="form-control input-sm" ng-model="objCostos.soc_retefte">
             </div>
             <!-- end retencion en la fuente -->
 
             <!-- ReteICA -->
             <div class="form-group col-sm-6">
                 <label>ReteICA:</label>
-                <input type="text" disabled readonly class="form-control input-sm" ng-model="objCostos.soc_reteica" ng-value="calcularReteIca()">
+                <input type="text" readonly class="form-control input-sm" ng-model="objCostos.soc_reteica">
             </div>
             <!-- end ReteICA -->
 
             <!-- ReteIVA -->
             <div class="form-group col-sm-6">
                 <label>ReteIVA:</label>
-                <input type="text" disabled readonly class="form-control input-sm" ng-model="objCostos.soc_reteiva" ng-value="calcularReteIva()">
+                <input type="text" readonly class="form-control input-sm" ng-model="objCostos.soc_reteiva">
             </div>
             <!-- end ReteIVA -->
 
             <!-- Total Cliente Despues de Impuestos -->
             <div class="form-group col-sm-6">
                 <label>Total Cliente Despues de Impuestos:</label>
-                <input type="text" disabled readonly class="form-control input-sm" ng-model="objCostos.soc_total" ng-value="calcularSubtotalCliente() - calcularRetefuente() - calcularReteIca() - calcularReteIva()">
+                <input type="text" readonly class="form-control input-sm" ng-model="objCostos.soc_total">
             </div>
             <!-- end Total Cliente Despues de Impuestos -->
 
@@ -142,33 +109,40 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Sucursal</th>
-                                    <th>% participacion</th>
+                                    <th>Categoria</th>
+                                    <th>Linea</th>
+                                    <th>% part</th>
+                                    <th>Costo en Nego</th>
+                                    <th>Costo Adicional</th>
                                     <th>Acción</th>
                                 </tr>                                           
                             </thead>
                             <tbody>
-                                <tr ng-if="arraySucursales.length == 0">
-                                    <td colspan="3" style="text-align: center">Favor agregar al menos una sucursal..</td>
+                                <tr ng-if="arrayLineas.length == 0">
+                                    <td colspan="6" style="text-align: center">Favor agregar al menos una linea...</td>
                                 </tr>
-                                <tr ng-repeat="(key, value) in arraySucursales">
-                                    <td>@{{value.descripcionConId}}</td>
+                                <tr ng-repeat="(key, value) in arrayLineas">
+                                    <td>@{{value.categorias.cat_txt_descrip}}</td>
+                                    <td>@{{value.lin_txt_descrip}}</td>
                                     <td>
                                         <div class="input-group">
-                                            <span class="input-group-btn">
-                                                <button ng-click="agregarFaltante(value)" class="btn btn-success" type="button">
-                                                    <i class="glyphicon glyphicon-refresh"></i>
-                                                    <md-tooltip md-direction="left">Sumar Faltante</md-tooltip>
-                                                </button>
-                                            </span>
-                                            <input type="number" min="0" string-to-number class="form-control" ng-model="value.porcentParti">
+                                            <input type="number" min="0" class="form-control" ng-model="value.porcentParti">
                                         </div>                                                      
                                     </td>
+                                    <td>@{{value.CostoNegoLinea = calculaCostoNegoLinea(value)}}</td>
+                                    <td>@{{value.CostoAdiLinea = calculaCostoNegoLinea(value)}}</td>
                                     <td>
-                                        <button type="button" class="btn btn-danger btn-circle" ng-click="removeSucursal(value)"><i class="glyphicon glyphicon-remove"></i></button>
+                                        <button type="button" class="btn btn-danger btn-circle" ng-click="removeLinea(value)"><i class="glyphicon glyphicon-remove"></i></button>
                                     </td>
                                 </tr>
                             </tbody>
+                            <tfoot ng-if="arrayLineas.length > 0">
+                                <tr>
+                                    <td colspan="2">Faltan &nbsp; @{{100 - sumPorcentPart()}}</td>
+                                    <td>@{{sumPorcentPart()}}</td>
+                                    <td colspan="3"></td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                   </div>
@@ -184,7 +158,7 @@
                     <!-- btn Save -->
                         <div class="col-sm-6"></div>
                         <div class="col-sm-2">
-                            <button type="submit" class="btn btn-success btn-circle btn-lg  pull-right">
+                            <button  ng-click="siguiente='grabar.2'" type="submit" class="btn btn-success btn-circle btn-lg  pull-right">
                                 <i class="glyphicon glyphicon-floppy-save"></i>
                             </button>
                         </div>                                  
@@ -198,7 +172,7 @@
                     <!-- end btn cancelar -->
                     <!-- btn adelante -->
                         <div class="col-sm-2">
-                            <button class="btn btn-primary btn-circle btn-lg  pull-right">
+                            <button ng-click="siguiente='adelante.2'"  type="submit" class="btn btn-primary btn-circle btn-lg  pull-right">
                                 <i class="glyphicon glyphicon-chevron-right"></i>
                             </button>
                         </div>                                      

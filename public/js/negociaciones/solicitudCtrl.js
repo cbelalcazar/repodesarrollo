@@ -32,6 +32,8 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 	$scope.objNegCliente = {};
 	$scope.objtipoNeg = {};
 	$scope.objCausalNego = {};
+	$scope.objCostos = {};
+	$scope.objObjetivos = {};
 	$scope.objeto.sol_fecha = $filter('date')(new Date(), 'yyyy-MM-dd HH:mm:ss');
 	$scope.progress = true;
 	$scope.arrayZona = [];
@@ -39,6 +41,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 	$scope.arrayEventoTemp = [];
 	$scope.arrayCausalNegociacion = [];
 	$scope.arrayTipoNegociacion = [];
+	$scope.arrayLineas = [];
 	$scope.tipoDeServicioFilt = [];
 	$scope.sucubool = true;
 	$scope.siguiente = "";
@@ -65,14 +68,26 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 
 	$scope.getInfo = function(){
 		var url = '../solicitudGetInfo';
-
-		if ($scope.objeto.siguiente == 'create') {			
-			$scope.pasoDos = true;
+		if ($scope.siguiente == 'grabar.1') {
+			$scope.pasoUno = false;			
+			$scope.pasoDos = false;
 			$scope.pasoTres = true;
 			$scope.pasoUnoSelect = true;
-		}else if($scope.objeto.siguiente == 'adelante.2'){			
+		}else if($scope.siguiente == 'adelante.1'){	
+			$scope.pasoUno = false;			
+			$scope.pasoDos = false;		
 			$scope.pasoTres = true;
 			$scope.pasoDosSelect = true;
+		}else if($scope.siguiente == 'grabar.2'){				
+			$scope.pasoUno = false;			
+			$scope.pasoDos = false;		
+			$scope.pasoTres = false;
+			$scope.pasoDosSelect = true;
+		}else if($scope.siguiente == 'adelante.2'){				
+			$scope.pasoUno = false;			
+			$scope.pasoDos = false;		
+			$scope.pasoTres = false;
+			$scope.pasoTresSelect = true;
 		}
 
 		if ($scope.objeto.sol_id != undefined) {
@@ -99,6 +114,8 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 			$scope.formaPago = angular.copy(res.formaPago);
 			$scope.causalesNego = angular.copy(res.causalesNego);
 			$scope.lineas = angular.copy(res.lineas);
+
+			// if para obtener informacion cuando el formulario esta editando 
 			if (res.objeto != undefined) {
 				$scope.objeto = res.objeto;
 				$scope.objeto.sol_clase = $filter('filter')($scope.claseNegociacion, {id : $scope.objeto.sol_clase})[0];
@@ -138,11 +155,14 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 					return object;
 				});
 				$scope.arrayZona = $scope.objeto.soli_zona;
-				
 				$scope.objeto.soli_sucu = $scope.objeto.soli_sucu.map(function(object){
-					object.szn_coc_id = $filter('filter')($scope.nuevoFiltrado, {cen_id : object.szn_coc_id})[0];
+					object.szn_coc_id = $filter('filter')($scope.multiSelectSucursales, {suc_id : object.ssu_suc_id})[0];
+					object.suc_id = object.ssu_suc_id;
+					object.porcentParti = object.ssu_ppart;
+					object.descripcionConId = object.szn_coc_id.suc_num_codigo + " - " + object.szn_coc_id.suc_txt_nombre + " - " + object.szn_coc_id.suc_txt_direccion;
 					return object;
 				});
+
 				$scope.arraySucursales = $scope.objeto.soli_sucu;
 
 				$scope.objeto.soli_tipo_nego = $scope.objeto.soli_tipo_nego.map(function(object){
@@ -151,6 +171,14 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 					return object;
 				});
 				$scope.arrayTipoNegociacion = $scope.objeto.soli_tipo_nego;
+				$scope.objCostos.soc_valornego = $scope.sumarTipoNego();
+				$scope.objCostos.soc_granvalor = $scope.objCostos.soc_valornego;
+				$scope.objCostos.soc_iva = $scope.calcularIva();
+				$scope.objCostos.soc_subtotalcliente = $scope.calcularSubtotalCliente();
+				$scope.objCostos.soc_retefte = $scope.calcularRetefuente();
+				$scope.objCostos.soc_reteica = $scope.calcularReteIca();
+				$scope.objCostos.soc_reteiva = $scope.calcularReteIva();
+				$scope.objCostos.soc_total = $scope.objCostos.soc_subtotalcliente - $scope.objCostos.soc_retefte - $scope.objCostos.soc_reteica - $scope.objCostos.soc_reteiva;
 
 				$scope.objeto.causal = $scope.objeto.causal.map(function(object){
 					object.scn_can_id = $filter('filter')($scope.causalesNego, {can_id : object.scn_can_id})[0];
@@ -159,8 +187,20 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 				});
 				$scope.arrayCausalNegociacion = $scope.objeto.causal;
 
-				
-			}						
+				$scope.objCostos.soc_formapago =  $filter('filter')($scope.formaPago, {id : $scope.objCostos.soc_formapago})[0];
+
+				if ($scope.objeto.costo != null) {
+					$scope.arrayLineas = $scope.objeto.costo.lineas.map(function(object){
+						object.porcentParti = object.scl_ppart;
+						object.lin_txt_descrip = $filter('filter')($scope.lineas, {lin_id : object.scl_lin_id})[0]['lin_txt_descrip'];
+						object.categorias = $filter('filter')($scope.lineas, {lin_id : object.scl_lin_id})[0]['categorias'];
+						object.cat_id = object.categorias['cat_id'];
+						object.lin_id = object.scl_lin_id;
+						return object;
+					});
+				}
+			}	
+
 			$scope.objeto.sol_ven_id = angular.copy(res.usuario.idTerceroUsuario);
 			$scope.objeto.usuario = angular.copy(res.usuario.nombre + " " + res.usuario.apellido);
 
@@ -168,6 +208,14 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		}, function(errorResponse){
 			$scope.getInfo();
 		});
+	}
+
+	$scope.sumarTipoNego = function(){
+		var arregloParaSumar = $scope.arrayTipoNegociacion.map(function(element){
+			return element.stn_costo;
+		});
+		var sumatoriaNew = $filter('sum')(arregloParaSumar);
+		return sumatoriaNew.toFixed(2);
 	}
 
 	$scope.consultaClientes = function(){
@@ -300,6 +348,12 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		$scope.arraySucursales[$scope.arraySucursales.length - 1].porcentParti = (parseFloat($scope.arraySucursales[$scope.arraySucursales.length - 1].porcentParti) + parseFloat(faltante)).toFixed(2);   		
 	}	
 
+	$scope.removeLinea = function(item) { 
+		$scope.lineas.push(item);
+		var index = $scope.arrayLineas.indexOf(item);
+		$scope.arrayLineas.splice(index, 1); 
+	}	
+
 	$scope.formatoDescuentoComer = function(){		
 		if ($scope.objeto.sol_cli_id != undefined) {
 			var lista = $filter('where')($scope.listaPrecios, {lis_id : $scope.objeto.sol_cli_id.lis_id});
@@ -348,6 +402,28 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		    );
 		    $scope.objeto.sol_mesesfactu = undefined;
 		    $scope.objeto.sol_peri_facturafin = undefined;
+		}
+		
+	}
+
+	$scope.diffmesesComparacion = function(){
+
+		if ($scope.objObjetivos.soo_pecomfin != undefined && $scope.objObjetivos.soo_pecomini != undefined && $scope.objObjetivos.soo_pecomfin > $scope.objObjetivos.soo_pecomini) {
+			var fecha1 = moment($scope.objObjetivos.soo_pecomfin);
+			var fecha2 = moment($scope.objObjetivos.soo_pecomini);
+			$scope.objObjetivos.soo_mese = fecha1.diff(fecha2, 'months', true).toFixed(1);
+		}else if($scope.objObjetivos.soo_pecomfin < $scope.objObjetivos.soo_pecomini){
+			$mdDialog.show(
+		      $mdDialog.alert()
+		        .parent(angular.element(document.querySelector('#popupContainer')))
+		        .clickOutsideToClose(true)
+		        .title('')
+		        .textContent('La fecha inicio del periodo de comparacion es mayor a la fecha fin')
+		        .ariaLabel('')
+		        .ok('Cerrar')
+		    );
+		    $scope.objObjetivos.soo_mese = undefined;
+		    $scope.objObjetivos.soo_pecomfin = undefined;
 		}
 		
 	}
@@ -403,6 +479,42 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		$scope.objeto.sucursales = [];	
 	}
 
+	$scope.sumPorcentPart = function(){
+		$scope.sumPorcentPartLin = 0;
+		if ($scope.arrayLineas.length > 0) {
+			$scope.arrayLineas.forEach( function(element, index) {
+				if (element.porcentParti != undefined) {
+					$scope.sumPorcentPartLin += parseInt(element.porcentParti);
+				}
+			});	
+		}		
+		return $scope.sumPorcentPartLin;
+	}
+
+	$scope.agregarLineas = function(){
+		// calculo el porcentaje de participacion
+		$scope.objeto.lineas.forEach( function(element, index) {
+			$scope.arrayLineas.push(element);
+		});	
+
+		$scope.arrayLineas.forEach( function(el, key) {
+			var index = $scope.lineas.indexOf(el);
+			$scope.lineas.splice(index, 1);
+		});
+		$scope.objeto.lineas = [];	
+	}
+
+	$scope.calculaCostoNegoLinea = function(obj){
+		if (obj.porcentParti != undefined) {
+			var arregloParaSumar = $scope.arrayTipoNegociacion.map(function(element){
+				var costo = element.stn_costo;
+				return element.stn_costo;
+			});
+			var sumatoriaNew = ($filter('sum')(arregloParaSumar) * obj.porcentParti) / 100;
+			return sumatoriaNew.toFixed(2);
+		}
+	}
+
 	document.onpaste = function(){
 
 		var invalidAccion = $mdDialog.alert()
@@ -451,26 +563,54 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		$scope.envioPost.arraySucursales = $scope.arraySucursales;
 		$scope.envioPost.arrayTipoNegociacion = $scope.arrayTipoNegociacion;
 		$scope.envioPost.arrayCausalNegociacion = $scope.arrayCausalNegociacion;
-		$scope.envioPost.redirecTo = $scope.siguiente;
-		
-		//Debo validar que arrayZonas o ArraySucursales tengan al menos un registro y que la sumatoria de los porcentajes de participacion sea igual a 100 
-		if ($scope.objeto.sol_id == undefined) {
-			$http.post('../solicitud', $scope.envioPost).then(function(response){
-				var res = response.data;
-				$window.location = res.url;
-			}, function(errorResponse){
-				alert("Error al grabar");
-			});
-		}else{
-			$http.put('../../solicitud/' + $scope.objeto.sol_id, $scope.envioPost).then(function(response){
-				var res = response.data;
-				$scope.progress = false;
-				$scope.getInfo();
-			}, function(errorResponse){
-				alert("Error al grabar");
-			});
+		$scope.envioPost.objCostos = $scope.objCostos;
+		$scope.envioPost.arrayLineas = $scope.arrayLineas;
+
+		var bandera = true;
+		var errorString = "";
+		if ($scope.siguiente == 'adelante.3' || $scope.siguiente == 'guardar.3') {
+			if ($scope.arrayLineas.length > 0 && $scope.sumPorcentPart() != 100) {
+				bandera = false;
+				errorString = 'El porcentaje de participacion debe ser igual a 100 entre todas las lineas seleccionadas';
+			}else if($scope.arrayLineas.length == 0){
+				bandera = false;
+				errorString = 'Debe diligenciar al menos una linea de la negociacion con su respectivo porcentaje de participación';
+			}else if($scope.lineasTienenPorcentaje()){
+				bandera = false;
+				errorString = 'Todas las lineas seleccionadas deben tener porcentaje de participación';
+			}
 		}
-		
+
+		$scope.envioPost.redirecTo = $scope.siguiente;
+
+		if (bandera) {
+			//Debo validar que arrayZonas o ArraySucursales tengan al menos un registro y que la sumatoria de los porcentajes de participacion sea igual a 100 
+			if ($scope.objeto.sol_id == undefined) {
+				$http.post('../solicitud', $scope.envioPost).then(function(response){
+					var res = response.data;
+					$window.location = res.url;
+				}, function(errorResponse){
+					alert("Error al grabar");
+				});
+			}else{
+				$http.put('../../solicitud/' + $scope.objeto.sol_id, $scope.envioPost).then(function(response){
+					var res = response.data;
+					$window.location = res.url;
+				}, function(errorResponse){
+					alert("Error al grabar");
+				});
+			}
+		}else{			
+			var invalidAccion = $mdDialog.alert()
+			.parent(angular.element(document.querySelector('#popupContainer')))
+			.clickOutsideToClose(false)
+			.title('')
+			.textContent(errorString)
+			.ariaLabel('Lucky day')
+			.ok('OK')
+			$mdDialog.show(invalidAccion);
+			$scope.progress = false;
+		}	
 	}
 
 	$scope.convertirObjeto = function(object, estadoSolicitud, estadoFinalSolicitud, estadoTesorieria){
@@ -497,6 +637,16 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		objetoNew.sol_estadocobro = 0;
 		objetoNew.sol_huella_capitalizar = object.sol_huella_capitalizar.id;			
 		return objetoNew;
+	}
+
+	$scope.lineasTienenPorcentaje = function(){
+		$scope.verificacion = false;
+		$scope.arrayLineas.forEach(function(element){
+			if (element.porcentParti == undefined) {
+				$scope.verificacion = true;
+			}
+		});
+		return $scope.verificacion;
 	}
 
 
@@ -527,8 +677,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 	$scope.calcularRetefuente = function(){
 		var valorReteFuente = 0;
 		if($scope.objeto.soli_tipo_nego != undefined){
-			$scope.objeto.soli_tipo_nego.forEach(function(element) {	
-				console.log(element);	    
+			$scope.objeto.soli_tipo_nego.forEach(function(element) {	   
 				valorReteFuente += element.stn_valor_rtfuente;
 			});
 		}		
@@ -553,6 +702,29 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 			});
 		}		
 		return valorReteIva;
+	}
+
+	$scope.calcularObjetivos = function(){
+		if ($scope.objObjetivos.soo_pecomfin != undefined && $scope.objObjetivos.soo_pecomini != undefined && $scope.objObjetivos.soo_pecomfin > $scope.objObjetivos.soo_pecomini) {
+			$scope.objeto.objObjetivos = $scope.objObjetivos;
+			$scope.objeto.arraySucursales = $scope.arraySucursales;
+			$http.post('../../calcularObjetivos', $scope.objeto).then(function(response){
+				var respuesta = response.data;
+				console.log(respuesta);
+			}, function(errorResponse){
+				alert(errorResponse);
+			});
+		}else{
+			$mdDialog.show(
+		      $mdDialog.alert()
+		        .parent(angular.element(document.querySelector('#popupContainer')))
+		        .clickOutsideToClose(true)
+		        .title('')
+		        .textContent('Debe ingresar las fechas del periodo de comparacion para realizar el calculo de valores')
+		        .ariaLabel('')
+		        .ok('Cerrar')
+		    );
+		}
 	}
 
 

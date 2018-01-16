@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\negociaciones;
 
 use Illuminate\Http\Request;
+use DB;
+use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\negociaciones\ClaseNegociacion;
@@ -20,12 +22,16 @@ use App\Models\negociaciones\TSoliCausalNego;
 use App\Models\negociaciones\TBaseImpuesto;
 use App\Models\negociaciones\TFormaPago;
 use App\Models\negociaciones\TSoliTipoNego;
+use App\Models\negociaciones\TSoliCostos;
+use App\Models\negociaciones\TSoliCostosLineas;
 use App\Models\Genericas\TVendedor;
 use App\Models\Genericas\TCanal;
 use App\Models\Genericas\TCliente;
 use App\Models\Genericas\TLineas;
 use App\Models\Genericas\TListaPrecios;
+use App\Models\Genericas\TSucursal;
 use App\Models\Genericas\TCentroOperaciones;
+use App\Models\BESA\NegociacionesVentas;
 
 
 class solicitudController extends Controller
@@ -65,7 +71,7 @@ class solicitudController extends Controller
         $data = $request->all();
         if (isset($data['id'])) {
             $id = $data['id'];
-            $objeto = TSolicitudNego::with('soliZona', 'soliSucu', 'soliTipoNego', 'causal')->where('sol_id', $id)->first();
+            $objeto = TSolicitudNego::with('soliZona', 'soliSucu', 'soliTipoNego', 'causal', 'costo', 'costo.lineas')->where('sol_id', $id)->first();
         }
         // obtengo usuario logueado
         $usuario = Auth::user();
@@ -109,7 +115,7 @@ class solicitudController extends Controller
         // Forma de pago
         $formaPago = TFormaPago::all();
         // Lineas
-        $lineas = TLineas::where('lin_txt_estado', 'No')->get();
+        $lineas = TLineas::with('categorias')->where('lin_txt_estado', 'No')->get();
 
 
         $response = compact('usuario', 'claseNegociacion', 'negoAnoAnterior', 'tipNegociacion', 'VendedorSucursales', 'canales', 'clientes', 'idClientes', 'negociacionPara', 'agruZonasSucursal', 'zonas', 'listaPrecios', 'eventoTemp', 'tipoDeNegociacion', 'tipoDeServicio', 'causalesNego', 'objeto', 'clientesTodos', 'urlMisSolicitudes', 'formaPago', 'lineas');
@@ -182,24 +188,60 @@ class solicitudController extends Controller
     {   
         $data = $request->all();
         $negociacion = TSolicitudNego::find($id);
-        $negociacion->update($data);
-        // Zonas update
-        $deleteZonas = TSoliZona::where('szn_sol_id', $id)->delete();
-        $negociacion = $this->crearSoliZonas($data['arrayZona'], $negociacion);
+        if ($data['redirecTo'] == 'grabar.1'|| $data['redirecTo'] == 'adelante.1') {
+            $negociacion->update($data);
+            // Zonas update
+            $deleteZonas = TSoliZona::where('szn_sol_id', $id)->delete();
+            $negociacion = $this->crearSoliZonas($data['arrayZona'], $negociacion);
 
-        // Sucursales update
-        $delteSucursales = TSoliSucursal::where('ssu_sol_id', $id)->delete();
-        $negociacion = $this->crearSoliSucursales($data['arraySucursales'], $negociacion);
+            // Sucursales update
+            $delteSucursales = TSoliSucursal::where('ssu_sol_id', $id)->delete();
+            $negociacion = $this->crearSoliSucursales($data['arraySucursales'], $negociacion);
 
-        // tipo negociacion update
-        $delteSoliTipoNego = TSoliTipoNego::where('stn_sol_id', $id)->delete();
-        $negociacion = $this->crearSoliTipoNego($data['arrayTipoNegociacion'], $negociacion, $data['sol_cli_id']);
+            // tipo negociacion update
+            $delteSoliTipoNego = TSoliTipoNego::where('stn_sol_id', $id)->delete();
+            $negociacion = $this->crearSoliTipoNego($data['arrayTipoNegociacion'], $negociacion, $data['sol_cli_id']);
 
-        $deleteSoliCausalNego = TSoliCausalNego::where('scn_sol_id', $id)->delete();
-        $negociacion = $this->crearSoliCausales($data['arrayCausalNegociacion'], $negociacion);
+            $deleteSoliCausalNego = TSoliCausalNego::where('scn_sol_id', $id)->delete();
+            $negociacion = $this->crearSoliCausales($data['arrayCausalNegociacion'], $negociacion);
+        }elseif ($data['redirecTo'] == 'grabar.2' || $data['redirecTo'] == 'adelante.2') {
 
-        $response = compact('data', 'id');
+            $deleteSoliCostos = TSoliCostos::where('soc_sol_id', $id)->delete();
+            $negociacion = $this->crearSoliCostos($data['objCostos'], $negociacion);
+            $soliCostos = TSoliCostos::where('soc_sol_id', $id)->first();
+
+            $deleteSoliCostosLineas = TSoliCostosLineas::where('scl_soc_id', $soliCostos['soc_id'])->delete();
+            $soliCostos = $this->crearSoliCostosLinea($data['arrayLineas'], $soliCostos, $soliCostos['soc_id']);
+
+        }
+        
+        $url = route('solicitud.edit', ['id' => $id, 'redirecTo' => $data['redirecTo']]);
+
+        $response = compact('data', 'id', 'url');
         return response()->json($response);
+    }
+
+    public function crearSoliCostosLinea($arreglo, $obj, $costoId){
+        foreach ($arreglo as $key => $value) {
+            $array = [];
+            $array['scl_soc_id'] = $costoId; 
+            $array['scl_cat_id'] = $value['cat_id']; 
+            $array['scl_lin_id'] = $value['lin_id']; 
+            $array['scl_ppart'] = $value['porcentParti']; 
+            $array['scl_costo'] = $value['CostoNegoLinea']; 
+            $array['scl_costoadi'] = $value['CostoAdiLinea'];             
+            $array['scl_estado'] = 1; 
+            $array['scl_valorventa'] = 0;   // **
+            $array['scl_pvalorventa'] = 0;   // ** 
+            $obj->lineas()->create($array);
+        }        
+        return $obj;
+    }
+
+    public function crearSoliCostos($obj, $negociacion){
+        $obj['soc_formapago'] = $obj['soc_formapago']['id'];
+        $negociacion->costo()->create($obj);
+        return $negociacion;
     }
 
     public function crearSoliZonas($arregloZonas, $negociacion){
@@ -332,5 +374,36 @@ class solicitudController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    public function calcularObjetivos(Request $request)
+    {
+        $data = $request->all();
+
+        $lineas = collect($data['costo']['lineas'])->pluck('scl_lin_id')->all();   
+        $fechaInicio = Carbon::parse($data['objObjetivos']['soo_pecomini'])->format('d/m/Y');        
+        $fechaFin = Carbon::parse($data['objObjetivos']['soo_pecomfin'])->format('d/m/Y');
+
+        if (count($data['arraySucursales']) > 0) {
+           $sucursales = collect($data['arraySucursales'])->pluck('ssu_suc_id')->all(); 
+           $sucurConsulta = TSucursal::whereIn('suc_id', $sucursales)->get();           
+           $codigosSucur = collect($sucurConsulta)->pluck('suc_num_codigo')->all();
+        }   
+        $canal =  $data['sol_can_id']['can_id'];
+            // Consulta la venta promedio mes lineas periodo de comparacion
+        $soo_venpromeslin = NegociacionesVentas::select(DB::raw('SUM(neto) as total, codlinea'))
+        ->where('codcanal', $data['sol_can_id']['can_id'])
+        ->where('nitcliente', $data['sol_cli_id']['ter_id'])
+        ->whereBetween('fecha', [$fechaInicio, $fechaFin])
+        ->where('concepto', '501')
+        ->where('co', '99')
+        ->whereIn('codlinea', $lineas)
+        ->whereIn('codsucursal', $codigosSucur)
+        ->groupBy('codlinea')
+        ->get();
+
+        $response = compact('data', 'soo_venpromeslin', 'codigosSucur', 'lineas', 'canal', 'fechaInicio', 'fechaFin');
+        return response()->json($response);
     }
 }

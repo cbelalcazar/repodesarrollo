@@ -33,7 +33,9 @@ Route::group(['middleware' => ['auth']], function () {
   	// Rutas de negociaciones 
 	Route::group(['prefix' => 'negociaciones'], function () {
   		Route::resource('solicitud', 'negociaciones\solicitudController');
-  		Route::get('solicitudGetInfo', 'negociaciones\solicitudController@solicitudGetInfo');
+  		Route::get('solicitudGetInfo', 'negociaciones\solicitudController@solicitudGetInfo');      
+      Route::post('calcularObjetivos', 'negociaciones\solicitudController@calcularObjetivos');
+      
       //Rutas de Catalogos
       Route::resource('clasenegociacion', 'negociaciones\claseNegociacionController', ['except' => ['create', 'show', 'edit']]);
       Route::get('clasenegociacionInfo', 'negociaciones\claseNegociacionController@getInfo');
@@ -44,7 +46,8 @@ Route::group(['middleware' => ['auth']], function () {
 
       //Rutas de mis Solicitudes
       Route::resource('misSolicitudes', 'negociaciones\misSolicitudesController');
-      Route::get('misSolicitudesInfo', 'negociaciones\misSolicitudesController@getInfo');
+      Route::get('misSolicitudesInfo', 'negociaciones\misSolicitudesController@getInfo');      
+      
 	});
 
 

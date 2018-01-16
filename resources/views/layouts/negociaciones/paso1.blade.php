@@ -449,7 +449,7 @@
 					<!-- btn Save -->
 						<div class="col-sm-6"></div>
 						<div class="col-sm-2">
-							<button ng-click="siguiente='grabar'" type="submit" class="btn btn-success btn-circle btn-lg  pull-right">
+							<button ng-click="siguiente='grabar.1'" type="submit" class="btn btn-success btn-circle btn-lg  pull-right">
 								<i class="glyphicon glyphicon-floppy-save"></i>
 							</button>
 						</div>									
@@ -463,7 +463,7 @@
 					<!-- end btn cancelar -->
 					<!-- btn adelante -->
 						<div class="col-sm-2">
-							<button  ng-click="siguiente='adelante.2'"  type="submit" class="btn btn-primary btn-circle btn-lg  pull-right">
+							<button  ng-click="siguiente='adelante.1'"  type="submit" class="btn btn-primary btn-circle btn-lg  pull-right">
 								<i class="glyphicon glyphicon-chevron-right"></i>
 							</button>
 						</div>										
