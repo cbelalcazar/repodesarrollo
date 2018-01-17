@@ -8,7 +8,7 @@
 	    <md-tabs md-dynamic-height md-border-bottom>
 	      	<md-tab label="Todas (@{{todas.length}})">
 	        	<md-content class="md-padding">
-	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
+	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover">
 	          			<thead>
 	          				<tr>
 	          					<th class="text-center">No.</th>
@@ -43,7 +43,7 @@
 	      	</md-tab>
 	      	<md-tab label="En Elaboración (@{{elaboracion.length}})">
 	        	<md-content class="md-padding">
-	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
+	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover">
 	          			<thead>
 	          				<tr>
 	          					<th class="text-center">No.</th>
@@ -92,7 +92,7 @@
 	      	</md-tab>
 	      	<md-tab label="Correcciones (@{{correciones.length}})">
 	        	<md-content class="md-padding">
-	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
+	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover">
 	          			<thead>
 	          				<tr>
 	          					<th class="text-center">No.</th>
@@ -137,7 +137,7 @@
 	          						</button>
 	          					</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-info" type="button">
+	          						<button class="btn btn-info" type="button" ng-click="duplicarSolicitud(correc)">
 	          							<i class="glyphicon glyphicon-duplicate"></i>
 	          							<md-tooltip>Duplicar
 	          						</button>
@@ -149,7 +149,7 @@
 	      	</md-tab>
 	      	<md-tab label="Anulada (@{{anuladas.length}})">
 	        	<md-content class="md-padding">
-	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
+	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover">
 	          			<thead>
 	          				<tr>
 	          					<th class="text-center">No.</th>
@@ -184,7 +184,7 @@
 	      	</md-tab>
 	      	<md-tab label="Solicitud (@{{solicitudes.length}})">
 	        	<md-content class="md-padding">
-	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
+	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover">
 	          			<thead>
 	          				<tr>
 	          					<th class="text-center">No.</th>
@@ -221,7 +221,7 @@
 	          						</button>
 	          					</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-info" type="button">
+	          						<button class="btn btn-info" type="button" ng-click="duplicarSolicitud(solicitud)">
 	          							<i class="glyphicon glyphicon-duplicate"></i>
 	          							<md-tooltip>Duplicar
 	          						</button>
@@ -233,7 +233,7 @@
 	      	</md-tab>
 	      	<md-tab label="Filtro (@{{filtros.length}})">
 	        	<md-content class="md-padding">
-	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
+	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover">
 	          			<thead>
 	          				<tr>
 	          					<th class="text-center">No.</th>
@@ -270,7 +270,7 @@
 	          						</button>
 	          					</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-info" type="button">
+	          						<button class="btn btn-info" type="button" ng-click="duplicarSolicitud(filtro)">
 	          							<i class="glyphicon glyphicon-duplicate"></i>
 	          							<md-tooltip>Duplicar
 	          						</button>
@@ -282,7 +282,7 @@
 	      	</md-tab>
 	      	<md-tab label="Aprobación (@{{aprobacion.length}})">
 	        	<md-content class="md-padding">
-	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
+	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover">
 	          			<thead>
 	          				<tr>
 	          					<th class="text-center">No.</th>
@@ -319,7 +319,7 @@
 	          						</button>
 	          					</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-info" type="button">
+	          						<button class="btn btn-info" type="button" ng-click="duplicarSolicitud(apro)">
 	          							<i class="glyphicon glyphicon-duplicate"></i>
 	          							<md-tooltip>Duplicar
 	          						</button>
@@ -331,7 +331,7 @@
 	      	</md-tab>
 	      	<md-tab label="Evaluación (@{{evaluacion.length}})">
 	        	<md-content class="md-padding">
-	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
+	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover">
 	          			<thead>
 	          				<tr>
 	          					<th class="text-center">No.</th>
@@ -369,7 +369,7 @@
 	          						</button>
 	          					</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-info" type="button">
+	          						<button class="btn btn-info" type="button" ng-click="duplicarSolicitud(evalu)">
 	          							<i class="glyphicon glyphicon-duplicate"></i>
 	          							<md-tooltip>Duplicar
 	          						</button>
@@ -387,7 +387,7 @@
 	      	</md-tab>
 	      	<md-tab label="Cerrada (@{{cerradas.length}})">
 	        	<md-content class="md-padding">
-	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
+	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover">
 	          			<thead>
 	          				<tr>
 	          					<th class="text-center">No.</th>
@@ -417,7 +417,7 @@
 	          						</button>
 	          					</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-info" type="button">
+	          						<button class="btn btn-info" type="button" ng-click="duplicarSolicitud(cerrada)">
 	          							<i class="glyphicon glyphicon-duplicate"></i>
 	          							<md-tooltip>Duplicar
 	          						</button>
@@ -429,7 +429,7 @@
 	      	</md-tab>
 	      	<md-tab label="Tesorería Pendientes (@{{tesoPendientes.length}})">
 	        	<md-content class="md-padding">
-	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
+	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover">
 	          			<thead>
 	          				<tr>
 	          					<th class="text-center">No.</th>
@@ -482,7 +482,7 @@
 	      	</md-tab>
 	      	<md-tab label="Tesorería Confirmadas (@{{tesoConfirmadas.length}})">
 	        	<md-content class="md-padding">
-	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
+	          		<table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover">
 	          			<thead>
 	          				<tr>
 	          					<th class="text-center">No.</th>
@@ -525,8 +525,8 @@
 	@include('layouts.negociaciones.misSolicitudesPeriEjecucion')
 	@include('layouts.negociaciones.misSolicitudesDetalle')
 	@include('layouts.negociaciones.misSolicitudesExhibicion')
+	@include('layouts.negociaciones.misSolicitudesConfirBono')	
 	@include('layouts.negociaciones.misSolicitudesAnular')
-	@include('layouts.negociaciones.misSolicitudesConfirBono')
 </div>
 @endsection
 

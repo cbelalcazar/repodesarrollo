@@ -13,8 +13,13 @@ class TSoliCostosMotAdic extends Model
 
     protected $table = 't_solicostosmotadic';
 
+    public $incrementing = true;
+
+    public $primaryKey = 'sca_id';
+
+    public $timestamps = false;
+
     protected $fillable = [
-        'sca_id',  
         'sca_soc_id',  
         'sca_mta_id',
         'sca_valor',

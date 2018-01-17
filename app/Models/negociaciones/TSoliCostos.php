@@ -13,8 +13,13 @@ class TSoliCostos extends Model
 
     protected $table = 't_solicostos';
 
+    public $incrementing = true;
+
+    public $primaryKey = 'soc_id';
+
+    public $timestamps = false;
+
     protected $fillable = [
-        'soc_id',
         'soc_sol_id',  
         'soc_tbt_id',  
         'soc_valornego',

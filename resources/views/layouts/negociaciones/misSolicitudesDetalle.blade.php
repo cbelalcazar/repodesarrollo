@@ -108,7 +108,7 @@
                           <label>Tipo de Negociación: </label> @{{infoSolicitud.sol_tipo == '1' ? 'Por Resultados' : infoSolicitud.sol_tipo == '2' ? 'Real' : 'SIN TIPO'}}
                         </li>
                         <li class="list-group-item">
-                          <label>Periodo de Ejecución: </label> @{{infoSolicitud.sol_peri_ejeini}} a @{{infoSolicitud.sol_peri_ejefin}}
+                          <label>Periodo de Ejecución: </label> @{{infoSolicitud.sol_peri_ejeini | date:'yyyy-MM-dd'}} a @{{infoSolicitud.sol_peri_ejefin | date:'yyyy-MM-dd'}}
                         </li>
                         <li class="list-group-item">
                           <label>Revision de Acta en Auditoria: </label> @{{infoSolicitud.sol_llegoacta == '1' ? 'Si' : 'Pendiente'}}

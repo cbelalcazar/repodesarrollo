@@ -2,6 +2,8 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 
 	$scope.getUrl = "misSolicitudesInfo";
 	$scope.Url = "misSolicitudes";
+	$scope.periEjeUrl = "misSolicitudesPeriEje";
+	$scope.confirBono = "misSolicitudesConfirBono";
     $scope.progress = true;
 	
 	$scope.getInfo = function(){
@@ -52,10 +54,14 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 	$scope.getInfo();
 
 	$scope.retornarCadena = function(arregloDeObjetos){
-    	var arreglo = arregloDeObjetos.map(function(objeto){
-      		return objeto.lineas_detalle.lin_txt_descrip;
-    	});
-    	return arreglo.join(', ');
+    	if (arregloDeObjetos != undefined) {
+    		var arreglo = arregloDeObjetos.map(function(objeto){
+	      		return objeto.lineas_detalle.lin_txt_descrip;
+	    	});
+	    	return arreglo.join(', ');
+    	}else{
+    		return "";
+    	}
   	}
 
   	$scope.setSolicitud = function(objeto){
@@ -73,7 +79,7 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 
   		$scope.ultimoProceso = $scope.infoSolicitud.his_proceso.slice(-1);
   		$scope.variacionObj = ($scope.infoSolicitud.objetivo.soo_vemesdespues/$scope.infoSolicitud.objetivo.soo_veprome);
-  		
+
   		$scope.ventaRealMarginal = ($scope.infoSolicitud.cumplimiento.scu_venreallineas - 
   			($scope.infoSolicitud.objetivo.soo_venpromeslin * $scope.infoSolicitud.sol_mesesfactu));
   		$scope.ventaReal = ($scope.infoSolicitud.cumplimiento.scu_venreallineas - 
@@ -81,9 +87,9 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 
   	}
 
-  	$scope.imprimir = function(){
-  		console.log($scope.fotoGuardar);
-  	}
+  	//$scope.imprimir = function(){
+  	//	console.log($scope.fotoGuardar);
+  	//}
   	
   	$scope.diffmesesFechaEjecucion = function(){
 		if ($scope.infoSolicitud.sol_peri_ejefin != undefined && $scope.infoSolicitud.sol_peri_ejeini != undefined && $scope.infoSolicitud.sol_peri_ejefin > $scope.infoSolicitud.sol_peri_ejeini) {
@@ -104,4 +110,79 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 		    $scope.infoSolicitud.sol_peri_ejefin = undefined;
 		}
 	}
+
+	$scope.anular = function(){
+		$http.put($scope.Url + '/' + $scope.infoSolicitud.sol_id, $scope.infoSolicitud).then(function(response){
+	   		console.log(response);
+	   		$scope.infoSolicitud = {};
+	   		$scope.getInfo();
+	   	});
+	   	$mdDialog.show(
+		    $mdDialog.alert()
+		        .parent(angular.element(document.querySelector('#popupContainer')))
+		        .clickOutsideToClose(true)
+		        .title('Anulación Exitosa!')
+		        .textContent('Se anula de manera satisfactoria la solicitud #'+ $scope.infoSolicitud.sol_id)
+		        .ariaLabel('')
+		        .ok('Cerrar')
+		);
+	   	angular.element('.close').trigger('click');
+	}
+
+	$scope.cambiarPeriEje = function(){
+		$http.post($scope.periEjeUrl, $scope.infoSolicitud).then(function(response){
+	   		console.log(response);
+	   		$scope.infoSolicitud = {};
+	   		$scope.getInfo();
+	   	});
+	   	$mdDialog.show(
+		    $mdDialog.alert()
+		        .parent(angular.element(document.querySelector('#popupContainer')))
+		        .clickOutsideToClose(true)
+		        .title('Cambio de Fecha Exitoso!')
+		        .textContent('Se cambia la fecha del periodo de ejecucion de manera satisfactoria en la solicitud #'+ $scope.infoSolicitud.sol_id)
+		        .ariaLabel('')
+		        .ok('Cerrar')
+		);
+	   	angular.element('.close').trigger('click');
+	}
+
+	$scope.confirmarBono = function(){
+  		$scope.infoSolicitud.usuarioLog = $scope.usuariolog;
+		$http.post($scope.confirBono, $scope.infoSolicitud).then(function(response){
+	   		console.log(response);
+	   		$scope.infoSolicitud = {};
+	   		$scope.getInfo();
+	   	});
+	   	angular.element('.close').trigger('click');
+	}
+
+	$scope.duplicarSolicitud = function(objetoDuplicar){
+
+		$scope.duplicarSoli = objetoDuplicar;
+  		$scope.duplicarSoli.sol_fecha = new Date();
+
+  		$scope.duplicarSoli.sol_peri_ejeini = new Date($filter('date')($scope.duplicarSoli.sol_peri_ejeini, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
+  		$scope.duplicarSoli.sol_peri_ejefin = new Date($filter('date')($scope.duplicarSoli.sol_peri_ejefin, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
+
+		var confirm = $mdDialog.confirm()
+    	.title('¡ALERTA!')
+    	.textContent('¿Realmente desea duplicar la solicitud?')
+    	.ariaLabel('Lucky day')
+    	.targetEvent()
+     	.ok('Si')
+    	.cancel('No, gracias');
+
+    	$mdDialog.show(confirm).then(function() {
+    		$http.post($scope.Url, $scope.duplicarSoli).then(function(response){
+        		console.log(response);
+        		$scope.getInfo();
+        	}, function(error){
+        		console.log(error);
+        		$scope.getInfo();
+        		});
+    	});
+    	$scope.getInfo();
+	}
+
 }]);
