@@ -19,7 +19,6 @@ use App\Models\negociaciones\TSoliTesoreriaHis;
 
 use Carbon\Carbon;
 
-
 class misSolicitudesController extends Controller
 {
     /**

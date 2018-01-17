@@ -86,10 +86,6 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
   			($scope.infoSolicitud.objetivo.soo_venpromeslin * $scope.infoSolicitud.sol_meseseje));
 
   	}
-
-  	//$scope.imprimir = function(){
-  	//	console.log($scope.fotoGuardar);
-  	//}
   	
   	$scope.diffmesesFechaEjecucion = function(){
 		if ($scope.infoSolicitud.sol_peri_ejefin != undefined && $scope.infoSolicitud.sol_peri_ejeini != undefined && $scope.infoSolicitud.sol_peri_ejefin > $scope.infoSolicitud.sol_peri_ejeini) {
@@ -158,7 +154,6 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 	}
 
 	$scope.duplicarSolicitud = function(objetoDuplicar){
-
 		$scope.duplicarSoli = objetoDuplicar;
   		$scope.duplicarSoli.sol_fecha = new Date();
 
