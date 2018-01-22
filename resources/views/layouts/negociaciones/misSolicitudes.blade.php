@@ -74,7 +74,7 @@
 	          						</button>
 	          					</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-warning" type="button">
+	          						<button class="btn btn-warning" type="button" ng-click="redireccionarEdit(ela.url)">
 	          							<i class="glyphicon glyphicon-edit"></i>
 	          							<md-tooltip>Terminar 
 	          						</button>

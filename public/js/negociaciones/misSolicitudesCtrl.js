@@ -153,6 +153,11 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 	   	angular.element('.close').trigger('click');
 	}
 
+	$scope.redireccionarEdit = function(url){
+		$window.location = url;
+	}
+
+
 	$scope.duplicarSolicitud = function(objetoDuplicar){
 		$scope.duplicarSoli = objetoDuplicar;
   		$scope.duplicarSoli.sol_fecha = new Date();

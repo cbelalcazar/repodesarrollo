@@ -52,8 +52,14 @@ class misSolicitudesController extends Controller
     public function getInfo()  
     {
         $usuario = Auth::user();
-        $solicitudes = TSolicitudNego::with('costo', 'costo.lineas', 'costo.lineas.lineasDetalle', 'costo.lineas.lineasDetalle.categorias', 'costo.motivo', 'costo.motivo.motAdicion', 'costo.detalle', 'estado', 'cliente', 'canal', 'listaPrecios', 'vendedor', 'zona', 'clasificacion', 'hisProceso', 'hisProceso.estadoHisProceso', 'hisProceso.terceroEnvia', 'hisProceso.terceroRecibe', 'costo.tipoBono.bono', 'soliZona', 'soliZona.hisZona', 'soliZona.hisZona.cOperacion', 'soliSucu', 'soliSucu.hisSucu', 'soliTipoNego', 'soliTipoNego.tipoNego', 'causal', 'causal.causalDetalle', 'evento', 'objetivo', 'cumplimiento', 'verificacionCobro', 'verificacionCobro.documento', 'verificacionCobro.proveedor', 'reviExhibicion', 'reviExhibicion.usuario', 'actaEntrega', 'actaEntrega.usuario', 'tesoHistorial', 'tesoAuditoria', 'tesoAuditoria.usuario')->where('sol_ven_id', '1144069330')->get();
-        //$solicitudes = TSolicitudNego::all();
+        $solicitudes = TSolicitudNego::with('costo', 'costo.lineas', 'costo.lineas.lineasDetalle', 'costo.lineas.lineasDetalle.categorias', 'costo.motivo', 'costo.motivo.motAdicion', 'costo.detalle', 'estado', 'cliente', 'canal', 'listaPrecios', 'vendedor', 'zona', 'clasificacion', 'hisProceso', 'hisProceso.estadoHisProceso', 'hisProceso.terceroEnvia', 'hisProceso.terceroRecibe', 'costo.tipoBono.bono', 'soliZona', 'soliZona.hisZona', 'soliZona.hisZona.cOperacion', 'soliSucu', 'soliSucu.hisSucu', 'soliTipoNego', 'soliTipoNego.tipoNego', 'causal', 'causal.causalDetalle', 'evento', 'objetivo', 'cumplimiento', 'verificacionCobro', 'verificacionCobro.documento', 'verificacionCobro.proveedor', 'reviExhibicion', 'reviExhibicion.usuario', 'actaEntrega', 'actaEntrega.usuario', 'tesoHistorial', 'tesoAuditoria', 'tesoAuditoria.usuario')->where('sol_ven_id', $usuario['idTerceroUsuario'])->get();
+
+        // Agrego la ruta edit a todas las solicitudes
+        $solicitudes = $solicitudes->map(function($item, $key){
+             $item['url'] = route('solicitud.edit', ['id' => $item['sol_id'], 'redirecTo' => 'grabar.1']);
+             return $item;
+        })->all();
+
         $response = compact('usuario', 'solicitudes');
         return response()->json($response);
     }
