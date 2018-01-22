@@ -25,6 +25,24 @@ app.directive('stringToNumber', function() {
   };
 });
 
+app.directive('format', ['$filter', function ($filter) {
+    return {
+        require: '?ngModel',
+        link: function (scope, elem, attrs, ctrl) {
+            if (!ctrl) return;
+
+            ctrl.$formatters.unshift(function (a) {
+                return $filter(attrs.format)(ctrl.$modelValue)
+            });
+
+            elem.bind('blur', function(event) {
+                var plainNumber = elem.val().replace(/[^\d|\-+|\.+]/g, '');
+                elem.val($filter(attrs.format)(plainNumber));
+            });
+        }
+    };
+}]);
+
 
 app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q', '$timeout', '$window', function ($scope, $http, $filter, $mdDialog, $q, $timeout, $window) {
 	
@@ -45,6 +63,9 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 	$scope.tipoDeServicioFilt = [];
 	$scope.sucubool = true;
 	$scope.siguiente = "";
+	$scope.pestanaSeleccionada =  [1];
+	$scope.conteo = 0;
+	$scope.arrayFormularios = ['solicitudForm', 'costosForm', 'objetivosForm']
 
 	$scope.labels = {
 	    "itemsSelected": "elementos seleccionados",
@@ -61,32 +82,25 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 	    "search": "Buscar una lineas...",
 	    "select": "Seleccionar una lineas..."
 	}
-	$scope.pasoDosSelect = false;
-	$scope.pasoUnoSelect = false;
 
 
 
 	$scope.getInfo = function(){
 		var url = '../solicitudGetInfo';
-		if ($scope.siguiente == 'grabar.1') {
+		if ($scope.siguiente == 'create') {
 			$scope.pasoUno = false;			
-			$scope.pasoDos = false;
+			$scope.pasoDos = true;
 			$scope.pasoTres = true;
 			$scope.pasoUnoSelect = true;
+		}else if ($scope.siguiente == 'grabar.1') {
+			$scope.pasoUnoSelect = true;
 		}else if($scope.siguiente == 'adelante.1'){	
-			$scope.pasoUno = false;			
-			$scope.pasoDos = false;		
-			$scope.pasoTres = true;
 			$scope.pasoDosSelect = true;
-		}else if($scope.siguiente == 'grabar.2'){				
-			$scope.pasoUno = false;			
-			$scope.pasoDos = false;		
-			$scope.pasoTres = false;
+		}else if($scope.siguiente == 'grabar.2'){	
 			$scope.pasoDosSelect = true;
-		}else if($scope.siguiente == 'adelante.2'){				
-			$scope.pasoUno = false;			
-			$scope.pasoDos = false;		
-			$scope.pasoTres = false;
+		}else if($scope.siguiente == 'adelante.2'){	
+			$scope.pasoTresSelect = true;
+		}else if($scope.siguiente == 'grabar.3'){	
 			$scope.pasoTresSelect = true;
 		}
 
@@ -113,7 +127,8 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 			$scope.tipoDeServicio = angular.copy(res.tipoDeServicio);
 			$scope.formaPago = angular.copy(res.formaPago);
 			$scope.causalesNego = angular.copy(res.causalesNego);
-			$scope.lineas = angular.copy(res.lineas);
+			$scope.lineasTodas = angular.copy(res.lineas);
+			$scope.lineas = $filter('filter')($scope.lineasTodas, {lin_txt_estado : 'No'}, true);
 
 			// if para obtener informacion cuando el formulario esta editando 
 			if (res.objeto != undefined) {
@@ -143,10 +158,19 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 				$scope.formatoDescuentoComer();
 				$scope.objeto.sol_tipocliente = $filter('filter')($scope.negociacionPara, {id : $scope.objeto.sol_tipocliente})[0];
 				$scope.objeto.listaprecios = $filter('filter')($scope.listaPrecios, {lis_id : $scope.objeto.sol_cli_id.lis_id})[0]['lis_txt_descrip'];
-				$scope.objeto.sol_peri_facturaini = new Date($filter('date')($scope.objeto.sol_peri_facturaini, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
-				$scope.objeto.sol_peri_facturafin = new Date($filter('date')($scope.objeto.sol_peri_facturafin, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
-				$scope.objeto.sol_peri_ejeini = new Date($filter('date')($scope.objeto.sol_peri_ejeini, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
-				$scope.objeto.sol_peri_ejefin = new Date($filter('date')($scope.objeto.sol_peri_ejefin, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));				
+				if ($scope.objeto.sol_peri_facturaini != null) {
+					$scope.objeto.sol_peri_facturaini = new Date($filter('date')($scope.objeto.sol_peri_facturaini, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
+				}
+				if ($scope.objeto.sol_peri_facturafin != null) {
+					$scope.objeto.sol_peri_facturafin = new Date($filter('date')($scope.objeto.sol_peri_facturafin, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
+				}
+				if ($scope.objeto.sol_peri_ejeini != null) {
+					$scope.objeto.sol_peri_ejeini = new Date($filter('date')($scope.objeto.sol_peri_ejeini, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
+				}
+				if ($scope.objeto.sol_peri_ejefin != null) {
+					$scope.objeto.sol_peri_ejefin = new Date($filter('date')($scope.objeto.sol_peri_ejefin, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
+				}			
+				
 				$scope.objeto.sol_ltxt_observ = $scope.objeto.sol_observaciones;
 				$scope.objeto.sol_evt_id = $filter('filter')($scope.arrayEventoTemp, {evt_id : $scope.objeto.sol_evt_id})[0];
 				
@@ -157,12 +181,16 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 				$scope.arrayZona = $scope.objeto.soli_zona;
 				$scope.objeto.soli_sucu = $scope.objeto.soli_sucu.map(function(object){
 					object.szn_coc_id = $filter('filter')($scope.multiSelectSucursales, {suc_id : object.ssu_suc_id})[0];
-					object.suc_id = object.ssu_suc_id;
-					object.porcentParti = object.ssu_ppart;
-					object.descripcionConId = object.szn_coc_id.suc_num_codigo + " - " + object.szn_coc_id.suc_txt_nombre + " - " + object.szn_coc_id.suc_txt_direccion;
-					return object;
+					if (object.szn_coc_id == undefined) {
+						return {obj : null};
+					}else{
+						object.suc_id = object.ssu_suc_id;
+						object.porcentParti = object.ssu_ppart;
+						object.descripcionConId = object.szn_coc_id.suc_num_codigo + " - " + object.szn_coc_id.suc_txt_nombre + " - " + object.szn_coc_id.suc_txt_direccion;
+						return object;	
+					}					
 				});
-
+				$scope.objeto.soli_sucu = $filter('removeWith')($scope.objeto.soli_sucu, {obj : null});
 				$scope.arraySucursales = $scope.objeto.soli_sucu;
 
 				$scope.objeto.soli_tipo_nego = $scope.objeto.soli_tipo_nego.map(function(object){
@@ -192,9 +220,10 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 				if ($scope.objeto.costo != null) {
 					$scope.arrayLineas = $scope.objeto.costo.lineas.map(function(object){
 						object.porcentParti = object.scl_ppart;
-						object.lin_txt_descrip = $filter('filter')($scope.lineas, {lin_id : object.scl_lin_id})[0]['lin_txt_descrip'];
-						object.categorias = $filter('filter')($scope.lineas, {lin_id : object.scl_lin_id})[0]['categorias'];
-						object.cat_id = object.categorias['cat_id'];
+						var lineaObj1 = $filter('filter')($scope.lineasTodas, {lin_id : object.scl_lin_id})[0];
+						object.lin_txt_descrip = lineaObj1['lin_txt_descrip'];
+						object.categorias = lineaObj1['categorias'];
+						object.cat_id = object.scl_cat_id;
 						object.lin_id = object.scl_lin_id;
 						return object;
 					});
@@ -203,6 +232,34 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 
 			$scope.objeto.sol_ven_id = angular.copy(res.usuario.idTerceroUsuario);
 			$scope.objeto.usuario = angular.copy(res.usuario.nombre + " " + res.usuario.apellido);
+			if ($scope.objeto.objetivo != null) {
+				res.objeto.objetivo.soo_pecomfin = new Date($filter('date')(res.objeto.objetivo.soo_pecomfin, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
+				res.objeto.objetivo.soo_pecomini = new Date($filter('date')(res.objeto.objetivo.soo_pecomini, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
+				res.objeto.objetivo.soo_pcreciestima = parseFloat(res.objeto.objetivo.soo_pcreciestima).toFixed(2);
+				res.objeto.objetivo.soo_pcrelin = parseFloat(res.objeto.objetivo.soo_pcrelin).toFixed(2);
+				res.objeto.objetivo.soo_pinventaestiline = parseFloat(res.objeto.objetivo.soo_pinventaestiline).toFixed(2); 
+				res.objeto.objetivo.soo_pinverestima = parseFloat(res.objeto.objetivo.soo_pinverestima).toFixed(2); 
+			
+				if (isNaN(res.objeto.objetivo.soo_pinverestima)) {
+					res.objeto.objetivo.soo_pinverestima = 0;
+				}
+				res.objeto.objetivo.soo_pinvermargi = parseFloat(res.objeto.objetivo.soo_pinvermargi).toFixed(2); 
+				if (isNaN(res.objeto.objetivo.soo_pinvermargi)) {
+					res.objeto.objetivo.soo_pinvermargi = 0;
+				}
+				res.objeto.objetivo.soo_pvenmarlin = parseFloat(res.objeto.objetivo.soo_pvenmarlin).toFixed(2); 
+				$scope.objObjetivos = angular.copy(res.objeto.objetivo);
+			}			
+			if ($scope.arrayLineas.length == 0 && Object.keys($scope.objObjetivos).length === 0) {
+				$scope.pasoUno = false;			
+				$scope.pasoDos = false;		
+				$scope.pasoTres = true;
+			}
+			if ($scope.arrayLineas.length > 0 && Object.keys($scope.objObjetivos).length === 0) {
+				$scope.pasoUno = false;			
+				$scope.pasoDos = false;		
+				$scope.pasoTres = false;
+			}
 
 			$scope.progress = false;
 		}, function(errorResponse){
@@ -451,7 +508,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 	}
 
 	$scope.sucursalesFiltPorCliente = function(){
-		$scope.nuevoFiltrado = $filter('filter')($scope.multiSelectSucursales, {cli_id : $scope.objeto.sol_cli_id.cli_id, codcanal : $scope.objeto.sol_can_id.can_id.trim()});
+		$scope.nuevoFiltrado = $filter('filter')($scope.multiSelectSucursales, {cli_id : $scope.objeto.sol_cli_id.cli_id, codcanal : $scope.objeto.sol_can_id.can_id.trim()}, true);
 		$scope.nuevoFiltrado = $scope.nuevoFiltrado.map(function(element){
 			element.descripcionConId = element.suc_num_codigo + " - " + element.suc_txt_nombre + " - " + element.suc_txt_direccion;
 			return element;
@@ -534,10 +591,12 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 	$scope.calculaFaltanteSucu = function(){
 		var valor = 0;
 		$scope.arraySucursales.forEach( function(element, index) {
-			if (element.porcentParti === 'null') {
-				element.porcentParti = 0;
+			if (element.porcentParti === 'null' || element.porcentParti == undefined ) {
+				valor = 0 + valor;
+			}else{
+				valor = parseFloat(element.porcentParti) + valor;
 			}
-			valor = parseFloat(element.porcentParti) + valor;
+			
 		});	
 		return (100 - valor).toFixed(2);
 	}
@@ -555,9 +614,24 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		});		
 	}
 
-	$scope.save = function(){
-		$scope.progress = true;
+	$scope.save = function(form){
 		// creo la solicitud con estado que se encuentra la solicitud en elaboracion(0) y estado final de la solicitud(1).
+		console.log(form);
+		if (form.$invalid) {
+			var invalidAccion = $mdDialog.alert()
+			.parent(angular.element(document.querySelector('#popupContainer')))
+			.clickOutsideToClose(false)
+			.title('')
+			.htmlContent('<p>Por favor diligenciar los campos obligatorios marcados en rojo</p>')
+			.ariaLabel('Lucky day')
+			.ok('OK')
+			$mdDialog.show(invalidAccion);
+			if ($scope.objeto.sol_id != undefined) {
+				$window.location.reload();				
+			}
+			return false;
+		}
+		$scope.progress = true;
 		$scope.envioPost = $scope.convertirObjeto(angular.copy($scope.objeto), 0, 1, 0);
 		$scope.envioPost.arrayZona = $scope.arrayZona;
 		$scope.envioPost.arraySucursales = $scope.arraySucursales;
@@ -565,19 +639,54 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		$scope.envioPost.arrayCausalNegociacion = $scope.arrayCausalNegociacion;
 		$scope.envioPost.objCostos = $scope.objCostos;
 		$scope.envioPost.arrayLineas = $scope.arrayLineas;
+		$scope.envioPost.objObjetivos = $scope.objObjetivos;
 
 		var bandera = true;
 		var errorString = "";
-		if ($scope.siguiente == 'adelante.3' || $scope.siguiente == 'guardar.3') {
+
+		
+
+		if ($scope.arraySucursales.length > 0 && $scope.calculaFaltanteSucu() != "0.00") {
+				bandera = false;
+				errorString += 'El porcentaje de participacion de las sucursales debe ser del 100% (PESTAÑA INFORMACION DE LA SOLICITUD)';
+		}
+		console.log($scope.pestanaSeleccionada[1]);
+		if ($scope.pestanaSeleccionada[1] == 1 && $scope.objeto.sol_id != undefined) {
 			if ($scope.arrayLineas.length > 0 && $scope.sumPorcentPart() != 100) {
 				bandera = false;
-				errorString = 'El porcentaje de participacion debe ser igual a 100 entre todas las lineas seleccionadas';
+				errorString += 'El porcentaje de participacion debe ser igual a 100 entre todas las lineas seleccionadas ';
 			}else if($scope.arrayLineas.length == 0){
 				bandera = false;
-				errorString = 'Debe diligenciar al menos una linea de la negociacion con su respectivo porcentaje de participación';
+				errorString += 'Debe diligenciar al menos una linea de la negociacion con su respectivo porcentaje de participación';
 			}else if($scope.lineasTienenPorcentaje()){
 				bandera = false;
-				errorString = 'Todas las lineas seleccionadas deben tener porcentaje de participación';
+				errorString += 'Todas las lineas seleccionadas deben tener porcentaje de participación ';
+			}
+		}
+
+		if ($scope.pestanaSeleccionada[1] == 0) {
+			if ($scope.arrayZona.length == 0 && $scope.arraySucursales.length == 0) {
+				if ($scope.objeto.sol_tipocliente.id == 1) {
+					errorString += 'Favor ingresar al menos una zona <br>';
+				}else if($scope.objeto.sol_tipocliente.id == 2){
+					errorString += 'Favor ingresar al menos una sucursal <br>';
+				}
+				bandera = false;				
+			}
+
+			if ($scope.arrayZona.length > 0 && $scope.calcularMaximo() > 0) {
+				errorString += 'La suma del porcentaje de participacion de las zonas debe ser igual a 100%';
+				bandera = false;
+			}
+
+			if ($scope.arrayTipoNegociacion.length == 0) {
+				errorString += 'Favor ingresar al menos un tipo de negociacion ';
+				bandera = false;
+			}
+
+			if ($scope.arrayCausalNegociacion.length == 0) {
+				errorString += 'Favor ingresar al menos un causal de negociacion';
+				bandera = false;
 			}
 		}
 
@@ -600,16 +709,17 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 					alert("Error al grabar");
 				});
 			}
-		}else{			
-			var invalidAccion = $mdDialog.alert()
-			.parent(angular.element(document.querySelector('#popupContainer')))
-			.clickOutsideToClose(false)
-			.title('')
-			.textContent(errorString)
-			.ariaLabel('Lucky day')
-			.ok('OK')
-			$mdDialog.show(invalidAccion);
+		}else{		
+			var confirm = $mdDialog.confirm()
+	          .title('')
+	          .textContent(errorString)
+	          .ariaLabel()
+	          .ok('Entendido');
 			$scope.progress = false;
+		    $mdDialog.show(confirm).then(function() {
+		    	$scope.progress = true;
+		      	$window.location.reload();
+		    });
 		}	
 	}
 
@@ -706,13 +816,89 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 
 	$scope.calcularObjetivos = function(){
 		if ($scope.objObjetivos.soo_pecomfin != undefined && $scope.objObjetivos.soo_pecomini != undefined && $scope.objObjetivos.soo_pecomfin > $scope.objObjetivos.soo_pecomini) {
+			$scope.progress = true;
 			$scope.objeto.objObjetivos = $scope.objObjetivos;
 			$scope.objeto.arraySucursales = $scope.arraySucursales;
 			$http.post('../../calcularObjetivos', $scope.objeto).then(function(response){
 				var respuesta = response.data;
-				console.log(respuesta);
+				$scope.objObjetivos.soo_costonego = $scope.sumarTipoNego();
+				$scope.objObjetivos.soo_venprolin6m = ($scope.sumarArreglo(respuesta.soo_venprolin6m) / 6).toFixed(2);
+				$scope.objObjetivos.soo_ventapromtotal = $scope.sumarArreglo(respuesta.soo_ventapromtotal);
+				if (isNaN($scope.objObjetivos.soo_ventapromtotal) || $scope.objObjetivos.soo_ventapromtotal == Infinity || $scope.objObjetivos.soo_ventapromtotal == "") {
+					$scope.objObjetivos.soo_ventapromtotal = 0;
+				}
+				$scope.objObjetivos.soo_ventapromseisme = ($scope.sumarArreglo(respuesta.soo_ventapromseisme) / 6).toFixed(2);
+				if (isNaN($scope.objObjetivos.soo_ventapromseisme) || $scope.objObjetivos.soo_ventapromseisme == Infinity || $scope.objObjetivos.soo_ventapromseisme == "") {
+					$scope.objObjetivos.soo_ventapromseisme = 0;
+				}
+				$scope.objObjetivos.soo_venpromeslin = $scope.sumarArreglo(respuesta.soo_venpromeslin);		
+				$scope.objObjetivos.soo_vemesantes = $scope.sumarArreglo(respuesta.soo_vemesantes);		
+				$scope.objObjetivos.soo_vemesdespues = $scope.sumarArreglo(respuesta.soo_vemesdespues);	
+				$scope.objObjetivos.arreglo = angular.copy(respuesta.arreglo);	
+				$scope.objObjetivos.soo_ventaestitotal = undefined; 
+				$scope.arrayLineas = $scope.arrayLineas.map(function(obj){
+					var dato = $filter('filter')($scope.objObjetivos.arreglo, { codlinea : obj.lin_id });
+					if (dato.length > 0) {
+						obj.scl_valorventa = dato[0]['total'];
+						obj.scl_pvalorventa = ((obj.scl_valorventa / $scope.objObjetivos.soo_ventapromtotal) * 100).toFixed(2);
+					}else{
+						obj.scl_valorventa = 0;
+						obj.scl_pvalorventa = 0;
+					}
+					return obj;
+				});
+				$scope.objObjetivos.soo_venestlin = $scope.objeto.sol_ventaestimada;
+				if ($scope.objObjetivos.soo_venestlin == null) {
+					$scope.objObjetivos.soo_venestlin = 0;
+				}
+				if($scope.objObjetivos.soo_venestlin == "" && $scope.objObjetivos.soo_venpromeslin != '0.00'){
+		            $scope.objObjetivos.soo_pinventaestiline = 0;
+		            $scope.objObjetivos.soo_ventmargilin = 0;
+		            $scope.objObjetivos.soo_pcrelin = 0;
+		            $scope.objObjetivos.soo_pvenmarlin = 0;
+		        }else{
+		        	var soo_pinventaestiline = (($scope.objObjetivos.soo_costonego / $scope.objObjetivos.soo_venestlin) * 100).toFixed(2);
+					 if(isNaN(soo_pinventaestiline) || soo_pinventaestiline == Infinity || soo_pinventaestiline == ""){
+		                $scope.objObjetivos.soo_pinventaestiline = 0;
+		            }else{
+		                $scope.objObjetivos.soo_pinventaestiline = soo_pinventaestiline;
+		            }   
+
+		            // Campo Venta marginal lineas
+		            // Formula Si selecciona 1 Huella año anterior= venta estimada lineas - (venta promedio mes lineas periodo compracion * meses facturacion)
+		            // Formular si selecciona 2 Capitalizar Oportunidad= venta estimada líneas – (venta promedio mes línea a activar – últimos 6 meses * meses de facturación)
+
+		            if($scope.objeto.sol_huella_capitalizar.id == '1'){
+		                var soo_ventmargilin = ($scope.objObjetivos.soo_venestlin - (parseFloat($scope.objObjetivos.soo_venpromeslin) * $scope.objeto.sol_mesesfactu));               
+		            }else{                
+		                var soo_ventmargilin = ($scope.objObjetivos.soo_venestlin - (parseFloat($scope.objObjetivos.soo_venprolin6m) *  $scope.objeto.sol_mesesfactu)).toFixed(2);                                           
+		            }
+		            if(isNaN(soo_ventmargilin || soo_ventmargilin == Infinity || soo_ventmargilin == "")){
+		                $scope.objObjetivos.soo_ventmargilin = 0;	                    
+	                }else{                    
+		                $scope.objObjetivos.soo_ventmargilin = parseFloat(soo_ventmargilin).toFixed(2);
+	                }
+
+		            var soo_pcrelin = (($scope.objObjetivos.soo_ventmargilin / ($scope.objObjetivos.soo_venpromeslin* $scope.objeto.sol_mesesfactu))*100).toFixed(2);
+		            if(isNaN(soo_pcrelin) || soo_pcrelin == Infinity || soo_pvenmarlin == "" || soo_pcrelin == -Infinity){
+		                $scope.objObjetivos.soo_pcrelin = 0;
+		            }else{
+		                $scope.objObjetivos.soo_pcrelin = soo_pcrelin;
+		            }   
+
+		            var soo_pvenmarlin = (($scope.objObjetivos.soo_costonego / $scope.objObjetivos.soo_ventmargilin) * 100).toFixed(2);
+		            if(isNaN(soo_pvenmarlin) || soo_pvenmarlin == Infinity || soo_pvenmarlin == ""){
+		                $scope.objObjetivos.soo_pvenmarlin = 0;
+		            }else{
+		                $scope.objObjetivos.soo_pvenmarlin = soo_pvenmarlin;
+		            } 
+
+		           	$scope.calcularCrecimientoEstimadoCliente();
+		           	$scope.progress = false;
+		        }				         
+ 
 			}, function(errorResponse){
-				alert(errorResponse);
+				$scope.calcularObjetivos();
 			});
 		}else{
 			$mdDialog.show(
@@ -725,6 +911,109 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		        .ok('Cerrar')
 		    );
 		}
+	}
+
+	$scope.calcularCrecimientoEstimadoCliente = function(){
+		if($scope.objObjetivos.soo_ventaestitotal == '$' || $scope.objObjetivos.soo_ventaestitotal == '$ '){
+			$scope.objObjetivos.soo_ventaestitotal = undefined;
+		}
+		$scope.objObjetivos.soo_pcreciestima  = (((parseFloat($scope.objObjetivos.soo_ventaestitotal) - (parseFloat($scope.objObjetivos.soo_ventapromtotal) * parseFloat($scope.objeto.sol_mesesfactu))) / (parseFloat($scope.objObjetivos.soo_ventapromtotal) * parseFloat($scope.objeto.sol_mesesfactu))) * parseFloat(100)).toFixed(2);
+		if ($scope.objObjetivos.soo_pcreciestima < 0 || isNaN($scope.objObjetivos.soo_pcreciestima)|| $scope.objObjetivos.soo_pcreciestima == Infinity) {
+			$scope.objObjetivos.soo_pcreciestima = 0;
+		}
+		$scope.calcularVentaMarginalCliente();
+		$scope.calcularPorcentajeEstimadoVentaTotalCliente();
+		$scope.porcentInverSobreVentaMarginalLineas();
+		$scope.ventaPromMesPeriodoComparacion();
+	}
+
+	$scope.calcularVentaMarginalCliente = function(){
+		/*****************************************************
+		* Campo venta marginal cliente
+		* Formula= venta estimada del total cliente - (venta promedio mes total cliente periodo comparacion * meses facturacion)        
+		******************************************************/
+		if($scope.objeto.sol_huella_capitalizar.id == '1'){
+		    var soo_ventamargi = parseFloat($scope.objObjetivos.soo_ventaestitotal) - (parseFloat($scope.objObjetivos.soo_ventapromtotal)  * parseFloat($scope.objeto.sol_mesesfactu));	                        
+		}else{
+		    var soo_ventamargi = (parseFloat($scope.objObjetivos.soo_ventaestitotal) - (parseFloat($scope.objObjetivos.soo_ventapromseisme) * parseFloat($scope.objeto.sol_mesesfactu))).toFixed(2);                                         
+		}
+		if(isNaN(soo_ventamargi) || soo_ventamargi < 0){
+		   	$scope.objObjetivos.soo_ventamargi = 0;	                    
+		}else{                    
+		    $scope.objObjetivos.soo_ventamargi = parseFloat(soo_ventamargi).toFixed(2);
+		}
+	}
+
+	$scope.calcularPorcentajeEstimadoVentaTotalCliente = function(){
+		/************************************************************
+        * Campo % de inversion sobre la venta estimada total cliente 
+        * Formula= (costo de la negociacion / venta estimada del total cliente)*100        
+        *************************************************************/
+        var resul = 0;
+        if(parseFloat($scope.objObjetivos.soo_ventaestitotal) > 0){
+         resul = ((parseFloat($scope.objObjetivos.soo_costonego) / parseFloat($scope.objObjetivos.soo_ventaestitotal)) * 100).toFixed(2);
+        }                
+        $scope.objObjetivos.soo_pinverestima = resul;
+	}
+
+
+	$scope.porcentInverSobreVentaMarginalLineas = function(){
+		/********************************************************************
+	    * Campo % de inversion sobre la venta marginal total cliente
+	    * Formula = (costo de la negociacion / venta marginal cliente)* 100
+	    *********************************************************************/
+	    var resultado = ((parseFloat($scope.objObjetivos.soo_costonego) / parseFloat($scope.objObjetivos.soo_ventamargi)) * 100).toFixed(2);                
+	    if(isNaN(resultado) || resultado < 0 || resultado == Infinity){
+	        resultado = 0;
+	    }
+	    $scope.objObjetivos.soo_pinvermargi = resultado;
+	}
+    
+    $scope.ventaPromMesPeriodoComparacion = function(){
+    	/***********************************************************************
+        * Campo venta promedio mes periodo comparacion
+        * Formula= venta promedio mes total cliente periodo comparacion - venta promedio mes lineas periodo comparacion         
+        ************************************************************************/
+        $scope.objObjetivos.soo_veprome = (parseFloat($scope.objObjetivos.soo_ventapromtotal) - parseFloat($scope.objObjetivos.soo_venpromeslin)).toFixed(2);
+        if (isNaN($scope.objObjetivos.soo_veprome) || $scope.objObjetivos.soo_veprome < 0 || $scope.objObjetivos.soo_veprome == Infinity) {
+        	$scope.objObjetivos.soo_veprome = 0;
+        }
+    }	
+
+	$scope.sumarArreglo = function(arreglo){
+		var arrayTotales = arreglo.map(function(obj){
+			return parseFloat(obj.total);
+		});
+		return $filter('sum')(arrayTotales).toFixed(2);
+	}
+
+	$scope.cambiarPestanaSeleccionada = function(numeroPestana, formulario){
+		var pestanaAnterior = $scope.pestanaSeleccionada[0];
+		$scope.pestanaSeleccionada[0] = numeroPestana;
+		$scope.pestanaSeleccionada[1] = pestanaAnterior;
+
+		if (numeroPestana == 0) {
+			$scope.siguiente = 'grabar.1';
+		}
+		if (numeroPestana == 1) {
+			$scope.siguiente = 'grabar.2';
+		}
+		if (numeroPestana == 2) {
+			$scope.siguiente = 'grabar.3';
+		}
+
+		if ($scope.pestanaSeleccionada[0] == 0 && $scope.pestanaSeleccionada[1] == 1) {
+			$scope.conteo = $scope.conteo + 1;
+		}
+
+		console.log($scope.conteo);
+
+
+		if ($scope.conteo == 0 || $scope.conteo == 1) {
+			$scope.conteo = $scope.conteo + 1;
+		}else if($scope.conteo >= 2){
+			$scope.save($scope[$scope.arrayFormularios[$scope.pestanaSeleccionada[1]]]);
+		}		
 	}
 
 

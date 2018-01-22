@@ -27,7 +27,9 @@
                 <td>
                     <label>Periodo de Comparación: </label>
                 </td>
-                <td></td>
+                <td>
+                    @{{objObjetivos.soo_pecomini | date : 'dd-MM-yyyy'}} a @{{objObjetivos.soo_pecomfin  | date : 'dd-MM-yyyy'}} (@{{objObjetivos.soo_mese}} Meses)
+                </td>
             </tr>
         </tbody>
     </table>

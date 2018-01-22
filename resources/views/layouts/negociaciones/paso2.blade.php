@@ -156,20 +156,13 @@
 		        <div class="col-sm-6"></div>                                
                 <div class="col-sm-6">
                     <!-- btn Save -->
-                        <div class="col-sm-6"></div>
+                        <div class="col-sm-8"></div>
                         <div class="col-sm-2">
                             <button  ng-click="siguiente='grabar.2'" type="submit" class="btn btn-success btn-circle btn-lg  pull-right">
                                 <i class="glyphicon glyphicon-floppy-save"></i>
                             </button>
                         </div>                                  
                     <!-- end btn save -->
-                    <!-- btn cancelar -->
-                        <div class="col-sm-2">
-                            <button class="btn btn-danger btn-circle btn-lg  pull-right">
-                                <i class="glyphicon glyphicon-remove"></i>
-                            </button>
-                        </div>                                      
-                    <!-- end btn cancelar -->
                     <!-- btn adelante -->
                         <div class="col-sm-2">
                             <button ng-click="siguiente='adelante.2'"  type="submit" class="btn btn-primary btn-circle btn-lg  pull-right">

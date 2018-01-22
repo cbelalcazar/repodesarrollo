@@ -24,6 +24,7 @@ use App\Models\negociaciones\TFormaPago;
 use App\Models\negociaciones\TSoliTipoNego;
 use App\Models\negociaciones\TSoliCostos;
 use App\Models\negociaciones\TSoliCostosLineas;
+use App\Models\negociaciones\TSoliObjetivos;
 use App\Models\Genericas\TVendedor;
 use App\Models\Genericas\TCanal;
 use App\Models\Genericas\TCliente;
@@ -71,7 +72,7 @@ class solicitudController extends Controller
         $data = $request->all();
         if (isset($data['id'])) {
             $id = $data['id'];
-            $objeto = TSolicitudNego::with('soliZona', 'soliSucu', 'soliTipoNego', 'causal', 'costo', 'costo.lineas')->where('sol_id', $id)->first();
+            $objeto = TSolicitudNego::with('soliZona', 'soliSucu', 'soliTipoNego', 'causal', 'costo', 'costo.lineas', 'objetivo')->where('sol_id', $id)->first();
         }
         // obtengo usuario logueado
         $usuario = Auth::user();
@@ -115,7 +116,7 @@ class solicitudController extends Controller
         // Forma de pago
         $formaPago = TFormaPago::all();
         // Lineas
-        $lineas = TLineas::with('categorias')->where('lin_txt_estado', 'No')->get();
+        $lineas = TLineas::with('categorias')->get();
 
 
         $response = compact('usuario', 'claseNegociacion', 'negoAnoAnterior', 'tipNegociacion', 'VendedorSucursales', 'canales', 'clientes', 'idClientes', 'negociacionPara', 'agruZonasSucursal', 'zonas', 'listaPrecios', 'eventoTemp', 'tipoDeNegociacion', 'tipoDeServicio', 'causalesNego', 'objeto', 'clientesTodos', 'urlMisSolicitudes', 'formaPago', 'lineas');
@@ -188,32 +189,52 @@ class solicitudController extends Controller
     {   
         $data = $request->all();
         $negociacion = TSolicitudNego::find($id);
-        if ($data['redirecTo'] == 'grabar.1'|| $data['redirecTo'] == 'adelante.1') {
             $negociacion->update($data);
             // Zonas update
-            $deleteZonas = TSoliZona::where('szn_sol_id', $id)->delete();
-            $negociacion = $this->crearSoliZonas($data['arrayZona'], $negociacion);
+            if (count($data['arrayZona']) > 0) {
+                $deleteZonas = TSoliZona::where('szn_sol_id', $id)->delete();
+                $negociacion = $this->crearSoliZonas($data['arrayZona'], $negociacion);
+            }
+            
 
-            // Sucursales update
-            $delteSucursales = TSoliSucursal::where('ssu_sol_id', $id)->delete();
-            $negociacion = $this->crearSoliSucursales($data['arraySucursales'], $negociacion);
+            if (count($data['arraySucursales']) > 0) {
+                // Sucursales update
+                $delteSucursales = TSoliSucursal::where('ssu_sol_id', $id)->delete();
+                $negociacion = $this->crearSoliSucursales($data['arraySucursales'], $negociacion);
+            }
+           
+            if (count($data['arrayTipoNegociacion']) > 0) {
+                // tipo negociacion update
+                $delteSoliTipoNego = TSoliTipoNego::where('stn_sol_id', $id)->delete();
+                $negociacion = $this->crearSoliTipoNego($data['arrayTipoNegociacion'], $negociacion, $data['sol_cli_id']);
+            }
+          
 
-            // tipo negociacion update
-            $delteSoliTipoNego = TSoliTipoNego::where('stn_sol_id', $id)->delete();
-            $negociacion = $this->crearSoliTipoNego($data['arrayTipoNegociacion'], $negociacion, $data['sol_cli_id']);
+            if (count($data['arrayCausalNegociacion']) > 0) {
+                // tipo negociacion update
+                $deleteSoliCausalNego = TSoliCausalNego::where('scn_sol_id', $id)->delete();
+                $negociacion = $this->crearSoliCausales($data['arrayCausalNegociacion'], $negociacion);
+            }
+            
+            if (count($data['arrayLineas']) > 0) {
+                $deleteSoliCostos = TSoliCostos::where('soc_sol_id', $id)->delete();
+                $negociacion = $this->crearSoliCostos($data['objCostos'], $negociacion);
+                $soliCostos = TSoliCostos::where('soc_sol_id', $id)->first();
 
-            $deleteSoliCausalNego = TSoliCausalNego::where('scn_sol_id', $id)->delete();
-            $negociacion = $this->crearSoliCausales($data['arrayCausalNegociacion'], $negociacion);
-        }elseif ($data['redirecTo'] == 'grabar.2' || $data['redirecTo'] == 'adelante.2') {
+                $deleteSoliCostosLineas = TSoliCostosLineas::where('scl_soc_id', $soliCostos['soc_id'])->delete();
+                $soliCostos = $this->crearSoliCostosLinea($data['arrayLineas'], $soliCostos, $soliCostos['soc_id']);
+            }
+            
 
-            $deleteSoliCostos = TSoliCostos::where('soc_sol_id', $id)->delete();
-            $negociacion = $this->crearSoliCostos($data['objCostos'], $negociacion);
-            $soliCostos = TSoliCostos::where('soc_sol_id', $id)->first();
+            if (isset($data['objObjetivos']['soo_costonego'])) {
+                $deleteSoliObjetivos = TSoliObjetivos::where('soo_sol_id', $id)->delete();
+                $data['objObjetivos']['soo_sol_id'] = $id;
+                $data['objObjetivos']['soo_pecomini'] = Carbon::parse($data['objObjetivos']['soo_pecomini'])->format('Y-m-d');
+                $data['objObjetivos']['soo_pecomfin'] = Carbon::parse($data['objObjetivos']['soo_pecomfin'])->format('Y-m-d');
 
-            $deleteSoliCostosLineas = TSoliCostosLineas::where('scl_soc_id', $soliCostos['soc_id'])->delete();
-            $soliCostos = $this->crearSoliCostosLinea($data['arrayLineas'], $soliCostos, $soliCostos['soc_id']);
-
-        }
+                $soliObjetivos = TSoliObjetivos::create($data['objObjetivos']);
+            }
+          
         
         $url = route('solicitud.edit', ['id' => $id, 'redirecTo' => $data['redirecTo']]);
 
@@ -231,8 +252,14 @@ class solicitudController extends Controller
             $array['scl_costo'] = $value['CostoNegoLinea']; 
             $array['scl_costoadi'] = $value['CostoAdiLinea'];             
             $array['scl_estado'] = 1; 
-            $array['scl_valorventa'] = 0;   // **
-            $array['scl_pvalorventa'] = 0;   // ** 
+            if (!isset($value['scl_valorventa'])) {
+                $value['scl_valorventa'] = 0;
+            }
+            if (!isset($value['scl_pvalorventa'])) {
+                $value['scl_pvalorventa'] = 0;
+            }
+            $array['scl_valorventa'] = $value['scl_valorventa'];   // **
+            $array['scl_pvalorventa'] = $value['scl_pvalorventa'];   // ** 
             $obj->lineas()->create($array);
         }        
         return $obj;
@@ -389,9 +416,13 @@ class solicitudController extends Controller
            $sucursales = collect($data['arraySucursales'])->pluck('ssu_suc_id')->all(); 
            $sucurConsulta = TSucursal::whereIn('suc_id', $sucursales)->get();           
            $codigosSucur = collect($sucurConsulta)->pluck('suc_num_codigo')->all();
-        }   
+        }else{
+            $codigosSucur = [];
+        }
         $canal =  $data['sol_can_id']['can_id'];
-            // Consulta la venta promedio mes lineas periodo de comparacion
+
+
+        // Consulta la venta promedio mes lineas periodo de comparacion
         $soo_venpromeslin = NegociacionesVentas::select(DB::raw('SUM(neto) as total, codlinea'))
         ->where('codcanal', $data['sol_can_id']['can_id'])
         ->where('nitcliente', $data['sol_cli_id']['ter_id'])
@@ -403,7 +434,105 @@ class solicitudController extends Controller
         ->groupBy('codlinea')
         ->get();
 
-        $response = compact('data', 'soo_venpromeslin', 'codigosSucur', 'lineas', 'canal', 'fechaInicio', 'fechaFin');
+        $fechaEjecucion = Carbon::parse($data['sol_peri_ejefin'])->format('d/m/Y');
+        $ultimosSeisMeses1 = Carbon::parse($data['sol_peri_ejefin'])->subMonth(5)->format('d/m/Y');
+        $explode = explode("/", $ultimosSeisMeses1);
+        $explode[0] = '01';
+
+        $ultimosSeisMeses1 = implode("/", $explode);
+
+        // Consulta la venta promedio de los ultimos 6 meses de la lineas
+        $soo_venprolin6m =  NegociacionesVentas::select(DB::raw('SUM(neto) as total, codlinea'))
+        ->where('codcanal', $data['sol_can_id']['can_id'])
+        ->where('nitcliente', $data['sol_cli_id']['ter_id'])
+        ->whereBetween('fecha', [$ultimosSeisMeses1, $fechaEjecucion])
+        ->where('concepto', '501')
+        ->where('co', '99')
+        ->whereIn('codlinea', $lineas)
+        ->whereIn('codsucursal', $codigosSucur)
+        ->groupBy('codlinea')
+        ->get();
+
+        // Consulta la venta promedio total del cliente en el periodo de comparacion
+        $soo_ventapromtotal = NegociacionesVentas::select(DB::raw('SUM(neto) as total'))
+        ->where('codcanal', $data['sol_can_id']['can_id'])
+        ->where('nitcliente', $data['sol_cli_id']['ter_id'])
+        ->whereBetween('fecha', [$fechaInicio, $fechaFin])
+        ->where('concepto', '501')
+        ->where('co', '99')
+        ->whereIn('codsucursal', $codigosSucur)
+        ->get();
+
+        // Consulta la venta promedio total de los ultimos 6 meses
+        $soo_ventapromseisme =  NegociacionesVentas::select(DB::raw('SUM(neto) as total'))
+        ->where('codcanal', $data['sol_can_id']['can_id'])
+        ->where('nitcliente', $data['sol_cli_id']['ter_id'])
+        ->whereBetween('fecha', [$ultimosSeisMeses1, $fechaEjecucion])
+        ->where('concepto', '501')
+        ->where('co', '99')
+        ->whereIn('codsucursal', $codigosSucur)
+        ->get();
+
+        // Consulta venta 1 mes antes periodo de comparacion
+        $fechCompaSinUnMes = Carbon::parse($data['objObjetivos']['soo_pecomini'])->subMonth(1)->format('d/m/Y');
+
+        $soo_vemesantes =  NegociacionesVentas::select(DB::raw('SUM(neto) as total, codlinea'))
+        ->where('codcanal', $data['sol_can_id']['can_id'])
+        ->where('nitcliente', $data['sol_cli_id']['ter_id'])
+        ->where('fecha', '>=', $fechCompaSinUnMes)
+        ->where('fecha', '<', $fechaInicio)
+        ->where('concepto', '501')
+        ->where('co', '99')
+        ->whereNotIn('codlinea', $lineas)
+        ->whereIn('codsucursal', $codigosSucur)
+        ->groupBy('codlinea')
+        ->get();
+
+        //  Consulta Venta 1 mes despues del periodo de comparacion
+        $fechCompaMasUnMes = Carbon::parse($data['objObjetivos']['soo_pecomfin'])->addMonth(1)->format('d/m/Y');
+
+        $soo_vemesdespues =  NegociacionesVentas::select(DB::raw('SUM(neto) as total, codlinea'))
+        ->where('codcanal', $data['sol_can_id']['can_id'])
+        ->where('nitcliente', $data['sol_cli_id']['ter_id'])
+        ->where('fecha', '>', $fechaFin)
+        ->where('fecha', '<=', $fechCompaMasUnMes)
+        ->where('concepto', '501')
+        ->where('co', '99')
+        ->whereNotIn('codlinea', $lineas)
+        ->whereIn('codsucursal', $codigosSucur)
+        ->groupBy('codlinea')
+        ->get();
+
+        // Consulta los valores de las lineas
+
+        if($data['sol_huella_capitalizar'] == '2'){
+            $arreglo =  NegociacionesVentas::select(DB::raw('SUM(neto) / 6  as total, codlinea'))
+                ->where('codcanal', $data['sol_can_id']['can_id'])
+                ->where('nitcliente', $data['sol_cli_id']['ter_id'])
+                ->whereBetween('fecha', [$ultimosSeisMeses1, $fechaEjecucion])
+                ->where('concepto', '501')
+                ->where('co', '99')
+                ->whereIn('codlinea', $lineas)
+                ->whereIn('codsucursal', $codigosSucur)
+                ->groupBy('codlinea')
+                ->get();
+        }//fin if valida si es capitalizar oportunidad
+        else{
+            $arreglo = NegociacionesVentas::select(DB::raw('SUM(neto) as total, codlinea'))
+                ->where('codcanal', $data['sol_can_id']['can_id'])
+                ->where('nitcliente', $data['sol_cli_id']['ter_id'])
+                ->whereBetween('fecha', [$fechaInicio, $fechaFin])
+                ->where('concepto', '501')
+                ->where('co', '99')
+                ->whereIn('codlinea', $lineas)
+                ->whereIn('codsucursal', $codigosSucur)
+                ->groupBy('codlinea')
+                ->get();
+        }
+
+
+        
+        $response = compact('data', 'soo_venpromeslin', 'soo_venprolin6m', 'soo_ventapromtotal', 'soo_ventapromseisme', 'soo_vemesantes', 'soo_vemesdespues', 'arreglo',  'ultimosSeisMeses1', 'fechaFin', 'fechaInicio', 'explode1', 'fechaEjecucion', 'fechCompaSinUnMes', 'lineas', 'codigosSucur');
         return response()->json($response);
     }
 }

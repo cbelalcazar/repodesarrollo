@@ -10,7 +10,7 @@ class TSoliObjetivos extends Model
 
     protected $table = 't_soliobjetivos';
 
-    public $incrementing = false;
+    public $incrementing = true;
 
     protected $primaryKey = 'soo_id';
 

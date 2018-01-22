@@ -10,18 +10,18 @@
 <div ng-controller='solicitudCtrl as ctrl' class="col-md-12" ng-init="objeto.sol_id = {{$id}}; siguiente = '{{$adelante}}'; getInfo();" ng-cloak>
     <md-content>
         <md-tabs md-dynamic-height md-border-bottom>
-            <md-tab label="Información de Solicitud"  md-active="pasoUnoSelect"  ng-disabled="pasoUno">
-				<form name="solicitudForm" class="form-horizontal" ng-submit="solicitudForm.$valid && save()" novalidate>
+            <md-tab md-on-select="cambiarPestanaSeleccionada(0, 'solicitudForm')" label="Información de Solicitud"  md-active="pasoUnoSelect"  ng-disabled="pasoUno">
+				<form name="solicitudForm" class="form-horizontal" ng-init="solicitudForm.$valid" ng-submit="save(solicitudForm)" novalidate>
 	               @include('layouts.negociaciones.paso1')
 	            </form>
             </md-tab>
-             <md-tab md-active="pasoDosSelect" ng-disabled="pasoDos" label="Información de Costos">
-				<form name="costosForm" class="form-horizontal" ng-submit="costosForm.$valid && save()" novalidate>
+             <md-tab md-on-select="cambiarPestanaSeleccionada(1, 'costosForm')" md-active="pasoDosSelect" ng-disabled="pasoDos" label="Información de Costos">
+				<form name="costosForm" class="form-horizontal" ng-init="solicitudForm.$valid" ng-submit="save(costosForm)" novalidate>
 	               @include('layouts.negociaciones.paso2')
 	            </form>
             </md-tab>
-             <md-tab ng-disabled="pasoTres"  md-active="pasoTresSelect"  label="Información de objetivos">
-                <form name="objetivosForm" class="form-horizontal" ng-submit="objetivosForm.$valid && save()" novalidate>
+             <md-tab md-on-select="cambiarPestanaSeleccionada(2, 'objetivosForm')" ng-disabled="pasoTres"  md-active="pasoTresSelect"  label="Información de objetivos">
+                <form name="objetivosForm" class="form-horizontal" ng-init="solicitudForm.$valid" ng-submit="save(objetivosForm)" novalidate>
                    @include('layouts.negociaciones.paso3')
                 </form>
             </md-tab>
