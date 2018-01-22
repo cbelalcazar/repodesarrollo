@@ -13,8 +13,13 @@ class TSoliCostosDetAdic extends Model
 
     protected $table = 't_solicostosdetadic';
 
+    public $incrementing = true;
+
+    public $primaryKey = 'scd_id';
+
+    public $timestamps = false;
+
     protected $fillable = [
-        'scd_id',  
         'scd_soc_id',  
         'scd_detalle',
         'scd_valor',

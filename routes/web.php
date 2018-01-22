@@ -46,8 +46,9 @@ Route::group(['middleware' => ['auth']], function () {
 
       //Rutas de mis Solicitudes
       Route::resource('misSolicitudes', 'negociaciones\misSolicitudesController');
-      Route::get('misSolicitudesInfo', 'negociaciones\misSolicitudesController@getInfo');      
-      
+      Route::get('misSolicitudesInfo', 'negociaciones\misSolicitudesController@getInfo');
+      Route::post('misSolicitudesPeriEje', 'negociaciones\misSolicitudesController@updatePeriEje');
+      Route::post('misSolicitudesConfirBono', 'negociaciones\misSolicitudesController@confirmarBono');
 	});
 
 

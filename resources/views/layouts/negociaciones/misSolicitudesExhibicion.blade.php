@@ -34,9 +34,9 @@
               <div class="col-md-2">@{{foto.sre_fecha}}</div>
               <div class="col-md-1">
 	        			<button class="btn btn-danger" type="button" style="padding: 3px 7px; margin-top: 2px;">
-	       				<i class="glyphicon glyphicon-remove"></i>
-	        				<md-tooltip>Eliminar 
-        			</button>
+	       				  <i class="glyphicon glyphicon-remove"></i>
+	        				<md-tooltip>Eliminar</md-tooltip>
+        			   </button>
              	</div>
               <br>
             </div>
@@ -44,26 +44,30 @@
           <div class="panel-footer">
           	<div class="row">
               <form name="frmFotos" ng-submit="imprimir()">
-              <div class="col-md-4">
-                <input type="file" file-model="fotoGuardar">
-              </div>
-              <div class="col-md-2">
-                <select>
-                  <option value="">¿Cumplio?</option>
-                  <option value="1">Si</option>
-                  <option value="2">No</option>
-                </select>
-              </div>
-              <div class="col-md-2"><input type="text" placeholder="Punto de Venta"></div>
-              <div class="col-md-2"><input type="text-area" placeholder="Observaciones"></div>
-              <div class="col-md-1"></div>
-              <div class="col-sm-1">
-                <button class="btn btn-success" type="submit" style="padding: 3px 7px; margin-top: 2px;">
-	         				<i class="glyphicon glyphicon-plus"></i>
-	        				<md-tooltip>Agregar 
-	        			</button>
-               </div>
-               </form>
+                <div class="col-md-4">
+                  <input type="file" file-model="fotoGuardar">
+                </div>
+                <div class="col-md-2">
+                  <select ng-model="selectCumplio">
+                    <option value="">¿Cumplio?</option>
+                    <option value="1">Si</option>
+                    <option value="2">No</option>
+                  </select>
+                </div>
+                <div class="col-md-2">
+                  <input type="text" placeholder="Punto de Venta">
+                </div>
+                <div class="col-md-2">
+                  <input type="text-area" placeholder="Observaciones">
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-sm-1">
+                  <button class="btn btn-success" type="submit" style="padding: 3px 7px; margin-top: 2px;">
+  	         				<i class="glyphicon glyphicon-plus"></i>
+  	        				<md-tooltip>Agregar</md-tooltip>
+  	        			</button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -96,29 +100,40 @@
 	            <div class="col-md-1">
 		            <button class="btn btn-danger" type="button" style="padding: 3px 7px; margin-top: 2px;">
 	         			  <i class="glyphicon glyphicon-remove"></i>
-	        			  <md-tooltip>Eliminar 
+	        			  <md-tooltip>Eliminar</md-tooltip>
 	        		  </button>
 	            </div>
-             </div>
+            </div>
           </div>
           <div class="panel-footer">
             <div class="row">
 		          <form name="frmActas" ng-submit="imprimir()">
-              <div class="col-md-4">
-                <input type="file" file-model="actaGuardar">
-              </div>
-		          <div class="col-md-1"><input type="text" placeholder="Cedula"></div>
-	            <div class="col-md-1"><input type="text" placeholder="Nombre"></div>
-		          <div class="col-md-1"><input type="text" placeholder="Direccion"></div>
-		          <div class="col-md-1"><input type="text" placeholder="Ciudad"></div>
-		          <div class="col-md-2"><input type="text" placeholder="Observaciones"></div>
-		          <div class="col-md-1"></div>
-		          <div class="col-md-1">
-	              <button class="btn btn-success" type="button" style="padding: 3px 7px; margin-top: 2px;">
-          				<i class="glyphicon glyphicon-plus"></i>
-	          			<md-tooltip>Agregar 
-	          		</button>
-		          </div>
+                <div class="col-md-4">
+                  <input type="file" file-model="actaGuardar">
+                </div>
+  		          <div class="col-md-1">
+                  <input type="text" placeholder="Cedula">
+                </div>
+  	            <div class="col-md-1">
+                  <input type="text" placeholder="Nombre">
+                </div>
+  		          <div class="col-md-1">
+                  <input type="text" placeholder="Direccion">
+                </div>
+  		          <div class="col-md-1">
+                  <input type="text" placeholder="Ciudad">
+                </div>
+  		          <div class="col-md-2">
+                  <input type="text" placeholder="Observaciones">
+                </div>
+  		          <div class="col-md-1"></div>
+  		          <div class="col-md-1">
+  	              <button class="btn btn-success" type="button" style="padding: 3px 7px; margin-top: 2px;">
+            				<i class="glyphicon glyphicon-plus"></i>
+  	          			<md-tooltip>Agregar</md-tooltip>
+  	          		</button>
+  		          </div>
+              </form>
             </div>
           </div>
         </div>
