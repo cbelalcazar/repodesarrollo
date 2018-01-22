@@ -121,6 +121,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 			$scope.clientes = angular.copy(res.clientes);
 			$scope.negociacionPara = angular.copy(res.negociacionPara);
 			$scope.zonas = angular.copy(res.zonas);
+			$scope.zonasFiltradas = angular.copy($scope.zonas);
 			$scope.listaPrecios = angular.copy(res.listaPrecios);
 			$scope.eventoTemp = angular.copy(res.eventoTemp);
 			$scope.tipoDeNegociacion = angular.copy(res.tipoDeNegociacion);
@@ -292,7 +293,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 
 	$scope.agregarZona = function(obj){
 		// Valido que los campos no este vacios y que cuando se agrege la ultima zona el porcentaje de participacion total sea igual a cero
-		if (obj.szn_coc_id == undefined || obj.szn_ppart == undefined || ($scope.zonas.length == 1 && $scope.objNegCliente.szn_ppart != $scope.calcularMaximo() )) {
+		if (obj.szn_coc_id == undefined || obj.szn_ppart == undefined || ($scope.zonasFiltradas.length == 1 && $scope.objNegCliente.szn_ppart != $scope.calcularMaximo() )) {
 			$mdDialog.show(
 		      $mdDialog.alert()
 		        .parent(angular.element(document.querySelector('#popupContainer')))
@@ -304,7 +305,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		    );
 		}else{
 			$scope.arrayZona.push(obj);
-			$scope.zonas = $filter('removeWith')($scope.zonas, {cen_id : obj.szn_coc_id.cen_id});
+			$scope.zonasFiltradas = $filter('removeWith')($scope.zonasFiltradas, {cen_id : obj.szn_coc_id.cen_id});
 			$scope.objNegCliente = {};
 		}
 	}
@@ -363,12 +364,24 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 	}
 
 	$scope.limpiarSucursales = function(){
-		$scope.objeto.sol_cli_id = undefined;
+		var arreglo = $filter('filter')($scope.VendedorSucursales.t_sucursal, {codcanal : $scope.objeto.sol_can_id.can_id});
+		var arregloAgrupado = Object.keys($filter('groupBy')(arreglo, 'cen_movimiento_id'));
+		$scope.arregloZonasFiltradas = [];
+		arregloAgrupado.forEach(function(obj){
+			var dato = $filter('filter')($scope.zonas, {cen_id : parseInt(obj)}, true);
+			dato.forEach(function(ob){
+				$scope.arregloZonasFiltradas.push(ob);
+			});
+		});
+
+		$scope.zonasFiltradas = $scope.arregloZonasFiltradas;
+
+		$scope.objeto.sol_cli_id = undefined;		
 		$scope.objeto.sol_tipocliente = undefined;
 	}
 
 	$scope.removeZona = function(item) { 
-		$scope.zonas.push(item.szn_coc_id);
+		$scope.zonasFiltradas.push(item.szn_coc_id);
 		var index = $scope.arrayZona.indexOf(item);
 		$scope.arrayZona.splice(index, 1);     		
 	}

@@ -114,7 +114,7 @@
 										<td>
 											<div class="form-group">
 												<label style="text-align: center">
-												<select ng-model="objNegCliente.szn_coc_id" class="form-control input-sm" ng-options="opt.cen_txt_descripcion for opt in zonas track by opt.cen_id">
+												<select ng-model="objNegCliente.szn_coc_id" class="form-control input-sm" ng-options="opt.cen_txt_descripcion for opt in zonasFiltradas track by opt.cen_id">
 													<option value="">Seleccione..</option>
 												</select>
 											</div>
