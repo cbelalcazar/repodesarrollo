@@ -38,4 +38,9 @@ class Tercero extends Model
     public function contacto(){
         return $this->hasOne('App\Models\Genericas\Contacto', 'idContacto', 'idContactoTercero');
     }
+    
+    public function usuario(){
+        return $this->hasOne('App\Models\aplicativos\User', 'idTerceroUsuario', 'idTercero');
+    }
+
 }

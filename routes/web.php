@@ -49,6 +49,9 @@ Route::group(['middleware' => ['auth']], function () {
       Route::get('misSolicitudesInfo', 'negociaciones\misSolicitudesController@getInfo');
       Route::post('misSolicitudesPeriEje', 'negociaciones\misSolicitudesController@updatePeriEje');
       Route::post('misSolicitudesConfirBono', 'negociaciones\misSolicitudesController@confirmarBono');
+
+      Route::resource('nivelesAutorizacion', 'negociaciones\NivelesAutorizacionController', ['except' => ['create','edit', 'show']]);
+      Route::get('infoAutorizacion', 'negociaciones\NivelesAutorizacionController@getInfo');
 	});
 
 
