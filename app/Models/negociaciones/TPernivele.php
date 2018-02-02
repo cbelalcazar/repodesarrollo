@@ -35,5 +35,9 @@ class TPernivele extends Model
         return $this->hasMany('App\Models\negociaciones\TPernivcanal', 'pcan_idpernivel', 'id');
     }
 
+    public function hijos(){
+        return $this->hasMany('App\Models\negociaciones\TPernivcanal', 'pcan_aprobador', 'id');
+    }
+
         
 }

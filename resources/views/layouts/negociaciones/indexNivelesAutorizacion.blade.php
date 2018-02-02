@@ -94,28 +94,29 @@
 	           <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
 	          	<thead>
 	          		<tr>
-	          			<th>No</th>
-	          			<th>Estado</th>
-	          			<th>Fecha</th>
-	          			<th>Facturar A</th>
-	          			<th>Tipo de salida</th>
-	          			<th>Tipo de persona</th>
-	          			<th>Cargar a</th>
-	          			<th>Observaciones</th>
-	          			<th></th>
+	          			<th>Id</th>
+	          			<th>Usuario</th>
+	          			<th>Nombre</th>
+	          			<th>Cedula</th>
+	          			<th>Tipo persona</th>
+	          			<th>Territorios</th>
+	          			<th>Canales</th>
+	          			<th>Acción</th>
 	          		</tr>
 	          	</thead>
 	          	<tbody>
-	          		<tr ng-repeat="aprob in nivelTres">
-	          			<td>@{{aprob.sci_id}}</td>
-	          			<td>@{{aprob.estado.soe_descripcion}}</td>
-	          			<td>@{{aprob.sci_fecha | date: 'dd/MM/yyyy'}}</td>
-	          			<td>@{{aprob.facturara.tercero.razonSocialTercero}}</td>
-	          			<td>@{{aprob.tipo_salida.tsd_descripcion}}</td>
-	          			<td>@{{aprob.tipo_persona.tpe_tipopersona}}</td>
-	          			<td>@{{aprob.cargara.cga_descripcion}}</td>
-	          			<td>@{{aprob.sci_observaciones}}</td>
-	          			<td><button class="btn btn-info" type="button" data-toggle="modal" data-target="#modal" ng-click="setSolicitud(aprob)"><i class="glyphicon glyphicon-eye-open"></i></button></td>
+	          		<tr ng-repeat="uno in nivelTres">
+	          			<td>@{{uno.id}}</td>
+	          			<td>@{{uno.pen_usuario}}</td>
+	          			<td>@{{uno.pen_nombre}}</td>
+	          			<td>@{{uno.pen_cedula}}</td>
+	          			<td>@{{uno.t_tipopersona.tpp_descripcion}}</td>
+	          			<td>@{{uno.stringTerritorio == null ? 'SIN TERRITORIO' : uno.stringTerritorio}}</td>
+	          			<td>@{{uno.stringCanal}}</td>
+	          			<td>
+	          				<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#modal" ng-click="update(uno)"><i class="glyphicon glyphicon-pencil"></i></button>
+	          				<button class="btn btn-danger" type="button" ng-click="delete(uno)"><i class="glyphicon glyphicon-trash"></i></button>
+	          			</td>
 	          		</tr>
 	          	</tbody>
 	          </table>							        	

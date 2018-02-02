@@ -28,6 +28,7 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
 			$scope.organiza();
 			$scope.nivelUno = angular.copy($filter('filter')($scope.perniveles, {pen_nomnivel : 1}, true));
 			$scope.nivelDos = angular.copy($filter('filter')($scope.perniveles, {pen_nomnivel : 2}, true));
+			$scope.nivelTres = angular.copy($filter('filter')($scope.perniveles, {pen_nomnivel : 3}, true));
 			
 		}, function(error){
 			$scope.getInfo();
@@ -42,14 +43,12 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
 	}
 
 	$scope.filtrarTercerosCan = function(tipoPersona, canal, nivel){
-		if (nivel.id == 1) {
-			return $scope.terceros;
-		}else if(nivel.id == 2){
+		canal.forEach(function(can){
 			$idNivelAnterior = $filter('filter')($scope.niveles, {niv_padre : nivel.id}, true)[0]['id'];
 			var pernivelesAnteriores = $filter('filter')($scope.perniveles, {pen_idtipoper : tipoPersona.id, pen_nomnivel : $idNivelAnterior}, true);
-			var pernivelesPermitidos = [];
+			var pernivelesPermitidos = [];			
 			pernivelesAnteriores.forEach(function(pernivel){
-				canales = $filter('filter')(pernivel['canales'], {pcan_idcanal : canal.can_id.trim()}, true);
+				canales = $filter('filter')(pernivel['canales'], {pcan_idcanal : can.can_id.trim(), pcan_idterritorio : '0', pcan_aprobador: null}, true);
 				if (canales.length > 0) {
 					pernivelesPermitidos.push(pernivel);
 				}				
@@ -58,16 +57,53 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
 			var terceros = [];
 			pernivelesPermitidos.forEach(function(obj){
 				terceros.push($filter('filter')($scope.todosTerceros, {idTercero : obj.pen_cedula}, true)[0]);
-    		});
-    		console.log($scope.terceros);
-    		console.log(terceros);
-    		$scope.terceros = terceros;
-    		return $scope.terceros;
-		}
+    		});    		
+    		
+    		if (tipoPersona.id == 3) {
+    			var pernivConLineas = $filter('filter')($scope.perniveles, {pen_idtipoper : tipoPersona.id, pen_nomnivel : nivel.id}, true);
+    			var arregloLinea = $scope.lineas;
+    			console.log(arregloLinea);
+    			pernivConLineas.forEach(function(per){
+    				per.canales.forEach(function(cana){
+    					if (cana.pcan_idcanal == can.can_id) {
+	    					cana.lineas.forEach(function(lin){
+	    						arregloLinea = $filter('removeWith')(arregloLinea, {lin_id : lin.pcan_idlinea}, true);
+	    					});
+    					}
+    				});
+    			});		
+    			console.log(arregloLinea);
+    			can.lineasFiltradas = arregloLinea;
+    		}
+    		console.log(can);
+    		can.tercerosFiltrados = [];
+    		can.tercerosFiltrados = terceros;
+		})
+	
 	}
 
-	$scope.filtrarLineasCanal = function(canal){
-		return $scope.lineas;
+
+	$scope.filtrarTercerosTerritorios = function(tipoPersona, territorios, nivel){
+		console.log('wiiiiii');
+		$idNivelAnterior = $filter('filter')($scope.niveles, {niv_padre : nivel}, true)[0]['id'];
+		territorios.forEach(function(territorio){
+			territorio.canales.forEach(function(can){
+				var pernivelesAnteriores = $filter('filter')($scope.perniveles, {pen_idtipoper : tipoPersona.id, pen_nomnivel : $idNivelAnterior}, true);
+				var pernivelesPermitidos = [];
+				pernivelesAnteriores.forEach(function(obj){
+					canales = $filter('filter')(obj['canales'], {pcan_idcanal : can.can_id.trim(), pcan_idterritorio : String(territorio.id), pcan_aprobador: null}, true);
+					console.log(canales);
+					if (canales.length > 0) {
+						pernivelesPermitidos.push(obj);
+					}				
+				});
+				var terceros = [];
+				pernivelesPermitidos.forEach(function(obj){
+					terceros.push($filter('filter')($scope.todosTerceros, {idTercero : obj.pen_cedula}, true)[0]);
+	    		});
+	    		can.tercerosFiltrados = terceros;
+			})
+		});
 	}
 
     $scope.eliminarPersonaDepende = function(persona){
@@ -101,7 +137,7 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
     $scope.cambiarNivel = function(nivel){
     	$scope.nivel = $filter('filter')($scope.niveles, {id: nivel}, true);
     	$scope.infoPerNivel = {};
-    	if (nivel == 2) {
+    	if (nivel == 2 || nivel == 3) {
     		$scope.tipospersona = $scope.tipospersonaN2;
     	}else{
     		$scope.tipospersona = $scope.tipospersonaN1;
@@ -122,7 +158,7 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
     		// setTimeout(function() {
     		// 	angular.element('.close').trigger('click');
     		// }, 1000);
-    		$scope.getInfo();
+    		// $scope.getInfo();
     	}, function(errorResponse){
 
     	});
@@ -133,8 +169,7 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
     	$scope.cambiarNivel(obj.pen_nomnivel);
     	$scope.infoPerNivel = angular.copy(obj);
     	$scope.infoPerNivel.tipopersona = obj.t_tipopersona;
-    		
-
+    	console.log($scope.terceros);
     	if ($scope.infoPerNivel.tipopersona.id == 1) {
 			var array = [];
 	    	obj.canales.forEach(function(obj){
@@ -160,6 +195,7 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
 	    	}); 
 	    	$scope.infoPerNivel.territorio = arregloTerritorios;	
     	}	
+    	console.log($scope.infoPerNivel);
 
     	
 
@@ -186,40 +222,6 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
 	    	$scope.progress = false;
 	    });
     }
-
-    // $scope.filtrarAutorizaA = function(){
-	  	// if ($scope.nivel[0].id > 1 && $scope.infoPerNivel.terceros[0] != undefined && $scope.infoPerNivel.tipopersona != undefined) {
-	   //    if ($scope.infoPerNivel.tipopersona.id === 1 || $scope.infoPerNivel.tipopersona.id === 2) {
-	   //      if ($scope.infoPerNivel.canales != undefined) {
-	   //        	var array = [];
-	   //        	$scope.arregloNivel = [];
-	   //        	$scope.perniveles.forEach(function(object){
-		  //           $scope.bandera = false;
-		  //           object.canales.forEach(function(obj){
-		  //             	var filt = $filter('filter')($scope.infoPerNivel.canales, {can_id : obj.pcan_idcanal});
-		  //             	if (filt.length > 0) {
-		  //               	$scope.bandera = true;
-		  //             	}
-		  //           });
-		  //           if ($scope.bandera) {
-		  //             $scope.arregloNivel.push(object);
-		  //           }
-		  //       });
-
-    // 		  var hijo = $filter('filter')($scope.niveles, {niv_padre: $scope.nivel[0].id})[0];
-	   //        if ($scope.infoPerNivel.tipopersona.id === 1 || $scope.infoPerNivel.tipopersona.id === 2) {
-	   //          $scope.arregloNivel = $filter('filter')($scope.arregloNivel, {pen_nomnivel : hijo.id}, true);
-	   //        }
-
-	   //        if ($scope.infoPerNivel.tipopersona.id === 2) {
-	   //        	if ($scope.infoPerNivel.territorio != undefined) {
-	   //        		$scope.arregloNivel = $filter('filter')($scope.arregloNivel, {pen_idterritorios : $scope.infoPerNivel.territorio[0].id});
-	   //        	}	            
-	   //        }
-	   //      }
-	   //    }
-	   //  }
-    // }
 
     $scope.calcularCantidadPersonas = function(canales){
     	cantidad = 0;

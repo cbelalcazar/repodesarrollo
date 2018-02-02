@@ -22,9 +22,14 @@ class TPernivCanal extends Model
         'pcan_cedula',
         'pcan_idcanal',
         'pcan_descripcanal',
-        'pcan_idterritorio'
+        'pcan_idterritorio',
+        'pcan_aprobador'
     ];
 
     protected $guarded = [];
+
+    public function lineas(){
+        return $this->hasMany('App\Models\negociaciones\TPernivLinea', 'pcan_idcanal', 'id');
+    }
         
 }

@@ -16,7 +16,8 @@ class CreateTPernivlinea extends Migration
         Schema::connection('bd_negociaciones2')->create('t_pernivlinea', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('pcan_idcanal');
-            $table->string('pcan_idlinea');        
+            $table->string('pcan_idlinea');              
+            $table->string('pcan_descriplinea');       
             $table->timestamps();
 
         });
