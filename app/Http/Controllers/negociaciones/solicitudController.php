@@ -23,7 +23,9 @@ use App\Models\negociaciones\TBaseImpuesto;
 use App\Models\negociaciones\TFormaPago;
 use App\Models\negociaciones\TSoliTipoNego;
 use App\Models\negociaciones\TSoliCostos;
+use App\Models\negociaciones\TPernivele;
 use App\Models\negociaciones\TSoliCostosLineas;
+use App\Models\negociaciones\TSolEnvioNego;
 use App\Models\negociaciones\TSoliObjetivos;
 use App\Models\Genericas\TVendedor;
 use App\Models\Genericas\TCanal;
@@ -234,11 +236,63 @@ class solicitudController extends Controller
 
                 $soliObjetivos = TSoliObjetivos::create($data['objObjetivos']);
             }
-          
-        
+       
+        if (isset($data['objObjetivos']['soo_costonego']) && $data['redirecTo'] == "elaboracion") {
+            $errorRuta = [];
+            $pernivel = TPernivele::with('canales')->where('pen_cedula', $data['sol_ven_id'])->first();
+            if (!isset($pernivel)) {
+                array_push($errorRuta, 'El usuario que crea la solicitud no se encuentra creado en los niveles de autorizacion');
+            }else{
+
+                 if($pernivel['canales'] == null){
+                    array_push($errorRuta, 'No se encontraron canales para la solicitud');
+                }else{
+                    $pernivCanal = collect($pernivel['canales'])->where('pcan_idcanal', $data['sol_can_id'])->all();
+                    if (count($pernivCanal) > 0) {
+                        $padre = TPernivele::where('id', $pernivCanal[0]['pcan_aprobador'])->first();
+                        $validacion = TSolEnvioNego::where([['sen_idTercero_envia', $pernivel['pen_cedula']], ['sen_idTercero_recibe', $padre['pen_cedula']], ['sen_sol_id', $data['sol_id']]])->get();
+                        if (isset($padre) && count($validacion) == 0) {
+                            $updateEstadosAnterior = TSolEnvioNego::where('sen_sol_id', $data['sol_id'])->update(['sen_estadoenvio' => 0]);
+                            $negociacion->update(['sol_ser_id' => 2]);
+                            $objTSolEnvioNego = new TSolEnvioNego;
+                            $objTSolEnvioNego['sen_sol_id'] = $data['sol_id'];
+                            $objTSolEnvioNego['sen_ser_id'] = 2;
+                            $objTSolEnvioNego['sen_idTercero_envia'] = $pernivel['pen_cedula'];
+                            $objTSolEnvioNego['sen_idTercero_recibe'] = $padre['pen_cedula'];
+                            $objTSolEnvioNego['sen_observacion'] = $data['sol_observaciones']; 
+                            $objTSolEnvioNego['sen_fechaenvio'] = Carbon::now()->toDateTimeString();  
+                            $objTSolEnvioNego['sen_estadoenvio'] = 1;
+                            $objTSolEnvioNego['sen_run_id'] = null;
+                            $objTSolEnvioNego->save();
+                        }else{
+                            array_push($errorRuta, 'No se encontro ruta de aprobacion para el canal seleccionado');
+                        }
+                    }else{
+                        array_push($errorRuta, 'Favor validar el nivel siguiente al usuario actual en los niveles de autorizacion');
+                    }
+                }
+            }
+        }
+
+        $pernivel = TPernivele::with('canales')->where('pen_cedula', $data['sol_ven_id'])->first();
+        $validacion = TSolEnvioNego::where([['sen_idTercero_envia', $pernivel['pen_cedula']], ['sen_idTercero_recibe', null], ['sen_sol_id', $data['sol_id']]])->get();
+        if (count($validacion) == 0) {
+            $negociacion->update(['sol_ser_id' => 2]);
+            $objTSolEnvioNego = new TSolEnvioNego;
+            $objTSolEnvioNego['sen_sol_id'] = $data['sol_id'];
+            $objTSolEnvioNego['sen_ser_id'] = 0;
+            $objTSolEnvioNego['sen_idTercero_envia'] = $pernivel['pen_cedula'];
+            $objTSolEnvioNego['sen_idTercero_recibe'] = null;
+            $objTSolEnvioNego['sen_observacion'] = $data['sol_observaciones']; 
+            $objTSolEnvioNego['sen_fechaenvio'] = Carbon::now()->toDateTimeString();  
+            $objTSolEnvioNego['sen_estadoenvio'] = 0;
+            $objTSolEnvioNego['sen_run_id'] = null;
+            $objTSolEnvioNego->save();
+        }
+    
         $url = route('solicitud.edit', ['id' => $id, 'redirecTo' => $data['redirecTo']]);
 
-        $response = compact('data', 'id', 'url');
+        $response = compact('data', 'id', 'url', 'negociacion', 'pernivel', 'errorRuta', 'pernivCanal', 'padre', 'objTSolEnvioNego', 'validacion');
         return response()->json($response);
     }
 

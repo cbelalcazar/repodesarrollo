@@ -28,7 +28,7 @@
                       	</div>					
 	    			</div> 	
 					
-					<div  ng-if="(infoPerNivel.tipopersona.id != undefined &&  nivel[0].id > 1 && infoPerNivel.id == undefined)" class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
+					<div  ng-if="(infoPerNivel.tipopersona.id != undefined && nivel[0].id > 1 && infoPerNivel.id == undefined)" class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
 						<div class="form-group">
 						<label>Persona(s):</label> 
 							<multiselect class="span-margin" ng-model="infoPerNivel.persona" options="terceros" id-prop="idRowTercero" display-prop="cedulaNombre" placeholder="Seleccione Personas.." show-search="true" show-select-all="true" selection-limit="1" show-unselect-all="true" required></multiselect>
@@ -57,8 +57,7 @@
 						<label>Lineas:</label> 
 							<multiselect ng-init="" class="span-margin" ng-model="infoPerNivel.lineas" options="lineas" id-prop="lin_id" display-prop="lin_txt_descrip" placeholder="Seleccione Personas.." show-search="true" show-select-all="true" show-unselect-all="true" required></multiselect> 						
 	    				</div>
-	    			</div>
-	    			
+	    			</div>	    			
     				    			
 	    		</div>
 

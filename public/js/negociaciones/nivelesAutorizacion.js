@@ -21,6 +21,7 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
 			$scope.tipospersona = angular.copy(info.tipospersona);
 			$scope.tipospersonaN1 = angular.copy($scope.tipospersona);
 			$scope.tipospersonaN2 = angular.copy(info.tipospersonaN2);
+			$scope.tipospersonaN3 = angular.copy(info.tipospersonaN3);
 			$scope.territorios = angular.copy(info.territorios);
 			$scope.niveles = angular.copy(info.niveles);
 			$scope.perniveles = angular.copy(info.nivelesCreados);
@@ -28,7 +29,8 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
 			$scope.organiza();
 			$scope.nivelUno = angular.copy($filter('filter')($scope.perniveles, {pen_nomnivel : 1}, true));
 			$scope.nivelDos = angular.copy($filter('filter')($scope.perniveles, {pen_nomnivel : 2}, true));
-			$scope.nivelTres = angular.copy($filter('filter')($scope.perniveles, {pen_nomnivel : 3}, true));
+			$scope.nivelTres = angular.copy($filter('filter')($scope.perniveles, {pen_nomnivel : 3}, true));			
+			$scope.nivelCuatro = angular.copy($filter('filter')($scope.perniveles, {pen_nomnivel : 4}, true));
 			
 		}, function(error){
 			$scope.getInfo();
@@ -131,7 +133,6 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
     		}
     		return obj;
     	});
-
     }
 
     $scope.cambiarNivel = function(nivel){
@@ -139,6 +140,8 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
     	$scope.infoPerNivel = {};
     	if (nivel == 2 || nivel == 3) {
     		$scope.tipospersona = $scope.tipospersonaN2;
+    	}else if(nivel == 4){
+    		$scope.tipospersona = $scope.tipospersonaN3;
     	}else{
     		$scope.tipospersona = $scope.tipospersonaN1;
     	}
@@ -155,10 +158,10 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
     	$scope.infoPerNivel.nivel = $scope.nivel;
     	$scope.progress = true;
     	$http.post($scope.url,$scope.infoPerNivel).then(function(response){
-    		// setTimeout(function() {
-    		// 	angular.element('.close').trigger('click');
-    		// }, 1000);
-    		// $scope.getInfo();
+    		setTimeout(function() {
+    			angular.element('.close').trigger('click');
+    		}, 1000);
+    		$scope.getInfo();
     	}, function(errorResponse){
 
     	});

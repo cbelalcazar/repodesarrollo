@@ -69,6 +69,7 @@ class TSolicitudNego extends Model
         'sol_fechalimiteeval', 
         'sol_huella_capitalizar',  
         'sol_fechaaprobaciontotal',
+        'sol_tipnegoniv'
     ];
 
     public function getSolCanIdAttribute($value){
