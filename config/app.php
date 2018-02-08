@@ -168,6 +168,7 @@ return [
          */
 
         //
+        UxWeb\SweetAlert\SweetAlertServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -244,6 +245,7 @@ return [
         'Input' => Illuminate\Support\Facades\Input::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Uuid' => Ramsey\Uuid\Uuid::class,
+        'Alert' => UxWeb\SweetAlert\SweetAlert::class,
     ],
 
 ];

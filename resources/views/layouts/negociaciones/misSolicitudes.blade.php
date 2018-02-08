@@ -3,7 +3,7 @@
 @include('includes.titulo')
 
 <link rel="stylesheet" type="text/css" href="{{url('/css/negociaciones/misSolicitudesCss.css')}}">
-<div ng-controller='misSolicitudesCtrl' ng-cloak class="container-fluid">
+<div ng-controller='misSolicitudesCtrl' ng-init="recarguemos = '{{$recarguemos}}';" ng-cloak class="container-fluid">
 	<md-content>
 	    <md-tabs md-dynamic-height md-border-bottom>
 	      	<md-tab label="Todas (@{{todas.length}})">
@@ -375,7 +375,7 @@
 	          						</button>
 	          					</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#ModalExhibicion" ng-click="setSolicitud(evalu)">
+	          						<button class="btn btn-danger @{{evalu.sol_id}}" type="button" data-toggle="modal" data-target="#ModalExhibicion" ng-click="setSolicitud(evalu)">
 	          							<i class="glyphicon glyphicon-camera"></i>
 	          							<md-tooltip>Editar
 	          						</button>
@@ -461,13 +461,12 @@
 	          						</button>
 	          					</td>
 	          					<td class="text-right">
-	          						<button class="btn btn-warning" type="button">
+	          						<button class="btn btn-warning" type="button" ng-click="generarPdf()">
 	          							<i class="glyphicon glyphicon-print"></i>
 	          							<md-tooltip>Imprimir
 	          						</button>
 	          					</td>
 	          					<td>
-	          						
 	          					</td>
 	          					<td class="text-right">
 	          						<button class="btn btn-success" type="button" data-toggle="modal" data-target="#ModalConfirBono" ng-click="setSolicitud(tePe)">
