@@ -21,8 +21,6 @@
 	          			<th>Nombre</th>
 	          			<th>Cedula</th>
 	          			<th>Tipo persona</th>
-	          			<th>Territorios</th>
-	          			<th>Canales</th>
 	          			<th>Acción</th>
 	          		</tr>
 	          	</thead>
@@ -33,8 +31,6 @@
 	          			<td>@{{uno.pen_nombre}}</td>
 	          			<td>@{{uno.pen_cedula}}</td>
 	          			<td>@{{uno.t_tipopersona.tpp_descripcion}}</td>
-	          			<td>@{{uno.stringTerritorio == null ? 'SIN TERRITORIO' : uno.stringTerritorio}}</td>
-	          			<td>@{{uno.stringCanal}}</td>
 	          			<td>
 	          				<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#modal" ng-click="update(uno)"><i class="glyphicon glyphicon-pencil"></i></button>
 	          				<button class="btn btn-danger" type="button" ng-click="delete(uno)"><i class="glyphicon glyphicon-trash"></i></button>
@@ -60,8 +56,6 @@
 	          			<th>Nombre</th>
 	          			<th>Cedula</th>
 	          			<th>Tipo persona</th>
-	          			<th>Territorios</th>
-	          			<th>Canales</th>
 	          			<th>Acción</th>
 	          		</tr>
 	          	</thead>
@@ -72,8 +66,6 @@
 	          			<td>@{{uno.pen_nombre}}</td>
 	          			<td>@{{uno.pen_cedula}}</td>
 	          			<td>@{{uno.t_tipopersona.tpp_descripcion}}</td>
-	          			<td>@{{uno.stringTerritorio == null ? 'SIN TERRITORIO' : uno.stringTerritorio}}</td>
-	          			<td>@{{uno.stringCanal}}</td>
 	          			<td>
 	          				<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#modal" ng-click="update(uno)"><i class="glyphicon glyphicon-pencil"></i></button>
 	          				<button class="btn btn-danger" type="button" ng-click="delete(uno)"><i class="glyphicon glyphicon-trash"></i></button>
@@ -99,8 +91,6 @@
 	          			<th>Nombre</th>
 	          			<th>Cedula</th>
 	          			<th>Tipo persona</th>
-	          			<th>Territorios</th>
-	          			<th>Canales</th>
 	          			<th>Acción</th>
 	          		</tr>
 	          	</thead>
@@ -111,8 +101,41 @@
 	          			<td>@{{uno.pen_nombre}}</td>
 	          			<td>@{{uno.pen_cedula}}</td>
 	          			<td>@{{uno.t_tipopersona.tpp_descripcion}}</td>
-	          			<td>@{{uno.stringTerritorio == null ? 'SIN TERRITORIO' : uno.stringTerritorio}}</td>
-	          			<td>@{{uno.stringCanal}}</td>
+	          			<td>
+	          				<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#modal" ng-click="update(uno)"><i class="glyphicon glyphicon-pencil"></i></button>
+	          				<button class="btn btn-danger" type="button" ng-click="delete(uno)"><i class="glyphicon glyphicon-trash"></i></button>
+	          			</td>
+	          		</tr>
+	          	</tbody>
+	          </table>							        	
+
+	        </md-content>
+	      </md-tab>	      	      
+	      <md-tab label="Nivel 4(GERENTE)">
+	        <md-content class="md-padding">
+
+				<button class="btn btn-success" type="button" data-toggle="modal" data-target="#modal" ng-click="cambiarNivel(4)"><i class="glyphicon glyphicon-plus"></i> Crear Nuevo Nivel</button>
+
+				<hr class="border-top-dotted">	
+
+	           <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs0" class="row-border hover">
+	          	<thead>
+	          		<tr>
+	          			<th>Id</th>
+	          			<th>Usuario</th>
+	          			<th>Nombre</th>
+	          			<th>Cedula</th>
+	          			<th>Tipo persona</th>
+	          			<th>Acción</th>
+	          		</tr>
+	          	</thead>
+	          	<tbody>
+	          		<tr ng-repeat="uno in nivelCuatro">
+	          			<td>@{{uno.id}}</td>
+	          			<td>@{{uno.pen_usuario}}</td>
+	          			<td>@{{uno.pen_nombre}}</td>
+	          			<td>@{{uno.pen_cedula}}</td>
+	          			<td>@{{uno.t_tipopersona.tpp_descripcion}}</td>
 	          			<td>
 	          				<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#modal" ng-click="update(uno)"><i class="glyphicon glyphicon-pencil"></i></button>
 	          				<button class="btn btn-danger" type="button" ng-click="delete(uno)"><i class="glyphicon glyphicon-trash"></i></button>

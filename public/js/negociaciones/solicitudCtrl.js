@@ -117,6 +117,21 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 			$scope.tipNegociacion = angular.copy(res.tipNegociacion);
 			$scope.canales = angular.copy(res.canales);
 			$scope.VendedorSucursales = angular.copy(res.VendedorSucursales);
+			if ($scope.VendedorSucursales == null) {
+					$scope.progress = false;
+					$scope.errorMsge = 'El usuario no tiene sucursales activas';
+				    var confirm = $mdDialog.confirm()
+				          .title('')
+				          .textContent($scope.errorMsge)
+				          .ariaLabel()
+				          .ok('Entendido');
+
+				    $mdDialog.show(confirm).then(function() {
+				    	$scope.progress = true;
+				      	$window.location = $scope.urlMisSolicitudes;
+				    });
+				    return true;
+			}	
 			$scope.multiSelectSucursales = angular.copy(res.VendedorSucursales.t_sucursal);
 			$scope.clientes = angular.copy(res.clientes);
 			$scope.negociacionPara = angular.copy(res.negociacionPara);
@@ -264,6 +279,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 
 			$scope.progress = false;
 		}, function(errorResponse){
+			console.log(errorResponse);
 			$scope.getInfo();
 		});
 	}
@@ -629,7 +645,6 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 
 	$scope.save = function(form){
 		// creo la solicitud con estado que se encuentra la solicitud en elaboracion(0) y estado final de la solicitud(1).
-		console.log(form);
 		if (form.$invalid) {
 			var invalidAccion = $mdDialog.alert()
 			.parent(angular.element(document.querySelector('#popupContainer')))
@@ -710,6 +725,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 			if ($scope.objeto.sol_id == undefined) {
 				$http.post('../solicitud', $scope.envioPost).then(function(response){
 					var res = response.data;
+					console.log(res);
 					$window.location = res.url;
 				}, function(errorResponse){
 					alert("Error al grabar");
@@ -717,6 +733,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 			}else{
 				$http.put('../../solicitud/' + $scope.objeto.sol_id, $scope.envioPost).then(function(response){
 					var res = response.data;
+					console.log(res);
 					$window.location = res.url;
 				}, function(errorResponse){
 					alert("Error al grabar");
@@ -1018,9 +1035,6 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		if ($scope.pestanaSeleccionada[0] == 0 && $scope.pestanaSeleccionada[1] == 1) {
 			$scope.conteo = $scope.conteo + 1;
 		}
-
-		console.log($scope.conteo);
-
 
 		if ($scope.conteo == 0 || $scope.conteo == 1) {
 			$scope.conteo = $scope.conteo + 1;

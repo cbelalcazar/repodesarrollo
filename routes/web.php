@@ -55,6 +55,11 @@ Route::group(['middleware' => ['auth']], function () {
 
       Route::resource('nivelesAutorizacion', 'negociaciones\NivelesAutorizacionController', ['except' => ['create','edit', 'show']]);
       Route::get('infoAutorizacion', 'negociaciones\NivelesAutorizacionController@getInfo');
+
+      // Bandeja de aprobacion 
+      Route::resource('bandejaAprobacion', 'negociaciones\bandejaAprobacionController', ['except' => ['create','edit', 'show']]);
+      Route::get('bandejaGetInfo', 'negociaciones\bandejaAprobacionController@getInfo');
+
 	});
 
 

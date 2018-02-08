@@ -36,6 +36,7 @@ class NivelesAutorizacionController extends Controller
 		$canales = TCanal::whereIn('can_id',['20','AL','DR','SI'])->get();
 		$tipospersona = TTipopersona::whereIn('id', [1, 2])->where('tpp_estado', 1)->get();		
 		$tipospersonaN2 = TTipopersona::whereIn('id', [1, 2, 3])->where('tpp_estado', 1)->get();
+		$tipospersonaN3 = TTipopersona::whereIn('id', [1, 3])->where('tpp_estado', 1)->get();
 		$terceros = Tercero::with('usuario')->where(['indxEstadoTercero' => 1 , 'indxEmpleadoTercero' => 1])->get();
 		
 		$terceros = collect($terceros)->filter(function($tercero){
@@ -53,7 +54,7 @@ class NivelesAutorizacionController extends Controller
 
 		$lineas = TLineas::where('lin_txt_estado', 'No')->get();
 
-		$response = compact('canales','tipospersona','terceros','territorios','niveles','nivelesCreados', 'tipospersonaN2', 'lineas');
+		$response = compact('canales','tipospersona','terceros','territorios','niveles','nivelesCreados', 'tipospersonaN2', 'lineas', 'tipospersonaN3');
 
 		return response()->json($response);
 
@@ -180,6 +181,18 @@ class NivelesAutorizacionController extends Controller
 							}							
 						}
 					}
+				}elseif($data['nivel'][0]['id'] == 4){
+					$pernivel = TPernivele::with('canales')->where('pen_cedula', $data['persona'][0]['idTercero'])->first();
+					if (!isset($pernivel)) {
+						$pernivel = new TPernivele;
+						$pernivel->pen_usuario = $data['persona'][0]['usuario']['login'];
+						$pernivel->pen_nombre = $data['persona'][0]['razonSocialTercero'];
+						$pernivel->pen_cedula = $data['persona'][0]['idTercero'];
+						$pernivel->pen_idtipoper = $data['tipopersona']['id'];
+						$pernivel->pen_nomnivel = $data['nivel'][0]['id'];
+						$pernivel->save();
+						$pernivel->canales()->get();
+					}					
 				}
 				
 				
@@ -344,13 +357,25 @@ class NivelesAutorizacionController extends Controller
 						$lineaObj->save();
 					}		
 					
+				}elseif($data['nivel'][0]['id'] == 4){
+					$pernivel = TPernivele::with('canales')->where('pen_cedula', $data['persona'][0]['idTercero'])->first();
+					if (!isset($pernivel)) {
+						$pernivel = new TPernivele;
+						$pernivel->pen_usuario = $data['persona'][0]['usuario']['login'];
+						$pernivel->pen_nombre = $data['persona'][0]['razonSocialTercero'];
+						$pernivel->pen_cedula = $data['persona'][0]['idTercero'];
+						$pernivel->pen_idtipoper = $data['tipopersona']['id'];
+						$pernivel->pen_nomnivel = $data['nivel'][0]['id'];
+						$pernivel->save();
+						$pernivel->canales()->get();
+					}					
 				}
 			}
 		}
 
 		
 
-		$response = compact('data', 'arreglo', 'new');
+		$response = compact('data', 'arreglo', 'new', 'mas');
 
 		return response()->json($response);
 

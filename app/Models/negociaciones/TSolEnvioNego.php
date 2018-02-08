@@ -13,8 +13,13 @@ class TSolEnvioNego extends Model
 
     protected $table = 't_solenvionego';
 
+    public $incrementing = true;
+
+    protected $primaryKey = 'sen_id';
+
+    public $timestamps = false;
+
     protected $fillable = [
-        'sen_id',
         'sen_sol_id',  
         'sen_ser_id',  
         'sen_idTercero_envia',  
