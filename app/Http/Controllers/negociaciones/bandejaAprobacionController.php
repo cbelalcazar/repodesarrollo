@@ -145,7 +145,7 @@ class bandejaAprobacionController extends Controller
 
         if ($pernivel['pen_nomnivel'] == 2 && $data['tipoNegociacionSol'] == "Mercadeo") {
           $costo = $negociacion->costo()->get();
-          $arrLineas = TSoliCostosLineas::where('scl_soc_id', $costo['soc_id'])->get();
+          $arrLineas = TSoliCostosLineas::where('scl_soc_id', $costo[0]['soc_id'])->get();
           if (count($arrLineas) > 0) {
               $idsLineas = collect($arrLineas)->pluck('scl_lin_id');
           }else{
@@ -198,12 +198,13 @@ class bandejaAprobacionController extends Controller
 
         if ($pernivel['pen_nomnivel'] == 4 && $data['sol_tipnegoniv'] == "Comercial") {
             $updateEstadosAnterior = TSolEnvioNego::where('sen_sol_id', $data['sol_id'])->update(['sen_estadoenvio' => 0]);
-            $negociacion->update(['sol_sef_id' => 6, 'sol_ser_id' => 12]);     
+            $negociacion->update(['sol_sef_id' => 2, 'sol_ser_id' => 2]);     
             $objTSolEnvioNego = new TSolEnvioNego;
             $objTSolEnvioNego['sen_sol_id'] = $data['sol_id'];
-            $objTSolEnvioNego['sen_ser_id'] = 12;
+            $objTSolEnvioNego['sen_ser_id'] = 1;
             $objTSolEnvioNego['sen_idTercero_envia'] = $pernivel['pen_cedula'];
-            $objTSolEnvioNego['sen_idTercero_recibe'] = null;
+            $cedulaPersona = $negociacion['sol_ven_id'];
+            $objTSolEnvioNego['sen_idTercero_recibe'] = $cedulaPersona;
             if (isset($data['observ'])) {
                 $objTSolEnvioNego['sen_observacion'] = $data['observ']; 
             }else{                        
@@ -212,11 +213,28 @@ class bandejaAprobacionController extends Controller
             $objTSolEnvioNego['sen_fechaenvio'] = Carbon::now()->toDateTimeString();  
             $objTSolEnvioNego['sen_estadoenvio'] = 0;
             $objTSolEnvioNego['sen_run_id'] = null;
-            $objTSolEnvioNego->save();          
+            $objTSolEnvioNego->save(); 
+
+            $objTSolEnvioNego = new TSolEnvioNego;
+            $objTSolEnvioNego['sen_sol_id'] = $data['sol_id'];
+            $objTSolEnvioNego['sen_ser_id'] = 1;
+            $objTSolEnvioNego['sen_idTercero_envia'] =  $cedulaPersona;
+            $cedulaPersona = $negociacion['sol_ven_id'];
+            $filtro = TSolEnvioNego::where([['sen_sol_id', $data['sol_id']], ['sen_ser_id', 2]])->first();
+            $objTSolEnvioNego['sen_idTercero_recibe'] = $filtro['sen_idTercero_recibe'];
+            if (isset($data['observ'])) {
+                $objTSolEnvioNego['sen_observacion'] = $data['observ']; 
+            }else{                        
+                $objTSolEnvioNego['sen_observacion'] = ""; 
+            }
+            $objTSolEnvioNego['sen_fechaenvio'] = Carbon::now()->toDateTimeString();  
+            $objTSolEnvioNego['sen_estadoenvio'] = 0;
+            $objTSolEnvioNego['sen_run_id'] = null;
+            $objTSolEnvioNego->save();                   
         }
         
 
-        $response = compact('data', 'id', 'validacion', 'errorRuta', 'pernivCanal', 'padre', 'validaCanal', 'objTSolEnvioNego', 'pernivelVendedor', 'negociacion', 'idsLineas');
+        $response = compact('data', 'id', 'validacion', 'errorRuta', 'pernivCanal', 'padre', 'validaCanal', 'objTSolEnvioNego', 'pernivelVendedor', 'negociacion', 'idsLineas', 'costo');
         return response()->json($response);
     }
 
