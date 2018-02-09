@@ -16,8 +16,12 @@ use App\Models\negociaciones\TSoliCostosMotAdic;
 use App\Models\negociaciones\TSoliCostosDetAdic;
 use App\Models\negociaciones\TSoliObjetivos;
 use App\Models\negociaciones\TSoliTesoreriaHis;
-
+use App\Models\negociaciones\TSoliActaEntrega;
+use App\Models\negociaciones\TSoliReviExhibicion;
+use PDF;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Alert;
 
 class misSolicitudesController extends Controller
 {
@@ -26,11 +30,17 @@ class misSolicitudesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $data = $request->all();         
         $ruta = "NEGOCIACIONES V2 // MIS SOLICITUDES";
         $titulo = "Mis solicitudes";
-        $response = compact('ruta', 'titulo');
+        if (isset($data['id'])) {
+            $recarguemos = $data['id'];
+        }else{
+            $recarguemos = "";
+        }
+        $response = compact('ruta', 'titulo', 'recarguemos');
         return view('layouts.negociaciones.misSolicitudes', $response);
     }
 
@@ -52,7 +62,35 @@ class misSolicitudesController extends Controller
     public function getInfo()  
     {
         $usuario = Auth::user();
-        $solicitudes = TSolicitudNego::with('costo', 'costo.lineas', 'costo.lineas.lineasDetalle', 'costo.lineas.lineasDetalle.categorias', 'costo.motivo', 'costo.motivo.motAdicion', 'costo.detalle', 'estado', 'cliente', 'canal', 'listaPrecios', 'vendedor', 'zona', 'clasificacion', 'hisProceso', 'hisProceso.estadoHisProceso', 'hisProceso.terceroEnvia', 'hisProceso.terceroRecibe', 'costo.tipoBono.bono', 'soliZona', 'soliZona.hisZona', 'soliZona.hisZona.cOperacion', 'soliSucu', 'soliSucu.hisSucu', 'soliTipoNego', 'soliTipoNego.tipoNego', 'causal', 'causal.causalDetalle', 'evento', 'objetivo', 'cumplimiento', 'verificacionCobro', 'verificacionCobro.documento', 'verificacionCobro.proveedor', 'reviExhibicion', 'reviExhibicion.usuario', 'actaEntrega', 'actaEntrega.usuario', 'tesoHistorial', 'tesoAuditoria', 'tesoAuditoria.usuario')->where('sol_ven_id', $usuario['idTerceroUsuario'])->get();
+        // $solicitudes = TSolicitudNego::with('costo', 'costo.lineas', 'costo.lineas.lineasDetalle', 'costo.lineas.lineasDetalle.categorias', 'costo.motivo', 'costo.motivo.motAdicion', 'costo.detalle', 'estado', 'cliente', 'canal', 'listaPrecios', 'vendedor', 'zona', 'clasificacion', 'hisProceso', 'hisProceso.estadoHisProceso', 'hisProceso.terceroEnvia', 'hisProceso.terceroRecibe', 'costo.tipoBono.bono', 'soliZona', 'soliZona.hisZona', 'soliZona.hisZona.cOperacion', 'soliSucu', 'soliSucu.hisSucu', 'soliTipoNego', 'soliTipoNego.tipoNego', 'causal', 'causal.causalDetalle', 'evento', 'objetivo', 'cumplimiento', 'verificacionCobro', 'verificacionCobro.documento', 'verificacionCobro.proveedor', 'reviExhibicion', 'reviExhibicion.usuario', 'actaEntrega', 'actaEntrega.usuario', 'tesoHistorial', 'tesoAuditoria', 'tesoAuditoria.usuario')->where('sol_ven_id', $usuario['idTerceroUsuario'])->get();
+
+        $solicitudes = TSolicitudNego::with('costo', 'costo.lineas', 'costo.lineas.lineasDetalle', 'costo.lineas.lineasDetalle.categorias', 'costo.motivo', 'costo.motivo.motAdicion', 'costo.detalle', 'estado', 'cliente', 'canal', 'listaPrecios', 'vendedor', 'zona', 'clasificacion', 'hisProceso', 'hisProceso.estadoHisProceso', 'hisProceso.terceroEnvia', 'hisProceso.terceroRecibe', 'costo.tipoBono.bono', 'soliZona', 'soliZona.hisZona', 'soliZona.hisZona.cOperacion', 'soliSucu', 'soliSucu.hisSucu', 'soliTipoNego', 'soliTipoNego.tipoNego', 'causal', 'causal.causalDetalle', 'evento', 'objetivo', 'cumplimiento', 'verificacionCobro', 'verificacionCobro.documento', 'verificacionCobro.proveedor', 'reviExhibicion', 'reviExhibicion.usuario', 'actaEntrega', 'actaEntrega.usuario', 'tesoHistorial', 'tesoAuditoria', 'tesoAuditoria.usuario')->where('sol_ven_id', '1144069330')->get();
+
+        $solicitudes = collect($solicitudes)->map(function($object){           
+            $object['revi_exhibicion'] = collect($object['reviExhibicion'])->map(function($ob){
+                $arreglo = explode('/', asset('/storage/app/public/negociaciones/'.$ob['sre_foto']));
+                unset($arreglo[4]);
+                $arreglo = array_values($arreglo);
+                $string = implode('/', $arreglo);
+                $ob['urlImagen'] = $string;
+                return $ob;
+            });
+            return $object;
+        });
+
+        $solicitudes = collect($solicitudes)->map(function($object){           
+            $object['acta_entrega'] = collect($object['actaEntrega'])->map(function($ob){
+                $arreglo = explode('/', asset('/storage/app/public/negociaciones/'.$ob['sae_acta']));
+                unset($arreglo[4]);
+                $arreglo = array_values($arreglo);
+                $string = implode('/', $arreglo);
+                $ob['urlImagen'] = $string;
+                return $ob;
+            });
+            return $object;
+        });
+
+        $urlImprimirActa = route('imprimirActa');
 
         // Agrego la ruta edit a todas las solicitudes
         $solicitudes = $solicitudes->map(function($item, $key){
@@ -60,7 +98,7 @@ class misSolicitudesController extends Controller
              return $item;
         })->all();
 
-        $response = compact('usuario', 'solicitudes');
+        $response = compact('usuario', 'solicitudes', 'urlImprimirActa', 'arrUrls');
         return response()->json($response);
     }
 
@@ -364,4 +402,67 @@ class misSolicitudesController extends Controller
     {
         //
     }
+
+    public function imprimirActa()
+    {   
+        $fecha = Carbon::now();
+        $fechaDia = Carbon::parse($fecha)->day;
+        $fechaMes = Carbon::parse($fecha)->month;
+        $fechaAno = Carbon::parse($fecha)->year;
+
+        $response = compact('fechaDia', 'fechaMes', 'fechaAno');
+
+        // return view('layouts.negociaciones.ActaAuditoria.actaAuditoria', $response);
+        $pdf = PDF::loadView('layouts.negociaciones.ActaAuditoria.actaAuditoria', $response);
+        return $pdf->download('Formato_bono_negociacion.pdf');
+    }
+
+    public function saveActas(Request $request)
+    {   
+        $data = $request->all();
+        $file = $request->file('fileActa');
+        $nombre = $file->getClientOriginalName();
+
+        \Storage::disk('public')->put($nombre, \File::get($file));
+
+        $newActa = new TSoliActaEntrega;
+        $newActa->sae_sol_id = $data['sol_id'];
+        $newActa->sae_acta = $nombre;
+        $newActa->sae_cedula = $data['cedula'];
+        $newActa->sae_nombre = $data['nombre'];
+        $newActa->sae_direccion = $data['direccion'];
+        $newActa->sae_ciudad = $data['ciudad'];
+        $newActa->sae_observaciones = $data['observaciones'];
+        $newActa->sae_usuario = $data['idUsuario'];
+        $newActa->sae_fecha = Carbon::now();
+        $newActa->sae_estado = 1;
+        $newActa->save();
+
+        $response = compact('ruta', 'titulo', 'recarguemos');
+        return redirect()->route('misSolicitudes.index', ['id' => $data['sol_id']]);
+    }
+
+    public function saveFotos(Request $request)
+    {
+        $data = $request->all();
+        $file = $request->file('fileFoto');
+        $nombre = $file->getClientOriginalName();
+
+        \Storage::disk('public')->put($nombre, \File::get($file));
+
+        $newFoto = new TSoliReviExhibicion;
+        $newFoto->sre_sol_id = $data['sol_id'];
+        $newFoto->sre_foto = $nombre;
+        $newFoto->sre_cumplio = $data['cumplio'];
+        $newFoto->sre_puntovento = $data['puntoVenta'];
+        $newFoto->sre_observacion = $data['observaciones'];
+        $newFoto->sre_usuario = $data['idUsuario'];
+        $newFoto->sre_fecha = Carbon::now();
+        $newFoto->sre_estado = 1;
+        $newFoto->save();
+
+        $response = compact('ruta', 'titulo', 'recarguemos');
+        return redirect()->route('misSolicitudes.index', ['id' => $data['sol_id']]);
+    }
+
 }

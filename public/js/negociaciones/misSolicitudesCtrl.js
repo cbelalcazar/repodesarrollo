@@ -5,6 +5,8 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 	$scope.periEjeUrl = "misSolicitudesPeriEje";
 	$scope.confirBono = "misSolicitudesConfirBono";
     $scope.progress = true;
+    $scope.recarguemos = "";
+    $scope.mensajeExito = false;
 	
 	$scope.getInfo = function(){
 		$scope.todas = [];
@@ -14,8 +16,7 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 			data = response.data;
 			$scope.todas = angular.copy(data.solicitudes);
 			$scope.usuariolog = angular.copy(data.usuario);
-			console.log($scope.todas);
-			console.log($scope.usuariolog);
+			$scope.urlImprimirActa = angular.copy(data.urlImprimirActa);
 
 			$scope.elaboracion =  $filter('filter')($scope.todas, {sol_ser_id : 0, sol_sef_id : 1});
 			$scope.correciones =  $filter('filter')($scope.todas, {sol_ser_id : 8, sol_sef_id : 1});
@@ -45,6 +46,19 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 			$scope.tesoPendientes =  $filter('filter')($scope.todas, {sol_set_id : 3});
 			$scope.tesoConfirmadas =  $filter('filter')($scope.todas, {sol_set_id : 4});
 
+			if ($scope.recarguemos != "") {
+				var solicitudSeleccionar = $filter('filter')($scope.todas, {sol_id : $scope.recarguemos})[0];
+				$scope.setSolicitud(solicitudSeleccionar);
+				setTimeout(function() {
+					console.log('.' + $scope.recarguemos);
+					angular.element('.' + $scope.recarguemos).trigger('click');
+					$scope.recarguemos = "";
+					$scope.mensajeExito = true;
+				}, 10);
+				setTimeout(function() {					
+					$scope.mensajeExito = false;
+				}, 3000);
+			}
 			$scope.progress = false;
 		}), function(errorResponse){
 				console.log(errorResponse);
@@ -66,6 +80,7 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 
   	$scope.setSolicitud = function(objeto){
   		$scope.infoSolicitud = objeto;
+  		$scope.reset = true;
   		$scope.date = new Date();
 
   		if (($scope.infoSolicitud.sol_sef_id == 2) || ($scope.infoSolicitud.sol_sef_id == 3)) {
@@ -85,6 +100,7 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
   		$scope.ventaReal = ($scope.infoSolicitud.cumplimiento.scu_venreallineas - 
   			($scope.infoSolicitud.objetivo.soo_venpromeslin * $scope.infoSolicitud.sol_meseseje));
 
+  		console.log($scope.infoSolicitud);
   	}
   	
   	$scope.diffmesesFechaEjecucion = function(){
@@ -146,6 +162,7 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 	$scope.confirmarBono = function(){
   		$scope.infoSolicitud.usuarioLog = $scope.usuariolog;
 		$http.post($scope.confirBono, $scope.infoSolicitud).then(function(response){
+			$scope.progress = true;
 	   		console.log(response);
 	   		$scope.infoSolicitud = {};
 	   		$scope.getInfo();
@@ -172,8 +189,8 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
     	.targetEvent()
      	.ok('Si')
     	.cancel('No, gracias');
-
     	$mdDialog.show(confirm).then(function() {
+        	$scope.progress = true;
     		$http.post($scope.Url, $scope.duplicarSoli).then(function(response){
         		console.log(response);
         		$scope.getInfo();
@@ -183,6 +200,19 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
         		});
     	});
     	$scope.getInfo();
+	}
+
+	$scope.generarPdf = function(){
+  		$window.location = $scope.urlImprimirActa;
+  	}
+
+  	$scope.resetTab = function(){
+		$scope.reset = false;
+	}
+
+	$scope.newVentana = function(urlVentana){
+		var url = urlVentana.urlImagen;
+		return $window.open(url, '_blank');
 	}
 
 }]);

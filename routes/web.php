@@ -49,6 +49,9 @@ Route::group(['middleware' => ['auth']], function () {
       Route::get('misSolicitudesInfo', 'negociaciones\misSolicitudesController@getInfo');
       Route::post('misSolicitudesPeriEje', 'negociaciones\misSolicitudesController@updatePeriEje');
       Route::post('misSolicitudesConfirBono', 'negociaciones\misSolicitudesController@confirmarBono');
+      Route::get('imprimirActa', 'negociaciones\misSolicitudesController@imprimirActa')->name('imprimirActa');
+      Route::post('saveActas', 'negociaciones\misSolicitudesController@saveActas')->name('saveActas');
+      Route::post('saveFotos', 'negociaciones\misSolicitudesController@saveFotos')->name('saveFotos');
 
       Route::resource('nivelesAutorizacion', 'negociaciones\NivelesAutorizacionController', ['except' => ['create','edit', 'show']]);
       Route::get('infoAutorizacion', 'negociaciones\NivelesAutorizacionController@getInfo');

@@ -73,7 +73,7 @@
               </md-content>
             </md-tab>
             <!--Pestaña No.2 Info. Solicitud-->
-            <md-tab label="Info. Solicitud">
+            <md-tab label="Info. Solicitud" md-active="reset == true" md-on-deselect="resetTab()">
               <md-content class="md-padding">
                 <div class="col-sm-12">
                   <div class="row">
@@ -108,10 +108,10 @@
                           <label>Tipo de Negociación: </label> @{{infoSolicitud.sol_tipo == '1' ? 'Por Resultados' : infoSolicitud.sol_tipo == '2' ? 'Real' : 'SIN TIPO'}}
                         </li>
                         <li class="list-group-item">
-                          <label>Periodo de Ejecución: </label> @{{infoSolicitud.sol_peri_ejeini | date:'yyyy-MM-dd'}} a @{{infoSolicitud.sol_peri_ejefin | date:'yyyy-MM-dd'}}
+                          <label>Revision de Acta en Auditoria: </label> @{{infoSolicitud.sol_llegoacta == '1' ? 'Si' : 'Pendiente'}}
                         </li>
                         <li class="list-group-item">
-                          <label>Revision de Acta en Auditoria: </label> @{{infoSolicitud.sol_llegoacta == '1' ? 'Si' : 'Pendiente'}}
+                          <label>Periodo de Ejecución: </label> @{{infoSolicitud.sol_peri_ejeini | date:'yyyy-MM-dd'}} a @{{infoSolicitud.sol_peri_ejefin | date:'yyyy-MM-dd'}}
                         </li>
                       </div>
                       <div class="col-sm-6">
@@ -134,7 +134,7 @@
                           <label>Meses: </label> @{{infoSolicitud.sol_mesesfactu}}
                         </li>
                         <li class="list-group-item">
-                          <label>Clasificación: </label> @{{infoSolicitud.clasificacion.clg_descripcion == null ? 'SIN CLASIFICACIÓN' : infoSolicitud.clasificacion.clg_descripcion}}
+                          <label>Clasificación: </label> @{{infoSolicitud.sol_clasificacion == '1' ? 'Mercadeo' : infoSolicitud.sol_clasificacion == '2' ? 'Comercial' : infoSolicitud.sol_clasificacion == '3' ? 'Comercial - Mercadeo' : 'SIN CLASIFICACIÓN'}}
                         </li>
                         <li class="list-group-item">
                           <label>Zona: </label> @{{infoSolicitud.sol_ppresupuestozona}}
@@ -821,7 +821,7 @@
                       <li class="list-group-item">
                         <div class="row">
                           <div class="col-md-7"><label>Calificación Total</label></div>
-                          <div class="col-md-3" align="right">@{{infoSolicitud.cumplimiento.scu_calificaciontotal != null ? infoSolicitud.cumplimiento.scu_calificaciontotal : 'SIN CLASIFICACIÓN'}}</div>
+                          <div class="col-md-3" align="right">@{{infoSolicitud.cumplimiento.scu_calificaciontotal == '4' ? 'Excelente (4)' : infoSolicitud.cumplimiento.scu_calificaciontotal == '3' ? 'Bueno (3)' : infoSolicitud.cumplimiento.scu_calificaciontotal == '2' ? 'Regular (2)' : infoSolicitud.cumplimiento.scu_calificaciontotal == '1' ? 'Malo (1)' : 'SIN CLASIFICACIÓN'}}</div>
                           <div class="col-md-2"></div>
                         </div>
                       </li>
@@ -843,11 +843,12 @@
                     <div class="panel-body">
                       <!--Validacion de la informacion que se muestra en el panel-->
                       <div class="row" ng-if="infoSolicitud.revi_exhibicion.length == 0">
-                        <div class="col-md-12">No se encontraron registros</div>
+                        <div class="col-md-12" align="center">No se encontraron registros</div>
                       </div>
                       <!--Recorrer el arreglo y mostrar la informacion registrada-->
                       <div class="row" ng-if="infoSolicitud.revi_exhibicion.length != 0" ng-repeat="foto in infoSolicitud.revi_exhibicion">
-                        <div class="col-md-2"></div>
+                        <div class="col-md-2" ng-if="foto.sre_foto != ''"><a ng-click="newVentana(foto)">Ver Foto</a></div>
+                        <div class="col-md-2" ng-if="foto.sre_foto == ''"></div>
                         <div class="col-md-2">@{{foto.sre_cumplio}}</div>
                         <div class="col-md-2">@{{foto.sre_puntovento}}</div>
                         <div class="col-md-3">@{{foto.sre_observacion}}</div>
@@ -873,11 +874,12 @@
                     <div class="panel-body">
                       <!--Validacion de la informacion-->
                       <div class="row" ng-if="infoSolicitud.acta_entrega.length == 0">
-                        <div class="col-md-12">No se encontraron registros</div>
+                        <div class="col-md-12" align="center">No se encontraron registros</div>
                       </div>
                       <!--Recorrer el arreglo y mostrar la informacion registrada-->
                       <div class="row" ng-if="infoSolicitud.acta_entrega.length != 0" ng-repeat="acta in infoSolicitud.acta_entrega">
-                        <div class="col-md-1"></div>
+                        <div class="col-md-1" ng-if="acta.sae_acta != ''"><a ng-click="newVentana(acta)">Acta</a></div>
+                        <div class="col-md-1" ng-if="acta.sae_acta == ''"></div>
                         <div class="col-md-1">@{{acta.sae_cedula}}</div>
                         <div class="col-md-2">@{{acta.sae_nombre}}</div>
                         <div class="col-md-2">@{{acta.sae_direccion}}</div>
