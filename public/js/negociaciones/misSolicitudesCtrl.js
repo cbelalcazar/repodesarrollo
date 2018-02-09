@@ -162,6 +162,7 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 	$scope.confirmarBono = function(){
   		$scope.infoSolicitud.usuarioLog = $scope.usuariolog;
 		$http.post($scope.confirBono, $scope.infoSolicitud).then(function(response){
+			$scope.progress = true;
 	   		console.log(response);
 	   		$scope.infoSolicitud = {};
 	   		$scope.getInfo();
@@ -188,8 +189,8 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
     	.targetEvent()
      	.ok('Si')
     	.cancel('No, gracias');
-
     	$mdDialog.show(confirm).then(function() {
+        	$scope.progress = true;
     		$http.post($scope.Url, $scope.duplicarSoli).then(function(response){
         		console.log(response);
         		$scope.getInfo();
