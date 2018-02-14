@@ -8,6 +8,8 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
     $scope.recarguemos = "";
     $scope.mensajeExito = false;
 	
+	/*Funcion que trae todas las solicitudes, y las filtra dependiendo el estado
+		en el que se encuentra*/
 	$scope.getInfo = function(){
 		$scope.todas = [];
 		$scope.aprobacion = [];
@@ -46,6 +48,8 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 			$scope.tesoPendientes =  $filter('filter')($scope.todas, {sol_set_id : 3});
 			$scope.tesoConfirmadas =  $filter('filter')($scope.todas, {sol_set_id : 4});
 
+			/*Condicional que se valida para recargar la pagina una vez se carga una imagen
+				en la pestaña Evaluación*/
 			if ($scope.recarguemos != "") {
 				var solicitudSeleccionar = $filter('filter')($scope.todas, {sol_id : $scope.recarguemos})[0];
 				$scope.setSolicitud(solicitudSeleccionar);
@@ -67,6 +71,8 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 	};
 	$scope.getInfo();
 
+	/*Funcion que muestra en cada fila de las tablas de mis solicitudes,
+		las lineas separadas por comas*/
 	$scope.retornarCadena = function(arregloDeObjetos){
     	if (arregloDeObjetos != undefined) {
     		var arreglo = arregloDeObjetos.map(function(objeto){
@@ -78,6 +84,8 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
     	}
   	}
 
+  	/*Funcion que setea la informacion de la solicitud, se ejecuta siempre que
+  		la accion de un boton, muestra, edita o elimina una solicitud*/
   	$scope.setSolicitud = function(objeto){
   		$scope.infoSolicitud = objeto;
   		$scope.reset = true;
@@ -89,12 +97,14 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
   			$scope.pendienteGestion = 'Ninguno';	
   		}
   		
+  		/*Cambia formato fechas*/
   		$scope.infoSolicitud.sol_peri_ejeini = new Date($filter('date')($scope.infoSolicitud.sol_peri_ejeini, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
   		$scope.infoSolicitud.sol_peri_ejefin = new Date($filter('date')($scope.infoSolicitud.sol_peri_ejefin, 'yyyy-MM-dd HH:mm:ss Z', '+0500'));
 
   		$scope.ultimoProceso = $scope.infoSolicitud.his_proceso.slice(-1);
   		$scope.variacionObj = ($scope.infoSolicitud.objetivo.soo_vemesdespues/$scope.infoSolicitud.objetivo.soo_veprome);
 
+  		/*Informacion de cumplimiento*/
   		if ($scope.infoSolicitud.cumplimiento != null) {
   			$scope.ventaRealMarginal = ($scope.infoSolicitud.cumplimiento.scu_venreallineas - 
   			($scope.infoSolicitud.objetivo.soo_venpromeslin * $scope.infoSolicitud.sol_mesesfactu));
@@ -104,6 +114,8 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
   		console.log($scope.infoSolicitud);
   	}
   	
+  	/*Funcion ejecutada cuando se cambia el periodo de ejecucion
+  		Cambia el formato de fechas y halla la diferencia entre ellas*/
   	$scope.diffmesesFechaEjecucion = function(){
 		if ($scope.infoSolicitud.sol_peri_ejefin != undefined && $scope.infoSolicitud.sol_peri_ejeini != undefined && $scope.infoSolicitud.sol_peri_ejefin > $scope.infoSolicitud.sol_peri_ejeini) {
 			var fecha1 = moment($scope.infoSolicitud.sol_peri_ejefin);
@@ -124,6 +136,7 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 		}
 	}
 
+	/*Funcion que ejecuta la anulacion de una solicitud*/
 	$scope.anular = function(){
 		$http.put($scope.Url + '/' + $scope.infoSolicitud.sol_id, $scope.infoSolicitud).then(function(response){
 	   		console.log(response);
@@ -142,6 +155,7 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 	   	angular.element('.close').trigger('click');
 	}
 
+	/*Funcion que guarda los cambios en las fechas de los periodos de ejecucion*/
 	$scope.cambiarPeriEje = function(){
 		$http.post($scope.periEjeUrl, $scope.infoSolicitud).then(function(response){
 	   		console.log(response);
@@ -160,6 +174,7 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 	   	angular.element('.close').trigger('click');
 	}
 
+	/*Funcion que confirma los bonos, en la pestaña Tesoreria Pendientes*/
 	$scope.confirmarBono = function(){
   		$scope.infoSolicitud.usuarioLog = $scope.usuariolog;
 		$http.post($scope.confirBono, $scope.infoSolicitud).then(function(response){
@@ -175,7 +190,7 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 		$window.location = url;
 	}
 
-
+	/*funcion para ejecutar un duplicado de la funcion*/
 	$scope.duplicarSolicitud = function(objetoDuplicar){
 		$scope.duplicarSoli = objetoDuplicar;
   		$scope.duplicarSoli.sol_fecha = new Date();
@@ -203,14 +218,18 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
     	$scope.getInfo();
 	}
 
+	/*Redirecciona la url para imprimir en pdf el hmtl, se ejecuta en la pestaña
+		Tesoreria Pendientes*/
 	$scope.generarPdf = function(){
   		$window.location = $scope.urlImprimirActa;
   	}
 
+  	/*Funcion para hacer predeterminado el tab principal en el modal ver*/
   	$scope.resetTab = function(){
 		$scope.reset = false;
 	}
 
+	/*Funcion que genera una nueva ventana cuando se carga un archivo en la pestaña evaluacion*/
 	$scope.newVentana = function(urlVentana){
 		var url = urlVentana.urlImagen;
 		return $window.open(url, '_blank');
