@@ -113,7 +113,7 @@ class misSolicitudesController extends Controller
         $data = $request->all();
         $usuario = Auth::user();
 
-        // Duplicado en SolicitudNego
+        // Se crea un registro en la tabla t_solicitudnego exactamente igual al sleccionado
         $duplicarSolicitudNego =  new TSolicitudNego;
         $duplicarSolicitudNego->sol_evt_id = $data['sol_evt_id'];
         $duplicarSolicitudNego->sol_soc_id = $data['sol_soc_id'];
@@ -166,6 +166,8 @@ class misSolicitudesController extends Controller
         $duplicarSolicitudNego->sol_fechaaprobaciontotal = $data['sol_fechaaprobaciontotal'];
         $duplicarSolicitudNego->save();
 
+        /*Crea registros iguales a la solicitud dependiendo de si la solicitud era por
+            zona o por sucursal*/
         $validarZona = collect($data['soli_zona'])->isNotEmpty();
         if ($validarZona == true) {
             foreach ($data['soli_zona'] as $key => $value) {
@@ -187,6 +189,8 @@ class misSolicitudesController extends Controller
             }
         }
         
+        /*Se crea un registro en t_solitiponego exactamente igual al anterior
+            y con la relacion a la nueva solicitud creada*/
         foreach ($data['soli_tipo_nego'] as $key => $value) {
             $duplicarSoliTipoNego = new TSoliTipoNego;
             $duplicarSoliTipoNego->stn_sol_id = $duplicarSolicitudNego['sol_id'];  
@@ -209,6 +213,7 @@ class misSolicitudesController extends Controller
             $duplicarSoliTipoNego->save();
         }
         
+        /*Crea los diferentes causales de la nueva solicitud duplicada*/
         foreach ($data['causal'] as $key => $value) {
             $duplicarSoliCausalNego = new TSoliCausalNego;
             $duplicarSoliCausalNego->scn_sol_id = $duplicarSolicitudNego['sol_id'];
@@ -217,7 +222,7 @@ class misSolicitudesController extends Controller
             $duplicarSoliCausalNego->save();
         }
 
-        //Duplicado en SoliCostos
+        //Duplicado en t_solicostos igual al anterior con la relacion a la nueva solicitud
         $duplicarSoliCostos = new TSoliCostos;
         $duplicarSoliCostos->soc_sol_id = $duplicarSolicitudNego['sol_id'];
         $duplicarSoliCostos->soc_tbt_id = $data['costo']['soc_tbt_id'];
@@ -233,6 +238,7 @@ class misSolicitudesController extends Controller
         $duplicarSoliCostos->soc_denominacionbono = $data['costo']['soc_denominacionbono'];
         $duplicarSoliCostos->save();
 
+        /**/
         foreach ($data['costo']['lineas'] as $key => $value) {
             $duplicarSoliCostosLineas = new TSoliCostosLineas;
             
@@ -248,6 +254,8 @@ class misSolicitudesController extends Controller
             $duplicarSoliCostosLineas->save();
         }
         
+        /*Valida si la solicitud anterior tiene Motivo, de ser asi, crea los registros
+            iguales con relacion a la solicitud*/
         $validarMotivo = collect($data['costo']['motivo'])->isNotEmpty();
         if ($validarMotivo == true) {
             foreach ($data['costo']['motivo'] as $key => $value) {
@@ -260,7 +268,9 @@ class misSolicitudesController extends Controller
                 $duplicarSoliCostosMotAdic->save();
             }
         }
-            
+        
+        /*Valida si la solicitud anterior tiene Detalle, de ser asi, crea los registros
+            iguales con relacion a la solicitud*/
         $validarDetalle = collect($data['costo']['detalle'])->isNotEmpty();
         if ($validarDetalle == true) {
             $duplicarSoliCostosDetAdic = new TSoliCostosDetAdic;
@@ -310,6 +320,8 @@ class misSolicitudesController extends Controller
         $duplicarSoliObjetivos->soo_pinvermargiReal = $data['objetivo']['soo_pinvermargiReal'];
         $duplicarSoliObjetivos->save();
 
+        /*Crea un registro de elaboracion en el historial, queda pendiente para enviar
+            la solicitud*/
         $registroHistorial = new TSolEnvioNego;
         $registroHistorial->sen_sol_id = $duplicarSolicitudNego['sol_id'];
         $registroHistorial->sen_ser_id = 0;
