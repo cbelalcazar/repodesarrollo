@@ -18,6 +18,7 @@ use App\Models\negociaciones\TSoliObjetivos;
 use App\Models\negociaciones\TSoliTesoreriaHis;
 use App\Models\negociaciones\TSoliActaEntrega;
 use App\Models\negociaciones\TSoliReviExhibicion;
+use App\Models\negociaciones\TSolEnvioNego;
 use PDF;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -25,6 +26,7 @@ use Alert;
 
 class misSolicitudesController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -111,8 +113,9 @@ class misSolicitudesController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        $usuario = Auth::user();
 
-        //Duplicado en SolicitudNego
+        // Duplicado en SolicitudNego
         $duplicarSolicitudNego =  new TSolicitudNego;
         $duplicarSolicitudNego->sol_evt_id = $data['sol_evt_id'];
         $duplicarSolicitudNego->sol_soc_id = $data['sol_soc_id'];
@@ -309,7 +312,18 @@ class misSolicitudesController extends Controller
         $duplicarSoliObjetivos->soo_pinvermargiReal = $data['objetivo']['soo_pinvermargiReal'];
         $duplicarSoliObjetivos->save();
 
-        $response = compact('duplicarSolicitudNego', 'duplicarSoliZona', 'duplicarSoliSucursal', 'duplicarSoliTipoNego', 'duplicarSoliCausalNego', 'duplicarSoliCostos', 'duplicarSoliCostosLineas', 'duplicarSoliCostosMotAdic', 'duplicarSoliCostosDetAdic', 'duplicarSoliObjetivos');
+        $registroHistorial = new TSolEnvioNego;
+        $registroHistorial->sen_sol_id = $duplicarSolicitudNego['sol_id'];
+        $registroHistorial->sen_ser_id = 0;
+        $registroHistorial->sen_idTercero_envia = $usuario['idTerceroUsuario'];
+        $registroHistorial->sen_idTercero_recibe = null;
+        $registroHistorial->sen_observacion = 'Registro duplicado de la Solicitud Nro. '.$data['sol_id'];
+        $registroHistorial->sen_fechaenvio = Carbon::parse('now')->format('Y-m-d H:i:s');
+        $registroHistorial->sen_estadoenvio = 1;
+        $registroHistorial->sen_run_id = null;
+        $registroHistorial->save();
+
+        $response = compact('duplicarSolicitudNego', 'duplicarSoliZona', 'duplicarSoliSucursal', 'duplicarSoliTipoNego', 'duplicarSoliCausalNego', 'duplicarSoliCostos', 'duplicarSoliCostosLineas', 'duplicarSoliCostosMotAdic', 'duplicarSoliCostosDetAdic', 'duplicarSoliObjetivos', 'registroHistorial');
         return response()->json($response);
     }
 
