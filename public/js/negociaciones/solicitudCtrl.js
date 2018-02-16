@@ -414,25 +414,6 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		$scope.causalesNego.push(item.scn_can_id);
 	}
 
-	$scope.removeSucursal = function(item) { 
-		$scope.nuevoFiltrado.push(item);
-		var index = $scope.arraySucursales.indexOf(item);
-		$scope.arraySucursales.splice(index, 1); 
-		// Calculo el porcentaje de participacion para cada registro
-		var cantidadRegistros = $scope.objeto.sucursales.length + $scope.arraySucursales.length;
-		$scope.porcentParticipacion = 100 / cantidadRegistros;		
-		$scope.porcentParticipacion = $scope.porcentParticipacion.toFixed(2);
-
-		// Calculo el faltante
-		var faltante = (100 - ($scope.arraySucursales.length * $scope.porcentParticipacion)).toFixed(2);
-
-		// Agrego nuevamente el porcentaje de participacion
-		$scope.arraySucursales.forEach( function(el, key) {
-			el.porcentParti = $scope.porcentParticipacion;
-		});
-		// Agrego el faltante al ultimo
-		$scope.arraySucursales[$scope.arraySucursales.length - 1].porcentParti = (parseFloat($scope.arraySucursales[$scope.arraySucursales.length - 1].porcentParti) + parseFloat(faltante)).toFixed(2);   		
-	}	
 
 	$scope.removeLinea = function(item) { 
 		$scope.lineas.push(item);
@@ -537,7 +518,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 	}
 
 	$scope.sucursalesFiltPorCliente = function(){
-		$scope.nuevoFiltrado = $filter('filter')($scope.multiSelectSucursales, {cli_id : $scope.objeto.sol_cli_id.cli_id, codcanal : $scope.objeto.sol_can_id.can_id.trim()}, true);
+		$scope.nuevoFiltrado = angular.copy($filter('filter')($scope.multiSelectSucursales, {cli_id : $scope.objeto.sol_cli_id.cli_id, codcanal : $scope.objeto.sol_can_id.can_id.trim()}, true));
 		$scope.nuevoFiltrado = $scope.nuevoFiltrado.map(function(element){
 			element.descripcionConId = element.suc_num_codigo + " - " + element.suc_txt_nombre + " - " + element.suc_txt_direccion;
 			return element;
@@ -557,13 +538,37 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		var faltante = (100 - ($scope.arraySucursales.length * $scope.porcentParticipacion)).toFixed(2);
 		$scope.arraySucursales.forEach( function(el, key) {
 			el.porcentParti = $scope.porcentParticipacion;
-			var index = $scope.nuevoFiltrado.indexOf(el);
-			$scope.nuevoFiltrado.splice(index, 1);
+			$scope.nuevoFiltrado = angular.copy($filter('removeWith')($scope.nuevoFiltrado, {suc_id : el.suc_id}));
 		});
 
-		$scope.arraySucursales[$scope.arraySucursales.length - 1].porcentParti = (parseFloat($scope.arraySucursales[$scope.arraySucursales.length - 1].porcentParti) + parseFloat(faltante)).toFixed(2);
+		if ($scope.arraySucursales.length > 0) {
+			$scope.arraySucursales[$scope.arraySucursales.length - 1].porcentParti = (parseFloat($scope.arraySucursales[$scope.arraySucursales.length - 1].porcentParti) + parseFloat(faltante)).toFixed(2);
+		}		
 		$scope.objeto.sucursales = [];	
 	}
+
+
+	$scope.removeSucursal = function(item) { 
+		$scope.nuevoFiltrado.push(angular.copy(item));
+		var index = $scope.arraySucursales.indexOf(item);
+		$scope.arraySucursales.splice(index, 1); 
+		// Calculo el porcentaje de participacion para cada registro
+		var cantidadRegistros = $scope.objeto.sucursales.length + $scope.arraySucursales.length;
+		$scope.porcentParticipacion = 100 / cantidadRegistros;		
+		$scope.porcentParticipacion = $scope.porcentParticipacion.toFixed(2);
+
+		// Calculo el faltante
+		var faltante = (100 - ($scope.arraySucursales.length * $scope.porcentParticipacion)).toFixed(2);
+   
+		// Agrego nuevamente el porcentaje de participacion
+		$scope.arraySucursales.forEach( function(el, key) {
+			el.porcentParti = $scope.porcentParticipacion;
+		});
+		// Agrego el faltante al ultimo
+		if ($scope.arraySucursales.length > 0) {
+			$scope.arraySucursales[$scope.arraySucursales.length - 1].porcentParti = (parseFloat($scope.arraySucursales[$scope.arraySucursales.length - 1].porcentParti) + parseFloat(faltante)).toFixed(2);   		
+		}		
+	}	
 
 	$scope.sumPorcentPart = function(){
 		$scope.sumPorcentPartLin = 0;

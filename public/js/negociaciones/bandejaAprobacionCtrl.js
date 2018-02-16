@@ -41,12 +41,18 @@ app.controller('bandejaCtrl', ['$scope', '$http', '$filter', '$window', function
 
   	$scope.aprobar = function(obj){
   		$scope.message = [];
-  		console.log(obj);
   		$scope.infoSolicitud = obj;
   	}
 
+  	$scope.validarTipoSolicitud = function(obj){
+  		if (obj == undefined) {
+  			return false;
+  		}
+  		console.log(obj.sol_tipnegoniv == "Mercadeo");
+  		return (obj.sol_tipnegoniv == "Mercadeo" || obj.sol_tipnegoniv == "Comercial y Mercadeo");
+  	}
+
   	$scope.generarAprobacion = function(obj){
-  		console.log(obj);
   		obj.usuarioAprobador = $scope.usuario;
   		$scope.progress = true;
   		$http.put('bandejaAprobacion/' + obj.sol_id, obj).then(function(response){			

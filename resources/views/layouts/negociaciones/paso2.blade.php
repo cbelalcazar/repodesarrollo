@@ -130,7 +130,7 @@
                                         </div>                                                      
                                     </td>
                                     <td>@{{value.CostoNegoLinea = calculaCostoNegoLinea(value)}}</td>
-                                    <td>@{{value.CostoAdiLinea = calculaCostoNegoLinea(value)}}</td>
+                                    <td>0,00</td>
                                     <td>
                                         <button type="button" class="btn btn-danger btn-circle" ng-click="removeLinea(value)"><i class="glyphicon glyphicon-remove"></i></button>
                                     </td>

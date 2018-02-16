@@ -13,8 +13,7 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 	$scope.getInfo = function(){
 		$scope.todas = [];
 		$scope.aprobacion = [];
-		$http.get($scope.getUrl).then(function(response){
-			
+		$http.get($scope.getUrl).then(function(response){			
 			data = response.data;
 			$scope.todas = angular.copy(data.solicitudes);
 			$scope.usuariolog = angular.copy(data.usuario);

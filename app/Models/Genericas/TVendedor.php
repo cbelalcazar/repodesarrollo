@@ -18,6 +18,6 @@ class TVendedor extends Model
     ];
     
     public function TSucursal(){
-        return $this->hasMany('App\Models\Genericas\TSucursal', 'ven_id', 'ven_id');
+        return $this->hasMany('App\Models\Genericas\TSucursal', 'ven_id', 'ven_id')->where('suc_txt_estado', 'ACTIVO');
     }
 }
