@@ -387,6 +387,8 @@
 								</tr>
 							</tbody>
 						</table>
+						<label>Nota</label>
+						<p>@{{objtipoNeg.stn_tin_id.tin_ayuda}}</p>						
 				    </div>
 				  </div>
 			</div>

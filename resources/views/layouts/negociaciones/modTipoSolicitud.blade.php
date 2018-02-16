@@ -18,7 +18,7 @@
           <div class="col-sm-12">
             <div class="row">
               <div class="col-sm-12">
-                <div class="form-group" ng-if="pernivelUsu.pen_nomnivel == 2">
+                <div class="form-group" ng-if="pernivelUsu.pen_nomnivel == 2 && !validarTipoSolicitud(infoSolicitud)">
                   <label>Tipo de negociacion</label>
                     <select ng-model="infoSolicitud.tipoNegociacionSol" required class="form-control" ng-options="value for (key, value) in tipoNegociacion track by key">
                       <option value="">Seleccione...</option>

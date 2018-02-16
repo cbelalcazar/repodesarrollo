@@ -31,5 +31,9 @@ class TPernivCanal extends Model
     public function lineas(){
         return $this->hasMany('App\Models\negociaciones\TPernivLinea', 'pcan_idcanal', 'id');
     }
+
+    public function pernivel(){
+        return $this->belongsTo('App\Models\negociaciones\TPernivele', 'pcan_idpernivel', 'id');
+    }
         
 }

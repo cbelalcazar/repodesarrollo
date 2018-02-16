@@ -64,7 +64,7 @@ class misSolicitudesController extends Controller
         $usuario = Auth::user();
         // $solicitudes = TSolicitudNego::with('costo', 'costo.lineas', 'costo.lineas.lineasDetalle', 'costo.lineas.lineasDetalle.categorias', 'costo.motivo', 'costo.motivo.motAdicion', 'costo.detalle', 'estado', 'cliente', 'canal', 'listaPrecios', 'vendedor', 'zona', 'clasificacion', 'hisProceso', 'hisProceso.estadoHisProceso', 'hisProceso.terceroEnvia', 'hisProceso.terceroRecibe', 'costo.tipoBono.bono', 'soliZona', 'soliZona.hisZona', 'soliZona.hisZona.cOperacion', 'soliSucu', 'soliSucu.hisSucu', 'soliTipoNego', 'soliTipoNego.tipoNego', 'causal', 'causal.causalDetalle', 'evento', 'objetivo', 'cumplimiento', 'verificacionCobro', 'verificacionCobro.documento', 'verificacionCobro.proveedor', 'reviExhibicion', 'reviExhibicion.usuario', 'actaEntrega', 'actaEntrega.usuario', 'tesoHistorial', 'tesoAuditoria', 'tesoAuditoria.usuario')->where('sol_ven_id', $usuario['idTerceroUsuario'])->get();
 
-        $solicitudes = TSolicitudNego::with('costo', 'costo.lineas', 'costo.lineas.lineasDetalle', 'costo.lineas.lineasDetalle.categorias', 'costo.motivo', 'costo.motivo.motAdicion', 'costo.detalle', 'estado', 'cliente', 'canal', 'listaPrecios', 'vendedor', 'zona', 'clasificacion', 'hisProceso', 'hisProceso.estadoHisProceso', 'hisProceso.terceroEnvia', 'hisProceso.terceroRecibe', 'costo.tipoBono.bono', 'soliZona', 'soliZona.hisZona', 'soliZona.hisZona.cOperacion', 'soliSucu', 'soliSucu.hisSucu', 'soliTipoNego', 'soliTipoNego.tipoNego', 'causal', 'causal.causalDetalle', 'evento', 'objetivo', 'cumplimiento', 'verificacionCobro', 'verificacionCobro.documento', 'verificacionCobro.proveedor', 'reviExhibicion', 'reviExhibicion.usuario', 'actaEntrega', 'actaEntrega.usuario', 'tesoHistorial', 'tesoAuditoria', 'tesoAuditoria.usuario')->where('sol_ven_id', '1144069330')->get();
+        $solicitudes = TSolicitudNego::with('costo', 'costo.lineas', 'costo.lineas.lineasDetalle', 'costo.lineas.lineasDetalle.categorias', 'costo.motivo', 'costo.motivo.motAdicion', 'costo.detalle', 'estado', 'cliente', 'canal', 'listaPrecios', 'vendedor', 'zona', 'clasificacion', 'hisProceso', 'hisProceso.estadoHisProceso', 'hisProceso.terceroEnvia', 'hisProceso.terceroRecibe', 'costo.tipoBono.bono', 'soliZona', 'soliZona.hisZona', 'soliZona.hisZona.cOperacion', 'soliSucu', 'soliSucu.hisSucu', 'soliTipoNego', 'soliTipoNego.tipoNego', 'causal', 'causal.causalDetalle', 'evento', 'objetivo', 'cumplimiento', 'verificacionCobro', 'verificacionCobro.documento', 'verificacionCobro.proveedor', 'reviExhibicion', 'reviExhibicion.usuario', 'actaEntrega', 'actaEntrega.usuario', 'tesoHistorial', 'tesoAuditoria', 'tesoAuditoria.usuario')->where('sol_ven_id', $usuario['idTerceroUsuario'])->get();
 
         $solicitudes = collect($solicitudes)->map(function($object){           
             $object['revi_exhibicion'] = collect($object['reviExhibicion'])->map(function($ob){
@@ -117,7 +117,6 @@ class misSolicitudesController extends Controller
         $duplicarSolicitudNego->sol_evt_id = $data['sol_evt_id'];
         $duplicarSolicitudNego->sol_soc_id = $data['sol_soc_id'];
         $duplicarSolicitudNego->sol_ser_id = 0;
-        $duplicarSolicitudNego->sol_ven_id = $data['sol_ven_id'];
         $duplicarSolicitudNego->sol_sef_id = 1;
         $duplicarSolicitudNego->sol_set_id = 0;
         $duplicarSolicitudNego->sol_zona = $data['sol_zona'];
@@ -447,9 +446,7 @@ class misSolicitudesController extends Controller
         $data = $request->all();
         $file = $request->file('fileFoto');
         $nombre = $file->getClientOriginalName();
-
         \Storage::disk('public')->put($nombre, \File::get($file));
-
         $newFoto = new TSoliReviExhibicion;
         $newFoto->sre_sol_id = $data['sol_id'];
         $newFoto->sre_foto = $nombre;
@@ -460,7 +457,6 @@ class misSolicitudesController extends Controller
         $newFoto->sre_fecha = Carbon::now();
         $newFoto->sre_estado = 1;
         $newFoto->save();
-
         $response = compact('ruta', 'titulo', 'recarguemos');
         return redirect()->route('misSolicitudes.index', ['id' => $data['sol_id']]);
     }

@@ -65,7 +65,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Venta Estimada Lineas</label>
-                                <input type="text"  class="form-control" disabled format="currency" ng-model="objObjetivos.soo_venestlin">
+                                <input type="text"  class="form-control" format="currency" ng-model="objObjetivos.soo_venestlin">
                             </div>
                              <div class="form-group">
                                 <label>Venta Marginal Lineas</label>
