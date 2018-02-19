@@ -6,12 +6,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
+use Mail;
+use App\Mail\notificacionEstadoSolicitud;
 
 use App\Models\negociaciones\TSolEnvioNego;
 use App\Models\negociaciones\TPernivele;
 use App\Models\negociaciones\TPernivLinea;
 use App\Models\negociaciones\TSolicitudNego;
 use App\Models\negociaciones\TSoliCostosLineas;
+use App\Models\Genericas\TDirNacional;
 
 class bandejaAprobacionController extends Controller
 {
@@ -547,6 +550,15 @@ class bandejaAprobacionController extends Controller
         $objTSolEnvioNego['sen_fechaenvio'] = Carbon::now()->toDateTimeString();  
         $objTSolEnvioNego['sen_run_id'] = $sen_run_id;
         $objTSolEnvioNego->save();
+
+        //Aqui envio el correo de la solicitud
+        // $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_recibe'])->pluck('dir_txt_email');
+        $correo = ['jfmoreno@bellezaexpress.com'];
+        Mail::to($correo)->send(new notificacionEstadoSolicitud($objTSolEnvioNego));
+        if(Mail::failures()){
+          return response()->json(Mail::failures());
+        }
+
         return $objTSolEnvioNego;
     }
 

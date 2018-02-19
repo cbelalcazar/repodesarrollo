@@ -119,6 +119,7 @@ class misSolicitudesController extends Controller
         $duplicarSolicitudNego->sol_evt_id = $data['sol_evt_id'];
         $duplicarSolicitudNego->sol_soc_id = $data['sol_soc_id'];
         $duplicarSolicitudNego->sol_ser_id = 0;
+        $duplicarSolicitudNego->sol_ven_id = $data['sol_ven_id'];
         $duplicarSolicitudNego->sol_sef_id = 1;
         $duplicarSolicitudNego->sol_set_id = 0;
         $duplicarSolicitudNego->sol_zona = $data['sol_zona'];
