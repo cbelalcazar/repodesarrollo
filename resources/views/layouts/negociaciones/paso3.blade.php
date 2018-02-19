@@ -65,7 +65,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Venta Estimada Lineas</label>
-                                <input type="text"  class="form-control" format="currency" ng-model="objObjetivos.soo_venestlin">
+                                <input type="text"  class="form-control" format="currency" ng-model="objObjetivos.soo_venestlin" ng-change="recalcularVentaEstimadaLineas()">
                             </div>
                              <div class="form-group">
                                 <label>Venta Marginal Lineas</label>

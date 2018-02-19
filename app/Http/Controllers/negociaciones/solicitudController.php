@@ -219,12 +219,13 @@ class solicitudController extends Controller
             }
             
             if (count($data['arrayLineas']) > 0) {
-                $deleteSoliCostos = TSoliCostos::where('soc_sol_id', $id)->delete();
-                $negociacion = $this->crearSoliCostos($data['objCostos'], $negociacion);
-                $soliCostos = TSoliCostos::where('soc_sol_id', $id)->first();
-
-                $deleteSoliCostosLineas = TSoliCostosLineas::where('scl_soc_id', $soliCostos['soc_id'])->delete();
-                $soliCostos = $this->crearSoliCostosLinea($data['arrayLineas'], $soliCostos, $soliCostos['soc_id']);
+                if (isset($obj['soc_formapago']['id'])) {
+                    $deleteSoliCostos = TSoliCostos::where('soc_sol_id', $id)->delete();
+                    $negociacion = $this->crearSoliCostos($data['objCostos'], $negociacion);
+                    $soliCostos = TSoliCostos::where('soc_sol_id', $id)->first();
+                    $deleteSoliCostosLineas = TSoliCostosLineas::where('scl_soc_id', $soliCostos['soc_id'])->delete();
+                    $soliCostos = $this->crearSoliCostosLinea($data['arrayLineas'], $soliCostos, $soliCostos['soc_id']);
+                }                              
             }
             
 
@@ -304,7 +305,7 @@ class solicitudController extends Controller
             $array['scl_lin_id'] = $value['lin_id']; 
             $array['scl_ppart'] = $value['porcentParti']; 
             $array['scl_costo'] = $value['CostoNegoLinea']; 
-            $array['scl_costoadi'] = $value['CostoAdiLinea'];             
+            $array['scl_costoadi'] = 0;             
             $array['scl_estado'] = 1; 
             if (!isset($value['scl_valorventa'])) {
                 $value['scl_valorventa'] = 0;
