@@ -304,8 +304,12 @@ class solicitudController extends Controller
             $array['scl_cat_id'] = $value['cat_id']; 
             $array['scl_lin_id'] = $value['lin_id']; 
             $array['scl_ppart'] = $value['porcentParti']; 
-            $array['scl_costo'] = $value['CostoNegoLinea']; 
-            $array['scl_costoadi'] = 0;             
+            $array['scl_costo'] = $value['CostoNegoLinea'];     
+            if (isset($value['CostoAdiLinea'])) {
+                $array['scl_costoadi'] = $value['CostoAdiLinea'];  
+            }else{
+                $array['scl_costoadi'] = 0;                  
+            }        
             $array['scl_estado'] = 1; 
             if (!isset($value['scl_valorventa'])) {
                 $value['scl_valorventa'] = 0;
