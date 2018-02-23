@@ -258,6 +258,7 @@ class solicitudController extends Controller
                     array_push($errorRuta, 'No se encontraron canales para la solicitud');
                 }else{
                     $pernivCanal = collect($pernivel['canales'])->where('pcan_idcanal', $data['sol_can_id'])->all();
+                    $pernivCanal = array_values($pernivCanal);
                     if (count($pernivCanal) > 0) {
                         $padre = TPernivele::where('id', $pernivCanal[0]['pcan_aprobador'])->first();
                         $validacion = TSolEnvioNego::where([['sen_idTercero_envia', $pernivel['pen_cedula']], ['sen_idTercero_recibe', $padre['pen_cedula']], ['sen_sol_id', $data['sol_id']]])->get();
