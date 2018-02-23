@@ -50,4 +50,8 @@ class TSoliCostos extends Model
       return $this->hasOne('App\Models\negociaciones\TSoliCostosDetAdic', 'scd_soc_id', 'soc_id');
     }
 
+    public function formaPago(){
+      return $this->hasOne('App\Models\negociaciones\TFormaPago', 'id', 'soc_formapago');
+    }
+
 }

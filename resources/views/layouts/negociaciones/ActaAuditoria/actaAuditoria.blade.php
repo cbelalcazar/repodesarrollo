@@ -94,7 +94,7 @@
 				<td colspan="3" rowspan="3"> 
 					<table id="tabla_fecha">
 						<tr>
-							<td colspan="3" class="titulo_c">FECHA DE ELABORACI&Oacute;N</td>
+							<td colspan="3" class="titulo_c">FECHA DE ELABORACIÓN</td>
 						</tr>
 						<tr>
 							<td width="33.3%" class="titulo_c">DD</td>

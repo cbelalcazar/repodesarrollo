@@ -31,11 +31,11 @@ class notificacionEstadoSolicitud extends Mailable
     public function build()
     {
         $style = ['body-line' => 'margin: 0 20px 12px; font-size: 13px; line-height: 21px; color: #4f4f4f; font-family: sans-serif;'];
-        $titulo = 'Solicitud de Negociaciones';
+        $titulo = 'NEGOCIACIONES V2';
         $objTSolEnvioNego = $this->objTSolEnvioNego;
 
-        return $this->subject('Solicitud de Negociaciones')
-        ->view('emails.eegociaciones.notificacionEstadoSolicitud')
+        return $this->subject('NEGOCIACIONES V2 - Administración Electronica de Negociaciones')
+        ->view('emails.negociaciones.notificacionEstadoSolicitud')
         ->with(compact('style', 'titulo', 'objTSolEnvioNego'));
 
     }

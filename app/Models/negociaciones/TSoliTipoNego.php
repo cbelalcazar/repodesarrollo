@@ -43,4 +43,9 @@ class TSoliTipoNego extends Model
       return $this->hasOne('App\Models\negociaciones\TipoNegociacion', 'tin_id', 'stn_tin_id');
     }
 
+    public function tipoServicio(){
+      return $this->hasOne('App\Models\negociaciones\TipoServicio', 'ser_id', 'stn_ser_id');
+    }
+
+
 }

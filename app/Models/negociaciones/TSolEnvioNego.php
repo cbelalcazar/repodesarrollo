@@ -41,4 +41,9 @@ class TSolEnvioNego extends Model
     public function terceroRecibe(){
       return $this->hasOne('App\Models\Genericas\Tercero', 'idTercero', 'sen_idTercero_recibe');
     }
+
+    public function solicitud(){
+      return $this->belongsTo('App\Models\negociaciones\TSolicitudNego', 'sen_sol_id', 'sol_id');
+    }
+
 }

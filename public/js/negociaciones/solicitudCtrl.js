@@ -754,7 +754,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 				$http.put('../../solicitud/' + $scope.objeto.sol_id, $scope.envioPost).then(function(response){
 					var res = response.data;
 					console.log(res);
-					$window.location = res.url;
+					// $window.location = res.url;
 				}, function(errorResponse){
 					alert("Error al grabar");
 				});

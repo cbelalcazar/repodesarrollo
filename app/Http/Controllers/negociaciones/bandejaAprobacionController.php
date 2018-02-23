@@ -549,6 +549,8 @@ class bandejaAprobacionController extends Controller
         $objTSolEnvioNego['sen_ser_id'] = $sen_ser_id;                      
         $objTSolEnvioNego['sen_fechaenvio'] = Carbon::now()->toDateTimeString();  
         $objTSolEnvioNego['sen_run_id'] = $sen_run_id;
+
+        return response()->json($objTSolEnvioNego);
         $objTSolEnvioNego->save();
 
         //Aqui envio el correo de la solicitud

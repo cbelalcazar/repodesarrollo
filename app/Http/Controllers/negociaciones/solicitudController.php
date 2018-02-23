@@ -33,9 +33,12 @@ use App\Models\Genericas\TCliente;
 use App\Models\Genericas\TLineas;
 use App\Models\Genericas\TListaPrecios;
 use App\Models\Genericas\TSucursal;
+use App\Models\Genericas\TDirNacional;
 use App\Models\Genericas\TCentroOperaciones;
 use App\Models\BESA\NegociacionesVentas;
 
+use Mail;
+use App\Mail\notificacionEstadoSolicitud;
 
 class solicitudController extends Controller
 {
@@ -56,7 +59,7 @@ class solicitudController extends Controller
      */
     public function create()
     {
-        $ruta = "NEGOCIACIONES V2 // CREAR SOLCITUD";
+        $ruta = "NEGOCIACIONES V2 // CREAR SOLICITUD";
         $titulo = "CREAR SOLICITUD";
         $id = "undefined";        
         $adelante = "create";
@@ -173,7 +176,7 @@ class solicitudController extends Controller
      */
     public function edit($id, Request $request)
     {
-        $ruta = "NEGOCIACIONES V2 // EDITAR SOLCITUD";
+        $ruta = "NEGOCIACIONES V2 // EDITAR SOLICITUD";
         $titulo = "EDITAR SOLICITUD";
         $adelante = $request->all()['redirecTo'];
         $response = compact('ruta', 'titulo', 'id', 'adelante');
@@ -265,6 +268,20 @@ class solicitudController extends Controller
                             $objTSolEnvioNego['sen_estadoenvio'] = 1;
                             $objTSolEnvioNego['sen_run_id'] = null;
                             $objTSolEnvioNego->save();
+                            $objTSolEnvioNego = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'solicitud.soliSucu', 'solicitud.soliSucu.hisSucu', 'solicitud.soliZona', 'solicitud.soliZona.hisZona', 'solicitud.soliZona.hisZona.cOperacion', 'solicitud.objetivo', 'solicitud.soliTipoNego', 'solicitud.soliTipoNego.tipoNego', 'solicitud.soliTipoNego.tipoServicio', 'solicitud.costo', 'solicitud.costo.formaPago', 'solicitud.cliente')->where('sen_id', $objTSolEnvioNego['sen_id'])->first();
+                            // Enviar el primer correo creacion
+                            // $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_envia'])->pluck('dir_txt_email')->first();
+                            $correo = ['jfmoreno@bellezaexpress.com'];
+                            $objTSolEnvioNego['creacion'] = true;
+                            $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
+
+                            // Envia correo paso creado
+                            // $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
+                            // // $correo = ['jfmoreno@bellezaexpress.com'];
+                            // $objTSolEnvioNego['creacion'] = false;
+                            // $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
+
+
                         }else{
                             array_push($errorRuta, 'No se encontro ruta de aprobacion para el canal seleccionado');
                         }
@@ -295,6 +312,15 @@ class solicitudController extends Controller
 
         $response = compact('data', 'id', 'url', 'negociacion', 'pernivel', 'errorRuta', 'pernivCanal', 'padre', 'objTSolEnvioNego', 'validacion');
         return response()->json($response);
+    }
+
+    public function enviaCorreo($correo, $objTSolEnvioNego){
+        Mail::to($correo)->send(new notificacionEstadoSolicitud($objTSolEnvioNego));
+        if(Mail::failures()){
+            return response()->json(Mail::failures());
+        }else{
+            return true;
+        }
     }
 
     public function crearSoliCostosLinea($arreglo, $obj, $costoId){
