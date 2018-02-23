@@ -23,10 +23,23 @@ class bandejaAprobacionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $ruta = "NEGOCIACIONES V2 // BANDEJA APROBACIÓN";
         $titulo = "BANDEJA APROBACIÓN";   
+        if (isset($request->all()['redirecTo'])) {
+          $adelante = $request->all()['redirecTo']; 
+          $id = $request->all()['id'];
+          if ($adelante == 'elaboracion') {
+              $aprobador = TSolEnvioNego::with('estadoHisProceso', 'terceroRecibe', 'dirNacionalRecibe')->where([['sen_sol_id', $id], ['sen_estadoenvio', 1]])->first();
+              // Retorna la url de misolicitudes
+              $urlMisSolicitudes = route('bandejaAprobacion.index');
+              $negociacion = TSolicitudNego::with('cliente', 'costo')->where('sol_id', $id)->first();
+              $validacion = true;
+              $response = compact('aprobador', 'ruta', 'titulo', 'negociacion', 'urlMisSolicitudes', 'validacion');
+              return view('layouts.negociaciones.mensajeEnvioSolicitud', $response);
+          }
+        }       
         $response = compact('ruta', 'titulo');
         return view('layouts.negociaciones.bandejaAprobacion', $response);
     }
@@ -108,6 +121,10 @@ class bandejaAprobacionController extends Controller
         $errorRuta = [];
         // Obtengo el pernivel del usuario aprobador
         $pernivel = TPernivele::with('canales')->where('pen_cedula', $data['usuarioAprobador']['idTerceroUsuario'])->first();
+
+        if ($pernivel == null) {
+            array_push($errorRuta, 'El usuario que aprueba la solicitud no se encuentra creado en los niveles de autorizacion');
+        }
 
         // Valido si ahi tiponegociacionsol
         if (isset($data['tipoNegociacionSol'])) {
@@ -535,7 +552,9 @@ class bandejaAprobacionController extends Controller
           }            
         } 
         
-        $response = compact('data', 'id', 'validacion', 'errorRuta', 'pernivCanal', 'padre', 'validaCanal', 'objTSolEnvioNego', 'pernivelVendedor', 'negociacion', 'idsLineas', 'costo', 'arrLineas', 'perniveles', 'pernivel', 'nivelesCreados', 'collection', 'anterior', 'arrrr', 'comprobacionruta');
+        $url = route('bandejaAprobacion.index', ['id' => $data['sol_id'], 'redirecTo' => 'elaboracion']);
+
+        $response = compact('data', 'id', 'validacion', 'errorRuta', 'pernivCanal', 'padre', 'validaCanal', 'objTSolEnvioNego', 'pernivelVendedor', 'negociacion', 'idsLineas', 'costo', 'arrLineas', 'perniveles', 'pernivel', 'nivelesCreados', 'collection', 'anterior', 'arrrr', 'comprobacionruta', 'url');
         return response()->json($response);
     }
 

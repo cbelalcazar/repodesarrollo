@@ -16,6 +16,17 @@
           <h3>Negociación No. @{{infoSolicitud.sol_id}} / Estado:  @{{infoSolicitud.estado.ser_descripcion}}</h3>
           <hr>
           <div class="col-sm-12">
+              <div class="alert alert-danger" ng-if="errorMessage.length > 0">
+                  <br>
+                  <ul>
+                      <li ng-repeat="(key, value) in errorMessage">
+                          @{{value}}
+                      </li>
+                  </ul>
+                  <br>
+              </div>
+          </div>  
+          <div class="col-sm-12">
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group" ng-if="pernivelUsu.pen_nomnivel == 2 && !validarTipoSolicitud(infoSolicitud)">

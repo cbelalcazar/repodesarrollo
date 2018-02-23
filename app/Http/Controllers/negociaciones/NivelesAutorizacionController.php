@@ -104,7 +104,7 @@ class NivelesAutorizacionController extends Controller
 					}
 				}
 
-			}elseif($data['nivel'][0]['id'] == 2){
+			}elseif($data['nivel'][0]['id'] == 2 || $data['nivel'][0]['id'] == 3){
 				if ($data['tipopersona']['id'] == 1) {
 
 					$pernivel = TPernivele::with('canales')->find($data['id']);
@@ -410,21 +410,38 @@ class NivelesAutorizacionController extends Controller
 						$pernivel->save();
 						$pernivel->canales()->get();
 					}
+					$arreglo = [];
+					if (count($data['canales']) > 0) {
+						foreach ($data['canales'] as $key => $canal) {
+							if (count($pernivel['canales']) > 0) {
+								$filtroPernCanal = collect($pernivel['canales'])
+								->where('pcan_idcanal', $canal['can_id'])
+								->where('pcan_idpernivel', $pernivel['id'])									
+								->where('pcan_idterritorio', '0')
+								->all();
 
-					$canal = [
-						'can_id' => null,
-						'can_txt_descrip' => null
-					];
+								if (count($filtroPernCanal) == 0) {
+									$this->generarCanales($canal, $data, $pernivel);
+								}
 
-					$this->generarCanales($canal, $data, $pernivel);
-					$canal = $pernivel->canales()->first();
-					foreach ($data['lineas'] as $key => $linea) {
-						$lineaObj = new TPernivLinea;
-						$lineaObj->pcan_idcanal = $canal['id'];
-						$lineaObj->pcan_idlinea = $linea['lin_id'];
-						$lineaObj->pcan_descriplinea = $linea['lin_txt_descrip'];
-						$lineaObj->save();
-					}		
+							}else if(count($pernivel['canales']) == 0){
+								$this->generarCanales($canal, $data, $pernivel);
+							}
+
+							foreach ($canal['lineas'] as $key => $linea) {
+								$objpercanal = TPernivCanal::where('pcan_idcanal', $canal['can_id'])
+								->where('pcan_idpernivel', $pernivel['id'])									
+								->where('pcan_idterritorio', '0')
+								->first();
+								// array_push($arreglo);
+								$lineaObj = new TPernivLinea;
+								$lineaObj->pcan_idcanal = $objpercanal['id'];
+								$lineaObj->pcan_idlinea = $linea['lin_id'];
+								$lineaObj->pcan_descriplinea = $linea['lin_txt_descrip'];
+								$lineaObj->save();
+							}											
+						}
+					}
 					
 				}elseif($data['nivel'][0]['id'] == 4){
 					$pernivel = TPernivele::with('canales')->where('pen_cedula', $data['persona'][0]['idTercero'])->first();
@@ -464,10 +481,14 @@ class NivelesAutorizacionController extends Controller
 
 
 	public function destroy($id){
-		TPernivele::where('id', $id)->delete();
-		TPernivCanal::where('pcan_idpernivel', $id)->delete();
 
-		return response()->json($delete);
+		TPernivele::where('id', $id)->delete();
+		$pernivCanal = TPernivCanal::where('pcan_idpernivel', $id)->get();
+		$ids = collect($pernivCanal)->pluck('id');
+		TPernivCanal::where('pcan_idpernivel', $id)->delete();
+		TPernivLinea::whereIn('pcan_idcanal', $ids)->delete();
+
+		return response()->json('exito');
 	}
 
 }

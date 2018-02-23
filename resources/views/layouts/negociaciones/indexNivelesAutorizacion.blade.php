@@ -137,7 +137,6 @@
 	          			<td>@{{cuatro.pen_cedula}}</td>
 	          			<td>@{{cuatro.t_tipopersona.tpp_descripcion}}</td>
 	          			<td>
-	          				<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#modal" ng-click="update(cuatro)"><i class="glyphicon glyphicon-pencil"></i></button>
 	          				<button class="btn btn-danger" type="button" ng-click="delete(cuatro)"><i class="glyphicon glyphicon-trash"></i></button>
 	          			</td>
 	          		</tr>

@@ -48,22 +48,24 @@ app.controller('bandejaCtrl', ['$scope', '$http', '$filter', '$window', function
   		if (obj == undefined) {
   			return false;
   		}
-  		console.log(obj.sol_tipnegoniv == "Mercadeo");
   		return (obj.sol_tipnegoniv == "Mercadeo" || obj.sol_tipnegoniv == "Comercial y Mercadeo");
   	}
 
   	$scope.generarAprobacion = function(obj){
   		obj.usuarioAprobador = $scope.usuario;
   		$scope.progress = true;
-  		$http.put('bandejaAprobacion/' + obj.sol_id, obj).then(function(response){			
-			data = response.data;
-			if (data.errorRuta.length == 0) {
-				// $window.location.reload();
-			}else{
-				$scope.message = data.errorRuta;
-				$scope.progress = false;
-			}
-			
+  		$http.put('bandejaAprobacion/' + obj.sol_id, obj).then(function(response){
+      var res = response.data;			
+			if (res.errorRuta.length == 0) {
+        $window.location = res.url;
+      }else{
+        $scope.progress = false;
+        $scope.errorMessage = res.errorRuta;
+        $interval(function() {
+          $scope.errorMessage = [];
+            }, 20000);
+      }
+	
 		}), function(errorResponse){
 				console.log(errorResponse);
 				$scope.getInfo();
