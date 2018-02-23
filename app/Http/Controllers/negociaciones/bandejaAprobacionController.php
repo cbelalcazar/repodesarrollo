@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 use Mail;
-use App\Mail\notificacionEstadoSolicitud;
+use App\Mail\notificacionEstadoSolicitudNego;
 
 use App\Models\negociaciones\TSolEnvioNego;
 use App\Models\negociaciones\TPernivele;
@@ -327,7 +327,7 @@ class bandejaAprobacionController extends Controller
           if (count($nivelesSinActivar) > 0) {
             $primerNivel = $nivelesSinActivar[0]->update(['sen_estadoenvio' => 1]);
             $correo = TDirNacional::where('dir_txt_cedula', $nivelesSinActivar[0]['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
-            Mail::to($correo)->send(new notificacionEstadoSolicitud($nivelesSinActivar[0]));
+            Mail::to($correo)->send(new notificacionEstadoSolicitudNego($nivelesSinActivar[0]));
             if(Mail::failures()){
               return response()->json(Mail::failures());
             }
@@ -426,7 +426,7 @@ class bandejaAprobacionController extends Controller
               // Si encuentra uno lo pone activo para que aparesca en la bandeja
               $primerNivel = $nivelesSinActivar[0]->update(['sen_estadoenvio' => 1]);
               $correo = TDirNacional::where('dir_txt_cedula', $nivelesSinActivar[0]['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
-              Mail::to($correo)->send(new notificacionEstadoSolicitud($nivelesSinActivar[0]));
+              Mail::to($correo)->send(new notificacionEstadoSolicitudNego($nivelesSinActivar[0]));
               if(Mail::failures()){
                 return response()->json(Mail::failures());
               }
@@ -476,7 +476,7 @@ class bandejaAprobacionController extends Controller
                 // Si encuentra un paso sin activar lo activa
                 $primerNivel = $nivelesSinActivar[0]->update(['sen_estadoenvio' => 1]);
                 $correo = TDirNacional::where('dir_txt_cedula', $nivelesSinActivar[0]['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
-                Mail::to($correo)->send(new notificacionEstadoSolicitud($nivelesSinActivar[0]));
+                Mail::to($correo)->send(new notificacionEstadoSolicitudNego($nivelesSinActivar[0]));
                 if(Mail::failures()){
                   return response()->json(Mail::failures());
                 }
@@ -559,7 +559,7 @@ class bandejaAprobacionController extends Controller
             // Si encuentra pasos sin activar, activa el primero
             $primerNivel = $nivelesSinActivar[0]->update(['sen_estadoenvio' => 1]);
             $correo = TDirNacional::where('dir_txt_cedula', $nivelesSinActivar[0]['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
-            Mail::to($correo)->send(new notificacionEstadoSolicitud($nivelesSinActivar[0]));
+            Mail::to($correo)->send(new notificacionEstadoSolicitudNego($nivelesSinActivar[0]));
             if(Mail::failures()){
               return response()->json(Mail::failures());
             }
@@ -605,7 +605,7 @@ class bandejaAprobacionController extends Controller
 
         if ($objTSolEnvioNego['sen_estadoenvio'] == 1 || ($objTSolEnvioNego['solicitud']['sol_ser_id'] == 2 && $objTSolEnvioNego['solicitud']['sol_sef_id'] == 2 && $objTSolEnvioNego['sen_estadoenvio'] == 0)) {
           $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
-          Mail::to($correo)->send(new notificacionEstadoSolicitud($objTSolEnvioNego));
+          Mail::to($correo)->send(new notificacionEstadoSolicitudNego($objTSolEnvioNego));
           if(Mail::failures()){
             return response()->json(Mail::failures());
           }

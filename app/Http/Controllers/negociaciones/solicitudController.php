@@ -38,7 +38,7 @@ use App\Models\Genericas\TCentroOperaciones;
 use App\Models\BESA\NegociacionesVentas;
 
 use Mail;
-use App\Mail\notificacionEstadoSolicitud;
+use App\Mail\notificacionEstadoSolicitudNego;
 
 class solicitudController extends Controller
 {
@@ -321,7 +321,7 @@ class solicitudController extends Controller
     }
 
     public function enviaCorreo($correo, $objTSolEnvioNego){
-        Mail::to($correo)->send(new notificacionEstadoSolicitud($objTSolEnvioNego));
+        Mail::to($correo)->send(new notificacionEstadoSolicitudNego($objTSolEnvioNego));
         if(Mail::failures()){
             return response()->json(Mail::failures());
         }else{
