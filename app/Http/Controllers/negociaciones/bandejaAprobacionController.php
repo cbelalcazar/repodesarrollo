@@ -148,6 +148,7 @@ class bandejaAprobacionController extends Controller
               }else{
                 // Si encuentra canales busca entre esos canales el canal de la solicitud
                 $pernivCanal = collect($pernivel['canales'])->where('pcan_idcanal', $data['sol_can_id'])->all();
+                $pernivCanal = array_values($pernivCanal);
                 // Valida si encuentra el canal de la solicitud
                 if (count($pernivCanal) > 0) {
                     // Si lo encuentra busca el aprobador osea el padre
