@@ -65,43 +65,112 @@ class NivelesAutorizacionController extends Controller
 		$data = $request->all();
 
 		if (isset($data['id'])) {
-			if ($data['tipopersona']['id'] == 1) {
-				$canalesPersona = collect($data['canales'])->pluck('can_id');
-				$deleteCanalesNotIn = TPernivCanal::where('pcan_cedula', $data['pen_cedula'])->whereNotIn('pcan_idcanal', $canalesPersona)->delete();
-				$pernivel = TPernivele::with('canales')->find($data['id']);
-				foreach ($data['canales'] as $key => $canal) {
-					$filtroPernCanal = collect($pernivel['canales'])
-							->where('pcan_idcanal', $canal['can_id'])
-							->where('pcan_idpernivel', $pernivel['id'])
-							->all();
-
-					if (count($filtroPernCanal) == 0) {
-						$this->generarCanales($canal, $data, $pernivel);
-					}
-				}
-			}elseif($data['tipopersona']['id'] == 2){
-				if (count($data['territorio']) > 0) {
-					$idTerritorios = collect($data['territorio'])->pluck('id');
-					$deleteTerritoriosNotIn = TPernivCanal::where('pcan_cedula', $data['pen_cedula'])->whereNotIn('pcan_idterritorio', $idTerritorios)->delete();
+			if ($data['nivel'][0]['id'] == 1) {
+				if ($data['tipopersona']['id'] == 1) {
+					$canalesPersona = collect($data['canales'])->pluck('can_id');
+					$deleteCanalesNotIn = TPernivCanal::where('pcan_cedula', $data['pen_cedula'])->whereNotIn('pcan_idcanal', $canalesPersona)->delete();
 					$pernivel = TPernivele::with('canales')->find($data['id']);
-					foreach ($data['territorio'] as $key => $territorio) {
-						$idCanales = collect($territorio['canales'])->pluck('id');
-						$deleteCanalesNotIn =  TPernivCanal::where('pcan_cedula', $data['pen_cedula'])->where('pcan_idterritorio', $territorio['id'])->whereNotIn('pcan_idcanal', $idCanales)->delete();
-						foreach ($territorio['canales'] as $key => $canal) {
-							$filtroPernCanal = collect($pernivel['canales'])
-												->where('pcan_idcanal', $canal['can_id'])
-												->where('pcan_idpernivel', $pernivel['id'])								
-												->where('pcan_idterritorio', $territorio['id'])
-												->all();
+					foreach ($data['canales'] as $key => $canal) {
+						$filtroPernCanal = collect($pernivel['canales'])
+								->where('pcan_idcanal', $canal['can_id'])
+								->where('pcan_idpernivel', $pernivel['id'])
+								->all();
 
-							if (count($filtroPernCanal) == 0) {
-								$this->generarCanales($canal, $data, $pernivel, $territorio['id']);
+						if (count($filtroPernCanal) == 0) {
+							$this->generarCanales($canal, $data, $pernivel);
+						}
+					}
+				}elseif($data['tipopersona']['id'] == 2){
+					if (count($data['territorio']) > 0) {
+						$idTerritorios = collect($data['territorio'])->pluck('id');
+						$deleteTerritoriosNotIn = TPernivCanal::where('pcan_cedula', $data['pen_cedula'])->whereNotIn('pcan_idterritorio', $idTerritorios)->delete();
+						$pernivel = TPernivele::with('canales')->find($data['id']);
+						foreach ($data['territorio'] as $key => $territorio) {
+							$idCanales = collect($territorio['canales'])->pluck('can_id');
+							$new = $idCanales;
+							$deleteCanalesNotIn =  TPernivCanal::where('pcan_cedula', $data['pen_cedula'])->where('pcan_idterritorio', $territorio['id'])->whereNotIn('pcan_idcanal', $idCanales)->delete();
+							foreach ($territorio['canales'] as $key => $canal) {
+								$filtroPernCanal = collect($pernivel['canales'])
+													->where('pcan_idcanal', $canal['can_id'])
+													->where('pcan_idpernivel', $pernivel['id'])								
+													->where('pcan_idterritorio', $territorio['id'])
+													->all();
+
+								if (count($filtroPernCanal) == 0) {
+									$this->generarCanales($canal, $data, $pernivel, $territorio['id']);
+								}
 							}
 						}
 					}
 				}
-			}
-			
+
+			}elseif($data['nivel'][0]['id'] == 2){
+				if ($data['tipopersona']['id'] == 1) {
+
+					$pernivel = TPernivele::with('canales')->find($data['id']);
+					$actualizoPersonasAgregadas = TPernivCanal::where('pcan_aprobador', $data['id'])->update(['pcan_aprobador' => null]);
+					$update = TPernivCanal::where('pcan_cedula', $data['pen_cedula'])->delete();
+					foreach ($data['canales'] as $key => $canal) {
+						$this->generarCanales($canal, $data, $pernivel);
+						if (count($canal['terceros']) > 0) {
+							foreach ($canal['terceros'] as $key => $tercero) {
+								$update = TPernivCanal::where('pcan_cedula', $tercero['idTercero'])
+								->where('pcan_idcanal', $canal['can_id'])
+								->where('pcan_idterritorio', 0)
+								->update(['pcan_aprobador' => $pernivel['id']]);
+							}
+						}				
+					}
+
+				}elseif ($data['tipopersona']['id'] == 2) {
+					$new = 'entrance';
+					if (count($data['territorio']) > 0) {
+						$idTerritorios = collect($data['territorio'])->pluck('id');
+						$deleteTerritoriosNotIn = TPernivCanal::where('pcan_cedula', $data['pen_cedula'])->whereNotIn('pcan_idterritorio', $idTerritorios)->delete();
+						$pernivel = TPernivele::with('canales')->find($data['id']);
+						foreach ($data['territorio'] as $key => $territorio) {
+							$idCanales = collect($territorio['canales'])->pluck('can_id');
+							$new = $idCanales;
+							$deleteCanalesNotIn =  TPernivCanal::where('pcan_cedula', $data['pen_cedula'])->where('pcan_idterritorio', $territorio['id'])->whereNotIn('pcan_idcanal', $idCanales)->delete();
+							foreach ($territorio['canales'] as $key => $canal) {
+								$filtroPernCanal = collect($pernivel['canales'])
+													->where('pcan_idcanal', $canal['can_id'])
+													->where('pcan_idpernivel', $pernivel['id'])								
+													->where('pcan_idterritorio', $territorio['id'])
+													->all();
+
+								if (count($filtroPernCanal) == 0) {
+									$this->generarCanales($canal, $data, $pernivel, $territorio['id']);
+								}
+							}
+						}
+					}
+					
+				}elseif($data['tipopersona']['id'] == 3){
+					$canalesPersona = collect($data['canales'])->pluck('can_id');
+					$deleteCanalesNotIn = TPernivCanal::where('pcan_cedula', $data['pen_cedula'])->whereNotIn('pcan_idcanal', $canalesPersona)->delete();
+					foreach ($data['canales'] as $key => $canal) {
+						$canalPersona = TPernivCanal::with('lineas')->where([['pcan_cedula', $data['pen_cedula']], ['pcan_idcanal', $canal['can_id']]])->first();
+						$lineasPersona = collect($canal['lineas'])->pluck('lin_id');
+						$deleteLinNotIn = TPernivLinea::whereNotIn('pcan_idlinea', $lineasPersona)->where('pcan_idcanal', $canalPersona['id'])->delete();
+						
+						foreach ($canal['lineas'] as $key => $linea) {
+							$filtro = collect($canalPersona['lineas'])
+												->where('pcan_idlinea', $linea['lin_id'])
+												->where('pcan_idcanal', $canalPersona['id'])
+												->all();
+
+							if (count($filtro) == 0) {
+								$objeto = new TPernivLinea;
+								$objeto->pcan_idcanal = $canalPersona['id'];
+								$objeto->pcan_idlinea = $linea['lin_id'];
+								$objeto->pcan_descriplinea = $linea['lin_txt_descrip'];
+								$objeto->save();
+							}
+						}
+					}
+				}
+			}		
 		}else{
 			if ($data['tipopersona']['id'] == 1) {
 				$arreglo = [];
@@ -171,8 +240,8 @@ class NivelesAutorizacionController extends Controller
 								$this->generarCanales($canal, $data, $pernivel);
 							}
 
-							if (count($canal['tercerosFiltrados']) > 0) {
-								foreach ($canal['tercerosFiltrados'] as $key => $tercero) {
+							if (count($canal['terceros']) > 0) {
+								foreach ($canal['terceros'] as $key => $tercero) {
 									$update = TPernivCanal::where('pcan_cedula', $tercero['idTercero'])
 									->where('pcan_idcanal', $canal['can_id'])
 									->where('pcan_idterritorio', 0)
@@ -253,7 +322,7 @@ class NivelesAutorizacionController extends Controller
 						foreach ($data['territorio'] as $key => $territorio) {
 							if (count($territorio['canales']) > 0) {
 								foreach ($territorio['canales'] as $key => $canal) {
-									if (count($canal['tercerosFiltrados']) > 0) {
+									if (count($canal['personas']) > 0) {
 										if (count($pernivel['canales']) > 0) {
 											$filtroPernCanal = collect($pernivel['canales'])
 											->where('pcan_idcanal', $canal['can_id'])
@@ -269,8 +338,8 @@ class NivelesAutorizacionController extends Controller
 											$this->generarCanales($canal, $data, $pernivel, $territorio['id']);
 										}
 
-										if (count($canal['tercerosFiltrados']) > 0) {
-											foreach ($canal['tercerosFiltrados'] as $key => $tercero) {
+										if (count($canal['personas']) > 0) {
+											foreach ($canal['personas'] as $key => $tercero) {
 												$update = TPernivCanal::where('pcan_cedula', $tercero['idTercero'])
 												->where('pcan_idcanal', $canal['can_id'])
 												->where('pcan_idterritorio', $territorio['id'])

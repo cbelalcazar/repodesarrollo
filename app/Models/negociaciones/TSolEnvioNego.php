@@ -46,4 +46,7 @@ class TSolEnvioNego extends Model
       return $this->belongsTo('App\Models\negociaciones\TSolicitudNego', 'sen_sol_id', 'sol_id');
     }
 
+    public function dirNacionalRecibe(){
+        return $this->hasOne('App\Models\Genericas\TDirNacional', 'dir_txt_cedula', 'sen_idTercero_recibe');
+    }
 }

@@ -179,6 +179,14 @@ class solicitudController extends Controller
         $ruta = "NEGOCIACIONES V2 // EDITAR SOLICITUD";
         $titulo = "EDITAR SOLICITUD";
         $adelante = $request->all()['redirecTo'];
+        if ($adelante == 'elaboracion') {
+            $aprobador = TSolEnvioNego::with('estadoHisProceso', 'terceroRecibe', 'dirNacionalRecibe')->where([['sen_sol_id', $id], ['sen_estadoenvio', 1]])->first();
+            // Retorna la url de misolicitudes
+            $urlMisSolicitudes = route('misSolicitudes.index');
+            $negociacion = TSolicitudNego::with('cliente', 'costo')->where('sol_id', $id)->first();
+            $response = compact('aprobador', 'ruta', 'titulo', 'negociacion', 'urlMisSolicitudes');
+            return view('layouts.negociaciones.mensajeEnvioSolicitud', $response);
+        }
         $response = compact('ruta', 'titulo', 'id', 'adelante');
         return view('layouts.negociaciones.solicitud', $response);
     }

@@ -60,15 +60,15 @@
 	          		</tr>
 	          	</thead>
 	          	<tbody>
-	          		<tr ng-repeat="uno in nivelDos">
-	          			<td>@{{uno.id}}</td>
-	          			<td>@{{uno.pen_usuario}}</td>
-	          			<td>@{{uno.pen_nombre}}</td>
-	          			<td>@{{uno.pen_cedula}}</td>
-	          			<td>@{{uno.t_tipopersona.tpp_descripcion}}</td>
+	          		<tr ng-repeat="dos in nivelDos">
+	          			<td>@{{dos.id}}</td>
+	          			<td>@{{dos.pen_usuario}}</td>
+	          			<td>@{{dos.pen_nombre}}</td>
+	          			<td>@{{dos.pen_cedula}}</td>
+	          			<td>@{{dos.t_tipopersona.tpp_descripcion}}</td>
 	          			<td>
-	          				<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#modal" ng-click="update(uno)"><i class="glyphicon glyphicon-pencil"></i></button>
-	          				<button class="btn btn-danger" type="button" ng-click="delete(uno)"><i class="glyphicon glyphicon-trash"></i></button>
+	          				<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#modal" ng-click="update(dos)"><i class="glyphicon glyphicon-pencil"></i></button>
+	          				<button class="btn btn-danger" type="button" ng-click="delete(dos)"><i class="glyphicon glyphicon-trash"></i></button>
 	          			</td>
 	          		</tr>
 	          	</tbody>
@@ -95,15 +95,15 @@
 	          		</tr>
 	          	</thead>
 	          	<tbody>
-	          		<tr ng-repeat="uno in nivelTres">
-	          			<td>@{{uno.id}}</td>
-	          			<td>@{{uno.pen_usuario}}</td>
-	          			<td>@{{uno.pen_nombre}}</td>
-	          			<td>@{{uno.pen_cedula}}</td>
-	          			<td>@{{uno.t_tipopersona.tpp_descripcion}}</td>
+	          		<tr ng-repeat="tres in nivelTres">
+	          			<td>@{{tres.id}}</td>
+	          			<td>@{{tres.pen_usuario}}</td>
+	          			<td>@{{tres.pen_nombre}}</td>
+	          			<td>@{{tres.pen_cedula}}</td>
+	          			<td>@{{tres.t_tipopersona.tpp_descripcion}}</td>
 	          			<td>
-	          				<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#modal" ng-click="update(uno)"><i class="glyphicon glyphicon-pencil"></i></button>
-	          				<button class="btn btn-danger" type="button" ng-click="delete(uno)"><i class="glyphicon glyphicon-trash"></i></button>
+	          				<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#modal" ng-click="update(tres)"><i class="glyphicon glyphicon-pencil"></i></button>
+	          				<button class="btn btn-danger" type="button" ng-click="delete(tres)"><i class="glyphicon glyphicon-trash"></i></button>
 	          			</td>
 	          		</tr>
 	          	</tbody>
@@ -130,15 +130,15 @@
 	          		</tr>
 	          	</thead>
 	          	<tbody>
-	          		<tr ng-repeat="uno in nivelCuatro">
-	          			<td>@{{uno.id}}</td>
-	          			<td>@{{uno.pen_usuario}}</td>
-	          			<td>@{{uno.pen_nombre}}</td>
-	          			<td>@{{uno.pen_cedula}}</td>
-	          			<td>@{{uno.t_tipopersona.tpp_descripcion}}</td>
+	          		<tr ng-repeat="cuatro in nivelCuatro">
+	          			<td>@{{cuatro.id}}</td>
+	          			<td>@{{cuatro.pen_usuario}}</td>
+	          			<td>@{{cuatro.pen_nombre}}</td>
+	          			<td>@{{cuatro.pen_cedula}}</td>
+	          			<td>@{{cuatro.t_tipopersona.tpp_descripcion}}</td>
 	          			<td>
-	          				<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#modal" ng-click="update(uno)"><i class="glyphicon glyphicon-pencil"></i></button>
-	          				<button class="btn btn-danger" type="button" ng-click="delete(uno)"><i class="glyphicon glyphicon-trash"></i></button>
+	          				<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#modal" ng-click="update(cuatro)"><i class="glyphicon glyphicon-pencil"></i></button>
+	          				<button class="btn btn-danger" type="button" ng-click="delete(cuatro)"><i class="glyphicon glyphicon-trash"></i></button>
 	          			</td>
 	          		</tr>
 	          	</tbody>

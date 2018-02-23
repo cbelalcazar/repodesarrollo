@@ -44,7 +44,7 @@ app.directive('format', ['$filter', function ($filter) {
 }]);
 
 
-app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q', '$timeout', '$window', function ($scope, $http, $filter, $mdDialog, $q, $timeout, $window) {
+app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q', '$timeout', '$window', '$interval', function ($scope, $http, $filter, $mdDialog, $q, $timeout, $window, $interval) {
 	
 	$scope.objeto = {};
 	$scope.objNegCliente = {};
@@ -754,7 +754,15 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 				$http.put('../../solicitud/' + $scope.objeto.sol_id, $scope.envioPost).then(function(response){
 					var res = response.data;
 					console.log(res);
-					// $window.location = res.url;
+					if (res.errorRuta.length == 0) {
+						$window.location = res.url;
+					}else{
+						$scope.progress = false;
+						$scope.errorMessage = res.errorRuta;
+						$interval(function() {
+							$scope.errorMessage = [];
+				        }, 20000);
+					}
 				}, function(errorResponse){
 					alert("Error al grabar");
 				});
