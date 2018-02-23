@@ -55,7 +55,13 @@
 			    	</div>
 			    </div>
 			    <div class="panel-footer">
-	  				<a type="button" class="btn btn-primary" href="{{$urlMisSolicitudes}}"><i class="glyphicon glyphicon-home"></i> Mis solicitudes </a>
+			    	@if(isset($validacion))
+				    	@if($validacion == false)
+		  					<a type="button" class="btn btn-primary" href="{{$urlMisSolicitudes}}"><i class="glyphicon glyphicon-home"></i> Mis solicitudes </a>
+						@else
+							<a type="button" class="btn btn-primary" href="{{$urlMisSolicitudes}}"><i class="glyphicon glyphicon-home"></i> Bandeja de Aprobación </a>
+						@endif
+	  				@endif
 	  			</div>
 			  </div>
 			</div>

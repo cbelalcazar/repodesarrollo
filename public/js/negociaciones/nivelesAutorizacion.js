@@ -84,11 +84,8 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
     			can.lineas = [];
     			persActualizar.canales.forEach( function(canal, idCanal) {
     				if (canal.pcan_idcanal == can.can_id) {
-    					console.log(can.can_id);
     					canal.lineas.forEach( function(linea, idLinea) {
-	    					console.log(linea);
 	    					var lineaPush = $filter('filter')($scope.lineas, {lin_id : parseInt(linea.pcan_idlinea)}, true)[0];
-	    					console.log(lineaPush);
 	    					if (lineaPush != undefined) {
 		    					can.lineasFiltradas.push(lineaPush);
 		    					can.lineas.push(lineaPush);	    						
@@ -101,7 +98,7 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
     		can.tercerosFiltrados = terceros;
     		can.terceros = [];
 
-			if ((nivel.id == 2 || nivel.id == 3 ) && tipoPersona.id == 1 && $scope.infoPerNivel.id != undefined) {
+			if ((nivel.id == 2 || nivel.id == 3) && tipoPersona.id == 1 && $scope.infoPerNivel.id != undefined) {
 				var personasYaAgregadas = [];
 				var idPernivelEditando = $scope.infoPerNivel.id;
 				var personasConAprobador = [];
@@ -193,10 +190,7 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
     	$scope.infoPerNivel.nivel = $scope.nivel;
     	$scope.progress = true;
     	$http.post($scope.url, $scope.infoPerNivel).then(function(response){
-   //  		$timeout(function() {
-			// 	angular.element('.close').trigger('click');
-			// }, 1000);
-    		// $scope.getInfo();
+    		$window.location.reload();
     	}, function(errorResponse){
 
     	});

@@ -45,19 +45,12 @@
 	    				</div>
 	    			</div>		    
 
-	    			<div ng-if="(infoPerNivel.tipopersona.id === 1 &&  nivel[0].id === 1) || (infoPerNivel.tipopersona.id === 1 &&  (nivel[0].id === 2 || nivel[0].id === 3) && (infoPerNivel.persona.length == 1 || infoPerNivel.id != undefined)) || (infoPerNivel.tipopersona.id === 3 &&  (nivel[0].id === 2))" class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
+	    			<div ng-if="(infoPerNivel.tipopersona.id === 1 &&  nivel[0].id === 1) || (infoPerNivel.tipopersona.id === 1 &&  (nivel[0].id === 2 || nivel[0].id === 3) && (infoPerNivel.persona.length == 1 || infoPerNivel.id != undefined)) || (infoPerNivel.tipopersona.id === 3 &&  (nivel[0].id === 2 || nivel[0].id === 3 ))" class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
 						<div class="form-group">
 							<label>Canal:</label> 
 							<multiselect class="span-margin" ng-change="filtrarTercerosCan(infoPerNivel.tipopersona, infoPerNivel.canales, nivel[0])" ng-model="infoPerNivel.canales" options="canales" id-prop="can_id" display-prop="can_txt_descrip" show-select-all="true" placeholder="Seleccione Canales.." show-unselect-all="true" required></multiselect> 							
 	    				</div>
-	    			</div>
-
-	    			<div ng-if="infoPerNivel.tipopersona.id === 3  && nivel[0].id === 3" class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
-						<div class="form-group">
-						<label>Lineas:</label> 
-							<multiselect ng-init="" class="span-margin" ng-model="infoPerNivel.lineas" options="lineas" id-prop="lin_id" display-prop="lin_txt_descrip" placeholder="Seleccione Personas.." show-search="true" show-select-all="true" show-unselect-all="true" required></multiselect> 						
-	    				</div>
-	    			</div>	    			
+	    			</div>		
     				    			
 	    		</div>
 
@@ -153,7 +146,7 @@
 					</md-content>
 				</div>
 
-				<div class="panel panel-primary" ng-if="nivel[0].id == 2 && infoPerNivel.tipopersona.id === 3">
+				<div class="panel panel-primary" ng-if="(nivel[0].id == 2 || nivel[0].id == 3) && infoPerNivel.tipopersona.id === 3">
 	    		  	<div class="panel-heading text-center">Canales y lineas</div>
 				    <div class="panel-body">
 				    	<div ng-repeat="can in infoPerNivel.canales" class="panel panel-default">

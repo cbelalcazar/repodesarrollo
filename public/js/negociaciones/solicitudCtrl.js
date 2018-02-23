@@ -753,7 +753,6 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 			}else{
 				$http.put('../../solicitud/' + $scope.objeto.sol_id, $scope.envioPost).then(function(response){
 					var res = response.data;
-					console.log(res);
 					if (res.errorRuta.length == 0) {
 						$window.location = res.url;
 					}else{
