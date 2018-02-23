@@ -41,4 +41,8 @@ class TSolEnvioNego extends Model
     public function terceroRecibe(){
       return $this->hasOne('App\Models\Genericas\Tercero', 'idTercero', 'sen_idTercero_recibe');
     }
+
+    public function dirNacionalRecibe(){
+        return $this->hasOne('App\Models\Genericas\TDirNacional', 'dir_txt_cedula', 'sen_idTercero_recibe');
+    }
 }

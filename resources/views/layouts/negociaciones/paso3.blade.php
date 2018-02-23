@@ -199,7 +199,18 @@
 
             <!-- Botones -->
             <div class="col-sm-12">   
-            	<br>                          
+            	<br>       
+                <div class="col-sm-12">
+                    <div class="alert alert-danger" ng-if="errorMessage.length > 0">
+                        <br>
+                        <ul>
+                            <li ng-repeat="(key, value) in errorMessage">
+                                @{{value}}
+                            </li>
+                        </ul>
+                        <br>
+                    </div>
+                </div>                     
 		        <div class="col-sm-6"></div>                                
                 <div class="col-sm-6">
                     <!-- btn Save -->

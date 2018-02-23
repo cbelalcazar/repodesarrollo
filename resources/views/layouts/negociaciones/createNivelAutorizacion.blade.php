@@ -36,7 +36,7 @@
 					</div>
 	    			
 
-	    			<div ng-if="(infoPerNivel.tipopersona.id === 2 &&  nivel[0].id === 1) || (infoPerNivel.tipopersona.id === 2 &&  (nivel[0].id === 2 || nivel[0].id === 3 ) && infoPerNivel.persona.length == 1)" class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
+	    			<div ng-if="(infoPerNivel.tipopersona.id === 2 &&  nivel[0].id === 1) || (infoPerNivel.tipopersona.id === 2 &&  (nivel[0].id === 2 || nivel[0].id === 3 ))" class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
 						<div class="form-group">
 							<label>Territorio:</label> 
 
@@ -45,7 +45,7 @@
 	    				</div>
 	    			</div>		    
 
-	    			<div ng-if="(infoPerNivel.tipopersona.id === 1 &&  nivel[0].id === 1) || (infoPerNivel.tipopersona.id === 1 &&  (nivel[0].id === 2 || nivel[0].id === 3) && (infoPerNivel.persona.length == 1 || infoPerNivel.id != undefined)) || (infoPerNivel.tipopersona.id === 3 &&  (nivel[0].id === 2) && infoPerNivel.persona.length == 1)" class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
+	    			<div ng-if="(infoPerNivel.tipopersona.id === 1 &&  nivel[0].id === 1) || (infoPerNivel.tipopersona.id === 1 &&  (nivel[0].id === 2 || nivel[0].id === 3) && (infoPerNivel.persona.length == 1 || infoPerNivel.id != undefined)) || (infoPerNivel.tipopersona.id === 3 &&  (nivel[0].id === 2))" class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
 						<div class="form-group">
 							<label>Canal:</label> 
 							<multiselect class="span-margin" ng-change="filtrarTercerosCan(infoPerNivel.tipopersona, infoPerNivel.canales, nivel[0])" ng-model="infoPerNivel.canales" options="canales" id-prop="can_id" display-prop="can_txt_descrip" show-select-all="true" placeholder="Seleccione Canales.." show-unselect-all="true" required></multiselect> 							
@@ -164,7 +164,7 @@
 						    	<div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
 									<div class="form-group">
 										<label>Lineas:</label> 
-										<multiselect ng-init="" class="span-margin" ng-model="can.lineas" options="can.lineasFiltradas" id-prop="lin_id" display-prop="lin_txt_descrip" placeholder="Seleccione Personas.." show-search="true" show-select-all="true" show-unselect-all="true" required></multiselect> 	
+										<multiselect ng-init="" class="span-margin" ng-model="can.lineas" options="can.lineasFiltradas" id-prop="lin_id" display-prop="lin_txt_descrip" placeholder="Seleccione Lineas.." show-search="true" show-select-all="true" show-unselect-all="true" required></multiselect> 	
 										<table class="table table-bordered">
 											<thead>
 												<tr>

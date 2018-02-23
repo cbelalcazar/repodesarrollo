@@ -27,6 +27,10 @@ class TDirNacional extends Model
         'dir_num_mostrar',
     ];
 
+    public function getDirTxtCedulaAttribute($value){
+        return trim($value);
+    }
+
     public function user()
     {
         return $this->belongsTo('App\Models\Aplicativos\User','dir_txt_cedula','idTerceroUsuario');
