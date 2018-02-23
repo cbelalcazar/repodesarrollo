@@ -278,16 +278,16 @@ class solicitudController extends Controller
                             $objTSolEnvioNego->save();
                             $objTSolEnvioNego = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'solicitud.soliSucu', 'solicitud.soliSucu.hisSucu', 'solicitud.soliZona', 'solicitud.soliZona.hisZona', 'solicitud.soliZona.hisZona.cOperacion', 'solicitud.objetivo', 'solicitud.soliTipoNego', 'solicitud.soliTipoNego.tipoNego', 'solicitud.soliTipoNego.tipoServicio', 'solicitud.costo', 'solicitud.costo.formaPago', 'solicitud.cliente')->where('sen_id', $objTSolEnvioNego['sen_id'])->first();
                             // Enviar el primer correo creacion
-                            // $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_envia'])->pluck('dir_txt_email')->first();
-                            $correo = ['jfmoreno@bellezaexpress.com'];
+                            $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_envia'])->pluck('dir_txt_email')->first();
+                            // $correo = ['jfmoreno@bellezaexpress.com'];
                             $objTSolEnvioNego['creacion'] = true;
                             $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
 
                             // Envia correo paso creado
-                            // $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
+                            $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
                             // // $correo = ['jfmoreno@bellezaexpress.com'];
-                            // $objTSolEnvioNego['creacion'] = false;
-                            // $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
+                            $objTSolEnvioNego['creacion'] = false;
+                            $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
 
 
                         }else{

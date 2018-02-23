@@ -549,9 +549,13 @@ class bandejaAprobacionController extends Controller
         $objTSolEnvioNego['sen_ser_id'] = $sen_ser_id;                      
         $objTSolEnvioNego['sen_fechaenvio'] = Carbon::now()->toDateTimeString();  
         $objTSolEnvioNego['sen_run_id'] = $sen_run_id;
+        // $objTSolEnvioNego->save();
+
+        $objTSolEnvioNego = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'solicitud.soliSucu', 'solicitud.soliSucu.hisSucu', 'solicitud.soliZona', 'solicitud.soliZona.hisZona', 'solicitud.soliZona.hisZona.cOperacion', 'solicitud.objetivo', 'solicitud.soliTipoNego', 'solicitud.soliTipoNego.tipoNego', 'solicitud.soliTipoNego.tipoServicio', 'solicitud.costo', 'solicitud.costo.formaPago', 'solicitud.cliente')->where('sen_id', $objTSolEnvioNego['sen_id'])->first();
 
         return response()->json($objTSolEnvioNego);
-        $objTSolEnvioNego->save();
+
+        // un atributo con la solicitud
 
         //Aqui envio el correo de la solicitud
         // $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_recibe'])->pluck('dir_txt_email');
