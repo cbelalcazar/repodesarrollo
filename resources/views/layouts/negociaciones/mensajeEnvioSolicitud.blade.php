@@ -17,7 +17,7 @@
 	  			</div>
 			    <div class="panel-body">
 			    	<h4>
-			    		<strong>Estado Negociación: {{$aprobador['estadoHisProceso']['ser_descripcion']}}</strong>
+			    		<strong>Estado Negociación: {{$aprobador[0]['estadoHisProceso']['ser_descripcion']}}</strong>
 			    	</h4>
 			    	<div class="col-sm-4">
 			    		<ul class="list-group">
@@ -47,10 +47,12 @@
 							<li class="list-group-item">
 								<strong>Se ha enviado la solicitud para ser evaluada a los siguientes usuarios:</strong>
 						  	</li>
-						  	<li class="list-group-item">
-						  		{{$aprobador['terceroRecibe']['razonSocialTercero']}} <br>
-						  		({{$aprobador['dirNacionalRecibe']['dir_txt_email']}})
-						  	</li>
+							@foreach ($aprobador as $key => $value)
+							  	<li class="list-group-item">
+							  		{{$value['terceroRecibe']['razonSocialTercero']}} <br>
+							  		({{$value['dirNacionalRecibe']['dir_txt_email']}})
+							  	</li>
+							@endforeach
 						</ul>
 			    	</div>
 			    </div>

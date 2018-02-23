@@ -752,16 +752,21 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 				});
 			}else{
 				$http.put('../../solicitud/' + $scope.objeto.sol_id, $scope.envioPost).then(function(response){
-					var res = response.data;
-					if (res.errorRuta.length == 0) {
-						$window.location = res.url;
+					var res = response.data;					
+					if (res.errorRuta != undefined) {
+						if (res.errorRuta.length == 0) {
+							$window.location = res.url;
+						}else{
+							$scope.progress = false;
+							$scope.errorMessage = res.errorRuta;
+							$interval(function() {
+								$scope.errorMessage = [];
+					        }, 20000);
+						}
 					}else{
-						$scope.progress = false;
-						$scope.errorMessage = res.errorRuta;
-						$interval(function() {
-							$scope.errorMessage = [];
-				        }, 20000);
+						$window.location = res.url;
 					}
+					
 				}, function(errorResponse){
 					alert("Error al grabar");
 				});

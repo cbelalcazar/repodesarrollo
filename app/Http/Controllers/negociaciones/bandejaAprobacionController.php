@@ -23,10 +23,29 @@ class bandejaAprobacionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $ruta = "NEGOCIACIONES V2 // BANDEJA APROBACIÓN";
         $titulo = "BANDEJA APROBACIÓN";   
+        if (isset($request->all()['redirecTo'])) {
+          $adelante = $request->all()['redirecTo']; 
+          $id = $request->all()['id'];
+          if ($adelante == 'elaboracion') {
+              $solicitud = TSolicitudNego::where('sol_id', $id)->first();
+
+              if ($solicitud['sol_ser_id'] == 2 && $solicitud['sol_sef_id'] == 2) {
+                $aprobador = TSolEnvioNego::with('estadoHisProceso', 'terceroRecibe', 'dirNacionalRecibe')->where('sen_sol_id', $id)->orderBy('sen_id', 'desc')->take(2)->get();
+              }else{
+                $aprobador = TSolEnvioNego::with('estadoHisProceso', 'terceroRecibe', 'dirNacionalRecibe')->where([['sen_sol_id', $id], ['sen_estadoenvio', 1]])->get();
+              }
+              // Retorna la url de misolicitudes
+              $urlMisSolicitudes = route('bandejaAprobacion.index');
+              $negociacion = TSolicitudNego::with('cliente', 'costo')->where('sol_id', $id)->first();
+              $validacion = true;
+              $response = compact('aprobador', 'ruta', 'titulo', 'negociacion', 'urlMisSolicitudes', 'validacion');
+              return view('layouts.negociaciones.mensajeEnvioSolicitud', $response);
+          }
+        }    
         $response = compact('ruta', 'titulo');
         return view('layouts.negociaciones.bandejaAprobacion', $response);
     }
@@ -108,6 +127,10 @@ class bandejaAprobacionController extends Controller
         $errorRuta = [];
         // Obtengo el pernivel del usuario aprobador
         $pernivel = TPernivele::with('canales')->where('pen_cedula', $data['usuarioAprobador']['idTerceroUsuario'])->first();
+
+        if ($pernivel == null) {
+            array_push($errorRuta, 'El usuario que aprueba la solicitud no se encuentra creado en los niveles de autorizacion');
+        }
 
         // Valido si ahi tiponegociacionsol
         if (isset($data['tipoNegociacionSol'])) {
@@ -281,11 +304,14 @@ class bandejaAprobacionController extends Controller
             if (isset($data['observ'])) {
                 $observacion = $data['observ']; 
             }
+            // Rutas de la evaluacion 
             // Ruta creador
-            $objTSolEnvioNego = self::createObject($data['sol_id'], $pernivel['pen_cedula'],$data['sol_ven_id'], 0, $observacion, 6, null);
+            $objTSolEnvioNego = self::createObject($data['sol_id'], $pernivel['pen_cedula'],$data['sol_ven_id'], 0, $observacion, 6, null, 'evaluacion');
+            // Correo 
             // Ruta Filtro
             $filtro = TSolEnvioNego::where([['sen_sol_id', $data['sol_id']], ['sen_ser_id', 2]])->first();
-            $objTSolEnvioNego = self::createObject($data['sol_id'], $pernivel['pen_cedula'],$filtro['sen_idTercero_recibe'], 0, $observacion, 6, null);
+            $objTSolEnvioNego = self::createObject($data['sol_id'], $pernivel['pen_cedula'],$filtro['sen_idTercero_recibe'], 0, $observacion, 6, null, 'evaluacion');
+            // Correo
           }
         }
 
@@ -295,11 +321,16 @@ class bandejaAprobacionController extends Controller
           $nivelesCreados = TSolEnvioNego::where('sen_idTercero_recibe', $pernivel['pen_cedula'])
           ->where('sen_sol_id',  $data['sol_id'])->update(['sen_estadoenvio' => 0]);
           // Busco en los nvieles de autorizacion los que tengan en estado dos que implica que estan en cola de aprobacion
-          $nivelesSinActivar = TSolEnvioNego::where('sen_estadoenvio', 2)
+          $nivelesSinActivar = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'estadoHisProceso', 'solicitud.cliente', 'solicitud.costo', 'solicitud.costo.formaPago')->where('sen_estadoenvio', 2)
           ->where('sen_sol_id',  $data['sol_id'])->get();
           // Si hay niveles sin activar entonces activo el primero que me encuentro
           if (count($nivelesSinActivar) > 0) {
             $primerNivel = $nivelesSinActivar[0]->update(['sen_estadoenvio' => 1]);
+            $correo = TDirNacional::where('dir_txt_cedula', $nivelesSinActivar[0]['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
+            Mail::to($correo)->send(new notificacionEstadoSolicitud($nivelesSinActivar[0]));
+            if(Mail::failures()){
+              return response()->json(Mail::failures());
+            }
           }else{
             // Si no voy a crear la nueva ruta para el siguiente nivel
             // Obtengo los costos de la negociacion
@@ -388,12 +419,17 @@ class bandejaAprobacionController extends Controller
             $nivelesCreados = TSolEnvioNego::where('sen_idTercero_recibe', $pernivel['pen_cedula'])
             ->where('sen_sol_id',  $data['sol_id'])->update(['sen_estadoenvio' => 0]);
             // Busca en la ruta de aproabcion si hay otro paso por activar
-            $nivelesSinActivar = TSolEnvioNego::where('sen_estadoenvio', 2)
+            $nivelesSinActivar = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'estadoHisProceso', 'solicitud.cliente', 'solicitud.costo', 'solicitud.costo.formaPago')->where('sen_estadoenvio', 2)
             ->where('sen_sol_id',  $data['sol_id'])->get();
 
             if (count($nivelesSinActivar) > 0) {
               // Si encuentra uno lo pone activo para que aparesca en la bandeja
               $primerNivel = $nivelesSinActivar[0]->update(['sen_estadoenvio' => 1]);
+              $correo = TDirNacional::where('dir_txt_cedula', $nivelesSinActivar[0]['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
+              Mail::to($correo)->send(new notificacionEstadoSolicitud($nivelesSinActivar[0]));
+              if(Mail::failures()){
+                return response()->json(Mail::failures());
+              }
             }else{
               // Si no hay mas empieza la creacion de la nueva ruta de aprobacion
 
@@ -433,12 +469,17 @@ class bandejaAprobacionController extends Controller
               $nivelesCreados = TSolEnvioNego::where('sen_idTercero_recibe', $pernivel['pen_cedula'])
               ->where('sen_sol_id',  $data['sol_id'])->update(['sen_estadoenvio' => 0]);
               // Consulta la ruta si existe un paso sin activar consecutivo
-              $nivelesSinActivar = TSolEnvioNego::where('sen_estadoenvio', 2)
+              $nivelesSinActivar = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'estadoHisProceso', 'solicitud.cliente', 'solicitud.costo', 'solicitud.costo.formaPago')->where('sen_estadoenvio', 2)
               ->where('sen_sol_id',  $data['sol_id'])->get();
 
               if (count($nivelesSinActivar) > 0) {
                 // Si encuentra un paso sin activar lo activa
                 $primerNivel = $nivelesSinActivar[0]->update(['sen_estadoenvio' => 1]);
+                $correo = TDirNacional::where('dir_txt_cedula', $nivelesSinActivar[0]['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
+                Mail::to($correo)->send(new notificacionEstadoSolicitud($nivelesSinActivar[0]));
+                if(Mail::failures()){
+                  return response()->json(Mail::failures());
+                }
               }else{
                 // Si no empieza la creacion del siguiente nivel
                 $observacion = "";
@@ -512,11 +553,16 @@ class bandejaAprobacionController extends Controller
           $nivelesCreados = TSolEnvioNego::where('sen_idTercero_recibe', $pernivel['pen_cedula'])
           ->where('sen_sol_id',  $data['sol_id'])->update(['sen_estadoenvio' => 0]);
           // Consulta si ahi pasos sin activar
-          $nivelesSinActivar = TSolEnvioNego::where('sen_estadoenvio', 2)
+          $nivelesSinActivar = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'estadoHisProceso', 'solicitud.cliente', 'solicitud.costo', 'solicitud.costo.formaPago')->where('sen_estadoenvio', 2)
           ->where('sen_sol_id',  $data['sol_id'])->get();
           if (count($nivelesSinActivar) > 0) {
             // Si encuentra pasos sin activar, activa el primero
             $primerNivel = $nivelesSinActivar[0]->update(['sen_estadoenvio' => 1]);
+            $correo = TDirNacional::where('dir_txt_cedula', $nivelesSinActivar[0]['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
+            Mail::to($correo)->send(new notificacionEstadoSolicitud($nivelesSinActivar[0]));
+            if(Mail::failures()){
+              return response()->json(Mail::failures());
+            }
           }else{
             // consulta la ruta de aprobacion y actualiza los que esten en estado 0
             $nivelesCreados = TSolEnvioNego::where('sen_idTercero_recibe', $pernivel['pen_cedula'])
@@ -535,11 +581,14 @@ class bandejaAprobacionController extends Controller
           }            
         } 
         
-        $response = compact('data', 'id', 'validacion', 'errorRuta', 'pernivCanal', 'padre', 'validaCanal', 'objTSolEnvioNego', 'pernivelVendedor', 'negociacion', 'idsLineas', 'costo', 'arrLineas', 'perniveles', 'pernivel', 'nivelesCreados', 'collection', 'anterior', 'arrrr', 'comprobacionruta');
+        $url = route('bandejaAprobacion.index', ['id' => $data['sol_id'], 'redirecTo' => 'elaboracion']);
+
+
+        $response = compact('data', 'id', 'validacion', 'errorRuta', 'pernivCanal', 'padre', 'validaCanal', 'objTSolEnvioNego', 'pernivelVendedor', 'negociacion', 'idsLineas', 'costo', 'arrLineas', 'perniveles', 'pernivel', 'nivelesCreados', 'collection', 'anterior', 'arrrr', 'comprobacionruta', 'url');
         return response()->json($response);
     }
 
-    public function createObject($sen_sol_id, $sen_idTercero_envia, $sen_idTercero_recibe, $sen_estadoenvio, $sen_observacion, $sen_ser_id, $sen_run_id){
+    public function createObject($sen_sol_id, $sen_idTercero_envia, $sen_idTercero_recibe, $sen_estadoenvio, $sen_observacion, $sen_ser_id, $sen_run_id, $verificar = null){
         $objTSolEnvioNego = new TSolEnvioNego;
         $objTSolEnvioNego['sen_sol_id'] = $sen_sol_id;
         $objTSolEnvioNego['sen_idTercero_envia'] = $sen_idTercero_envia;
@@ -549,22 +598,18 @@ class bandejaAprobacionController extends Controller
         $objTSolEnvioNego['sen_ser_id'] = $sen_ser_id;                      
         $objTSolEnvioNego['sen_fechaenvio'] = Carbon::now()->toDateTimeString();  
         $objTSolEnvioNego['sen_run_id'] = $sen_run_id;
-        // $objTSolEnvioNego->save();
+        $objTSolEnvioNego->save();
 
-        $objTSolEnvioNego = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'solicitud.soliSucu', 'solicitud.soliSucu.hisSucu', 'solicitud.soliZona', 'solicitud.soliZona.hisZona', 'solicitud.soliZona.hisZona.cOperacion', 'solicitud.objetivo', 'solicitud.soliTipoNego', 'solicitud.soliTipoNego.tipoNego', 'solicitud.soliTipoNego.tipoServicio', 'solicitud.costo', 'solicitud.costo.formaPago', 'solicitud.cliente')->where('sen_id', $objTSolEnvioNego['sen_id'])->first();
+        $objTSolEnvioNego = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'estadoHisProceso', 'solicitud.cliente', 'solicitud.costo', 'solicitud.costo.formaPago')->where('sen_id', $objTSolEnvioNego['sen_id'])->first();
+        $objTSolEnvioNego['verificar'] = $verificar;
 
-        // return response()->json($objTSolEnvioNego);
-
-        // un atributo con la solicitud
-
-        //Aqui envio el correo de la solicitud
-        // $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_recibe'])->pluck('dir_txt_email');
-        $correo = ['jfmoreno@bellezaexpress.com'];
-        Mail::to($correo)->send(new notificacionEstadoSolicitud($objTSolEnvioNego));
-        if(Mail::failures()){
-          return response()->json(Mail::failures());
+        if ($objTSolEnvioNego['sen_estadoenvio'] == 1 || ($objTSolEnvioNego['solicitud']['sol_ser_id'] == 2 && $objTSolEnvioNego['solicitud']['sol_sef_id'] == 2 && $objTSolEnvioNego['sen_estadoenvio'] == 0)) {
+          $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
+          Mail::to($correo)->send(new notificacionEstadoSolicitud($objTSolEnvioNego));
+          if(Mail::failures()){
+            return response()->json(Mail::failures());
+          }
         }
-
         return $objTSolEnvioNego;
     }
 

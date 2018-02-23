@@ -230,13 +230,11 @@ class solicitudController extends Controller
             }
             
             if (count($data['arrayLineas']) > 0) {
-                if (isset($obj['soc_formapago']['id'])) {
-                    $deleteSoliCostos = TSoliCostos::where('soc_sol_id', $id)->delete();
-                    $negociacion = $this->crearSoliCostos($data['objCostos'], $negociacion);
-                    $soliCostos = TSoliCostos::where('soc_sol_id', $id)->first();
-                    $deleteSoliCostosLineas = TSoliCostosLineas::where('scl_soc_id', $soliCostos['soc_id'])->delete();
-                    $soliCostos = $this->crearSoliCostosLinea($data['arrayLineas'], $soliCostos, $soliCostos['soc_id']);
-                }                              
+                $deleteSoliCostos = TSoliCostos::where('soc_sol_id', $id)->delete();
+                $negociacion = $this->crearSoliCostos($data['objCostos'], $negociacion);
+                $soliCostos = TSoliCostos::where('soc_sol_id', $id)->first();
+                $deleteSoliCostosLineas = TSoliCostosLineas::where('scl_soc_id', $soliCostos['soc_id'])->delete();
+                $soliCostos = $this->crearSoliCostosLinea($data['arrayLineas'], $soliCostos, $soliCostos['soc_id']);                           
             }
             
 

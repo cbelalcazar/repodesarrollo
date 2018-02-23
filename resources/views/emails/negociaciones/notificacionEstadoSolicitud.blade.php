@@ -18,7 +18,7 @@
       <p>Para ir al Aplicativo haga clic <a href="http://www.bellezaexpress.com/aplicativos">aqui</a>.</p>
     @else
       <p>El usuario <strong>{{$objTSolEnvioNego['terceroEnvia']['nombreTercero']}} {{$objTSolEnvioNego['terceroEnvia']['apellido1Tercero']}} {{$objTSolEnvioNego['terceroEnvia']['apellido2Tercero']}}</strong> ha creado la <strong>NEGOCIACIÓN No. {{$objTSolEnvioNego['sen_sol_id']}}</strong> la cual
-      corresponde al cliente <strong>{{$objTSolEnvioNego['cliente']['razonSocialTercero_cli']}}</strong>.</p>
+      corresponde al cliente <strong>{{$objTSolEnvioNego['solicitud']['cliente']['razonSocialTercero_cli']}}</strong>.</p>
       <div class="form-group">
         <label><strong>Estado: </strong></label> Filtro
       </div>
@@ -187,13 +187,27 @@
     <!-- Anulaciones -->
 
   @else
-    @if (($objTSolEnvioNego['sen_ser_id'] == 3) || ($objTSolEnvioNego['sen_ser_id'] == 13))
       
-    @elseif ()
-
-    @else
-
-    @endif
+      <p>El usuario <strong>{{$objTSolEnvioNego['terceroEnvia']['nombreTercero']}} {{$objTSolEnvioNego['terceroEnvia']['apellido1Tercero']}} {{$objTSolEnvioNego['terceroEnvia']['apellido2Tercero']}}</strong> ha aprobado la <strong>NEGOCIACIÓN No. {{$objTSolEnvioNego['sen_sol_id']}}</strong> la cual
+        corresponde al cliente <strong>
+        {{$objTSolEnvioNego['solicitud']['cliente']['razonSocialTercero_cli']}}</strong>.</p>
+      
+      <div class="form-group">
+        <label><strong>Estado: </strong></label>{{$objTSolEnvioNego['estadoHisProceso']['ser_descripcion']}}
+      </div>
+      <div class="form-group">
+        <label><strong>Observacisdsdsdones: </strong></label> {{$objTSolEnvioNego['sen_observacion']}}
+      </div>
+      <div class="form-group">
+        <label><strong>Forma de Pago: </strong></label> {{$objTSolEnvioNego['solicitud']['costo']['formaPago']['fpag_descripcion']}}
+      </div>
+      @if($objTSolEnvioNego['verificar'] == null)
+        <p>Debe ingresar al sistema y realizar la aprobación de la negociación en menos de 24 horas.</p>
+      @elseif($objTSolEnvioNego['verificar'] == 'evaluacion')
+        <p>Esta solicitud ya tiene todas las aprobaciones. Pendiente por Evaluación</p>
+      @endif
+      
+      <p>Para ir al Aplicativo haga clic <a href="http://www.bellezaexpress.com/aplicativos">aqui</a>.</p>
 
   @endif
 
