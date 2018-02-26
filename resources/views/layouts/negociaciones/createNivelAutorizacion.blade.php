@@ -40,7 +40,7 @@
 						<div class="form-group">
 							<label>Territorio:</label> 
 
-							<multiselect class="span-margin" ng-model="infoPerNivel.territorio" options="territorios" id-prop="id" display-prop="tnw_descripcion" placeholder="Seleccione un Territorio.." show-select-all="true" show-unselect-all="true" required></multiselect> 			
+							<multiselect  selection-limit="1" class="span-margin" ng-model="infoPerNivel.territorio" options="territorios" id-prop="id"  display-prop="tnw_descripcion" placeholder="Seleccione un Territorio.." show-select-all="true" show-unselect-all="true" required></multiselect> 			
 																			
 	    				</div>
 	    			</div>		    

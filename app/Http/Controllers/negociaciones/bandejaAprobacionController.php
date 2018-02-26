@@ -216,37 +216,43 @@ class bandejaAprobacionController extends Controller
                 array_push($arreglo, $value[0]);
               }
               $perniveles = $arreglo;
-              // Actualizo los estados anteriores de el historico
-              $updateEstadosAnterior = TSolEnvioNego::where('sen_sol_id', $data['sol_id'])->update(['sen_estadoenvio' => 0]);
-              // Actualizo la negociacion con el tipo de solicitud sea mercadeo o comercial y mercadeo
-              $negociacion->update(['sol_ser_id' => 4, 'sol_tipnegoniv' => $data['tipoNegociacionSol']]);
-              // Recorro las personas de mercadeo que apruban para estas lineas
-              $estado = 1;
-              foreach ($perniveles as $key => $value) {
-                // Valido si existe el registro que quiero crear en los niveles de aprobacion
-                if($key == 0){
-                  $validacion = TSolEnvioNego::where([['sen_idTercero_envia', $pernivel['pen_cedula']], ['sen_idTercero_recibe', $value['pen_cedula']], ['sen_sol_id', $data['sol_id']]])->get();
-                }else{
-                  $validacion = TSolEnvioNego::where([['sen_idTercero_envia', $perniveles[$key - 1]['pen_cedula']], ['sen_idTercero_recibe', $value['pen_cedula']], ['sen_sol_id', $data['sol_id']]])->get();
-                }
-                
-                // Si no existe el registro que quiero crear lo creo
-                if (count($validacion) == 0) {
-                  // Crea la ruta
+              if (count($perniveles) > 0) {
+                // Actualizo los estados anteriores de el historico
+                $updateEstadosAnterior = TSolEnvioNego::where('sen_sol_id', $data['sol_id'])->update(['sen_estadoenvio' => 0]);
+                // Actualizo la negociacion con el tipo de solicitud sea mercadeo o comercial y mercadeo
+                $negociacion->update(['sol_ser_id' => 4, 'sol_tipnegoniv' => $data['tipoNegociacionSol']]);
+                // Recorro las personas de mercadeo que apruban para estas lineas
+                $estado = 1;
+                foreach ($perniveles as $key => $value) {
+                  // Valido si existe el registro que quiero crear en los niveles de aprobacion
                   if($key == 0){
-                    $envia = $pernivel['pen_cedula'];
+                    $validacion = TSolEnvioNego::where([['sen_idTercero_envia', $pernivel['pen_cedula']], ['sen_idTercero_recibe', $value['pen_cedula']], ['sen_sol_id', $data['sol_id']]])->get();
                   }else{
-                    $envia = $perniveles[$key - 1]['pen_cedula'];
-                  } 
-                  // Genero la ruta
-                  $observacion = "";
-                  if (isset($data['observ'])) {
-                      $observacion = $data['observ']; 
+                    $validacion = TSolEnvioNego::where([['sen_idTercero_envia', $perniveles[$key - 1]['pen_cedula']], ['sen_idTercero_recibe', $value['pen_cedula']], ['sen_sol_id', $data['sol_id']]])->get();
                   }
-                  $objTSolEnvioNego = self::createObject($data['sol_id'], $envia, $value['pen_cedula'], $estado, $observacion, 4, $key + 1);
-                  $estado = 2;
-                }
-              }     
+                  
+                  // Si no existe el registro que quiero crear lo creo
+                  if (count($validacion) == 0) {
+                    // Crea la ruta
+                    if($key == 0){
+                      $envia = $pernivel['pen_cedula'];
+                    }else{
+                      $envia = $perniveles[$key - 1]['pen_cedula'];
+                    } 
+                    // Genero la ruta
+                    $observacion = "";
+                    if (isset($data['observ'])) {
+                        $observacion = $data['observ']; 
+                    }
+                    $objTSolEnvioNego = self::createObject($data['sol_id'], $envia, $value['pen_cedula'], $estado, $observacion, 4, $key + 1);
+                    $estado = 2;
+                  }
+                }   
+              }else{
+                // Error con el pernivel
+                  array_push($errorRuta, 'Favor validar el nivel 2, debido a que no se encontraron usuarios aprobadores para las lineas de la solicitud');
+              }
+                
             }else{
               array_push($errorRuta, 'No se encontraron lineas en la solicitud por favor validar');
             }
@@ -363,6 +369,7 @@ class bandejaAprobacionController extends Controller
               $canalesFiltro = TPernivele::with('canales')->where('pen_cedula', $cedulaFiltro)->first();
               // Filtro los canales del filtro por el canal de la solicitud
               $pernivCanal = collect($canalesFiltro['canales'])->where('pcan_idcanal', $data['sol_can_id'])->all();
+              $pernivCanal = array_values($pernivCanal);
               // Obtengo el id del aprobador par esos canales
               $padre = TPernivele::with('canales')->where('id', $pernivCanal[0]['pcan_aprobador'])->first();
             }
@@ -641,6 +648,7 @@ class bandejaAprobacionController extends Controller
 
         if ($objTSolEnvioNego['sen_estadoenvio'] == 1 || ($objTSolEnvioNego['solicitud']['sol_ser_id'] == 2 && $objTSolEnvioNego['solicitud']['sol_sef_id'] == 2 && $objTSolEnvioNego['sen_estadoenvio'] == 0)) {
           $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
+          $correo = ['cabelalcazar@bellezaexpress.com'];
           Mail::to($correo)->send(new notificacionEstadoSolicitudNego($objTSolEnvioNego));
           if(Mail::failures()){
             return response()->json(Mail::failures());
