@@ -275,7 +275,7 @@ class solicitudController extends Controller
                             $objTSolEnvioNego['sen_estadoenvio'] = 1;
                             $objTSolEnvioNego['sen_run_id'] = null;
                             $objTSolEnvioNego->save();
-                            $objTSolEnvioNego = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'solicitud.soliSucu', 'solicitud.soliSucu.hisSucu', 'solicitud.soliZona', 'solicitud.soliZona.hisZona', 'solicitud.soliZona.hisZona.cOperacion', 'solicitud.objetivo', 'solicitud.soliTipoNego', 'solicitud.soliTipoNego.tipoNego', 'solicitud.soliTipoNego.tipoServicio', 'solicitud.costo', 'solicitud.costo.formaPago', 'solicitud.cliente')->where('sen_id', $objTSolEnvioNego['sen_id'])->first();
+                            $objTSolEnvioNego = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'solicitud.soliSucu', 'solicitud.soliSucu.hisSucu', 'solicitud.soliZona', 'solicitud.soliZona.hisZona', 'solicitud.objetivo', 'solicitud.soliTipoNego', 'solicitud.soliTipoNego.tipoNego', 'solicitud.soliTipoNego.tipoServicio', 'solicitud.costo', 'solicitud.costo.formaPago', 'solicitud.cliente')->where('sen_id', $objTSolEnvioNego['sen_id'])->first();
                             // Enviar el primer correo creacion
                             $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_envia'])->pluck('dir_txt_email')->first();
                             // $correo = ['jfmoreno@bellezaexpress.com'];

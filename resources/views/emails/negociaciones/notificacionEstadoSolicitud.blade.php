@@ -124,7 +124,7 @@
             @foreach ($objTSolEnvioNego['solicitud']['soliZona'] as $datosZonas)
               <tr>
                 <td height="30" align="left" style="font: bold 11px verdana, arial, helvetica, sans-serif;">
-                  {{$datosZonas['hisZona']['cOperacion']['cen_txt_descripcion']}}</td>
+                  {{$datosZonas['hisZona']['cen_txt_descripcion']}}</td>
                 <td height="30" align="right" style="font: bold 11px verdana, arial, helvetica, sans-serif;">{{$datosZonas['szn_ppart']}}</td>
                 <td height="30" align="right" style="font: bold 11px verdana, arial, helvetica, sans-serif;">{{number_format(($datosZonas['szn_ppart']/100)*($objTSolEnvioNego['solicitud']['costo']['soc_granvalor']), 2)}}</td>
               </tr>
