@@ -28,6 +28,6 @@ class TSoliZona extends Model
     ];
 
     public function hisZona(){
-      return $this->hasOne('App\Models\Genericas\TCoCanal', 'coc_id', 'szn_coc_id');
+      return $this->hasOne('App\Models\Genericas\TCentroOperaciones', 'cen_id', 'szn_coc_id');
     }
 }

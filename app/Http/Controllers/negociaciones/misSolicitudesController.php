@@ -65,7 +65,7 @@ class misSolicitudesController extends Controller
     {
         $usuario = Auth::user();
 
-        $solicitudes = TSolicitudNego::with('costo', 'costo.lineas', 'costo.lineas.lineasDetalle', 'costo.lineas.lineasDetalle.categorias', 'costo.motivo', 'costo.motivo.motAdicion', 'costo.detalle', 'estado', 'cliente', 'canal', 'listaPrecios', 'vendedor', 'zona', 'clasificacion', 'hisProceso', 'hisProceso.estadoHisProceso', 'hisProceso.terceroEnvia', 'hisProceso.terceroRecibe', 'costo.tipoBono.bono', 'soliZona', 'soliZona.hisZona', 'soliZona.hisZona.cOperacion', 'soliSucu', 'soliSucu.hisSucu', 'soliTipoNego', 'soliTipoNego.tipoNego', 'causal', 'causal.causalDetalle', 'evento', 'objetivo', 'cumplimiento', 'verificacionCobro', 'verificacionCobro.documento', 'verificacionCobro.proveedor', 'reviExhibicion', 'reviExhibicion.usuario', 'actaEntrega', 'actaEntrega.usuario', 'tesoHistorial', 'tesoAuditoria', 'tesoAuditoria.usuario')->where('sol_ven_id', $usuario['idTerceroUsuario'])->get();
+        $solicitudes = TSolicitudNego::with('costo', 'costo.lineas', 'costo.lineas.lineasDetalle', 'costo.lineas.lineasDetalle.categorias', 'costo.motivo', 'costo.motivo.motAdicion', 'costo.detalle', 'estado', 'cliente', 'canal', 'listaPrecios', 'vendedor', 'zona', 'clasificacion', 'hisProceso', 'hisProceso.estadoHisProceso', 'hisProceso.terceroEnvia', 'hisProceso.terceroRecibe', 'costo.tipoBono.bono', 'soliZona', 'soliZona.hisZona', 'soliSucu', 'soliSucu.hisSucu', 'soliTipoNego', 'soliTipoNego.tipoNego', 'causal', 'causal.causalDetalle', 'evento', 'objetivo', 'cumplimiento', 'verificacionCobro', 'verificacionCobro.documento', 'verificacionCobro.proveedor', 'reviExhibicion', 'reviExhibicion.usuario', 'actaEntrega', 'actaEntrega.usuario', 'tesoHistorial', 'tesoAuditoria', 'tesoAuditoria.usuario')->where('sol_ven_id', $usuario['idTerceroUsuario'])->get();
 
         $solicitudes = collect($solicitudes)->map(function($object){           
             $object['revi_exhibicion'] = collect($object['reviExhibicion'])->map(function($ob){
@@ -378,7 +378,32 @@ class misSolicitudesController extends Controller
         $anular->sol_observacionanulacion = $data['sol_observacionanulacion'];
         $anular->save();
 
-        return response()->json($anular);
+        $objTSolEnvioNego = new TSolEnvioNego;
+        $objTSolEnvioNego['sen_sol_id'] = $sol_id;
+        $objTSolEnvioNego['sen_ser_id'] = 9;
+        $objTSolEnvioNego['sen_idTercero_envia'] = $anular['sol_ven_id'];
+        $objTSolEnvioNego['sen_idTercero_recibe'] = null;
+        $objTSolEnvioNego['sen_observacion'] = $anular['sol_observacionanulacion']; 
+        $objTSolEnvioNego['sen_fechaenvio'] = Carbon::now()->toDateTimeString();  
+        $objTSolEnvioNego['sen_estadoenvio'] = 0;
+        $objTSolEnvioNego['sen_run_id'] = null;
+        $objTSolEnvioNego->save();
+
+        $updateHistorialAnular = TSolEnvioNego::where('sen_sol_id', $sol_id)->get();
+        $updateHistorialAnular = $updateHistorialAnular->filter(function($value, $key){
+            return $value['sen_estadoenvio'] != 0;
+        });
+
+        foreach ($updateHistorialAnular as $regisHistorial) {
+            $sen_id = $regisHistorial['sen_id'];
+            $regisHistorial = TSolEnvioNego::find($sen_id);
+            $regisHistorial->sen_estadoenvio = 0;
+            $regisHistorial->save();
+        }
+
+        $response = compact('anular', 'objTSolEnvioNego', 'updateHistorialAnular'); 
+
+        return response()->json($response);
     }
 
     public function updatePeriEje(Request $request)

@@ -174,7 +174,7 @@
                         <div class="col-md-12">No se encontraron registros</div>
                       </div>
                       <div ng-if="infoSolicitud.sol_tipocliente == 1" class="row" ng-repeat="centroOperacion in infoSolicitud.soli_zona">
-                        <div class="col-md-8">@{{centroOperacion.szn_coc_id}} - @{{centroOperacion.his_zona.c_operacion.cen_txt_descripcion}}</div>
+                        <div class="col-md-8">@{{centroOperacion.szn_coc_id}} - @{{centroOperacion.his_zona.cen_txt_descripcion}}</div>
                         <div class="col-md-2" align="right">@{{centroOperacion.szn_ppart}} %</div>
                         <div class="col-md-2"></div>
                       </div>
