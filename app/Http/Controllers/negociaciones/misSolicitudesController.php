@@ -95,7 +95,7 @@ class misSolicitudesController extends Controller
 
         // Agrego la ruta edit a todas las solicitudes
         $solicitudes = $solicitudes->map(function($item, $key){
-             $item['url'] = route('solicitud.edit', ['id' => $item['sol_id'], 'redirecTo' => 'grabar.1']);
+             $item['url'] = route('solicitudNegociaciones.edit', ['id' => $item['sol_id'], 'redirecTo' => 'grabar.1']);
              return $item;
         })->all();
 
@@ -489,7 +489,7 @@ class misSolicitudesController extends Controller
         $newActa->save();
 
         $response = compact('ruta', 'titulo', 'recarguemos');
-        return redirect()->route('misSolicitudes.index', ['id' => $data['sol_id']]);
+        return redirect()->route('misSolicitudesNegociaciones.index', ['id' => $data['sol_id']]);
     }
 
     public function saveFotos(Request $request)
@@ -509,7 +509,7 @@ class misSolicitudesController extends Controller
         $newFoto->sre_estado = 1;
         $newFoto->save();
         $response = compact('ruta', 'titulo', 'recarguemos');
-        return redirect()->route('misSolicitudes.index', ['id' => $data['sol_id']]);
+        return redirect()->route('misSolicitudesNegociaciones.index', ['id' => $data['sol_id']]);
     }
 
 }

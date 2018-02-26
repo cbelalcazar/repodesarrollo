@@ -1,6 +1,6 @@
 app.controller('bandejaCtrl', ['$scope', '$http', '$filter', '$window', function($scope, $http, $filter, $window){
 
-	$scope.getUrl = "bandejaGetInfo";
+	$scope.getUrl = "bandejaNegoGetInfo";
 	$scope.progress = true;
 
 	$scope.tipoNegociacion = ['Comercial', 'Mercadeo', 'Comercial y Mercadeo'];
@@ -54,7 +54,7 @@ app.controller('bandejaCtrl', ['$scope', '$http', '$filter', '$window', function
   	$scope.generarAprobacion = function(obj){
   		obj.usuarioAprobador = $scope.usuario;
   		$scope.progress = true;
-  		$http.put('bandejaAprobacion/' + obj.sol_id, obj).then(function(response){
+  		$http.put('bandejaAprobacionNegociacion/' + obj.sol_id, obj).then(function(response){
       var res = response.data;			
 			if (res.errorRuta.length == 0) {
         $window.location = res.url;

@@ -1,7 +1,7 @@
 app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 'DTOptionsBuilder', 'DTColumnDefBuilder', '$mdDialog', function($scope,  $filter, $http, $window, DTOptionsBuilder, DTColumnDefBuilder, $mdDialog){
 
-	$scope.getUrl = "misSolicitudesInfo";
-	$scope.Url = "misSolicitudes";
+	$scope.getUrl = "misSolicitudesNegoInfo";
+	$scope.Url = "misSolicitudesNegociaciones";
 	$scope.periEjeUrl = "misSolicitudesPeriEje";
 	$scope.confirBono = "misSolicitudesConfirBono";
     $scope.progress = true;

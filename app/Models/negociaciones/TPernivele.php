@@ -32,11 +32,11 @@ class TPernivele extends Model
     }
 
     public function canales(){
-        return $this->hasMany('App\Models\negociaciones\TPernivcanal', 'pcan_idpernivel', 'id');
+        return $this->hasMany('App\Models\negociaciones\TPernivCanal', 'pcan_idpernivel', 'id');
     }
 
     public function hijos(){
-        return $this->hasMany('App\Models\negociaciones\TPernivcanal', 'pcan_aprobador', 'id');
+        return $this->hasMany('App\Models\negociaciones\TPernivCanal', 'pcan_aprobador', 'id');
     }
 
         

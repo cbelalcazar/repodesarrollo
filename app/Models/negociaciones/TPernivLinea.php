@@ -26,7 +26,7 @@ class TPernivLinea extends Model
     protected $guarded = [];
 
     public function canal(){
-        return $this->belongsTo('App\Models\negociaciones\TPernivcanal', 'pcan_idcanal', 'id');
+        return $this->belongsTo('App\Models\negociaciones\TPernivCanal', 'pcan_idcanal', 'id');
     }
         
 }

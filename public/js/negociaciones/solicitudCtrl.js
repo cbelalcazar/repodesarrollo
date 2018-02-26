@@ -86,7 +86,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 
 
 	$scope.getInfo = function(){
-		var url = '../solicitudGetInfo';
+		var url = '../solicitudNegoGetInfo';
 		if ($scope.siguiente == 'create') {
 			$scope.pasoUno = false;			
 			$scope.pasoDos = true;
@@ -105,7 +105,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		}
 
 		if ($scope.objeto.sol_id != undefined) {
-			url = '../../solicitudGetInfo' + '?id=' + $scope.objeto.sol_id;
+			url = '../../solicitudNegoGetInfo' + '?id=' + $scope.objeto.sol_id;
 			$scope.pasoDos = false;
 		}
 
@@ -743,7 +743,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		if (bandera) {
 			//Debo validar que arrayZonas o ArraySucursales tengan al menos un registro y que la sumatoria de los porcentajes de participacion sea igual a 100 
 			if ($scope.objeto.sol_id == undefined) {
-				$http.post('../solicitud', $scope.envioPost).then(function(response){
+				$http.post('../solicitudNegociaciones', $scope.envioPost).then(function(response){
 					var res = response.data;
 					console.log(res);
 					$window.location = res.url;
@@ -751,17 +751,22 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 					alert("Error al grabar");
 				});
 			}else{
-				$http.put('../../solicitud/' + $scope.objeto.sol_id, $scope.envioPost).then(function(response){
-					var res = response.data;
-					if (res.errorRuta.length == 0) {
-						$window.location = res.url;
+				$http.put('../../solicitudNegociaciones/' + $scope.objeto.sol_id, $scope.envioPost).then(function(response){
+					var res = response.data;					
+					if (res.errorRuta != undefined) {
+						if (res.errorRuta.length == 0) {
+							$window.location = res.url;
+						}else{
+							$scope.progress = false;
+							$scope.errorMessage = res.errorRuta;
+							$interval(function() {
+								$scope.errorMessage = [];
+					        }, 20000);
+						}
 					}else{
-						$scope.progress = false;
-						$scope.errorMessage = res.errorRuta;
-						$interval(function() {
-							$scope.errorMessage = [];
-				        }, 20000);
+						$window.location = res.url;
 					}
+					
 				}, function(errorResponse){
 					alert("Error al grabar");
 				});

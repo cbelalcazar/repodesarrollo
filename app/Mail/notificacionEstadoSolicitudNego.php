@@ -7,7 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class notificacionEstadoSolicitud extends Mailable
+class notificacionEstadoSolicitudNego extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -31,10 +31,10 @@ class notificacionEstadoSolicitud extends Mailable
     public function build()
     {
         $style = ['body-line' => 'margin: 0 20px 12px; font-size: 13px; line-height: 21px; color: #4f4f4f; font-family: sans-serif;'];
-        $titulo = 'NEGOCIACIONES V2';
+        $titulo = 'NEGOCIACIONES';
         $objTSolEnvioNego = $this->objTSolEnvioNego;
 
-        return $this->subject('NEGOCIACIONES V2 - Administración Electronica de Negociaciones')
+        return $this->subject('NEGOCIACIONES - Administración Electronica de Negociaciones')
         ->view('emails.negociaciones.notificacionEstadoSolicitud')
         ->with(compact('style', 'titulo', 'objTSolEnvioNego'));
 

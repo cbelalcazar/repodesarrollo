@@ -38,7 +38,7 @@ use App\Models\Genericas\TCentroOperaciones;
 use App\Models\BESA\NegociacionesVentas;
 
 use Mail;
-use App\Mail\notificacionEstadoSolicitud;
+use App\Mail\notificacionEstadoSolicitudNego;
 
 class solicitudController extends Controller
 {
@@ -117,7 +117,7 @@ class solicitudController extends Controller
         // Obtengo los clientes a mostrar
         $clientesTodos = TCliente::all();
         // Retorna la url de misolicitudes
-        $urlMisSolicitudes = route('misSolicitudes.index');
+        $urlMisSolicitudes = route('misSolicitudesNegociaciones.index');
         // Forma de pago
         $formaPago = TFormaPago::all();
         // Lineas
@@ -147,7 +147,7 @@ class solicitudController extends Controller
             $objSoliNego = $this->crearSoliTipoNego($data['arrayTipoNegociacion'], $objSoliNego, $data['sol_cli_id']);
             $objSoliNego = $this->crearSoliCausales($data['arrayCausalNegociacion'], $objSoliNego);
 
-            $url = route('solicitud.edit', ['id' => $objSoliNego['sol_id'], 'redirecTo' => $data['redirecTo']]);
+            $url = route('solicitudNegociaciones.edit', ['id' => $objSoliNego['sol_id'], 'redirecTo' => $data['redirecTo']]);
 
         } catch (Exception $e) {
             return response()->json(['Error' => 'Error']);
@@ -180,9 +180,9 @@ class solicitudController extends Controller
         $titulo = "EDITAR SOLICITUD";
         $adelante = $request->all()['redirecTo'];
         if ($adelante == 'elaboracion') {
-            $aprobador = TSolEnvioNego::with('estadoHisProceso', 'terceroRecibe', 'dirNacionalRecibe')->where([['sen_sol_id', $id], ['sen_estadoenvio', 1]])->first();
+            $aprobador = TSolEnvioNego::with('estadoHisProceso', 'terceroRecibe', 'dirNacionalRecibe')->where([['sen_sol_id', $id], ['sen_estadoenvio', 1]])->get();
             // Retorna la url de misolicitudes
-            $urlMisSolicitudes = route('misSolicitudes.index');
+            $urlMisSolicitudes = route('misSolicitudesNegociaciones.index');
             $negociacion = TSolicitudNego::with('cliente', 'costo')->where('sol_id', $id)->first();
             $response = compact('aprobador', 'ruta', 'titulo', 'negociacion', 'urlMisSolicitudes');
             return view('layouts.negociaciones.mensajeEnvioSolicitud', $response);
@@ -230,13 +230,11 @@ class solicitudController extends Controller
             }
             
             if (count($data['arrayLineas']) > 0) {
-                if (isset($obj['soc_formapago']['id'])) {
-                    $deleteSoliCostos = TSoliCostos::where('soc_sol_id', $id)->delete();
-                    $negociacion = $this->crearSoliCostos($data['objCostos'], $negociacion);
-                    $soliCostos = TSoliCostos::where('soc_sol_id', $id)->first();
-                    $deleteSoliCostosLineas = TSoliCostosLineas::where('scl_soc_id', $soliCostos['soc_id'])->delete();
-                    $soliCostos = $this->crearSoliCostosLinea($data['arrayLineas'], $soliCostos, $soliCostos['soc_id']);
-                }                              
+                $deleteSoliCostos = TSoliCostos::where('soc_sol_id', $id)->delete();
+                $negociacion = $this->crearSoliCostos($data['objCostos'], $negociacion);
+                $soliCostos = TSoliCostos::where('soc_sol_id', $id)->first();
+                $deleteSoliCostosLineas = TSoliCostosLineas::where('scl_soc_id', $soliCostos['soc_id'])->delete();
+                $soliCostos = $this->crearSoliCostosLinea($data['arrayLineas'], $soliCostos, $soliCostos['soc_id']);                           
             }
             
 
@@ -260,6 +258,7 @@ class solicitudController extends Controller
                     array_push($errorRuta, 'No se encontraron canales para la solicitud');
                 }else{
                     $pernivCanal = collect($pernivel['canales'])->where('pcan_idcanal', $data['sol_can_id'])->all();
+                    $pernivCanal = array_values($pernivCanal);
                     if (count($pernivCanal) > 0) {
                         $padre = TPernivele::where('id', $pernivCanal[0]['pcan_aprobador'])->first();
                         $validacion = TSolEnvioNego::where([['sen_idTercero_envia', $pernivel['pen_cedula']], ['sen_idTercero_recibe', $padre['pen_cedula']], ['sen_sol_id', $data['sol_id']]])->get();
@@ -316,14 +315,14 @@ class solicitudController extends Controller
             $objTSolEnvioNego->save();
         }
     
-        $url = route('solicitud.edit', ['id' => $id, 'redirecTo' => $data['redirecTo']]);
+        $url = route('solicitudNegociaciones.edit', ['id' => $id, 'redirecTo' => $data['redirecTo']]);
 
         $response = compact('data', 'id', 'url', 'negociacion', 'pernivel', 'errorRuta', 'pernivCanal', 'padre', 'objTSolEnvioNego', 'validacion');
         return response()->json($response);
     }
 
     public function enviaCorreo($correo, $objTSolEnvioNego){
-        Mail::to($correo)->send(new notificacionEstadoSolicitud($objTSolEnvioNego));
+        Mail::to($correo)->send(new notificacionEstadoSolicitudNego($objTSolEnvioNego));
         if(Mail::failures()){
             return response()->json(Mail::failures());
         }else{
