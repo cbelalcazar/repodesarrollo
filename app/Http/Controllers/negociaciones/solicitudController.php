@@ -117,7 +117,7 @@ class solicitudController extends Controller
         // Obtengo los clientes a mostrar
         $clientesTodos = TCliente::all();
         // Retorna la url de misolicitudes
-        $urlMisSolicitudes = route('misSolicitudes.index');
+        $urlMisSolicitudes = route('misSolicitudesNegociaciones.index');
         // Forma de pago
         $formaPago = TFormaPago::all();
         // Lineas
@@ -147,7 +147,7 @@ class solicitudController extends Controller
             $objSoliNego = $this->crearSoliTipoNego($data['arrayTipoNegociacion'], $objSoliNego, $data['sol_cli_id']);
             $objSoliNego = $this->crearSoliCausales($data['arrayCausalNegociacion'], $objSoliNego);
 
-            $url = route('solicitud.edit', ['id' => $objSoliNego['sol_id'], 'redirecTo' => $data['redirecTo']]);
+            $url = route('solicitudNegociaciones.edit', ['id' => $objSoliNego['sol_id'], 'redirecTo' => $data['redirecTo']]);
 
         } catch (Exception $e) {
             return response()->json(['Error' => 'Error']);
@@ -180,9 +180,9 @@ class solicitudController extends Controller
         $titulo = "EDITAR SOLICITUD";
         $adelante = $request->all()['redirecTo'];
         if ($adelante == 'elaboracion') {
-            $aprobador = TSolEnvioNego::with('estadoHisProceso', 'terceroRecibe', 'dirNacionalRecibe')->where([['sen_sol_id', $id], ['sen_estadoenvio', 1]])->first();
+            $aprobador = TSolEnvioNego::with('estadoHisProceso', 'terceroRecibe', 'dirNacionalRecibe')->where([['sen_sol_id', $id], ['sen_estadoenvio', 1]])->get();
             // Retorna la url de misolicitudes
-            $urlMisSolicitudes = route('misSolicitudes.index');
+            $urlMisSolicitudes = route('misSolicitudesNegociaciones.index');
             $negociacion = TSolicitudNego::with('cliente', 'costo')->where('sol_id', $id)->first();
             $response = compact('aprobador', 'ruta', 'titulo', 'negociacion', 'urlMisSolicitudes');
             return view('layouts.negociaciones.mensajeEnvioSolicitud', $response);
@@ -315,7 +315,7 @@ class solicitudController extends Controller
             $objTSolEnvioNego->save();
         }
     
-        $url = route('solicitud.edit', ['id' => $id, 'redirecTo' => $data['redirecTo']]);
+        $url = route('solicitudNegociaciones.edit', ['id' => $id, 'redirecTo' => $data['redirecTo']]);
 
         $response = compact('data', 'id', 'url', 'negociacion', 'pernivel', 'errorRuta', 'pernivCanal', 'padre', 'objTSolEnvioNego', 'validacion');
         return response()->json($response);

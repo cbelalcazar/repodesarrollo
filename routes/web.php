@@ -32,8 +32,8 @@ Route::group(['middleware' => ['auth']], function () {
 
   	// Rutas de negociaciones 
 	Route::group(['prefix' => 'negociaciones'], function () {
-  		Route::resource('solicitud', 'negociaciones\solicitudController');
-  		Route::get('solicitudGetInfo', 'negociaciones\solicitudController@solicitudGetInfo');      
+  		Route::resource('solicitudNegociaciones', 'negociaciones\solicitudController');
+  		Route::get('solicitudNegoGetInfo', 'negociaciones\solicitudController@solicitudGetInfo');      
       Route::post('calcularObjetivos', 'negociaciones\solicitudController@calcularObjetivos');
       
       //Rutas de Catalogos
@@ -45,20 +45,20 @@ Route::group(['middleware' => ['auth']], function () {
       Route::get('tiponegociacionInfo', 'negociaciones\tipoNegociacionController@getInfo');
 
       //Rutas de mis Solicitudes
-      Route::resource('misSolicitudes', 'negociaciones\misSolicitudesController');
-      Route::get('misSolicitudesInfo', 'negociaciones\misSolicitudesController@getInfo');
+      Route::resource('misSolicitudesNegociaciones', 'negociaciones\misSolicitudesController');
+      Route::get('misSolicitudesNegoInfo', 'negociaciones\misSolicitudesController@getInfo');
       Route::post('misSolicitudesPeriEje', 'negociaciones\misSolicitudesController@updatePeriEje');
       Route::post('misSolicitudesConfirBono', 'negociaciones\misSolicitudesController@confirmarBono');
       Route::get('imprimirActa', 'negociaciones\misSolicitudesController@imprimirActa')->name('imprimirActa');
       Route::post('saveActas', 'negociaciones\misSolicitudesController@saveActas')->name('saveActas');
       Route::post('saveFotos', 'negociaciones\misSolicitudesController@saveFotos')->name('saveFotos');
 
-      Route::resource('nivelesAutorizacion', 'negociaciones\NivelesAutorizacionController', ['except' => ['create','edit', 'show']]);
-      Route::get('infoAutorizacion', 'negociaciones\NivelesAutorizacionController@getInfo');
+      Route::resource('nivelesAutorizacionNegociacion', 'negociaciones\NivelesAutorizacionController', ['except' => ['create','edit', 'show']]);
+      Route::get('infoAutorizacionNego', 'negociaciones\NivelesAutorizacionController@getInfo');
 
       // Bandeja de aprobacion 
-      Route::resource('bandejaAprobacion', 'negociaciones\bandejaAprobacionController', ['except' => ['create','edit', 'show']]);
-      Route::get('bandejaGetInfo', 'negociaciones\bandejaAprobacionController@getInfo');
+      Route::resource('bandejaAprobacionNegociacion', 'negociaciones\bandejaAprobacionController', ['except' => ['create','edit', 'show']]);
+      Route::get('bandejaNegoGetInfo', 'negociaciones\bandejaAprobacionController@getInfo');
 
 	});
 

@@ -2,8 +2,8 @@ app.controller('nivelesAutorizacion',
 ['$scope', '$http', '$filter', '$timeout', '$location', 'DTOptionsBuilder', 'DTColumnDefBuilder', '$mdDialog', '$window',  
 function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnDefBuilder, $mdDialog, $window){
 
-	$scope.urlInfo = 'infoAutorizacion';
-	$scope.url = 'nivelesAutorizacion';
+	$scope.urlInfo = 'infoAutorizacionNego';
+	$scope.url = 'nivelesAutorizacionNegociacion';
 	$scope.progress = true;
 	$scope.infoPerNivel = {};
 	$scope.tercerosFiltrados = [];

@@ -39,7 +39,7 @@ class bandejaAprobacionController extends Controller
                 $aprobador = TSolEnvioNego::with('estadoHisProceso', 'terceroRecibe', 'dirNacionalRecibe')->where([['sen_sol_id', $id], ['sen_estadoenvio', 1]])->get();
               }
               // Retorna la url de misolicitudes
-              $urlMisSolicitudes = route('bandejaAprobacion.index');
+              $urlMisSolicitudes = route('bandejaAprobacionNegociacion.index');
               $negociacion = TSolicitudNego::with('cliente', 'costo')->where('sol_id', $id)->first();
               $validacion = true;
               $response = compact('aprobador', 'ruta', 'titulo', 'negociacion', 'urlMisSolicitudes', 'validacion');
@@ -582,7 +582,7 @@ class bandejaAprobacionController extends Controller
           }            
         } 
         
-        $url = route('bandejaAprobacion.index', ['id' => $data['sol_id'], 'redirecTo' => 'elaboracion']);
+        $url = route('bandejaAprobacionNegociacion.index', ['id' => $data['sol_id'], 'redirecTo' => 'elaboracion']);
 
 
         $response = compact('data', 'id', 'validacion', 'errorRuta', 'pernivCanal', 'padre', 'validaCanal', 'objTSolEnvioNego', 'pernivelVendedor', 'negociacion', 'idsLineas', 'costo', 'arrLineas', 'perniveles', 'pernivel', 'nivelesCreados', 'collection', 'anterior', 'arrrr', 'comprobacionruta', 'url');
