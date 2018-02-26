@@ -290,7 +290,11 @@ class solicitudController extends Controller
 
 
                         }else{
-                            array_push($errorRuta, 'No se encontro ruta de aprobacion para el canal seleccionado');
+                            if (!isset($padre)) {
+                                array_push($errorRuta, 'No se encontro ruta de aprobacion para el canal seleccionado');
+                            }elseif(count($validacion) > 0){
+                                array_push($errorRuta, 'La solicitud ya fue enviada a aprobación');
+                            }
                         }
                     }else{
                         array_push($errorRuta, 'Favor validar el nivel siguiente al usuario actual en los niveles de autorizacion');
