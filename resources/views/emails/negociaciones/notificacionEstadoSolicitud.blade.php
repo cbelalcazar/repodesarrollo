@@ -124,7 +124,7 @@
             @foreach ($objTSolEnvioNego['solicitud']['soliZona'] as $datosZonas)
               <tr>
                 <td height="30" align="left" style="font: bold 11px verdana, arial, helvetica, sans-serif;">
-                  {{$datosZonas['hisZona']['cOperacion']['cen_txt_descripcion']}}</td>
+                  {{$datosZonas['hisZona']['cen_txt_descripcion']}}</td>
                 <td height="30" align="right" style="font: bold 11px verdana, arial, helvetica, sans-serif;">{{$datosZonas['szn_ppart']}}</td>
                 <td height="30" align="right" style="font: bold 11px verdana, arial, helvetica, sans-serif;">{{number_format(($datosZonas['szn_ppart']/100)*($objTSolEnvioNego['solicitud']['costo']['soc_granvalor']), 2)}}</td>
               </tr>
@@ -185,6 +185,17 @@
 
   @elseif ($objTSolEnvioNego['sen_ser_id'] == 9)
     <!-- Anulaciones -->
+    <p>El usuario <strong>{{$objTSolEnvioNego['terceroEnvia']['nombreTercero']}} {{$objTSolEnvioNego['terceroEnvia']['apellido1Tercero']}} {{$objTSolEnvioNego['terceroEnvia']['apellido2Tercero']}}</strong> ha anulado la <strong>NEGOCIACIÓN No. {{$objTSolEnvioNego['sen_sol_id']}}</strong> la cual corresponde al cliente <strong>
+    {{$objTSolEnvioNego['solicitud']['cliente']['razonSocialTercero_cli']}}</strong>.</p>
+      
+    <div class="form-group">
+      <label><strong>Observaciones: </strong></label> {{$objTSolEnvioNego['sen_observacion']}}
+    </div>
+    <div class="form-group">
+      <label><strong>Forma de Pago: </strong></label> {{$objTSolEnvioNego['solicitud']['costo']['formaPago']['fpag_descripcion']}}
+    </div>
+      
+    <p>Para ir al Aplicativo haga clic <a href="http://www.bellezaexpress.com/aplicativos">aqui</a>.</p>
 
   @else
       
@@ -196,7 +207,7 @@
         <label><strong>Estado: </strong></label>{{$objTSolEnvioNego['estadoHisProceso']['ser_descripcion']}}
       </div>
       <div class="form-group">
-        <label><strong>Observacisdsdsdones: </strong></label> {{$objTSolEnvioNego['sen_observacion']}}
+        <label><strong>Observaciones: </strong></label> {{$objTSolEnvioNego['sen_observacion']}}
       </div>
       <div class="form-group">
         <label><strong>Forma de Pago: </strong></label> {{$objTSolEnvioNego['solicitud']['costo']['formaPago']['fpag_descripcion']}}

@@ -1,4 +1,4 @@
-app.controller('bandejaCtrl', ['$scope', '$http', '$filter', '$window', function($scope, $http, $filter, $window){
+app.controller('bandejaCtrl', ['$scope', '$http', '$filter', '$window', '$mdDialog', function($scope, $http, $filter, $window, $mdDialog){
 
 	$scope.getUrl = "bandejaNegoGetInfo";
 	$scope.progress = true;
@@ -12,6 +12,7 @@ app.controller('bandejaCtrl', ['$scope', '$http', '$filter', '$window', function
 			$scope.pernivelUsu = angular.copy(data.pernivelUsu);
 			$scope.usuario = angular.copy(data.usuario);
 			$scope.progress = false;
+      console.log($scope.usuario);
 		}), function(errorResponse){
 				console.log(errorResponse);
 				$scope.getInfo();
@@ -37,11 +38,13 @@ app.controller('bandejaCtrl', ['$scope', '$http', '$filter', '$window', function
   		$scope.ultimoProceso = $scope.infoSolicitud.his_proceso.slice(-1);
   		$scope.variacionObj = ($scope.infoSolicitud.objetivo.soo_vemesdespues/$scope.infoSolicitud.objetivo.soo_veprome);
 
+      console.log($scope.infoSolicitud);
   	}
 
   	$scope.aprobar = function(obj){
   		$scope.message = [];
   		$scope.infoSolicitud = obj;
+      console.log($scope.infoSolicitud);
   	}
 
   	$scope.validarTipoSolicitud = function(obj){
@@ -69,7 +72,28 @@ app.controller('bandejaCtrl', ['$scope', '$http', '$filter', '$window', function
 		}), function(errorResponse){
 				console.log(errorResponse);
 				$scope.getInfo();
-		};
+		  };
   	}
+
+    $scope.generarRechazo = function(obj){
+      obj.usuarioAprobador = $scope.usuario;
+
+      $scope.progress = true;
+      $http.post('bandejaAprobacionRechazarNego', obj).then(function(response){
+        console.log(response);
+
+        $mdDialog.show(
+        $mdDialog.alert()
+            .parent(angular.element(document.querySelector('#popupContainer')))
+            .clickOutsideToClose(true)
+            .title('Se ha rechazado con exito la solicitud!')
+            .textContent('Se ha rechazado con exito la solicitud Nro.'+ obj.sol_id)
+            .ariaLabel('')
+            .ok('Cerrar')
+        );
+        $scope.getInfo();
+        angular.element('.close').trigger('click');
+      });
+    }
 
 }]);

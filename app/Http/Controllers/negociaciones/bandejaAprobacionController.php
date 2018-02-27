@@ -62,7 +62,7 @@ class bandejaAprobacionController extends Controller
         $pernivelUsu = TPernivele::where('pen_cedula', $usuario['idTerceroUsuario'])->first();
         $solEnvioNego = TSolEnvioNego::where([['sen_idTercero_recibe', $usuario['idTerceroUsuario']], ['sen_estadoenvio', 1]])->get();
         $solEnvioNego = collect($solEnvioNego)->groupBy('sen_sol_id')->keys()->all();
-        $solicitudes = TSolicitudNego::with('costo', 'costo.lineas', 'costo.lineas.lineasDetalle', 'costo.lineas.lineasDetalle.categorias', 'costo.motivo', 'costo.motivo.motAdicion', 'costo.detalle', 'estado', 'cliente', 'canal', 'listaPrecios', 'vendedor', 'zona', 'clasificacion', 'hisProceso', 'hisProceso.estadoHisProceso', 'hisProceso.terceroEnvia', 'hisProceso.terceroRecibe', 'costo.tipoBono.bono', 'soliZona', 'soliZona.hisZona', 'soliZona.hisZona.cOperacion', 'soliSucu', 'soliSucu.hisSucu', 'soliTipoNego', 'soliTipoNego.tipoNego', 'causal', 'causal.causalDetalle', 'evento', 'objetivo', 'cumplimiento', 'verificacionCobro', 'verificacionCobro.documento', 'verificacionCobro.proveedor', 'reviExhibicion', 'reviExhibicion.usuario', 'actaEntrega', 'actaEntrega.usuario', 'tesoHistorial', 'tesoAuditoria', 'tesoAuditoria.usuario')->whereIn('sol_id', $solEnvioNego)->where('sol_sef_id', 1)->get();
+        $solicitudes = TSolicitudNego::with('costo', 'costo.lineas', 'costo.lineas.lineasDetalle', 'costo.lineas.lineasDetalle.categorias', 'costo.motivo', 'costo.motivo.motAdicion', 'costo.detalle', 'estado', 'estadoFinal', 'cliente', 'canal', 'listaPrecios', 'vendedor', 'zona', 'clasificacion', 'hisProceso', 'hisProceso.estadoHisProceso', 'hisProceso.terceroEnvia', 'hisProceso.terceroRecibe', 'costo.tipoBono.bono', 'soliZona', 'soliZona.hisZona', 'soliSucu', 'soliSucu.hisSucu', 'soliTipoNego', 'soliTipoNego.tipoNego', 'causal', 'causal.causalDetalle', 'evento', 'objetivo', 'cumplimiento', 'verificacionCobro', 'verificacionCobro.documento', 'verificacionCobro.proveedor', 'reviExhibicion', 'reviExhibicion.usuario', 'actaEntrega', 'actaEntrega.usuario', 'tesoHistorial', 'tesoAuditoria', 'tesoAuditoria.usuario')->whereIn('sol_id', $solEnvioNego)->where('sol_sef_id', 1)->get();
         $response = compact('usuario', 'solEnvioNego', 'solicitudes', 'pernivelUsu');
         return response()->json($response);
     }
@@ -117,6 +117,54 @@ class bandejaAprobacionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+    public function rechazar(Request $request)
+    {
+      $usuario = Auth::user();
+      $data = $request->all();
+      $sol_id = $data['sol_id'];
+      $rechazarSolicitud = TSolicitudNego::find($sol_id);
+
+      $rechazarSolicitud->sol_ser_id = 9;
+      $rechazarSolicitud->sol_sef_id = 4;
+      $rechazarSolicitud->sol_set_id = 0;
+      $rechazarSolicitud->save();
+
+      $objTSolEnvioNego = new TSolEnvioNego;
+      $objTSolEnvioNego['sen_sol_id'] = $sol_id;
+      $objTSolEnvioNego['sen_ser_id'] = 9;
+      $objTSolEnvioNego['sen_idTercero_envia'] = $usuario['idTerceroUsuario'];
+      $objTSolEnvioNego['sen_idTercero_recibe'] = null;
+      $objTSolEnvioNego['sen_observacion'] = $data['observ']; 
+      $objTSolEnvioNego['sen_fechaenvio'] = Carbon::now()->toDateTimeString();  
+      $objTSolEnvioNego['sen_estadoenvio'] = 0;
+      $objTSolEnvioNego['sen_run_id'] = null;
+      $objTSolEnvioNego->save();
+      $objTSolEnvioNego = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'solicitud.soliSucu', 'solicitud.soliSucu.hisSucu', 'solicitud.soliZona', 'solicitud.soliZona.hisZona', 'solicitud.objetivo', 'solicitud.soliTipoNego', 'solicitud.soliTipoNego.tipoNego', 'solicitud.soliTipoNego.tipoServicio', 'solicitud.costo', 'solicitud.costo.formaPago', 'solicitud.cliente')->where('sen_id', $objTSolEnvioNego['sen_id'])->first();
+
+      $updateHistorialAnular = TSolEnvioNego::where('sen_sol_id', $sol_id)->get();
+      $updateHistorialAnular = $updateHistorialAnular->filter(function($value, $key){
+          return $value['sen_estadoenvio'] != 0;
+      });
+
+      foreach ($updateHistorialAnular as $regisHistorial) {
+        $sen_id = $regisHistorial['sen_id'];
+        $regisHistorial = TSolEnvioNego::find($sen_id);
+        $regisHistorial->sen_estadoenvio = 0;
+        $regisHistorial->save();
+      }
+
+      $correo = TDirNacional::where('dir_txt_cedula', $rechazarSolicitud['sol_ven_id'])->pluck('dir_txt_email')->first();
+          Mail::to($correo)->send(new notificacionEstadoSolicitudNego($objTSolEnvioNego));
+          if(Mail::failures()){
+            return response()->json(Mail::failures());
+          }
+
+      $response = compact('rechazarSolicitud', 'objTSolEnvioNego', 'updateHistorialAnular'); 
+
+      return response()->json($response);
+    }
+
     public function update(Request $request, $id)
     {
         // Obtengo la informacion del request
@@ -648,7 +696,7 @@ class bandejaAprobacionController extends Controller
 
         if ($objTSolEnvioNego['sen_estadoenvio'] == 1 || ($objTSolEnvioNego['solicitud']['sol_ser_id'] == 2 && $objTSolEnvioNego['solicitud']['sol_sef_id'] == 2 && $objTSolEnvioNego['sen_estadoenvio'] == 0)) {
           $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
-          $correo = ['cabelalcazar@bellezaexpress.com'];
+          // $correo = ['cabelalcazar@bellezaexpress.com'];
           Mail::to($correo)->send(new notificacionEstadoSolicitudNego($objTSolEnvioNego));
           if(Mail::failures()){
             return response()->json(Mail::failures());

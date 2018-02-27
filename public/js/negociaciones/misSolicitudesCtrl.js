@@ -63,6 +63,7 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 				}, 3000);
 			}
 			$scope.progress = false;
+			console.log($scope.todas);
 		}), function(errorResponse){
 				console.log(errorResponse);
 				$scope.getInfo();
@@ -139,8 +140,8 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 	$scope.anular = function(){
 		$http.put($scope.Url + '/' + $scope.infoSolicitud.sol_id, $scope.infoSolicitud).then(function(response){
 	   		console.log(response);
-	   		$scope.infoSolicitud = {};
 	   		$scope.getInfo();
+	   		$scope.infoSolicitud = {};
 	   	});
 	   	$mdDialog.show(
 		    $mdDialog.alert()
@@ -151,6 +152,7 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 		        .ariaLabel('')
 		        .ok('Cerrar')
 		);
+		$scope.progress = true;
 	   	angular.element('.close').trigger('click');
 	}
 
@@ -159,7 +161,6 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 		$http.post($scope.periEjeUrl, $scope.infoSolicitud).then(function(response){
 	   		console.log(response);
 	   		$scope.infoSolicitud = {};
-	   		$scope.getInfo();
 	   	});
 	   	$mdDialog.show(
 		    $mdDialog.alert()
@@ -170,6 +171,8 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
 		        .ariaLabel('')
 		        .ok('Cerrar')
 		);
+		$scope.progress = true;
+	   	$scope.getInfo();
 	   	angular.element('.close').trigger('click');
 	}
 
@@ -208,13 +211,12 @@ app.controller('misSolicitudesCtrl', ['$scope',  '$filter', '$http', '$window', 
         	$scope.progress = true;
     		$http.post($scope.Url, $scope.duplicarSoli).then(function(response){
         		console.log(response);
-        		$scope.getInfo();
+    			$scope.getInfo();
         	}, function(error){
         		console.log(error);
         		$scope.getInfo();
-        		});
+        	});
     	});
-    	$scope.getInfo();
 	}
 
 	/*Redirecciona la url para imprimir en pdf el hmtl, se ejecuta en la pestaña

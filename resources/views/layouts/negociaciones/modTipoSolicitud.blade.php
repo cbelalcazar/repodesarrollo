@@ -4,7 +4,7 @@
     <div class="modal-content panel-primary">
       <!--Titulo del modal-->
       <div class="modal-header panel-heading">
-        <button type="button" class="close" data-dismiss="modal1" aria-label="Cerrar">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
           <span aria-hidden="true">&times;</span>
         </button>
         <h4 class="modal-title">Aprobacion tipo de negociacion</h4>
@@ -45,7 +45,7 @@
           <br><br><hr>     
         </div>
         <div class="modal-footer">
-          <button class="btn btn-primary" data-dismiss="modal1" type="button">Cerrar</button>
+          <button class="btn btn-primary" data-dismiss="modal" type="button">Cerrar</button>
           <button class="btn btn-success" type="submit">Aprobar <i class="glyphicon glyphicon-ok"></i></button>
         </div>
       </form>

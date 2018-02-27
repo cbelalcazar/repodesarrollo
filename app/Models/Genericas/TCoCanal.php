@@ -22,4 +22,5 @@ class TCoCanal extends Model
     public function cOperacion(){
       return $this->hasOne('App\Models\Genericas\TCentroOperaciones', 'cen_id', 'coc_cen_id');
     }
+
 }

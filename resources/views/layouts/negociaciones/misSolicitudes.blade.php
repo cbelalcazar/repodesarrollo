@@ -24,7 +24,7 @@
 	          			<tbody>
 	          				<tr ng-repeat="toda in todas">
 	          					<td class="text-center">@{{toda.sol_id}}</td>
-	          					<td class="text-center">@{{toda.estado.ser_descripcion}}</td>
+	          					<td class="text-center">@{{toda.estado_final.sef_descripcion}}</td>
 	          					<td class="text-center">@{{toda.sol_fecha}}</td>
 	          					<td class="text-left">@{{toda.cliente.razonSocialTercero_cli}}</td>
 	          					<td class="text-right">@{{toda.costo.soc_granvalor == null ? '0': toda.costo.soc_granvalor | currency : "$" : 2}}</td>
@@ -61,7 +61,7 @@
 	          			<tbody>
 	          				<tr ng-repeat="ela in elaboracion">
 	          					<td class="text-center">@{{ela.sol_id}}</td>
-	          					<td class="text-center">@{{ela.estado.ser_descripcion}}</td>
+	          					<td class="text-center">@{{ela.estado_final.sef_descripcion}}</td>
 	          					<td class="text-center">@{{ela.sol_fecha}}</td>
 	          					<td class="text-left">@{{ela.cliente.razonSocialTercero_cli}}</td>
 	          					<td class="text-right">@{{ela.costo.soc_granvalor == null ? '0': ela.costo.soc_granvalor | currency : "$" : 2}}</td>
@@ -111,7 +111,7 @@
 	          			<tbody>
 	          				<tr ng-repeat="correc in correciones">
 	          					<td class="text-center">@{{correc.sol_id}}</td>
-	          					<td class="text-center">@{{correc.estado.ser_descripcion}}</td>
+	          					<td class="text-center">@{{correc.estado_final.sef_descripcion}}</td>
 	          					<td class="text-center">@{{correc.sol_fecha}}</td>
 	          					<td class="text-left">@{{correc.cliente.razonSocialTercero_cli}}</td>
 	          					<td class="text-right">@{{correc.costo.soc_granvalor == null ? '0': correc.costo.soc_granvalor | currency : "$" : 2}}</td>
@@ -165,7 +165,7 @@
 	          			<tbody>
 	          				<tr ng-repeat="anu in anuladas">
 	          					<td class="text-center">@{{anu.sol_id}}</td>
-	      						<td class="text-center">@{{anu.estado.ser_descripcion}}</td>
+	      						<td class="text-center">@{{anu.estado_final.sef_descripcion}}</td>
 	          					<td class="text-center">@{{anu.sol_fecha}}</td>
 	          					<td class="text-left">@{{anu.cliente.razonSocialTercero_cli}}</td>
 	          					<td class="text-right">@{{anu.costo.soc_granvalor == null ? '0': anu.costo.soc_granvalor | currency : "$" : 2}}</td>
@@ -202,7 +202,7 @@
 	          			<tbody>
 	          				<tr ng-repeat= "solicitud in solicitudes">
 	          					<td class="text-center">@{{solicitud.sol_id}}</td>
-	          					<td class="text-center">@{{solicitud.estado.ser_descripcion}}</td>
+	          					<td class="text-center">@{{solicitud.estado_final.sef_descripcion}}</td>
 	          					<td class="text-center">@{{solicitud.sol_fecha}}</td>
 	          					<td class="text-left">@{{solicitud.cliente.razonSocialTercero_cli}}</td>
 	          					<td class="text-right">@{{solicitud.costo.soc_granvalor == null ? '0': solicitud.costo.soc_granvalor | currency : "$" : 2}}</td>
@@ -251,7 +251,7 @@
 	          			<tbody>
 	          				<tr ng-repeat="filtro in filtros">
 	          					<td class="text-center">@{{filtro.sol_id}}</td>
-	          					<td class="text-center">@{{filtro.estado.ser_descripcion}}</td>
+	          					<td class="text-center">@{{filtro.estado_final.sef_descripcion}}</td>
 	          					<td class="text-center">@{{filtro.sol_fecha}}</td>
 	          					<td class="text-left">@{{filtro.cliente.razonSocialTercero_cli}}</td>
 	          					<td class="text-right">@{{filtro.costo.soc_granvalor == null ? '0': filtro.costo.soc_granvalor | currency : "$" : 2}}</td>
@@ -300,7 +300,7 @@
 	          			<tbody>
 	          				<tr ng-repeat="apro in aprobacion">
 	          					<td class="text-center">@{{apro.sol_id}}</td>
-	          					<td class="text-center">@{{apro.estado.ser_descripcion}}</td>
+	          					<td class="text-center">@{{apro.estado_final.sef_descripcion}}</td>
 	          					<td class="text-center">@{{apro.sol_fecha}}</td>
 	          					<td class="text-left">@{{apro.cliente.razonSocialTercero_cli}}</td>
 	          					<td class="text-right">@{{apro.costo.soc_granvalor == null ? '0': apro.costo.soc_granvalor | currency : "$" : 2}}</td>
@@ -350,7 +350,7 @@
 	          			<tbody>
 	          				<tr ng-repeat="evalu in evaluacion">
 	          					<td class="text-center">@{{evalu.sol_id}}</td>
-	          					<td class="text-center">@{{evalu.estado.ser_descripcion}}</td>
+	          					<td class="text-center">@{{evalu.estado_final.sef_descripcion}}</td>
 	          					<td class="text-center">@{{evalu.sol_fecha}}</td>
 	          					<td class="text-left">@{{evalu.cliente.razonSocialTercero_cli}}</td>
 	          					<td class="text-right">@{{evalu.costo.soc_granvalor == null ? '0': evalu.costo.soc_granvalor | currency : "$" : 2}}</td>
@@ -404,7 +404,7 @@
 	          			<tbody>
 	          				<tr ng-repeat="cerrada in cerradas">
 	          					<td class="text-center">@{{cerrada.sol_id}}</td>
-	          					<td class="text-center">@{{cerrada.estado.ser_descripcion}}</td>
+	          					<td class="text-center">@{{cerrada.estado_final.sef_descripcion}}</td>
 	          					<td class="text-center">@{{cerrada.sol_fecha}}</td>
 	          					<td class="text-left">@{{cerrada.cliente.razonSocialTercero_cli}}</td>
 	          					<td class="text-right">@{{cerrada.costo.soc_granvalor == null ? '0': cerrada.costo.soc_granvalor | currency : "$" : 2}}</td>
@@ -448,7 +448,7 @@
 	          			<tbody>
 	          				<tr ng-repeat="tePe in tesoPendientes">
 	          					<td class="text-center">@{{tePe.sol_id}}</td>
-	          					<td class="text-center">@{{tePe.estado.ser_descripcion}}</td>
+	          					<td class="text-center">@{{tePe.estado.estado_final.sef_descripcion}}</td>
 	          					<td class="text-center">@{{tePe.sol_fecha}}</td>
 	          					<td class="text-left">@{{tePe.cliente.razonSocialTercero_cli}}</td>
 	          					<td class="text-right">@{{tePe.costo.soc_granvalor == null ? '0': tePe.costo.soc_granvalor | currency : "$" : 2}}</td>
@@ -497,7 +497,7 @@
 	          			<tbody>
 	          				<tr ng-repeat="teCo in tesoConfirmadas">
 	          					<td class="text-center">@{{teCo.sol_id}}</td>
-	          					<td class="text-center">@{{teCo.estado.ser_descripcion}}</td>
+	          					<td class="text-center">@{{teCo.estado_final.sef_descripcion}}</td>
 	          					<td class="text-center">@{{teCo.sol_fecha}}</td>
 	          					<td class="text-left">@{{teCo.cliente.razonSocialTercero_cli}}</td>
 	          					<td class="text-right">@{{teCo.costo.soc_granvalor == null ? '0': teCo.costo.soc_granvalor | currency : "$" : 2}}</td>

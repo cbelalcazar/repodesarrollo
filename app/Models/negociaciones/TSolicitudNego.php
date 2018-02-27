@@ -84,6 +84,10 @@ class TSolicitudNego extends Model
       return $this->hasOne('App\Models\negociaciones\TSolEstados', 'ser_id', 'sol_ser_id');
     }
 
+    public function estadoFinal(){
+      return $this->hasOne('App\Models\negociaciones\TSoliEstadoFinal', 'sef_id', 'sol_sef_id');
+    }
+
     public function evento(){
       return $this->hasOne('App\Models\negociaciones\EventoTemp', 'evt_id', 'sol_evt_id');
     }
