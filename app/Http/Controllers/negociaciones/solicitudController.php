@@ -397,8 +397,14 @@ class solicitudController extends Controller
         $contacto = TCliente::with('tercero', 'tercero.contacto')->where('cli_id', $clienteId)->first();
 
         $ciudad = $contacto['tercero']['contacto']['idCiudadContacto'];
-        $departamento = $contacto['tercero']['contacto']['idDepartamentoContacto'];
+        $depto = $contacto['tercero']['contacto']['idDepartamentoContacto'];
         $pais = $contacto['tercero']['contacto']['idPaisContacto'];
+        $resiva = $contacto['cli_num_resiva'];
+        $decrenta = $contacto['cli_num_decrenta'];
+        $grancont = $contacto['cli_num_grancont'];
+        $autiva = $contacto['cli_num_autiva'];
+        $autica = $contacto['cli_num_autica'];
+        $autrenta = $contacto['cli_num_autrenta'];
 
         foreach ($arregloTipoNego as $key => $value) {
             $impuestos = TBaseImpuesto::where('bai_ser_id', $value['stn_ser_id']['ser_id'])->get();
@@ -431,12 +437,21 @@ class solicitudController extends Controller
                 $reteica = collect($impuestos[2])->last();
                 $objTipoNego['stn_rtica'] = $reteica['bai_tasa'];// stn_rtfuente
 
-                if ($reteica['bai_dep_id'] > 0 && $objTipoNego['stn_costo'] >= $reteica['bai_base']) {
-                    $objTipoNego['stn_valor_rtica'] = ($objTipoNego['stn_costo'] * $reteica['bai_tasa']) / 100;// stn_valor_rtfuente
-                }else{
+                if (((($grancont==1) || ($autiva==1)) && ($pais==169) && ($depto=11) && ($ciudad=1)) || ($autica==1)){
+                    $objTipoNego['stn_rtica'] = 0;
                     $objTipoNego['stn_valor_rtica'] = 0;// stn_valor_rtfuente
-                }                
-                $objTipoNego['stn_rtica_base'] = $reteica['bai_base']; // bai_base
+                    $objTipoNego['stn_rtica_base'] = 0; // bai_base
+                }else{
+                    if ($reteica['bai_dep_id'] > 0 && $objTipoNego['stn_costo'] >= $reteica['bai_base']){
+                        $objTipoNego['stn_valor_rtica'] = ($objTipoNego['stn_costo'] * $reteica['bai_tasa']) / 100;
+                        $objTipoNego['stn_rtica_base'] = $reteica['bai_base'];
+                        $objTipoNego['stn_rtica'] = $reteica['bai_tasa'];
+                    }else{
+                        $$objTipoNego['stn_rtica'] = 0;
+                        $objTipoNego['stn_valor_rtica'] = 0;// stn_valor_rtfuente
+                        $objTipoNego['stn_rtica_base'] = 0; // bai_base
+                    }                
+                }
             }else{
                 $objTipoNego['stn_rtica'] = 0;
                 $objTipoNego['stn_valor_rtica'] = 0;// stn_valor_rtfuente
