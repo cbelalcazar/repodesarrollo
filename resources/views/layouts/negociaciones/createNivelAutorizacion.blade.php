@@ -107,9 +107,9 @@
 									<multiselect class="span-margin"  ng-model="territorio.canales" options="canales" id-prop="can_id" display-prop="can_txt_descrip" ng-change="filtrarTercerosTerritorios(infoPerNivel.tipopersona, infoPerNivel.territorio, nivel[0].id)" show-select-all="true" placeholder="Seleccione Canales.." show-unselect-all="true"></multiselect>
 		    					</div>
 		    					<md-content>
-								    <md-tabs ng-if="infoPerNivel.id == undefined" class="tabsConfigured-slim" md-dynamic-height md-border-bottom>
+								    <md-tabs class="tabsConfigured-slim" md-dynamic-height md-border-bottom>
 								      <md-tab ng-repeat="canTer in territorio.canales" label="@{{canTer.can_txt_descrip}} (@{{canTer.personas.length == undefined ? 0 : canTer.personas.length}})">
-								        <md-content ng-if="infoPerNivel.id == undefined" class="md-padding content-tab-hijos">
+								        <md-content class="md-padding content-tab-hijos">
 								        	<div class="form-group">
 												<label>Persona(s):</label> 
 												<multiselect  ng-if="nivel[0].id === 1"  class="span-margin" ng-model="canTer.personas" options="terceros" id-prop="idRowTercero" display-prop="cedulaNombre" placeholder="Seleccione Personas.." show-search="true" show-select-all="true" show-unselect-all="true" required></multiselect>
@@ -131,7 +131,7 @@
 									    				<td class="text-center">@{{tercero.idTercero}}</td>
 									    				<td class="text-center">@{{tercero.razonSocialTercero}}</td>
 									    				<td class="text-center">
-									    					<button  type="button" class="btn btn-danger" ng-click="eliminarPersonaDepende(tercero)"><i class="glyphicon glyphicon-remove"></i></button>
+									    					<button  type="button" class="btn btn-danger" ng-click="eliminar(canTer.personas, tercero)"><i class="glyphicon glyphicon-remove"></i></button>
 									    				</td>
 									    			</tr>
 									    		</tbody>

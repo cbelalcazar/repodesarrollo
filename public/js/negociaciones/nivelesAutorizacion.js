@@ -39,15 +39,15 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
 
 	$scope.getInfo();
 
-	$scope.eliminar = function(arreglo, elemento){
+	$scope.eliminar= function(arreglo, elemento){
 		var posicion = arreglo.indexOf(elemento);
 		arreglo.splice(posicion, 1);
 	}
 
 	$scope.filtrarTercerosCan = function(tipoPersona, canal, nivel){
 		canal.forEach(function(can){
-			$idNivelAnterior = $filter('filter')($scope.niveles, {niv_padre : nivel.id}, true)[0]['id'];
-			var pernivelesAnteriores = $filter('filter')($scope.perniveles, {pen_idtipoper : tipoPersona.id, pen_nomnivel : $idNivelAnterior}, true);
+			$scope.idNivelAnterior = $filter('filter')($scope.niveles, {niv_padre : nivel.id}, true)[0]['id'];
+			var pernivelesAnteriores = $filter('filter')($scope.perniveles, {pen_idtipoper : tipoPersona.id, pen_nomnivel : $scope.idNivelAnterior}, true);
 			var pernivelesPermitidos = [];			
 			pernivelesAnteriores.forEach(function(pernivel){
 				canales = $filter('filter')(pernivel['canales'], {pcan_idcanal : can.can_id.trim(), pcan_idterritorio : '0', pcan_aprobador: null}, true);
@@ -78,21 +78,22 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
     					}
     				});
     			});		
-    			can.lineasFiltradas = arregloLinea;
-
-    			var persActualizar = $filter('filter')(pernivConLineas, {pen_cedula : $scope.infoPerNivel.pen_cedula, pen_nomnivel : nivel.id}, true)[0];
-    			can.lineas = [];
-    			persActualizar.canales.forEach( function(canal, idCanal) {
-    				if (canal.pcan_idcanal == can.can_id) {
-    					canal.lineas.forEach( function(linea, idLinea) {
-	    					var lineaPush = $filter('filter')($scope.lineas, {lin_id : parseInt(linea.pcan_idlinea)}, true)[0];
-	    					if (lineaPush != undefined) {
-		    					can.lineasFiltradas.push(lineaPush);
-		    					can.lineas.push(lineaPush);	    						
-	    					}
-	    				});
-    				}
-    			});
+    			can.lineasFiltradas = arregloLinea;   	
+    			if ($scope.infoPerNivel.id != undefined) { 
+	    			var persActualizar = $filter('filter')(pernivConLineas, {pen_cedula : $scope.infoPerNivel.pen_cedula, pen_nomnivel : nivel.id}, true)[0];
+	    			can.lineas = [];
+	    			persActualizar.canales.forEach( function(canal, idCanal) {
+	    				if (canal.pcan_idcanal == can.can_id) {
+	    					canal.lineas.forEach( function(linea, idLinea) {
+		    					var lineaPush = $filter('filter')($scope.lineas, {lin_id : parseInt(linea.pcan_idlinea)}, true)[0];
+		    					if (lineaPush != undefined) {
+			    					can.lineasFiltradas.push(lineaPush);
+			    					can.lineas.push(lineaPush);	    						
+		    					}
+		    				});
+	    				}
+	    			});
+    			}
     		}
     		can.tercerosFiltrados = [];
     		can.tercerosFiltrados = terceros;
@@ -120,22 +121,42 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
 	}
 
 	$scope.filtrarTercerosTerritorios = function(tipoPersona, territorios, nivel){
-		$idNivelAnterior = $filter('filter')($scope.niveles, {niv_padre : nivel}, true)[0]['id'];
+		// obtiene el id del nivel anterior
+		$scope.idNivelAnterior = $filter('filter')($scope.niveles, {niv_padre : nivel}, true)[0]['id'];
+		// Recorre los territorios
 		territorios.forEach(function(territorio){
+			// Recorre los canales del territorio
 			territorio.canales.forEach(function(can){
-				var pernivelesAnteriores = $filter('filter')($scope.perniveles, {pen_idtipoper : tipoPersona.id, pen_nomnivel : $idNivelAnterior}, true);
+				// Busca los perniveles anteriores con el tipo persona 2 y nivel anterior
+				var pernivelesAnteriores = $filter('filter')($scope.perniveles, {pen_idtipoper : tipoPersona.id, pen_nomnivel : $scope.idNivelAnterior}, true);
 				var pernivelesPermitidos = [];
+				// Recorre las personas de nivel anterior
 				pernivelesAnteriores.forEach(function(obj){
+					// Consulta y valida si tienen el canal creado para esa persona
 					canales = $filter('filter')(obj['canales'], {pcan_idcanal : can.can_id.trim(), pcan_idterritorio : String(territorio.id), pcan_aprobador: null}, true);
 					if (canales.length > 0) {
+						// Si encuentra un percanal asociado lo agrega a los posibles
 						pernivelesPermitidos.push(obj);
 					}				
 				});
+				// Recorre y busca de los permitidos el tercero y crea un arreglo de terceros con los permitidos
 				var terceros = [];
 				pernivelesPermitidos.forEach(function(obj){
 					terceros.push($filter('filter')($scope.todosTerceros, {idTercero : obj.pen_cedula}, true)[0]);
 	    		});
+	    		// Setea los terceros permitidos al canal
 	    		can.tercerosFiltrados = terceros;
+	    		can.personas = [];
+
+	    		if ($scope.infoPerNivel.id != undefined) { 
+	    			var persActualizar = $filter('filter')($scope.perniveles, {pen_cedula : $scope.infoPerNivel.pen_cedula, pen_nomnivel : nivel.id}, true)[0];
+	    			var hijosT = $filter('filter')(persActualizar.hijos, {pcan_idcanal : can.can_id}, true);
+	    			hijosT.forEach( function(element, index) {
+	    				var terceroYaSeleccionado = $filter('filter')($scope.todosTerceros, {idTercero : element.pcan_cedula}, true)[0];
+	    				can.tercerosFiltrados.push(terceroYaSeleccionado);
+			    		can.personas.push(terceroYaSeleccionado);	
+	    			});	 		
+    			}
 			})
 		});
 	}
@@ -190,6 +211,7 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
     	$scope.infoPerNivel.nivel = $scope.nivel;
     	$scope.progress = true;
     	$http.post($scope.url, $scope.infoPerNivel).then(function(response){
+    		console.log(response);
     		$window.location.reload();
     	}, function(errorResponse){
 
@@ -197,47 +219,48 @@ function($scope, $http, $filter,$timeout, $location, DTOptionsBuilder, DTColumnD
     }
 
     $scope.update = function(obj){  
-    	$scope.infoPerNivel = {};
-    	$scope.cambiarNivel(obj.pen_nomnivel);
-    	$scope.infoPerNivel = angular.copy(obj);
-    	$scope.infoPerNivel.tipopersona = obj.t_tipopersona;
-    	if ($scope.infoPerNivel.tipopersona.id == 1) {
-			var array = [];
-	    	obj.canales.forEach(function(obj){
-	    		var object = $filter('filter')($scope.canales, {can_id : obj.pcan_idcanal}, true)[0];
-	    		array.push(object);
-	    	});
-	    	$scope.infoPerNivel.percanales = $scope.infoPerNivel.canales;
-    		$scope.infoPerNivel.canales = array;   	
-    	}else if($scope.infoPerNivel.tipopersona.id == 2){
-    		var groupPorTerritorio = $filter('groupBy')(obj.canales, 'pcan_idterritorio');
-    		groupPorTerritorio = $filter('toArray')(groupPorTerritorio);
-    		arregloTerritorios = [];   
-    		groupPorTerritorio.forEach(function(arrayTer){
+    	$scope.infoPerNivel = undefined;
+    	$timeout(function() {
+	    	$scope.cambiarNivel(obj.pen_nomnivel);
+	    	$scope.infoPerNivel = angular.copy(obj);
+	    	$scope.infoPerNivel.tipopersona = obj.t_tipopersona;
+	    	if ($scope.infoPerNivel.tipopersona.id == 1) {
+				var array = [];
+		    	obj.canales.forEach(function(obj){
+		    		var object = $filter('filter')($scope.canales, {can_id : obj.pcan_idcanal}, true)[0];
+		    		array.push(object);
+		    	});
+		    	$scope.infoPerNivel.percanales = $scope.infoPerNivel.canales;
+	    		$scope.infoPerNivel.canales = array;   	
+	    	}else if($scope.infoPerNivel.tipopersona.id == 2){
+	    		var groupPorTerritorio = $filter('groupBy')(obj.canales, 'pcan_idterritorio');
+	    		groupPorTerritorio = $filter('toArray')(groupPorTerritorio);
+	    		arregloTerritorios = [];   
+	    		groupPorTerritorio.forEach(function(arrayTer){
 
-	    		var territorio = $filter('filter')($scope.territorios, {id : arrayTer[0].pcan_idterritorio})[0];
-	    		var arregloCanales = [];
-	    		arrayTer.forEach(function(canales){
-	    			var canal = $filter('filter')($scope.canales, {can_id : canales.pcan_idcanal}, true)[0];
-	    			arregloCanales.push(canal);
-	    		});
-	    		territorio.canales = arregloCanales;
-	    		arregloTerritorios.push(territorio);
-	    	}); 
-	    	$scope.infoPerNivel.territorio = arregloTerritorios;	
-    	}else if($scope.infoPerNivel.tipopersona.id == 3){
-			var array = [];
-	    	obj.canales.forEach(function(obj){
-	    		var object = $filter('filter')($scope.canales, {can_id : obj.pcan_idcanal}, true)[0];
-	    		array.push(object);
-	    	});
-	    	// $scope.infoPerNivel.percanales = $scope.infoPerNivel.canales;
-    		$scope.infoPerNivel.canales = array;   	
-    	}  	
-
-    	var tercero = $filter('filter')($scope.todosTerceros, {idTercero : obj.pen_cedula})[0];
-    	$scope.infoPerNivel.terceros = [];
-    	$scope.infoPerNivel.terceros.push(tercero);
+		    		var territorio = $filter('filter')($scope.territorios, {id : arrayTer[0].pcan_idterritorio})[0];
+		    		var arregloCanales = [];
+		    		arrayTer.forEach(function(canales){
+		    			var canal = $filter('filter')($scope.canales, {can_id : canales.pcan_idcanal}, true)[0];
+		    			arregloCanales.push(canal);
+		    		});
+		    		territorio.canales = arregloCanales;
+		    		arregloTerritorios.push(territorio);
+		    	}); 
+		    	$scope.infoPerNivel.territorio = arregloTerritorios;	
+	    	}else if($scope.infoPerNivel.tipopersona.id == 3){
+				var array = [];
+		    	obj.canales.forEach(function(obj){
+		    		var object = $filter('filter')($scope.canales, {can_id : obj.pcan_idcanal}, true)[0];
+		    		array.push(object);
+		    	});
+	    		$scope.infoPerNivel.canales = array;   	
+	    	}  	
+	    	var tercero = $filter('filter')($scope.todosTerceros, {idTercero : obj.pen_cedula})[0];
+	    	$scope.infoPerNivel.terceros = [];
+	    	$scope.infoPerNivel.terceros.push(tercero);
+		}, 10);
+    	
     }
 
     $scope.delete = function(object){

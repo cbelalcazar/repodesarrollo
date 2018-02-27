@@ -123,25 +123,26 @@ class NivelesAutorizacionController extends Controller
 					}
 
 				}elseif ($data['tipopersona']['id'] == 2) {
-					$new = 'entrance';
 					if (count($data['territorio']) > 0) {
 						$idTerritorios = collect($data['territorio'])->pluck('id');
 						$deleteTerritoriosNotIn = TPernivCanal::where('pcan_cedula', $data['pen_cedula'])->whereNotIn('pcan_idterritorio', $idTerritorios)->delete();
 						$pernivel = TPernivele::with('canales')->find($data['id']);
 						foreach ($data['territorio'] as $key => $territorio) {
 							$idCanales = collect($territorio['canales'])->pluck('can_id');
-							$new = $idCanales;
 							$deleteCanalesNotIn =  TPernivCanal::where('pcan_cedula', $data['pen_cedula'])->where('pcan_idterritorio', $territorio['id'])->whereNotIn('pcan_idcanal', $idCanales)->delete();
 							foreach ($territorio['canales'] as $key => $canal) {
-								$filtroPernCanal = collect($pernivel['canales'])
-													->where('pcan_idcanal', $canal['can_id'])
-													->where('pcan_idpernivel', $pernivel['id'])								
+								$idPersonas = collect($canal['personas'])->pluck('idTercero');
+								$pernivelIn = TPernivele::whereIn('pen_cedula', $idPersonas)->where('pen_nomnivel', $data['nivel'][0]['id'] - 1)->get();
+								$idPernivelIn = collect($pernivelIn)->pluck('id');
+								$borrar = TPernivCanal::where('pcan_idcanal', $canal['can_id'])
+													->whereNotIn('pcan_idpernivel', $idPernivelIn)		
 													->where('pcan_idterritorio', $territorio['id'])
-													->all();
-
-								if (count($filtroPernCanal) == 0) {
-									$this->generarCanales($canal, $data, $pernivel, $territorio['id']);
-								}
+													->where('pcan_aprobador', $data['id'])
+													->update(['pcan_aprobador' => null]);
+								$update = TPernivCanal::where('pcan_idcanal', $canal['can_id'])
+													->whereIn('pcan_idpernivel', $idPernivelIn)		
+													->where('pcan_idterritorio', $territorio['id'])
+													->update(['pcan_aprobador' => $data['id']]);
 							}
 						}
 					}
