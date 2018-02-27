@@ -38,6 +38,7 @@ app.controller('bandejaCtrl', ['$scope', '$http', '$filter', '$window', '$mdDial
   		$scope.ultimoProceso = $scope.infoSolicitud.his_proceso.slice(-1);
   		$scope.variacionObj = ($scope.infoSolicitud.objetivo.soo_vemesdespues/$scope.infoSolicitud.objetivo.soo_veprome);
 
+      console.log($scope.infoSolicitud);
   	}
 
   	$scope.aprobar = function(obj){

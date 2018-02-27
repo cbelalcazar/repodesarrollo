@@ -12,7 +12,7 @@
       <!--Fin Titulo del modal-->
       <div class="modal-body">
         <!--Encabezado del modal-->
-        <h3>Negociación No. @{{infoSolicitud.sol_id}} / Estado:  @{{infoSolicitud.estado.ser_descripcion}}</h3>
+        <h3>Negociación No. @{{infoSolicitud.sol_id}} / Estado:  @{{infoSolicitud.estado_final.sef_descripcion}}</h3>
         <div class="col-sm-12">
           <div class="row">
             <div class="col-sm-6">
@@ -56,7 +56,7 @@
                     </thead>
                     <!--Ingresar informacion historica de la solicitud-->
                     <tbody>
-                      <tr ng-if="infoSolicitud.his_proceso.length != 0" ng-repeat="historico in infoSolicitud.his_proceso | orderBy:'-sen_fechaenvio'">
+                      <tr ng-if="infoSolicitud.his_proceso.length != 0" ng-repeat="historico in infoSolicitud.his_proceso | orderBy:'-sen_fechaenvio' | filter : {sen_estadoenvio: '!2'}">
                         <td>@{{historico.sen_fechaenvio}}</td>
                         <td>@{{historico.estado_his_proceso.ser_descripcion}}</td>
                         <td>@{{historico.tercero_envia.razonSocialTercero}}</td>
