@@ -66,6 +66,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 	$scope.pestanaSeleccionada =  [1];
 	$scope.conteo = 0;
 	$scope.arrayFormularios = ['solicitudForm', 'costosForm', 'objetivosForm'];
+	$scope.descripcionEvento = "";
 
 	$scope.labels = {
 	    "itemsSelected": "elementos seleccionados",
@@ -104,11 +105,11 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 			$scope.pasoTresSelect = true;
 		}
 
+		
 		if ($scope.objeto.sol_id != undefined) {
 			url = '../../solicitudNegoGetInfo' + '?id=' + $scope.objeto.sol_id;
 			$scope.pasoDos = false;
 		}
-
 		$http.get(url).then(function(response){
 			var res = response.data;	
 			$scope.urlMisSolicitudes = res.urlMisSolicitudes;		
@@ -117,6 +118,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 			$scope.tipNegociacion = angular.copy(res.tipNegociacion);
 			$scope.canales = angular.copy(res.canales);
 			$scope.VendedorSucursales = angular.copy(res.VendedorSucursales);
+			$scope.baseImpuesto = angular.copy(res.baseImpuesto);
 			if ($scope.VendedorSucursales == null) {
 					$scope.progress = false;
 					$scope.errorMsge = 'El usuario no tiene sucursales activas';
@@ -266,12 +268,12 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 				res.objeto.objetivo.soo_pvenmarlin = parseFloat(res.objeto.objetivo.soo_pvenmarlin).toFixed(2); 
 				$scope.objObjetivos = angular.copy(res.objeto.objetivo);
 			}			
-			if ($scope.arrayLineas.length == 0 && Object.keys($scope.objObjetivos).length === 0) {
+			if ($scope.arrayLineas.length == 0 && Object.keys($scope.objObjetivos).length === 0 && res.objeto != undefined) {
 				$scope.pasoUno = false;			
 				$scope.pasoDos = false;		
 				$scope.pasoTres = true;
 			}
-			if ($scope.arrayLineas.length > 0 && Object.keys($scope.objObjetivos).length === 0) {
+			if ($scope.arrayLineas.length > 0 && Object.keys($scope.objObjetivos).length === 0 && res.objeto != undefined) {
 				$scope.pasoUno = false;			
 				$scope.pasoDos = false;		
 				$scope.pasoTres = false;
@@ -661,6 +663,15 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 		traer.forEach( function(element, index) {
 			$scope.tipoDeServicioFilt = $filter('removeWith')($scope.tipoDeServicioFilt, {ser_id : element.stn_ser_id.ser_id});
 		});		
+		$scope.descripcionEvento = $scope.objtipoNeg.stn_tin_id.tin_ayuda;
+	}
+
+	$scope.generarString = function(servicio){
+		console.log(servicio);
+		var impuesto = $filter('filter')($scope.baseImpuesto, {bai_ser_id : servicio.ser_id, bai_tipoimpuesto : 1}, true);
+		var natural = $filter('filter')(impuesto, {bai_declararenta : 2}, true);
+		var juridica = $filter('filter')(impuesto, {bai_declararenta : 1}, true);
+		$scope.descripcionEvento = "Base de Retencion $ " + (impuesto[0].bai_base != undefined ? impuesto[0].bai_base : "") + ", Tarifa para persona natural " + (natural.length > 0 ? natural[0].bai_tasa : "") + "%,  Tarifa para persona juridica " + (juridica.length > 0 ? juridica[0].bai_tasa : "") + "%"; 
 	}
 
 	$scope.save = function(form){

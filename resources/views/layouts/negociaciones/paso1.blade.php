@@ -353,7 +353,7 @@
 									<!-- Tipo de servicio -->
 										<td>
 											<div class="form-group">
-												<select ng-model="objtipoNeg.stn_ser_id" class="form-control input-sm" ng-options="opt.ser_descripcion for opt in tipoDeServicioFilt track by opt.ser_id">
+												<select ng-model="objtipoNeg.stn_ser_id" class="form-control input-sm" ng-change="generarString(objtipoNeg.stn_ser_id)" ng-options="opt.ser_descripcion for opt in tipoDeServicioFilt track by opt.ser_id">
 													<option value="">Seleccione..</option>
 												</select>
 											</div>
@@ -388,7 +388,8 @@
 							</tbody>
 						</table>
 						<label>Nota</label>
-						<p>@{{objtipoNeg.stn_tin_id.tin_ayuda}}</p>						
+						<!-- <p>@{{objtipoNeg.stn_tin_id.tin_ayuda}}@{{objtipoNeg.stn_ser_id}}</p>						 -->
+						<p>@{{descripcionEvento}}</p>
 				    </div>
 				  </div>
 			</div>
