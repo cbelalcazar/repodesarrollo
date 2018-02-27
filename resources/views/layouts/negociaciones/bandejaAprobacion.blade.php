@@ -10,6 +10,8 @@
             <th align="center" width="12%">Fecha de Solicitud</th>
             <th align="center" width="20%">Cliente</th>
             <th align="center" width="3%">Aprobar</th>
+            <th align="center" width="3%">Corregir</th>
+            <th align="center" width="3%">Rechazar</th>
             <th align="center" width="3%">Ver</th>
 		</tr>
 	</thead>
@@ -22,7 +24,19 @@
 			<td>
 				<button class="btn btn-success" type="button" data-toggle="modal" data-target="#modal1" ng-click="aprobar(obj)">
 					<i class="glyphicon glyphicon-ok"></i>
-					<md-tooltip>aprobar 
+					<md-tooltip>Aprobar 
+				</button>
+			</td>
+			<td>
+				<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#modal1" ng-click="aprobar(obj)">
+					<i class="glyphicon glyphicon-edit"></i>
+					<md-tooltip>Corregir 
+				</button>
+			</td>
+			<td>
+				<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#modalRechazar" ng-click="aprobar(obj)">
+					<i class="glyphicon glyphicon-remove"></i>
+					<md-tooltip>Rechazar
 				</button>
 			</td>
 			<td class="text-right">
@@ -37,6 +51,7 @@
 
 	@include('layouts.negociaciones.misSolicitudesDetalle')
 	@include('layouts.negociaciones.modTipoSolicitud')
+	@include('layouts.negociaciones.rechazarBandejaAprobacion')
 
     <div ng-if="progress" class="progress">
 	    <md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>

@@ -59,7 +59,7 @@ Route::group(['middleware' => ['auth']], function () {
       // Bandeja de aprobacion 
       Route::resource('bandejaAprobacionNegociacion', 'negociaciones\bandejaAprobacionController', ['except' => ['create','edit', 'show']]);
       Route::get('bandejaNegoGetInfo', 'negociaciones\bandejaAprobacionController@getInfo');
-
+      Route::post('bandejaAprobacionRechazarNego', 'negociaciones\bandejaAprobacionController@rechazar');
 	});
 
 
