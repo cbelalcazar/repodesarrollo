@@ -2,6 +2,7 @@ app.controller('bandejaCtrl', ['$scope', '$http', '$filter', '$window', '$mdDial
 
 	$scope.getUrl = "bandejaNegoGetInfo";
 	$scope.progress = true;
+  $scope.correcciones = null;
 
 	$scope.tipoNegociacion = ['Comercial', 'Mercadeo', 'Comercial y Mercadeo'];
 	
@@ -41,7 +42,8 @@ app.controller('bandejaCtrl', ['$scope', '$http', '$filter', '$window', '$mdDial
       console.log($scope.infoSolicitud);
   	}
 
-  	$scope.aprobar = function(obj){
+  	$scope.aprobar = function(obj, corregir = null){
+      $scope.correcciones = corregir;
   		$scope.message = [];
   		$scope.infoSolicitud = obj;
       console.log($scope.infoSolicitud);
@@ -77,11 +79,9 @@ app.controller('bandejaCtrl', ['$scope', '$http', '$filter', '$window', '$mdDial
 
     $scope.generarRechazo = function(obj){
       obj.usuarioAprobador = $scope.usuario;
-
+      obj.accion = $scope.correcciones;
       $scope.progress = true;
       $http.post('bandejaAprobacionRechazarNego', obj).then(function(response){
-        console.log(response);
-
         $mdDialog.show(
         $mdDialog.alert()
             .parent(angular.element(document.querySelector('#popupContainer')))

@@ -53,7 +53,9 @@
         </div>
         <div class="modal-footer">
           <button class="btn btn-primary" data-dismiss="modal" type="button">Cerrar</button>
-          <button class="btn btn-danger" type="submit">Rechazar <i class="glyphicon glyphicon-remove"></i></button>
+          <button class="btn btn-danger" ng-if="correcciones == null" type="submit">Rechazar <i class="glyphicon glyphicon-edit"></i></button>
+
+          <button class="btn btn-warning" ng-if="correcciones == 'corregir'" type="submit">Corregir <i class="glyphicon glyphicon-remove"></i></button>
         </div>
       </form>
     </div>
