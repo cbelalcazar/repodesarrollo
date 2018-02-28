@@ -28,7 +28,7 @@
 				</button>
 			</td>
 			<td>
-				<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#modal1" ng-click="aprobar(obj)">
+				<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#modalRechazar" ng-click="aprobar(obj, 'corregir')">
 					<i class="glyphicon glyphicon-edit"></i>
 					<md-tooltip>Corregir 
 				</button>
