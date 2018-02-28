@@ -278,18 +278,35 @@ class solicitudController extends Controller
                             $objTSolEnvioNego['sen_run_id'] = null;
                             $objTSolEnvioNego->save();
                             $objTSolEnvioNego = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'solicitud.soliSucu', 'solicitud.soliSucu.hisSucu', 'solicitud.soliZona', 'solicitud.soliZona.hisZona', 'solicitud.soliZona.hisZona.cOperacion', 'solicitud.objetivo', 'solicitud.soliTipoNego', 'solicitud.soliTipoNego.tipoNego', 'solicitud.soliTipoNego.tipoServicio', 'solicitud.costo', 'solicitud.costo.formaPago', 'solicitud.cliente')->where('sen_id', $objTSolEnvioNego['sen_id'])->first();
+
                             // Enviar el primer correo creacion
                             $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_envia'])->pluck('dir_txt_email')->first();
-                            // $correo = ['jfmoreno@bellezaexpress.com'];
-                            $objTSolEnvioNego['creacion'] = true;
-                            $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
+                            // Valida que el correo exista en el Directorio Nacional
+                            if ($correo = null) {
+                                $correo = TDirNacional::where('dir_txt_cedula', '1151955318')->pluck('dir_txt_email')->first();
+                                $objTSolEnvioNego['creacion'] = true;
+                                $objTSolEnvioNego['validacionAuditoria'] = false;
+                                $objTSolEnvioNego['errorCorreo'] = true;
+                                $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
+                            }else{
+                                $objTSolEnvioNego['creacion'] = true;
+                                $objTSolEnvioNego['validacionAuditoria'] = false;
+                                $objTSolEnvioNego['errorCorreo'] = false;
+                                $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
+                            }
 
                             // Envia correo paso creado
                             $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
-                            // // $correo = ['jfmoreno@bellezaexpress.com'];
                             $objTSolEnvioNego['creacion'] = false;
+                            $objTSolEnvioNego['validacionAuditoria'] = false;
                             $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
 
+                            //Envia correo a Daisy Ospina (Auditoria) cuando se presentan errorres en las fechas
+                            if ($data['sol_peri_ejeini'] > $data['sol_fecha']) {
+                                $correo = TDirNacional::where('dir_txt_cedula', '1143949655')->pluck('dir_txt_email')->first();
+                                $objTSolEnvioNego['validacionAuditoria'] = true;
+                                $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
+                            }
 
                         }else{
                             array_push($errorRuta, 'No se encontro ruta de aprobacion para el canal seleccionado');
