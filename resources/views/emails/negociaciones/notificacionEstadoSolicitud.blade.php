@@ -236,6 +236,7 @@
     @endif
   @else
     <!-- Correo de error -->
+    <p>Pruebitaaa</p>
   @endif
 
 @endsection

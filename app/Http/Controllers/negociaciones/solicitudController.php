@@ -282,7 +282,7 @@ class solicitudController extends Controller
                             // Enviar el primer correo creacion
                             $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_envia'])->pluck('dir_txt_email')->first();
                             // Valida que el correo exista en el Directorio Nacional
-                            if ($correo = null) {
+                            if ($correo == null) {
                                 $correo = TDirNacional::where('dir_txt_cedula', '1151955318')->pluck('dir_txt_email')->first();
                                 $objTSolEnvioNego['creacion'] = true;
                                 $objTSolEnvioNego['validacionAuditoria'] = false;
@@ -297,9 +297,19 @@ class solicitudController extends Controller
 
                             // Envia correo paso creado
                             $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
-                            $objTSolEnvioNego['creacion'] = false;
-                            $objTSolEnvioNego['validacionAuditoria'] = false;
-                            $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
+                            // Valida que el correo exista en el Directorio Nacional
+                            if ($correo == null) {
+                                $correo = TDirNacional::where('dir_txt_cedula', '1151955318')->pluck('dir_txt_email')->first();
+                                $objTSolEnvioNego['creacion'] = false;
+                                $objTSolEnvioNego['validacionAuditoria'] = false;
+                                $objTSolEnvioNego['errorCorreo'] = true;
+                                $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
+                            }else{
+                                $objTSolEnvioNego['creacion'] = false;
+                                $objTSolEnvioNego['validacionAuditoria'] = false;
+                                $objTSolEnvioNego['errorCorreo'] = false;
+                                $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
+                            }
 
                             //Envia correo a Daisy Ospina (Auditoria) cuando se presentan errorres en las fechas
                             if ($data['sol_peri_ejeini'] > $data['sol_fecha']) {
