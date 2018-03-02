@@ -383,9 +383,13 @@ class bandejaAprobacionController extends Controller
           ->where('sen_sol_id',  $data['sol_id'])->get();
           // Si hay niveles sin activar entonces activo el primero que me encuentro
           if (count($nivelesSinActivar) > 0) {
+            $observacion = "";
+            if (isset($data['observ'])) {
+                $observacion = $data['observ']; 
+            }
             // Consulto en la ruta donde el usuario que recibe es igual a el que entro a aprobar y inactivo este registro en los niveles de autorizacion
             $nivelesCreados = TSolEnvioNego::where('sen_idTercero_recibe', $pernivel['pen_cedula'])
-            ->where('sen_sol_id',  $data['sol_id'])->update(['sen_estadoenvio' => 0]);
+            ->where('sen_sol_id',  $data['sol_id'])->where('sen_estadoenvio',  1)->update(['sen_estadoenvio' => 0, 'sen_observacion' => $observacion]);
             // Activa el siguiente
             $primerNivel = $nivelesSinActivar[0]->update(['sen_estadoenvio' => 1]);
             $correo = TDirNacional::where('dir_txt_cedula', $nivelesSinActivar[0]['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
@@ -494,9 +498,14 @@ class bandejaAprobacionController extends Controller
             // Si no esta creado genera error
             array_push($errorRuta, 'El usuario que aprueba la solicitud no se encuentra creado en los niveles de autorizacion');
           }else{
+            // Genero la ruta
+            $observacion = "";
+            if (isset($data['observ'])) {
+              $observacion = $data['observ']; 
+            }
             // Si esta creado busca en la ruta de aprobacion el registro y le cambia el estado a aprobado
             $nivelesCreados = TSolEnvioNego::where('sen_idTercero_recibe', $pernivel['pen_cedula'])
-            ->where('sen_sol_id',  $data['sol_id'])->update(['sen_estadoenvio' => 0]);
+            ->where('sen_sol_id',  $data['sol_id'])->where('sen_estadoenvio', 1)->update(['sen_estadoenvio' => 0, 'sen_observacion' => $observacion]);
             // Busca en la ruta de aproabcion si hay otro paso por activar
             $nivelesSinActivar = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'estadoHisProceso', 'solicitud.cliente', 'solicitud.costo', 'solicitud.costo.formaPago')->where('sen_estadoenvio', 2)
             ->where('sen_sol_id',  $data['sol_id'])->get();
@@ -553,9 +562,13 @@ class bandejaAprobacionController extends Controller
               ->where('sen_sol_id',  $data['sol_id'])->get();
 
               if (count($nivelesSinActivar) > 0) {
+                $observacion = "";
+                if (isset($data['observ'])) {
+                    $observacion = $data['observ']; 
+                }
                 // Cambia el estado de la ruta para el usuario que aprueba a aprobado
                 $nivelesCreados = TSolEnvioNego::where('sen_idTercero_recibe', $pernivel['pen_cedula'])
-                ->where('sen_sol_id',  $data['sol_id'])->update(['sen_estadoenvio' => 0]);
+                ->where('sen_sol_id',  $data['sol_id'])->where('sen_estadoenvio', 1)->update(['sen_estadoenvio' => 0, 'sen_observacion' => $observacion]);
                 // Si encuentra un paso sin activar lo activa
                 $primerNivel = $nivelesSinActivar[0]->update(['sen_estadoenvio' => 1]);
                 $correo = TDirNacional::where('dir_txt_cedula', $nivelesSinActivar[0]['sen_idTercero_recibe'])->pluck('dir_txt_email')->first();
@@ -643,9 +656,14 @@ class bandejaAprobacionController extends Controller
 
         // Si el nivel es 4 y el tipo de solicitud es comercial y mercadeo
         if ($pernivel['pen_nomnivel'] == 4 && $data['sol_tipnegoniv'] == "Comercial y Mercadeo") {
+          // Si no empieza la creacion del siguiente nivel
+          $observacion = "";
+          if (isset($data['observ'])) {
+              $observacion = $data['observ']; 
+          }
           // Cambia el estado al paso actual
           $nivelesCreados = TSolEnvioNego::where('sen_idTercero_recibe', $pernivel['pen_cedula'])
-          ->where('sen_sol_id',  $data['sol_id'])->update(['sen_estadoenvio' => 0]);
+          ->where('sen_sol_id',  $data['sol_id'])->where('sen_estadoenvio', 1)->update(['sen_estadoenvio' => 0, 'sen_observacion' => $observacion]);
           // Consulta si ahi pasos sin activar
           $nivelesSinActivar = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'estadoHisProceso', 'solicitud.cliente', 'solicitud.costo', 'solicitud.costo.formaPago')->where('sen_estadoenvio', 2)
           ->where('sen_sol_id',  $data['sol_id'])->get();

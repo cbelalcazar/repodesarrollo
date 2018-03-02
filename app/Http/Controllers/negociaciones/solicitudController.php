@@ -437,7 +437,12 @@ class solicitudController extends Controller
 
             // 1 -> rete fuente
             if (isset($impuestos[1])) {
-                $retefuente = collect($impuestos[1])->last();
+
+                $retefuente = collect($impuestos[1])->where('bai_declararenta', $decrenta)->all();
+                if (count($retefuente)  == 0) {
+                    $retefuente = collect($impuestos[1])->where('bai_declararenta', 0)->all();
+                }
+                $retefuente = $retefuente[0];
                 $objTipoNego['stn_rtfuente'] = $retefuente['bai_tasa'];// stn_rtfuente
                 if ($objTipoNego['stn_costo'] >= $retefuente['bai_base']) {
                      $objTipoNego['stn_valor_rtfuente'] = ($objTipoNego['stn_costo'] * $retefuente['bai_tasa']) / 100;// stn_valor_rtfuente
