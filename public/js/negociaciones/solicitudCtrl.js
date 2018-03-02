@@ -989,6 +989,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 	}
 
 	$scope.recalcularVentaEstimadaLineas = function(){
+		console.log('soy yo recalculando');
 		if($scope.objObjetivos.soo_venestlin == "" && $scope.objObjetivos.soo_venpromeslin != '0.00'){
             $scope.objObjetivos.soo_pinventaestiline = 0;
             $scope.objObjetivos.soo_ventmargilin = 0;
@@ -1005,12 +1006,19 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
             // Campo Venta marginal lineas
             // Formula Si selecciona 1 Huella año anterior= venta estimada lineas - (venta promedio mes lineas periodo compracion * meses facturacion)
             // Formular si selecciona 2 Capitalizar Oportunidad= venta estimada líneas – (venta promedio mes línea a activar – últimos 6 meses * meses de facturación)
-
+           	
             if($scope.objeto.sol_huella_capitalizar.id == '1'){
+
                 var soo_ventmargilin = ($scope.objObjetivos.soo_venestlin - (parseFloat($scope.objObjetivos.soo_venpromeslin) * $scope.objeto.sol_mesesfactu));               
             }else{                
                 var soo_ventmargilin = ($scope.objObjetivos.soo_venestlin - (parseFloat($scope.objObjetivos.soo_venprolin6m) *  $scope.objeto.sol_mesesfactu)).toFixed(2);                                           
+            	console.log($scope.objObjetivos.soo_venestlin);
+            	console.log($scope.objObjetivos.soo_venprolin6m);
+            	console.log($scope.objeto.sol_mesesfactu);
+	            console.log('socito');
+	            console.log(soo_ventmargilin);
             }
+
             if(isNaN(soo_ventmargilin || soo_ventmargilin == Infinity || soo_ventmargilin == "")){
                 $scope.objObjetivos.soo_ventmargilin = 0;	                    
             }else{                    

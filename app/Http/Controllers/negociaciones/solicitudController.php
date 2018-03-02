@@ -573,17 +573,32 @@ class solicitudController extends Controller
 
         $ultimosSeisMeses1 = implode("/", $explode);
 
+        if (count($codigosSucur) > 0) {
         // Consulta la venta promedio de los ultimos 6 meses de la lineas
-        $soo_venprolin6m =  NegociacionesVentas::select(DB::raw('SUM(neto) as total, codlinea'))
-        ->where('codcanal', $data['sol_can_id']['can_id'])
-        ->where('nitcliente', $data['sol_cli_id']['ter_id'])
-        ->whereBetween('fecha', [$ultimosSeisMeses1, $fechaEjecucion])
-        ->where('concepto', '501')
-        ->where('co', '99')
-        ->whereIn('codlinea', $lineas)
-        ->whereIn('codsucursal', $codigosSucur)
-        ->groupBy('codlinea')
-        ->get();
+            $soo_venprolin6m =  NegociacionesVentas::select(DB::raw('SUM(neto) as total, codlinea'))
+            ->where('codcanal', $data['sol_can_id']['can_id'])
+            ->where('nitcliente', $data['sol_cli_id']['ter_id'])
+            ->whereBetween('fecha', [$ultimosSeisMeses1, $fechaEjecucion])
+            ->where('concepto', '501')
+            ->where('co', '99')
+            ->whereIn('codlinea', $lineas)
+            ->whereIn('codsucursal', $codigosSucur)
+            ->groupBy('codlinea')
+            ->get();
+        }else{
+            // Consulta la venta promedio de los ultimos 6 meses de la lineas
+            $soo_venprolin6m =  NegociacionesVentas::select(DB::raw('SUM(neto) as total, codlinea'))
+            ->where('codcanal', $data['sol_can_id']['can_id'])
+            ->where('nitcliente', $data['sol_cli_id']['ter_id'])
+            ->whereBetween('fecha', [$ultimosSeisMeses1, $fechaEjecucion])
+            ->where('concepto', '501')
+            ->where('co', '99')
+            ->whereIn('codlinea', $lineas)
+            ->groupBy('codlinea')
+            ->get();
+        }
+     
+        
 
         // Consulta la venta promedio total del cliente en el periodo de comparacion
         $soo_ventapromtotal = NegociacionesVentas::select(DB::raw('SUM(neto) as total'))
