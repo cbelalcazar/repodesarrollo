@@ -709,8 +709,8 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 				bandera = false;
 				errorString += 'El porcentaje de participacion de las sucursales debe ser del 100% (PESTAÑA INFORMACION DE LA SOLICITUD)';
 		}
-		console.log($scope.pestanaSeleccionada[1]);
-		if ($scope.pestanaSeleccionada[1] == 1 && $scope.objeto.sol_id != undefined) {
+		console.log(form);
+		if ($scope.pestanaSeleccionada[1] == 1 && $scope.objeto.sol_id != undefined && form.$name != 'solicitudForm') {
 			if ($scope.arrayLineas.length > 0 && $scope.sumPorcentPart() != 100) {
 				bandera = false;
 				errorString += 'El porcentaje de participacion debe ser igual a 100 entre todas las lineas seleccionadas ';

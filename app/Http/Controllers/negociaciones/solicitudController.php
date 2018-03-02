@@ -442,6 +442,7 @@ class solicitudController extends Controller
                 if (count($retefuente)  == 0) {
                     $retefuente = collect($impuestos[1])->where('bai_declararenta', 0)->all();
                 }
+                $retefuente = array_values($retefuente);
                 $retefuente = $retefuente[0];
                 $objTipoNego['stn_rtfuente'] = $retefuente['bai_tasa'];// stn_rtfuente
                 if ($objTipoNego['stn_costo'] >= $retefuente['bai_base']) {
@@ -514,7 +515,7 @@ class solicitudController extends Controller
                 $objTipoNego['stn_iva_base'] = $iva['bai_base']; // bai_base
             }else{
                 $objTipoNego['stn_iva'] = 0;// stn_rtfuente
-                $objTipoNego['stn_valor_rtiva'] = 0;// stn_valor_rtfuente
+                $objTipoNego['stn_valor_iva'] = 0;// stn_valor_rtfuente
                 $objTipoNego['stn_iva_base'] = 0; // bai_base
             }
 
