@@ -277,7 +277,7 @@ class solicitudController extends Controller
                             $objTSolEnvioNego['sen_estadoenvio'] = 1;
                             $objTSolEnvioNego['sen_run_id'] = null;
                             $objTSolEnvioNego->save();
-                            $objTSolEnvioNego = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'solicitud.soliSucu', 'solicitud.soliSucu.hisSucu', 'solicitud.soliZona', 'solicitud.soliZona.hisZona', 'solicitud.soliZona.hisZona.cOperacion', 'solicitud.objetivo', 'solicitud.soliTipoNego', 'solicitud.soliTipoNego.tipoNego', 'solicitud.soliTipoNego.tipoServicio', 'solicitud.costo', 'solicitud.costo.formaPago', 'solicitud.cliente')->where('sen_id', $objTSolEnvioNego['sen_id'])->first();
+                            $objTSolEnvioNego = TSolEnvioNego::with('terceroEnvia', 'terceroRecibe', 'solicitud', 'solicitud.soliSucu', 'solicitud.soliSucu.hisSucu', 'solicitud.soliZona', 'solicitud.soliZona.hisZona', 'solicitud.soliZona.hisZona', 'solicitud.objetivo', 'solicitud.soliTipoNego', 'solicitud.soliTipoNego.tipoNego', 'solicitud.soliTipoNego.tipoServicio', 'solicitud.costo', 'solicitud.costo.formaPago', 'solicitud.cliente')->where('sen_id', $objTSolEnvioNego['sen_id'])->first();
 
                             // Enviar el primer correo creacion
                             $correo = TDirNacional::where('dir_txt_cedula', $objTSolEnvioNego['sen_idTercero_envia'])->pluck('dir_txt_email')->first();
@@ -616,30 +616,57 @@ class solicitudController extends Controller
         ->whereIn('codsucursal', $codigosSucur)
         ->get();
 
-        // Consulta la venta promedio total de los ultimos 6 meses
-        $soo_ventapromseisme =  NegociacionesVentas::select(DB::raw('SUM(neto) as total'))
-        ->where('codcanal', $data['sol_can_id']['can_id'])
-        ->where('nitcliente', $data['sol_cli_id']['ter_id'])
-        ->whereBetween('fecha', [$ultimosSeisMeses1, $fechaEjecucion])
-        ->where('concepto', '501')
-        ->where('co', '99')
-        ->whereIn('codsucursal', $codigosSucur)
-        ->get();
+
+        if (count($codigosSucur) > 0) {
+            // Consulta la venta promedio total de los ultimos 6 meses
+            $soo_ventapromseisme =  NegociacionesVentas::select(DB::raw('SUM(neto) as total'))
+            ->where('codcanal', $data['sol_can_id']['can_id'])
+            ->where('nitcliente', $data['sol_cli_id']['ter_id'])
+            ->whereBetween('fecha', [$ultimosSeisMeses1, $fechaEjecucion])
+            ->where('concepto', '501')
+            ->where('co', '99')
+            ->whereIn('codsucursal', $codigosSucur)
+            ->get();
+        }else{
+            // Consulta la venta promedio total de los ultimos 6 meses
+            $soo_ventapromseisme =  NegociacionesVentas::select(DB::raw('SUM(neto) as total'))
+            ->where('codcanal', $data['sol_can_id']['can_id'])
+            ->where('nitcliente', $data['sol_cli_id']['ter_id'])
+            ->whereBetween('fecha', [$ultimosSeisMeses1, $fechaEjecucion])
+            ->where('concepto', '501')
+            ->where('co', '99')
+            ->get();
+        }
+     
 
         // Consulta venta 1 mes antes periodo de comparacion
         $fechCompaSinUnMes = Carbon::parse($data['objObjetivos']['soo_pecomini'])->subMonth(1)->format('d/m/Y');
 
-        $soo_vemesantes =  NegociacionesVentas::select(DB::raw('SUM(neto) as total, codlinea'))
-        ->where('codcanal', $data['sol_can_id']['can_id'])
-        ->where('nitcliente', $data['sol_cli_id']['ter_id'])
-        ->where('fecha', '>=', $fechCompaSinUnMes)
-        ->where('fecha', '<', $fechaInicio)
-        ->where('concepto', '501')
-        ->where('co', '99')
-        ->whereNotIn('codlinea', $lineas)
-        ->whereIn('codsucursal', $codigosSucur)
-        ->groupBy('codlinea')
-        ->get();
+        if (count($codigosSucur) > 0) {
+              $soo_vemesantes =  NegociacionesVentas::select(DB::raw('SUM(neto) as total, codlinea'))
+            ->where('codcanal', $data['sol_can_id']['can_id'])
+            ->where('nitcliente', $data['sol_cli_id']['ter_id'])
+            ->where('fecha', '>=', $fechCompaSinUnMes)
+            ->where('fecha', '<', $fechaInicio)
+            ->where('concepto', '501')
+            ->where('co', '99')
+            ->whereNotIn('codlinea', $lineas)
+            ->whereIn('codsucursal', $codigosSucur)
+            ->groupBy('codlinea')
+            ->get();
+        }else{
+            $soo_vemesantes =  NegociacionesVentas::select(DB::raw('SUM(neto) as total, codlinea'))
+            ->where('codcanal', $data['sol_can_id']['can_id'])
+            ->where('nitcliente', $data['sol_cli_id']['ter_id'])
+            ->where('fecha', '>=', $fechCompaSinUnMes)
+            ->where('fecha', '<', $fechaInicio)
+            ->where('concepto', '501')
+            ->where('co', '99')
+            ->whereNotIn('codlinea', $lineas)
+            ->groupBy('codlinea')
+            ->get();
+        }
+        
 
         //  Consulta Venta 1 mes despues del periodo de comparacion
         $fechCompaMasUnMes = Carbon::parse($data['objObjetivos']['soo_pecomfin'])->addMonth(1)->format('d/m/Y');
@@ -658,8 +685,10 @@ class solicitudController extends Controller
 
         // Consulta los valores de las lineas
 
-        if($data['sol_huella_capitalizar'] == '2'){
-            $arreglo =  NegociacionesVentas::select(DB::raw('SUM(neto) / 6  as total, codlinea'))
+        if($data['sol_huella_capitalizar']['id'] == 2){
+
+            if (count($codigosSucur) > 0) {
+                $arreglo =  NegociacionesVentas::select(DB::raw('SUM(neto) / 6  as total, codlinea'))
                 ->where('codcanal', $data['sol_can_id']['can_id'])
                 ->where('nitcliente', $data['sol_cli_id']['ter_id'])
                 ->whereBetween('fecha', [$ultimosSeisMeses1, $fechaEjecucion])
@@ -669,18 +698,44 @@ class solicitudController extends Controller
                 ->whereIn('codsucursal', $codigosSucur)
                 ->groupBy('codlinea')
                 ->get();
+            }else{
+                $arreglo =  NegociacionesVentas::select(DB::raw('SUM(neto) / 6  as total, codlinea'))
+                ->where('codcanal', $data['sol_can_id']['can_id'])
+                ->where('nitcliente', $data['sol_cli_id']['ter_id'])
+                ->whereBetween('fecha', [$ultimosSeisMeses1, $fechaEjecucion])
+                ->where('concepto', '501')
+                ->where('co', '99')
+                ->whereIn('codlinea', $lineas)
+                ->groupBy('codlinea')
+                ->get();
+            }
+          
         }//fin if valida si es capitalizar oportunidad
         else{
-            $arreglo = NegociacionesVentas::select(DB::raw('SUM(neto) as total, codlinea'))
+
+            if (count($codigosSucur) > 0) {
+                $arreglo = NegociacionesVentas::select(DB::raw('SUM(neto) as total, codlinea'))
+                    ->where('codcanal', $data['sol_can_id']['can_id'])
+                    ->where('nitcliente', $data['sol_cli_id']['ter_id'])
+                    ->whereBetween('fecha', [$fechaInicio, $fechaFin])
+                    ->where('concepto', '501')
+                    ->where('co', '99')
+                    ->whereIn('codlinea', $lineas)
+                    ->whereIn('codsucursal', $codigosSucur)
+                    ->groupBy('codlinea')
+                    ->get();
+            }else{
+                 $arreglo = NegociacionesVentas::select(DB::raw('SUM(neto) as total, codlinea'))
                 ->where('codcanal', $data['sol_can_id']['can_id'])
                 ->where('nitcliente', $data['sol_cli_id']['ter_id'])
                 ->whereBetween('fecha', [$fechaInicio, $fechaFin])
                 ->where('concepto', '501')
                 ->where('co', '99')
                 ->whereIn('codlinea', $lineas)
-                ->whereIn('codsucursal', $codigosSucur)
                 ->groupBy('codlinea')
                 ->get();
+            }
+           
         }
 
 
