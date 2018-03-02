@@ -8,8 +8,6 @@
 </style>
 
 @section('content')
-
-  @if($objTSolEnvioNego['errorCorreo'] == 'false')
     @if ($objTSolEnvioNego['sen_ser_id'] == 2)
       @if($objTSolEnvioNego['validacionAuditoria'] == 'false')
         @if($objTSolEnvioNego['creacion'] == 'true')
@@ -234,9 +232,5 @@
       @endif    
       <p>Para ir al Aplicativo haga clic <a href="http://www.bellezaexpress.com/aplicativos">aqui</a>.</p>
     @endif
-  @else
-    <!-- Correo de error -->
-    <p>Pruebitaaa</p>
-  @endif
 
 @endsection

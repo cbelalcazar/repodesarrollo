@@ -286,12 +286,10 @@ class solicitudController extends Controller
                                 $correo = TDirNacional::where('dir_txt_cedula', '1151955318')->pluck('dir_txt_email')->first();
                                 $objTSolEnvioNego['creacion'] = true;
                                 $objTSolEnvioNego['validacionAuditoria'] = false;
-                                $objTSolEnvioNego['errorCorreo'] = true;
                                 $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
                             }else{
                                 $objTSolEnvioNego['creacion'] = true;
                                 $objTSolEnvioNego['validacionAuditoria'] = false;
-                                $objTSolEnvioNego['errorCorreo'] = false;
                                 $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
                             }
 
@@ -302,12 +300,10 @@ class solicitudController extends Controller
                                 $correo = TDirNacional::where('dir_txt_cedula', '1151955318')->pluck('dir_txt_email')->first();
                                 $objTSolEnvioNego['creacion'] = false;
                                 $objTSolEnvioNego['validacionAuditoria'] = false;
-                                $objTSolEnvioNego['errorCorreo'] = true;
                                 $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
                             }else{
                                 $objTSolEnvioNego['creacion'] = false;
                                 $objTSolEnvioNego['validacionAuditoria'] = false;
-                                $objTSolEnvioNego['errorCorreo'] = false;
                                 $respCorreo = self::enviaCorreo($correo, $objTSolEnvioNego);
                             }
 
