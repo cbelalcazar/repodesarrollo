@@ -440,7 +440,7 @@ class solicitudController extends Controller
             $objTipoNego['stn_ser_id'] = $value['stn_ser_id']['ser_id'];
             $objTipoNego['stn_costo'] = $value['stn_costo'];
             $objTipoNego['stn_estado'] = 1;
-
+            
             // 1 -> rete fuente
             if (isset($impuestos[1])) {
 
