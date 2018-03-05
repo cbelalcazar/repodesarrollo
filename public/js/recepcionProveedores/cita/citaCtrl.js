@@ -117,7 +117,7 @@ $scope.seleccionar = function(obj){
             	$scope.events.splice(pos, 1);                
             	obj[0].end = String($filter('date')(event.end._d, 'yyyy-MM-dd HH:mm:ss','+0000'));
             	$scope.events.push(obj[0]); 
-            	$scope.actualizarLista(String($filter('date')(event.end._d, 'yyyy-MM-dd','+0000')));
+            	$scope.actualizarLista(String($filter('date')(event.start._d, 'yyyy-MM-dd HH:mm:ss','+0000')));
             },
             eventDrop: function (event, delta, revertFunc, jsEvent, ui, view) {  
             	if (String($filter('date')(event.start._d, 'HH:mm:ss','+0000')) < '07:00:00' || String($filter('date')(event.end._d, 'HH:mm:ss','+0000')) > '16:00:00' ) {
@@ -153,7 +153,7 @@ $scope.seleccionar = function(obj){
             		obj[0].resourceId = resourceId;
                     obj[0].resourceIdOld = obj[0].resourceId;
             		$scope.events.push(obj[0]); 
-            		$scope.actualizarLista(String($filter('date')(event.start._d, 'yyyy-MM-dd','+0000')));
+            		$scope.actualizarLista(String($filter('date')(event.start._d, 'yyyy-MM-dd HH:mm:ss','+0000')));
             	}      
             },
             eventClick : function(event, jsEvent, view){
@@ -165,7 +165,6 @@ $scope.seleccionar = function(obj){
                 if(obj[0].estado == "sinGuardar"){           
                     $scope.progShow = event.programacion;
                     $scope.progShow[0]['cita'] = JSON.parse(JSON.stringify(obj[0]));
-                    console.log($scope.progShow);
                     angular.element('.close').trigger('click');
                     $scope.progress = false;
                     $scope.moverCalendarioAFecha();
@@ -173,7 +172,6 @@ $scope.seleccionar = function(obj){
                     $http.post($scope.urlConsultaVista, obj).then(function(response){
                         var res = response.data;
                         $scope.progShow = angular.copy(res.progShow);
-                        console.log($scope.progShow);
                         angular.element('.close').trigger('click');
                         $scope.progress = false;
                     });
@@ -277,6 +275,10 @@ $scope.drop = function(date, jsEvent, ui, resourceId) {
         uiCalendarConfig.calendars.myCalendar.fullCalendar('renderEvent', obj);
         // Redirecciono el calendario a la fecha del evento que se acaba de crear
         $timeout(function() {
+            // Cambio el tiempo del scroll 
+            $scope.uiConfig.calendar.scrollTime = obj.start.split(' ')[1];
+        }, 10);
+        $timeout(function() {
          uiCalendarConfig.calendars.myCalendar.fullCalendar('changeView', 'agendaDay', String($filter('date')(date._d, 'yyyy-MM-dd','+0000')));
         }, 10);
         //Vacio el grupo de checkbox
@@ -304,7 +306,6 @@ $scope.drop = function(date, jsEvent, ui, resourceId) {
 // Esta funcion imprime los elementos que se encuentran renderizados en el calendario
 $scope.test = function(){
 	console.log(uiCalendarConfig.calendars.myCalendar.fullCalendar('getEventSources'));
-	console.log($scope.events);
 }
 
 
@@ -312,6 +313,16 @@ $scope.test = function(){
 $scope.actualizarLista = function(fecha = $scope.fecha){
 	uiCalendarConfig.calendars.myCalendar.fullCalendar('removeEvents');
 	uiCalendarConfig.calendars.myCalendar.fullCalendar('addEventSource', $scope.events);
+    // console.log(fecha);
+    $timeout(function() {
+        // Cambio el tiempo del scroll 
+        var arregloHorFech = fecha.split(' ');
+        console.log(arregloHorFech);
+        if (arregloHorFech.length == 2) {
+            $scope.uiConfig.calendar.scrollTime = arregloHorFech[1];
+            console.log($scope.uiConfig.calendar.scrollTime);
+        }
+    }, 10);
 	$timeout(function() {
 		uiCalendarConfig.calendars.myCalendar.fullCalendar('changeView', 'agendaDay', fecha);                   
 	}, 25);
