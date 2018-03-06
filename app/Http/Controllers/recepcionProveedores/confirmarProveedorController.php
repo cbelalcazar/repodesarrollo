@@ -32,7 +32,7 @@ class confirmarProveedorController extends Controller
     public function confirmarProveedorGetInfo()
     {
         // Falta filtrar las programaciones de acuerdo con el proveedor logueado
-        $nit = '860056150';
+        $nit = '890319254';
         $programaciones = TProgramacion::where([['prg_estado', 3], ['prg_nit_proveedor', $nit]])->orderBy('prg_fecha_programada')->get();
         // Consulto las citas sin confirmar con todas su programaciones asignadas para el mismo proveedor
         $citas = TCita::with('programaciones')->where('cit_nitproveedor', $nit)->whereIn('cit_estado', ['CONFIRMADA', 'PENDCONFIRPROVEE'])->get();

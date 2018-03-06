@@ -24,7 +24,7 @@ class tareaCitasController extends Controller
         $ruta = 'Tarea citas // Crear citas';
         // Obtiene fecha inicio y fin del servidor
         $inicio = Carbon::now()->format('Ymd');
-        $fin = Carbon::now()->addDays(2)->format('Ymd');
+        $fin = Carbon::now()->addDays(10)->format('Ymd');
         // Consulta el unoE y trae las ordenes de compra a programar
         $OrdenCompraVista = OrdenCompraVista::
             whereIn('TipoDocto', ['OC', 'OCB', 'OMB', 'OMC', 'OR', 'ORB', 'ONP', 'ONB'])
