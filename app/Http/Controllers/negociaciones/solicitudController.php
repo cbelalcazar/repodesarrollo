@@ -27,6 +27,7 @@ use App\Models\negociaciones\TPernivele;
 use App\Models\negociaciones\TSoliCostosLineas;
 use App\Models\negociaciones\TSolEnvioNego;
 use App\Models\negociaciones\TSoliObjetivos;
+use App\Models\negociaciones\TKeyAccount;
 use App\Models\Genericas\TVendedor;
 use App\Models\Genericas\TCanal;
 use App\Models\Genericas\TCliente;
@@ -77,7 +78,8 @@ class solicitudController extends Controller
         $data = $request->all();
         if (isset($data['id'])) {
             $id = $data['id'];
-            $objeto = TSolicitudNego::with('soliZona', 'soliSucu', 'soliTipoNego', 'causal', 'costo', 'costo.lineas', 'objetivo')->where('sol_id', $id)->first();
+            $objeto = TSolicitudNego::with('soliZona', 'soliSucu', 'soliTipoNego', 'causal', 'costo', 'costo.lineas', 'objetivo')
+            ->where('sol_id', $id)->first();
         }
         // obtengo usuario logueado
         $usuario = Auth::user();
@@ -90,10 +92,21 @@ class solicitudController extends Controller
         $tipoDeNegociacion = TipoNegociacion::where('tin_estado', 1)->get();
         $negociacionPara = NegociacionPara::all();
         $eventoTemp = EventoTemp::where('evt_estado', 1)->get();
-        // Obtengo el vendedor con sus sucursales
-        $VendedorSucursales = TVendedor::with('TSucursal')
-        ->where('ter_id', $usuario['idTerceroUsuario'])
-        ->first();
+
+        // Busco en la tabla t_keyaccount si la persona que crea esta ahi entonces es KAM
+        $consultaKam = TKeyAccount::with('cliente')->where('kea_idTercero_res', $usuario['idTerceroUsuario'])->get();
+        $VendedorSucursales = [];
+        if (count($consultaKam) > 0) {
+            $idClientesKam = collect($consultaKam)->pluck('cliente.cli_id')->all();
+            $VendedorSucursales['TSucursal'] = TSucursal::whereIn('cli_id', $idClientesKam)->where('suc_txt_estado', 'ACTIVO')->get();
+            $VendedorSucursales['t_sucursal'] = $VendedorSucursales['TSucursal'];
+            $vendedorSucursales['ter_id'] = $usuario['idTerceroUsuario'];
+        }else{
+            // Obtengo el vendedor con sus sucursales
+            $VendedorSucursales = TVendedor::with('TSucursal')
+            ->where('ter_id', $usuario['idTerceroUsuario'])
+            ->first();
+        }
         // Obtengo los canales de cada sucursal
         $agruCanalSucursal = collect($VendedorSucursales['TSucursal'])
         ->groupBy('codcanal')->keys()->all();
@@ -126,7 +139,7 @@ class solicitudController extends Controller
         $baseImpuesto = TBaseImpuesto::all();
 
 
-        $response = compact('usuario', 'claseNegociacion', 'negoAnoAnterior', 'tipNegociacion', 'VendedorSucursales', 'canales', 'clientes', 'idClientes', 'negociacionPara', 'agruZonasSucursal', 'zonas', 'listaPrecios', 'eventoTemp', 'tipoDeNegociacion', 'tipoDeServicio', 'causalesNego', 'objeto', 'clientesTodos', 'urlMisSolicitudes', 'formaPago', 'lineas', 'baseImpuesto');
+        $response = compact('usuario', 'claseNegociacion', 'negoAnoAnterior', 'tipNegociacion', 'VendedorSucursales', 'canales', 'clientes', 'idClientes', 'negociacionPara', 'agruZonasSucursal', 'zonas', 'listaPrecios', 'eventoTemp', 'tipoDeNegociacion', 'tipoDeServicio', 'causalesNego', 'objeto', 'clientesTodos', 'urlMisSolicitudes', 'formaPago', 'lineas', 'baseImpuesto', 'consultaKam', 'idClientesKam');
         return response()->json($response);
     }
 

@@ -1,3 +1,4 @@
+// Configuracion que cambia el formato de los mddatepickers
 app.config(function($mdDateLocaleProvider) {
     
     $mdDateLocaleProvider.formatDate = function (date) {
@@ -25,6 +26,7 @@ app.directive('stringToNumber', function() {
   };
 });
 
+// Directiva para los formatos de los numeros
 app.directive('format', ['$filter', function ($filter) {
     return {
         require: '?ngModel',
@@ -46,6 +48,7 @@ app.directive('format', ['$filter', function ($filter) {
 
 app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q', '$timeout', '$window', '$interval', function ($scope, $http, $filter, $mdDialog, $q, $timeout, $window, $interval) {
 	
+	// Inicializo variables
 	$scope.objeto = {};
 	$scope.objNegCliente = {};
 	$scope.objtipoNeg = {};
@@ -383,13 +386,11 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 
 	$scope.limpiarSucursales = function(){
 		var arreglo = $filter('filter')($scope.VendedorSucursales.t_sucursal, {codcanal : $scope.objeto.sol_can_id.can_id});
+
 		var arregloAgrupado = Object.keys($filter('groupBy')(arreglo, 'cen_movimiento_id'));
 		$scope.arregloZonasFiltradas = [];
 		arregloAgrupado.forEach(function(obj){
-			var dato = $filter('filter')($scope.zonas, {cen_id : parseInt(obj)}, true);
-			dato.forEach(function(ob){
-				$scope.arregloZonasFiltradas.push(ob);
-			});
+			$scope.arregloZonasFiltradas.push($filter('filter')($scope.zonas, {cen_id : parseInt(obj)}, true)[0]);
 		});
 
 		$scope.zonasFiltradas = $scope.arregloZonasFiltradas;
@@ -540,6 +541,8 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 			element.descripcionConId = element.suc_num_codigo + " - " + element.suc_txt_nombre + " - " + element.suc_txt_direccion;
 			return element;
 		});
+		console.log('oyyooooo');
+		console.log($scope.nuevoFiltrado);
 	}
 
 	$scope.agregarSucursales = function(){
@@ -667,7 +670,6 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 	}
 
 	$scope.generarString = function(servicio){
-		console.log(servicio);
 		var impuesto = $filter('filter')($scope.baseImpuesto, {bai_ser_id : servicio.ser_id, bai_tipoimpuesto : 1}, true);
 		var natural = $filter('filter')(impuesto, {bai_declararenta : 2}, true);
 		var juridica = $filter('filter')(impuesto, {bai_declararenta : 1}, true);
@@ -709,7 +711,6 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 				bandera = false;
 				errorString += 'El porcentaje de participacion de las sucursales debe ser del 100% (PESTAÑA INFORMACION DE LA SOLICITUD)';
 		}
-		console.log(form);
 		if ($scope.pestanaSeleccionada[1] == 1 && $scope.objeto.sol_id != undefined && form.$name != 'solicitudForm') {
 			if ($scope.arrayLineas.length > 0 && $scope.sumPorcentPart() != 100) {
 				bandera = false;
@@ -756,7 +757,6 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 			if ($scope.objeto.sol_id == undefined) {
 				$http.post('../solicitudNegociaciones', $scope.envioPost).then(function(response){
 					var res = response.data;
-					console.log(res);
 					$window.location = res.url;
 				}, function(errorResponse){
 					alert("Error al grabar");
@@ -914,6 +914,9 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 					if (dato.length > 0) {
 						obj.scl_valorventa = dato[0]['total'];
 						obj.scl_pvalorventa = ((obj.scl_valorventa / $scope.objObjetivos.soo_ventapromtotal) * 100).toFixed(2);
+						if (obj.scl_pvalorventa == Infinity) {
+							obj.scl_pvalorventa = 0;
+						}
 					}else{
 						obj.scl_valorventa = 0;
 						obj.scl_pvalorventa = 0;
@@ -968,7 +971,6 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 
 		           	$scope.calcularCrecimientoEstimadoCliente();
 		        }
-		           	console.log('finalice');
 
 		           	$scope.progress = false;				         
  
@@ -989,7 +991,6 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 	}
 
 	$scope.recalcularVentaEstimadaLineas = function(){
-		console.log('soy yo recalculando');
 		if($scope.objObjetivos.soo_venestlin == "" && $scope.objObjetivos.soo_venpromeslin != '0.00'){
             $scope.objObjetivos.soo_pinventaestiline = 0;
             $scope.objObjetivos.soo_ventmargilin = 0;
@@ -1012,11 +1013,6 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
                 var soo_ventmargilin = ($scope.objObjetivos.soo_venestlin - (parseFloat($scope.objObjetivos.soo_venpromeslin) * $scope.objeto.sol_mesesfactu));               
             }else{                
                 var soo_ventmargilin = ($scope.objObjetivos.soo_venestlin - (parseFloat($scope.objObjetivos.soo_venprolin6m) *  $scope.objeto.sol_mesesfactu)).toFixed(2);                                           
-            	console.log($scope.objObjetivos.soo_venestlin);
-            	console.log($scope.objObjetivos.soo_venprolin6m);
-            	console.log($scope.objeto.sol_mesesfactu);
-	            console.log('socito');
-	            console.log(soo_ventmargilin);
             }
 
             if(isNaN(soo_ventmargilin || soo_ventmargilin == Infinity || soo_ventmargilin == "")){
