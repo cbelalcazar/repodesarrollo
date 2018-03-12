@@ -35,7 +35,9 @@ class confirmarProveedorController extends Controller
         $nit = '890319254';
         $programaciones = TProgramacion::where([['prg_estado', 3], ['prg_nit_proveedor', $nit]])->orderBy('prg_fecha_programada')->get();
         // Consulto las citas sin confirmar con todas su programaciones asignadas para el mismo proveedor
-        $citas = TCita::with('programaciones')->where('cit_nitproveedor', $nit)->whereIn('cit_estado', ['CONFIRMADA', 'PENDCONFIRPROVEE'])->get();
+        $citas = TCita::with('programaciones')->where('cit_nitproveedor', $nit)
+        ->whereIn('cit_estado', ['CONFIRMADA', 'PENDCONFIRPROVEE'])
+        ->get();
         $response = compact('programaciones', 'citas');
         return response()->json($response);
     }
@@ -69,7 +71,8 @@ class confirmarProveedorController extends Controller
         $update['cit_objcalendarcita'] = json_encode($json);
         $update->save();
 
-        $programaciones = TProgramacion::where('prg_idcita', $data['id'])->update(['prg_estado' => 6]);
+        $programaciones = TProgramacion::where('prg_idcita', $data['id'])
+        ->update(['prg_estado' => 6]);
 
         $response = compact('data');
         return response()->json($response);
@@ -114,8 +117,11 @@ class confirmarProveedorController extends Controller
             $prg_tipoempaque = $value['tipoEmpaque'] . ' de ' . $value['cantEmpaque'];
             $objProg = TProgramacion::where('id', $value['id'])
             ->update(['prg_fecha_programada' => $fechaEntrega, 
-                      'prg_cant_programada' => $value['confirCantidad'], 
-                      'prg_estado' => 2, 'prg_observacion' => $observacionNueva, 'prg_cantidadempaques' => $prg_cantidadempaques, 'prg_tipoempaque' =>$prg_tipoempaque]);
+                        'prg_cant_programada' => $value['confirCantidad'], 
+                        'prg_estado' => 2, 
+                        'prg_observacion' => $observacionNueva,
+                        'prg_cantidadempaques' => $prg_cantidadempaques,
+                        'prg_tipoempaque' =>$prg_tipoempaque]);
         }
         $response = compact('data', 'request1');
         return response()->json($response);
