@@ -27,4 +27,8 @@ class TInfoReferencia extends Model
 
     protected $guarded = [];
 
+    public function referencia(){
+        return $this->hasOne('App\Models\Genericas\TItemCriterio', 'ite_txt_referencia','iref_referencia');
+    }
+
 }

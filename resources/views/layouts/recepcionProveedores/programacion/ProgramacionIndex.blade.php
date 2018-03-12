@@ -40,7 +40,7 @@
 						<div class="alert alert-success" ng-if="mensajeEliminar">
 							<strong>Registro eliminado exitosamente.</strong> 
 						</div>
-						<table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="row-border hover" dt-instance="dtInstance">
+						<table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" dt-instance="dtInstance">
 							<thead>
 								<tr>
 									<th>
