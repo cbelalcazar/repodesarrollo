@@ -5,6 +5,7 @@ namespace App\Http\Controllers\recepcionProveedores;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\recepcionProveedores\TInfoReferencia;
+use App\Models\Genericas\TItemcriteriosTodo;
 
 class RefProgramablesRecepController extends Controller
 {
@@ -23,7 +24,9 @@ class RefProgramablesRecepController extends Controller
 
     public function getInfo(){
         $infoReferencias = TInfoReferencia::with('referencia')->get();
-        $response = compact('infoReferencias');
+        $idReferenciasExcluir = collect($infoReferencias)->pluck('iref_referencia');
+        $referenciasTodas = TItemcriteriosTodo::select('ite_referencia', 'ite_descripcion')->whereIn('ite_cod_tipoinv', [1052, 1053, 1055])->whereNotIn('ite_referencia', $idReferenciasExcluir)->where('ite_f121_ind_estado', 'Activo')->get();
+        $response = compact('infoReferencias', 'referenciasTodas');
         return response()->json($response);
     }
 
@@ -45,7 +48,16 @@ class RefProgramablesRecepController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+        $data['iref_referencia'] = $data['iref_referencia']['ite_referencia'];
+        if (isset($data['id'])) {
+            $resultado = TInfoReferencia::find($data['id'])->update($data);
+        }else{
+            $data['iref_programable'] = 'Programable';
+            $resultado = TInfoReferencia::create($data); 
+        }
+        
+        return response()->json($resultado);
     }
 
     /**
@@ -90,6 +102,7 @@ class RefProgramablesRecepController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $delete = TInfoReferencia::find($id)->delete();
+        return response()->json($delete);
     }
 }
