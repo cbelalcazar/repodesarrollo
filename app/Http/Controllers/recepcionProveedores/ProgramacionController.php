@@ -173,7 +173,7 @@ class ProgramacionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $lista = $refExcluir = array_pluck($request->all(), 'id');
+        $lista = array_pluck($request->all(), 'id');
         $datosModificar = TProgramacion::whereIn('id', $lista)->update(['prg_estado' => 2]);
         return response()->json($datosModificar);
     }

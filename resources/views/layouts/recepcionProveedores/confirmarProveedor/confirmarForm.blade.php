@@ -41,8 +41,8 @@
 
 								<div class="col-sm-12">
 									<div ng-if="alertas" class="col-sm-12">
-											<div class="alert alert-danger alert-dismissable">                       
-													<p ng-repeat="msj in mensajes">@{{msj[0]}}</p>              
+											<div class="alert alert-danger alert-dismissable">
+												<p ng-repeat="msj in mensajes">@{{msj[0]}}</p>              
 											</div>
 										</div>
 								</div>
@@ -67,7 +67,7 @@
 							</div>
 						</div>
 						<div class="modal-footer">  
-							<button class="btn btn-primary" ng-if="mostrarBotones" ng-click="confirmarCita()">
+							<button class="btn btn-primary" ng-if="mostrarBotones && obsRechazo == false" ng-click="confirmarCita()">
 								Confirmar
 							</button> 
 							<button class="btn btn-danger"  ng-if="mostrarBotones" ng-hide="obsRechazo"  ng-click="cambiaEstado()">

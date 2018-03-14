@@ -52,7 +52,7 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
      'prg_observacion'        : $scope.objeto.observacion,
      'prg_tipo_programacion'  : filtro[0].iref_programable,
      'prg_estado'             : 1,
-     'prg_centro_operacion'   : $scope.objeto.ordenObj.CO.trim()
+     'prg_centro_operacion'   : '99'
    }
    // Envia el objeto al controlador de laravel
    $http.post($scope.Url, $scope.objProg).then(function(response){
@@ -299,12 +299,8 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
     }
   }
 
-
-
-
   // FUNCIONES DEL AUTOCOMPLETE
-
-   // Funcion que filtra el array de proveedores por la palabra ingresada en el autocomplete y retorna el array filtrado
+  // Funcion que filtra el array de proveedores por la palabra ingresada en el autocomplete y retorna el array filtrado
   $scope.query = function(searchTextProveedor) { 
     console.log(searchTextProveedor);
     if(searchTextProveedor != ""){
@@ -329,6 +325,8 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
         $scope.progPendEnvio = angular.copy(res.progPendEnvio);
         $scope.infoReferencia = angular.copy(res.infoReferencia);
         $scope.progress = false;   
+    }, function(errorResponse){
+      $scope.getInfo();
     });
   }
 
