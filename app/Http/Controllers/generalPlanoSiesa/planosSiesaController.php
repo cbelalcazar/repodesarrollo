@@ -171,7 +171,7 @@ class planosSiesaController extends Controller
         if (!$err) {
             $response = $nusoap_client->call('ImportarXML', array('pvstrDatos' => $this->xmlCompleto, 'printTipoError' => 0), '', '', false, true);
             // dd($this->xmlCompleto);
-            dd($response);
+            dd($nusoap_client);
             return $response;
         }else{
             return $err;
