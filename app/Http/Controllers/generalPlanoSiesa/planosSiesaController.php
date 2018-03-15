@@ -49,7 +49,7 @@ class planosSiesaController extends Controller
 
         $this->txtXml .=  "<Linea>" . $inicio . $parametroDefaultCadena. "</Linea>";
         $this->txtPlano .= $inicio . $parametroDefaultCadena;
-        $this->txtPlano .= chr(13) . chr(10);
+        $this->txtPlano .= chr(13);
     }
 
     public function generarLineaFinal($longitudTotal = 18, $parametroDefaultCadena = '99990001001'){
@@ -118,10 +118,10 @@ class planosSiesaController extends Controller
             array_push($this->arrayErrores, "La cantidad de registros en base de datos es " . $cantReglasBd . " y la cantidad de registros enviados en arreglo es " . $cantReglasDefinidas . " Ambas deben tener la misma cantidad"); 
         }
 
-        $this->txtXml .= "</Linea>" .chr(13) . chr(10);
-        $this->txtXml .= chr(13) . chr(10);
-        $this->txtPlano .= chr(13) . chr(10);
-        $this->txtPlano .= chr(13) . chr(10);
+        $this->txtXml .= "</Linea>" .chr(13);
+        $this->txtXml .= chr(13);
+        $this->txtPlano .= chr(13);
+        $this->txtPlano .= chr(13);
 
         $arreglo[0]['arrayErrores'] = $this->arrayErrores;
         $arreglo[0]['txtLineaGenerada'] = $this->arrayErrores;
@@ -148,15 +148,15 @@ class planosSiesaController extends Controller
 
     public function generarLineatxt(){
 
-        $xml = "<Importar>" . chr(13) . chr(10);
-        $xml .= "<NombreConexion>". $this->nomConexion ."</NombreConexion>" . chr(13) . chr(10);
-        $xml .= "<IdCia>". $this->idCia . "</IdCia>" . chr(13) . chr(10);
-        $xml .= "<Usuario>" . $this->usuario .  "</Usuario>" . chr(13) . chr(10);
-        $xml .= "<Clave>" . $this->clave ."</Clave>" . chr(13) . chr(10);
-        $xml .= "<Datos>" . chr(13) . chr(10);
+        $xml = "<Importar>" . chr(13);
+        $xml .= "<NombreConexion>". $this->nomConexion ."</NombreConexion>" . chr(13);
+        $xml .= "<IdCia>". $this->idCia . "</IdCia>" . chr(13);
+        $xml .= "<Usuario>" . $this->usuario .  "</Usuario>" . chr(13);
+        $xml .= "<Clave>" . $this->clave ."</Clave>" . chr(13);
+        $xml .= "<Datos>" . chr(13);
         $xml .= $this->txtXml;
-        $xml .= "</Datos>" . chr(13) . chr(10);
-        $xml .= "</Importar>" . chr(13) . chr(10);
+        $xml .= "</Datos>" . chr(13);
+        $xml .= "</Importar>" . chr(13);
 
         return $xml;
     }
