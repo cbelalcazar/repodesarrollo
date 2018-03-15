@@ -322,6 +322,12 @@
 			</div>
 		</div>
 
+		<div class="alert alert-danger" ng-if="erroresNusoap.length > 0">
+			<ol>
+				<li ng-repeat="texto in erroresNusoap"> @{{texto}}</li>
+			</ol>
+		</div>
+
 		<div class="btn-group btn-group-justified">
 			<div class="btn-group">
 				<button class="btn btn-success" type="submit" ng-disabled="formulario.$invalid">Aprobar</button>

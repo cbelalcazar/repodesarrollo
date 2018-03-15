@@ -320,7 +320,7 @@ class docEntradaAlmacenController extends Controller
       $respuesta = $this->planoSiesaController->enviarNusoap();
       $respuesta = array_values($respuesta);
       if (isset($respuesta[0]['diffgram']['NewDataSet']['Table'])) {
-        $respuesta = collect($respuesta[0]['diffgram']['NewDataSet']['Table'])->pluck('f_detalle')->toArray();
+        $respuesta = collect($respuesta[0]['diffgram']['NewDataSet'])->pluck('f_detalle')->toArray();
         if (count($respuesta) > 0) {          
           $erroresNusoap = [];
           foreach ($respuesta as $key => $value) {
@@ -328,8 +328,9 @@ class docEntradaAlmacenController extends Controller
           }
         }
       }
-     
-      $response = compact('information', 'refAgrupadasPorOC', 'txtXml', 'txtPlano', 'listaLineas', 'erroresNusoap', 'lineaEncabezado', 'respuesta');
+
+      $url = route('docEntradaAlmacen.index');
+      $response = compact('information', 'refAgrupadasPorOC', 'txtXml', 'txtPlano', 'listaLineas', 'erroresNusoap', 'lineaEncabezado', 'url');
       return response()->json($response);
 
       // captura la informacion.

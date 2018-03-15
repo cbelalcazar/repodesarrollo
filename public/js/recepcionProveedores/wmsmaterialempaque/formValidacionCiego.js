@@ -10,6 +10,7 @@ app.controller('formValidacionCiegoCtrl', ['$scope', '$http', '$filter', '$mdDia
 	$scope.mensajes = false;
 	$scope.elemento = {};
 	$scope.ordenesSoloRefSeleccionada = [];
+	$scope.erroresNusoap = [];
 
 
 	// El get info se manda a ejecutar cuando se activa el evento ng-init que inicializa la variable con el id del documento ciego
@@ -69,9 +70,17 @@ app.controller('formValidacionCiegoCtrl', ['$scope', '$http', '$filter', '$mdDia
 
 	$scope.save = function(){
 		$scope.progress = true;
+		$scope.erroresNusoap = [];
 		$http.post($scope.urlGuardarEntrada, $scope.entrada).then(function(response){
 			res = response.data;
 			$scope.progress = false;
+			console.log(res.url);
+			if (res.erroresNusoap == undefined) {
+				$window.location = res.url;
+				console.log('recarga');
+			}else{
+				$scope.erroresNusoap = res.erroresNusoap;
+			}
 		});
 	}
 
