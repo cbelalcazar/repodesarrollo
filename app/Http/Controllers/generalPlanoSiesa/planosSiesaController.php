@@ -4,6 +4,7 @@ namespace App\Http\Controllers\generalPlanoSiesa;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use nusoap_client;
 
 class planosSiesaController extends Controller
 {
@@ -12,6 +13,7 @@ class planosSiesaController extends Controller
     public $arrayErrores;
     public $txtXml;
     public $txtPlano;
+    public $xmlCompleto;
 
     public $nomConexion = "pruebas";
     public $idCia = "1";
@@ -49,7 +51,6 @@ class planosSiesaController extends Controller
 
         $this->txtXml .=  "<Linea>" . $inicio . $parametroDefaultCadena. "</Linea>";
         $this->txtPlano .= $inicio . $parametroDefaultCadena;
-        $this->txtPlano .= chr(13);
     }
 
     public function generarLineaFinal($longitudTotal = 18, $parametroDefaultCadena = '99990001001'){
@@ -79,22 +80,23 @@ class planosSiesaController extends Controller
         $listaNew = $lista->map(function($value, $key){ 
 
             // Compara cada indice de la tabla con lo parametrizado en la tabla de la base de datos con el objetivo de validar la integridad del nombre
+          
             $encontrarRegla = collect($this->estructura)->where('dco_nombre', $key)->where('dco_grupo', $this->grupo)->values()->all();
+
             if (count($encontrarRegla) == 0) {
                 array_push($this->arrayErrores, "El elemento ". $key . " no coincide con ningun elemento de la base de datos"); 
             }else{
 
-                if ($value == 'default') {
+                if (strval($value) == 'default') {
                     $value = $this->convertirSegunTipoDato($encontrarRegla[0], $encontrarRegla[0]['dco_segmento']);
-                }elseif($value == 'vacio'){
+                }elseif(strval($value) == 'vacio'){
                     $value = $this->convertirSegunTipoDato($encontrarRegla[0], "");
-                }elseif($value == 'consecutivo'){
+                }elseif(strval($value) == 'consecutivo'){
                     $value = $this->convertirSegunTipoDato($encontrarRegla[0], $this->consecutivo);
                     $this->consecutivo++;
                 }else{
                     $value = $this->convertirSegunTipoDato($encontrarRegla[0], $value);
                 }
-
                 if (isset($value['error'])) {
                         array_push($this->arrayErrores, $value['error']); 
                 }
@@ -118,10 +120,7 @@ class planosSiesaController extends Controller
             array_push($this->arrayErrores, "La cantidad de registros en base de datos es " . $cantReglasBd . " y la cantidad de registros enviados en arreglo es " . $cantReglasDefinidas . " Ambas deben tener la misma cantidad"); 
         }
 
-        $this->txtXml .= "</Linea>" .chr(13);
-        $this->txtXml .= chr(13);
-        $this->txtPlano .= chr(13);
-        $this->txtPlano .= chr(13);
+        $this->txtXml .= "</Linea>";
 
         $arreglo[0]['arrayErrores'] = $this->arrayErrores;
         $arreglo[0]['txtLineaGenerada'] = $this->arrayErrores;
@@ -148,17 +147,36 @@ class planosSiesaController extends Controller
 
     public function generarLineatxt(){
 
-        $xml = "<Importar>" . chr(13);
-        $xml .= "<NombreConexion>". $this->nomConexion ."</NombreConexion>" . chr(13);
-        $xml .= "<IdCia>". $this->idCia . "</IdCia>" . chr(13);
-        $xml .= "<Usuario>" . $this->usuario .  "</Usuario>" . chr(13);
-        $xml .= "<Clave>" . $this->clave ."</Clave>" . chr(13);
-        $xml .= "<Datos>" . chr(13);
+        $xml = "<Importar>";
+        $xml .= "<NombreConexion>". $this->nomConexion ."</NombreConexion>";
+        $xml .= "<IdCia>". $this->idCia . "</IdCia>";
+        $xml .= "<Usuario>" . $this->usuario .  "</Usuario>";
+        $xml .= "<Clave>" . $this->clave ."</Clave>";
+        $xml .= "<Datos>";
         $xml .= $this->txtXml;
-        $xml .= "</Datos>" . chr(13);
-        $xml .= "</Importar>" . chr(13);
-
+        $xml .= "</Datos>";
+        $xml .= "</Importar>";
+        $this->xmlCompleto = $xml;
         return $xml;
+    }
+
+    public function enviarNusoap($url = null){      
+        if ($url == null) {
+            $url = env('WSUNOEE');
+        } 
+        $nusoap_client = new nusoap_client($url, true);
+ 
+        $err = $nusoap_client->getError();
+        
+        if (!$err) {
+            $response = $nusoap_client->call('ImportarXML', array('pvstrDatos' => $this->xmlCompleto, 'printTipoError' => 0), '', '', false, true);
+            // dd($this->xmlCompleto);
+            dd($response);
+            return $response;
+        }else{
+            return $err;
+        }
+        return true;
     }
 
 

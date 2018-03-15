@@ -317,9 +317,9 @@ class docEntradaAlmacenController extends Controller
       // Obtiene los txt generados en el proceso
       $txtXml = $this->planoSiesaController->generarLineaTxt();
       $txtPlano = $this->planoSiesaController->txtPlano;
-
+      $mensajeEnvioNusoap = $this->planoSiesaController->enviarNusoap();
       // Retorna la inforamcion 
-      $response = compact('information', 'refAgrupadasPorOC', 'txtXml', 'txtPlano', 'listaLineas');
+      $response = compact('information', 'refAgrupadasPorOC', 'txtXml', 'txtPlano', 'listaLineas', 'mensajeEnvioNusoap', 'lineaEncabezado');
       return response()->json($response);
 
       // captura la informacion.
