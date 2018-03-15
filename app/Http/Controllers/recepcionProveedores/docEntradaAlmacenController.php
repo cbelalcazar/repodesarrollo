@@ -317,9 +317,19 @@ class docEntradaAlmacenController extends Controller
       // Obtiene los txt generados en el proceso
       $txtXml = $this->planoSiesaController->generarLineaTxt();
       $txtPlano = $this->planoSiesaController->txtPlano;
-      $mensajeEnvioNusoap = $this->planoSiesaController->enviarNusoap();
-      // Retorna la inforamcion 
-      $response = compact('information', 'refAgrupadasPorOC', 'txtXml', 'txtPlano', 'listaLineas', 'mensajeEnvioNusoap', 'lineaEncabezado');
+      $respuesta = $this->planoSiesaController->enviarNusoap();
+      $respuesta = array_values($respuesta);
+      if (isset($respuesta[0]['diffgram']['NewDataSet']['Table'])) {
+        $respuesta = collect($respuesta[0]['diffgram']['NewDataSet']['Table'])->pluck('f_detalle')->toArray();
+        if (count($respuesta) > 0) {          
+          $erroresNusoap = [];
+          foreach ($respuesta as $key => $value) {
+            array_push($erroresNusoap, utf8_decode($value));
+          }
+        }
+      }
+     
+      $response = compact('information', 'refAgrupadasPorOC', 'txtXml', 'txtPlano', 'listaLineas', 'erroresNusoap', 'lineaEncabezado', 'respuesta');
       return response()->json($response);
 
       // captura la informacion.

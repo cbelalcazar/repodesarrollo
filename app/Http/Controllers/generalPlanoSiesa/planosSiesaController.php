@@ -15,7 +15,7 @@ class planosSiesaController extends Controller
     public $txtPlano;
     public $xmlCompleto;
 
-    public $nomConexion = "pruebas";
+    public $nomConexion = "erp_prueba";
     public $idCia = "1";
     public $usuario = "oolaya";
     public $clave = "year2015";
@@ -170,13 +170,10 @@ class planosSiesaController extends Controller
         
         if (!$err) {
             $response = $nusoap_client->call('ImportarXML', array('pvstrDatos' => $this->xmlCompleto, 'printTipoError' => 0), '', '', false, true);
-            // dd($this->xmlCompleto);
-            dd($nusoap_client);
             return $response;
         }else{
             return $err;
         }
-        return true;
     }
 
 
