@@ -21,19 +21,27 @@
 							</md-tooltip>
 						</button>
 
-						<button type="button"  class="btn btn-info btn-sm" ng-click="cambiaEstado()">
+						<button ng-disabled="progSelected.length == 0" type="button"  class="btn btn-info btn-sm" ng-click="cambiaEstado()">
 							<i class="glyphicon glyphicon-gift"></i> Enviar a bodega
 							<md-tooltip md-direction="bottom">
 								Enviar programacion a solicitud cita
 							</md-tooltip>
 						</button>
 
-						<button type="button"  class="btn btn-danger btn-sm" ng-click="eliminarSeleccionadas($event)">
+						<button ng-disabled="progSelected.length == 0" type="button"  class="btn btn-danger btn-sm" ng-click="eliminarSeleccionadas($event)">
 							<i class="glyphicon glyphicon-trash"></i> Eliminar seleccionadas
 							<md-tooltip md-direction="bottom">
 								Eliminar todas las ordenes programaciones seleccionadas
 							</md-tooltip>
 						</button>
+
+						<button ng-disabled="progSelected.length == 0" type="button"  class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal2" ng-click="">
+							<i class="glyphicon glyphicon-send"></i> Fecha y Envia
+							<md-tooltip md-direction="bottom">
+								Cambia las programaciones marcadas y las envia a la bodega
+							</md-tooltip>
+						</button>
+
 
 
 						<br><br>
@@ -134,6 +142,7 @@
 </div>
 
 @include('layouts.recepcionProveedores.programacion.programacionForm')
+@include('layouts.recepcionProveedores.programacion.cambiaFechaForm')
 <div ng-if="progress" class="progress">
 	<md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
 </div>

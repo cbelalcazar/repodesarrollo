@@ -95,29 +95,21 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
 
   }
 
-  $scope.cambiaEstado = function(){
-    $scope.progress = true;     
-    if ($scope.progSelected.length > 0) {
-      $http.put($scope.Url + '/2', $scope.progSelected).then(function(response){
-        $scope.getInfo();   
-        $scope.progSelected = [];
-      }, function(response){
-        alert(response.statusText + "  ["+ response.status + "]");
-      });
-    }else{
-      $scope.progress = false; 
-      alert = $mdDialog.alert({
-        title: 'Favor seleccionar al menos un elemento',
-        textContent: '',
-        ok: 'Cerrar'
-      });
-      $mdDialog
-        .show(alert)
-        .finally(function() {
-          alert = undefined;
-        });
-      
-    }
+  $scope.cambiaEstado = function(fechaNueva = null){
+    $scope.progress = true; 
+    $scope.objetoEnvio = {};
+    $scope.objetoEnvio.progSelected = $scope.progSelected;
+    if (fechaNueva != null) {
+      $scope.objetoEnvio.fechaNueva = fechaNueva;
+    }   
+    $http.put($scope.Url + '/2', $scope.objetoEnvio).then(function(response){
+      $scope.getInfo();   
+      console.log(response.data);
+      $scope.progSelected = [];
+      $scope.objetoEnvio = {};
+    }, function(response){
+      alert(response.statusText + "  ["+ response.status + "]");
+    });
   }
 
   $scope.edit = function(obj){
@@ -447,6 +439,10 @@ app.controller('programacionCtrl', ['$scope', '$timeout', '$http', '$filter', 'D
 
   $scope.filtroDobleEstado = function(item){
     return item.prg_estado === 1 || item.prg_estado === 4; 
+  }
+
+  $scope.cambiaFechaProgs = function(){
+    $scope.cambiaEstado($scope.fechaNueva);
   }
 
 }]);

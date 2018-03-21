@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,6 +11,7 @@
 |
 */
 Route::get('login', ['uses' => 'Auth\LoginController@showLoginForm', 'as' => 'login']);
+Route::get('loginProv', ['uses' => 'Auth\LoginController@showLoginFormProv', 'as' => 'login']);
 Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', ['uses' => 'Auth\LoginController@logout', 'as' => 'logout']);
 Route::get('logout', ['uses' => 'Auth\LoginController@logout', 'as' => 'logout']);
@@ -25,6 +26,7 @@ Route::group(['middleware' => ['auth']], function () {
 	});
 
 	Route::get('home', function () {
+		dd(Auth::user());
 		return redirect(env('APPV1_URL'));
 	});
 
@@ -45,6 +47,7 @@ Route::group(['middleware' => ['auth']], function () {
 		// Solicitud cita
 		Route::resource('cita', 'recepcionProveedores\CitaController', ['only' => ['index', 'update', 'store']]);
 		Route::get('citaGetInfo', 'recepcionProveedores\CitaController@citaGetInfo');		
+		Route::get('indexVisualCitas', 'recepcionProveedores\CitaController@indexVisualCitas');	
 		Route::post('consultaProg', 'recepcionProveedores\CitaController@consultaProg');
 
 		// Tarea generar citas proveedores 

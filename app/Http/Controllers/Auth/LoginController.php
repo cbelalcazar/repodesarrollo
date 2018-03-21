@@ -45,6 +45,10 @@ class LoginController extends Controller
         $this->middleware('guest', ['except' => 'logout']);
     }
 
+    public function showLoginFormProv(){
+        return view('auth.loginProv');
+    }
+
     /**
      * Override the username method used to validate login
      *

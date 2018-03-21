@@ -24,6 +24,18 @@ class CitaController extends Controller
         return view('layouts.recepcionProveedores.cita.citaIndex', compact('titulo', 'ruta'));
     }
 
+    /**
+     * Display calendar visual
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexVisualCitas()
+    {
+        $titulo = 'CALENDARIO DE CITAS';
+        $ruta = 'Cita // Calendario de Citas';
+        return view('layouts.recepcionProveedores.cita.citaIndexVisual', compact('titulo', 'ruta'));
+    }
+
      /**
      * Respuesta JSON a la peticion ajax que solicita los proveedores las programaciones creadas cuando se carga por primera ves la vista
      *

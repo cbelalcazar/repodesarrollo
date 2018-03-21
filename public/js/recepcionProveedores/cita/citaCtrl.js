@@ -54,8 +54,8 @@ $scope.seleccionar = function(obj){
             uiCalendarConfig.calendars.myCalendar.fullCalendar('renderEvent', objParse);            
             // Si esta confirmada es negro #343a40
             if (objParse.estado == 'CONFIRMADA') {
-                objParse.backgroundColor = "#343a40";
-                objParse.borderColor = "#343a40";
+                objParse.backgroundColor = "green";
+                objParse.borderColor = "green";
                 objParse.description = "Cita confirmada";
                 return objParse;
             }else{

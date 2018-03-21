@@ -37,7 +37,7 @@ class citaProveedor extends Mailable
        $cita = $this->cita;
        $nombre = $cita['cit_nombreproveedor'];
        $fecha = Carbon::parse($cita['cit_fechainicio'])->format('d-m-Y');
-       $hora = Carbon::parse($cita['cit_fechainicio'])->format('h:m');
+       $hora = Carbon::parse($cita['cit_fechainicio'])->format('h:i:s A');
        $programaciones = collect($cita['programaciones']);
        $programaciones = $programaciones->groupBy('prg_num_orden_compra');
 

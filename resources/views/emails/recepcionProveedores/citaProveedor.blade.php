@@ -19,7 +19,7 @@
   </style>
 
   <p style="{{ $style['body-line'] }}">
-  La empresa <strong>Belleza Express S.A.</strong> solicita al proveedor {{$nombre}} realizar la entrega de las mercancías a continuación mencionadas en la fecha: {{ $fecha }} hora: {{ $hora }}:
+  La empresa <strong>Belleza Express S.A.</strong> solicita al proveedor {{$nombre}} realizar la entrega de las mercancías a continuación mencionadas en la fecha: {{ $fecha }} hora: {{ $hora }}
   </p>
   <p style="{{ $style['body-line'] }}"><strong>Detalle de la cita</strong></p>
   @foreach($programaciones as $key => $value)

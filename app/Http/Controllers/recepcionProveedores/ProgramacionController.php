@@ -173,9 +173,15 @@ class ProgramacionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $lista = array_pluck($request->all(), 'id');
-        $datosModificar = TProgramacion::whereIn('id', $lista)->update(['prg_estado' => 2]);
-        return response()->json($datosModificar);
+        $data = $request->all();
+        $lista = array_pluck($data['progSelected'], 'id');
+        if (isset($data['fechaNueva'])) {   
+            $date = Carbon::parse($data['fechaNueva'])->format('Y-m-d');         
+            $datosModificar = TProgramacion::whereIn('id', $lista)->update(['prg_estado' => 2, 'prg_fecha_programada' => $date]);
+        }else{
+            $datosModificar = TProgramacion::whereIn('id', $lista)->update(['prg_estado' => 2]);
+        }
+        return response()->json($data);
     }
 
     /**
