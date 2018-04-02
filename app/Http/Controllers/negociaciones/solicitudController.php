@@ -95,7 +95,7 @@ class solicitudController extends Controller
         $eventoTemp = EventoTemp::where('evt_estado', 1)->get();
 
         // Busco en la tabla t_keyaccount si la persona que crea esta ahi entonces es KAM
-        $consultaKam = TKeyAccount::with('cliente')->where('kea_idTercero_res', $usuario['idTerceroUsuario'])->get();
+        $consultaKam = TKeyAccount::with('cliente')->where([['kea_idTercero_res', $usuario['idTerceroUsuario']], ['kea_estado', 1]])->get();
         $VendedorSucursales = [];
         if (count($consultaKam) > 0) {
             $idClientesKam = collect($consultaKam)->pluck('cliente.cli_id')->all();
