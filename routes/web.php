@@ -26,7 +26,6 @@ Route::group(['middleware' => ['auth']], function () {
 	});
 
 	Route::get('home', function () {
-		dd(Auth::user());
 		return redirect(env('APPV1_URL'));
 	});
 
