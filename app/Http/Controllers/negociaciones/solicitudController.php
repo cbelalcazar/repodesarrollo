@@ -400,7 +400,9 @@ class solicitudController extends Controller
 
     public function crearSoliCostos($obj, $negociacion){
         $obj['soc_formapago'] = $obj['soc_formapago']['id'];
-        $obj['soc_denominacionbono'] = $obj['soc_denominacionbono']['bonos_terc']['tbt_id'];
+        if (isset($obj['soc_denominacionbono'])) {
+            $obj['soc_denominacionbono'] = $obj['soc_denominacionbono']['bonos_terc']['tbt_id'];
+        }       
         $negociacion->costo()->create($obj);
         return $negociacion;
     }
