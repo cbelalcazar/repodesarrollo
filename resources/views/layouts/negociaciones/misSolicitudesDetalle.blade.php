@@ -56,7 +56,7 @@
                     </thead>
                     <!--Ingresar informacion historica de la solicitud-->
                     <tbody>
-                      <tr ng-if="infoSolicitud.his_proceso.length != 0" ng-repeat="historico in infoSolicitud.his_proceso | orderBy:'-sen_fechaenvio' | filter : {sen_estadoenvio: '!2'}">
+                      <tr ng-if="infoSolicitud.his_proceso.length != 0" ng-repeat="(key, historico) in infoSolicitud.his_proceso | orderBy:'-sen_fechaenvio' | filter : {sen_estadoenvio: '!2'}" ng-class="key == 0 ? 'success' : '' ">
                         <td>@{{historico.sen_fechaenvio}}</td>
                         <td>@{{historico.estado_his_proceso.ser_descripcion}}</td>
                         <td>@{{historico.tercero_envia.razonSocialTercero}}</td>

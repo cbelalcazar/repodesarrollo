@@ -288,7 +288,7 @@ class solicitudController extends Controller
                             $objTSolEnvioNego['sen_ser_id'] = 2;
                             $objTSolEnvioNego['sen_idTercero_envia'] = $pernivel['pen_cedula'];
                             $objTSolEnvioNego['sen_idTercero_recibe'] = $padre['pen_cedula'];
-                            $objTSolEnvioNego['sen_observacion'] = $data['sol_observaciones']; 
+                            $objTSolEnvioNego['sen_observacion'] = $data['objObjetivos']['soo_observacion']; 
                             $objTSolEnvioNego['sen_fechaenvio'] = Carbon::now()->toDateTimeString();  
                             $objTSolEnvioNego['sen_estadoenvio'] = 1;
                             $objTSolEnvioNego['sen_run_id'] = null;
