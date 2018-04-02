@@ -42,4 +42,12 @@ class Tercero extends Model
     public function tclientetcc(){
         return $this->hasOne('App\Models\Genericas\TCliente', 'ter_id', 'idTercero');
     }
+
+    public function contacto(){
+        return $this->hasOne('App\Models\Genericas\Contacto', 'idContacto', 'idContactoTercero');
+    }
+    
+    public function usuario(){
+        return $this->hasOne('App\Models\aplicativos\User', 'idTerceroUsuario', 'idTercero');
+    }
 }

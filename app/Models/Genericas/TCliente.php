@@ -36,4 +36,7 @@ class TCliente extends Model
     public function tercerotcc(){
         return $this->hasOne('App\Models\Genericas\Tercero','idTercero', 'ter_id');
     }
+    public function tercero(){
+        return $this->hasOne('App\Models\Genericas\Tercero', 'idTercero', 'ter_id');
+    }
 }

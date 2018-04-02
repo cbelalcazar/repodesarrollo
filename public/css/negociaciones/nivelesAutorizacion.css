@@ -1,0 +1,20 @@
+md-content.content-tab-padre {
+    height: 70vh !important;
+}
+ 
+md-content.content-tab-hijos {
+    height: 46vh !important;
+}
+ 
+md-tabs:not(.md-no-tab-content):not(.md-dynamic-height).tabsConfigured {
+   min-height: 350px !important;
+}
+ 
+md-tabs:not(.md-no-tab-content):not(.md-dynamic-height).tabsConfigured-slim {
+   min-height: 356px !important;
+} 
+ 
+.letraRoja {
+	color:red !important;
+}
+ 

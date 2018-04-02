@@ -20,4 +20,8 @@ class TListaPrecios extends Model
         'lis_txt_descrip',
         'lis_txt_moneda'
     ];
+
+    public function getLisIdAttribute($value){
+        return trim($value);
+    }
 }
