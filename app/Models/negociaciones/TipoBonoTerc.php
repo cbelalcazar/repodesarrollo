@@ -13,8 +13,13 @@ class TipoBonoTerc extends Model
 
     protected $table = 't_tipobonoterc';
 
+    public $incrementing = true;
+
+    protected $primaryKey = 'tbt_id';
+
+    public $timestamps = false;
+
     protected $fillable = [
-        'tbt_id',
         'tbt_tib_id',  
         'tbt_idTercero',  
         'tbt_estado',

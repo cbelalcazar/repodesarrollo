@@ -13,10 +13,19 @@ class TipoBono extends Model
 
     protected $table = 't_tipobono';
 
+    public $incrementing = true;
+
+    protected $primaryKey = 'tib_id';
+
+    public $timestamps = false;
+
     protected $fillable = [
-        'tib_id',  
         'tib_descripcion',  
         'tib_estado',
     ];
+
+    public function bonosTerc(){
+      return $this->hasOne('App\Models\negociaciones\TipoBonoTerc', 'tbt_tib_id', 'tib_id');
+    }
 
 }

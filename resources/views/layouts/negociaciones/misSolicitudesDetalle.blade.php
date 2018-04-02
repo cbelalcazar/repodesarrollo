@@ -185,34 +185,33 @@
                       </div>
                     </div>
                   </div>
-                  <label>Tipo de Negociación</label>
+                  <label>Tipo de Negociación</label>                 
                   <!--Panel No.2-->
-                  <div class="panel panel-primary">
-                    <div class="panel-heading">
-                      <div class="row">
-                        <div class="col-md-9">Descripción</div>
-                        <div class="col-md-3" align="center">Costo</div>
-                      </div>
-                    </div>
-                    <div class="panel-body">
-                      <div class="row" ng-if="infoSolicitud.soli_tipo_nego.length == 0">
-                        <div class="col-md-12">No se encontraron registros</div>
-                      </div>
-                      <div class="row" ng-repeat="tipoNego in infoSolicitud.soli_tipo_nego">
-                        <div class="col-md-9">@{{tipoNego.tipo_nego.tin_descripcion}}</div>
-                        <div class="col-md-2" align="right">@{{tipoNego.stn_costo | currency : "$" : 2}}</div>
-                        <div class="col-md-1"></div>
-                      </div>
-                    </div>
-                    <div class="panel-footer">
-                      <div class="row">
-                        <div class="col-md-8"></div>
-                        <div class="col-md-1" align="right"><label>Total:</label></div>
-                        <div class="col-md-2" align="right"><label>@{{infoSolicitud.soli_tipo_nego | map : 'stn_costo' | sum | currency : "$" : 2}}</label></div>
-                        <div class="col-sm-1"></div>
-                      </div>
-                    </div>
-                  </div>
+                  <table class="table table-bordered">
+                    <thead>
+                        <tr style="background-color: #337ab7; color:white">
+                          <th>Descripción</th>
+                          <th>Tipo de Servicio</th>
+                          <th>Costo Antes de Impuestos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-if="infoSolicitud.soli_tipo_nego.length == 0">
+                        <td colspan="12">No se encontraron registros</td>
+                      </tr>
+                      <tr ng-repeat="tipoNego in infoSolicitud.soli_tipo_nego">
+                        <td>@{{tipoNego.tipo_nego.tin_descripcion}}</td>
+                        <td>@{{tipoNego.tipo_servicio['ser_descripcion']}}</td>
+                        <td>@{{tipoNego.stn_costo | currency : "$" : 2}}</td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="2">Total:</td>
+                        <td>@{{infoSolicitud.soli_tipo_nego | map : 'stn_costo' | sum | currency : "$" : 2}}</td>
+                      </tr>
+                    </tfoot>
+                  </table>
                   <label>Causales de Negociación</label>
                   <!--Panel No.3-->
                   <div class="panel panel-primary">

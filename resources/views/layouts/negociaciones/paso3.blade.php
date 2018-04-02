@@ -57,43 +57,55 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Costo de la Negociación</label>
-                                <input type="text" class="form-control" disabled  format="currency" ng-model="objObjetivos.soo_costonego">
+                                <input type="text" style="text-align: right;" class="form-control" disabled  format="currency" ng-model="objObjetivos.soo_costonego">
                             </div>
                              <div class="form-group">
                                 <label>Venta Promedio Mes Lineas Periodo Comparación</label>
-                                <input type="text"  class="form-control" disabled format="currency" ng-model="objObjetivos.soo_venpromeslin">
+                                <input type="text" style="text-align: right;"  class="form-control" disabled format="currency" ng-model="objObjetivos.soo_venpromeslin">
+                                    <md-tooltip md-direction="bottom">Suma de la venta de las lineas</md-tooltip>
+                                </input>
                             </div>
                             <div class="form-group">
                                 <label>Venta Estimada Lineas</label>
-                                <input type="text"  class="form-control" format="currency" ng-model="objObjetivos.soo_venestlin" ng-change="recalcularVentaEstimadaLineas()">
+                                <input type="text" style="text-align: right;"  class="form-control" format="currency" ng-model="objObjetivos.soo_venestlin" ng-change="recalcularVentaEstimadaLineas()">
                             </div>
                              <div class="form-group">
                                 <label>Venta Marginal Lineas</label>
-                                <input type="text"  class="form-control" disabled format="currency" ng-model="objObjetivos.soo_ventmargilin">
+                                <input type="text" style="text-align: right;"  class="form-control" disabled format="currency" ng-model="objObjetivos.soo_ventmargilin">
+                                    <md-tooltip md-direction="bottom">Venta Estimada Lineas - (Venta Promedio Mes Lineas * Meses Periodo Facturación)</md-tooltip>
+                                </input>
                             </div>
                         </div>
                         <div class="col-sm-6">
                              <div class="form-group">
                                 <label>% de Inversion Sobre la Venta Estimada Lineas</label>
-                                <input type="text" class="form-control" disabled ng-model="objObjetivos.soo_pinventaestiline">
+                                <input type="text" style="text-align: right;" class="form-control" disabled ng-model="objObjetivos.soo_pinventaestiline">
+                                    <md-tooltip md-direction="bottom">(Costo de la Negociación ÷ Venta Estimada Lineas) * 100%</md-tooltip>
+                                </input>
                             </div>
                              <div class="form-group">
                                 <label>Venta Promedio Mes Lineas a Activar (ultimos 6 meses)</label>
-                                <input type="text"  class="form-control" disabled format="currency" ng-model="objObjetivos.soo_venprolin6m">
+                                <input type="text" style="text-align: right;"  class="form-control" disabled format="currency" ng-model="objObjetivos.soo_venprolin6m">
+                                    <md-tooltip md-direction="bottom">El valor se calcula con la fecha de creacion de la negociacion</md-tooltip>
+                                </input>
                             </div>
                             <div class="form-group">
                                 <label>% Crecimiento Estimado Lineas</label>
-                                <input type="text"  class="form-control" disabled ng-model="objObjetivos.soo_pcrelin">
+                                <input type="text" style="text-align: right;"  class="form-control" disabled ng-model="objObjetivos.soo_pcrelin">
+                                    <md-tooltip md-direction="bottom">(Venta Marginal Lineas ÷ (Venta Promedio Mes Lineas * Meses de Facturacion) ) * 100%</md-tooltip>
+                                </input>
                             </div>
                              <div class="form-group">
                                 <label>% de Inversión sobre la Venta Marginal Lineas</label>
-                                <input type="text"  class="form-control" disabled ng-model="objObjetivos.soo_pvenmarlin">
+                                <input type="text" style="text-align: right;" class="form-control" disabled ng-model="objObjetivos.soo_pvenmarlin">
+                                    <md-tooltip md-direction="bottom">(Costo de la Negociación ÷ Venta Marginal Lineas) * 100%</md-tooltip>
+                                </input>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="panel panel-primary">
+                <div class="panel panel-primary" ng-if="false">
                     <div class="panel-heading">
                         Datos Valores Adicionales
                     </div>
@@ -129,39 +141,41 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Datos Informativos Total Cliente Venta Promedio Mes Total Cliente Periodo Comparación</label>
-                                <input type="text" class="form-control" disabled  format="currency" ng-model="objObjetivos.soo_ventapromtotal" format="currency">
+                                <input type="text" style="text-align: right;" class="form-control" disabled  format="currency" ng-model="objObjetivos.soo_ventapromtotal" format="currency">
+                                    <md-tooltip md-direction="bottom">Venta total cliente en el periodo de comparacion / no. meses del periodo de comparacion</md-tooltip>
+                                </input>
                             </div>
                              <div class="form-group">
                                 <label><strong>Venta estimada del total cliente *</strong></label>
-                                <input type="text"  class="form-control" required format="currency" ng-change="calcularCrecimientoEstimadoCliente()" ng-model="objObjetivos.soo_ventaestitotal">
+                                <input type="text" style="text-align: right;"  class="form-control" required format="currency" ng-change="calcularCrecimientoEstimadoCliente()" ng-model="objObjetivos.soo_ventaestitotal">
                             </div>
                             <div class="form-group">
                                 <label>Venta Marginal Cliente</label>
-                                <input type="text"  class="form-control"  format="currency" disabled ng-model="objObjetivos.soo_ventamargi">
+                                <input type="text" style="text-align: right;" class="form-control"  format="currency" disabled ng-model="objObjetivos.soo_ventamargi">
                             </div>
                         </div>
                         <div class="col-sm-6">
                              <div class="form-group">
                                 <label> Venta Promedio Mes Total Cliente (ultimos 6 meses)</label>
-                                <input type="text" class="form-control"  format="currency" disabled ng-model="objObjetivos.soo_ventapromseisme">
+                                <input type="text" style="text-align: right;" class="form-control"  format="currency" disabled ng-model="objObjetivos.soo_ventapromseisme">
                             </div>
                              <div class="form-group">
                                 <label>% Crecimiento Estimado cliente</label>
-                                <input type="text"  class="form-control" disabled ng-model="objObjetivos.soo_pcreciestima">
+                                <input type="text" style="text-align: right;" class="form-control" disabled ng-model="objObjetivos.soo_pcreciestima">
                             </div>
                             <div class="form-group">
                                 <label>% de Inversión sobre la Venta Estimada Total Cliente</label>
-                                <input type="text"  class="form-control" disabled ng-model="objObjetivos.soo_pinverestima">
+                                <input type="text" style="text-align: right;" class="form-control" disabled ng-model="objObjetivos.soo_pinverestima">
                             </div>
                              <div class="form-group">
                                 <label>% de Inversión sobre la Venta Marginal Lineas</label>
-                                <input type="text"  class="form-control" disabled ng-model="objObjetivos.soo_pinvermargi">
+                                <input type="text" style="text-align: right;" class="form-control" disabled ng-model="objObjetivos.soo_pinvermargi">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="panel panel-primary">
+                <div class="panel panel-primary" ng-if="false">
                     <div class="panel-heading">
                         Datos Informativos lineas no incluidas
                     </div>
@@ -218,6 +232,7 @@
                         <div class="col-sm-2">
                             <button  ng-click="siguiente='grabar.3'" type="submit" class="btn btn-success btn-circle btn-lg  pull-right">
                                 <i class="glyphicon glyphicon-floppy-save"></i>
+                                <md-tooltip md-direction="left">GUARDAR</md-tooltip>
                             </button>
                         </div>                                  
                     <!-- end btn save -->
@@ -225,6 +240,7 @@
                         <div class="col-sm-6">
                             <button  ng-click="siguiente='elaboracion'" type="submit" class="btn btn-primary btn-lg  btn-circle pull-right">
                                 <i class="glyphicon glyphicon-saved"></i>Enviar a Aprobar
+                                <md-tooltip md-direction="left">GUARDAR Y ENVIAR LA SOLICITUD A APROBACIÓN</md-tooltip>
                             </button>
                         </div>                                  
                     <!-- end btn save -->

@@ -122,6 +122,7 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 			$scope.canales = angular.copy(res.canales);
 			$scope.VendedorSucursales = angular.copy(res.VendedorSucursales);
 			$scope.baseImpuesto = angular.copy(res.baseImpuesto);
+			$scope.tipoBono = angular.copy(res.tipoBono);
 			if ($scope.VendedorSucursales == null) {
 					$scope.progress = false;
 					$scope.errorMsge = 'El usuario no tiene sucursales activas';
@@ -228,17 +229,17 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 				$scope.objCostos.soc_reteica = $scope.calcularReteIca();
 				$scope.objCostos.soc_reteiva = $scope.calcularReteIva();
 				$scope.objCostos.soc_total = $scope.objCostos.soc_subtotalcliente - $scope.objCostos.soc_retefte - $scope.objCostos.soc_reteica - $scope.objCostos.soc_reteiva;
-
+				$scope.objCostos.soc_formapago = "";
 				$scope.objeto.causal = $scope.objeto.causal.map(function(object){
 					object.scn_can_id = $filter('filter')($scope.causalesNego, {can_id : object.scn_can_id})[0];
 					$scope.causalesNego = $filter('removeWith')($scope.causalesNego, {can_id : object.scn_can_id.can_id});
 					return object;
 				});
 				$scope.arrayCausalNegociacion = $scope.objeto.causal;
-
-				$scope.objCostos.soc_formapago =  $filter('filter')($scope.formaPago, {id : $scope.objCostos.soc_formapago})[0];
-
 				if ($scope.objeto.costo != null) {
+					$scope.objCostos.soc_formapago = $filter('filter')($scope.formaPago, {id : $scope.objeto.costo.soc_formapago})[0];
+					console.log($scope.objeto.costo);
+					$scope.objCostos.soc_denominacionbono = $filter('filter')($scope.tipoBono, {bonos_terc : { tbt_id : $scope.objeto.costo.soc_denominacionbono}})[0];
 					$scope.arrayLineas = $scope.objeto.costo.lineas.map(function(object){
 						object.porcentParti = object.scl_ppart;
 						var lineaObj1 = $filter('filter')($scope.lineasTodas, {lin_id : object.scl_lin_id})[0];
@@ -541,8 +542,6 @@ app.controller('solicitudCtrl', ['$scope', '$http', '$filter', '$mdDialog', '$q'
 			element.descripcionConId = element.suc_num_codigo + " - " + element.suc_txt_nombre + " - " + element.suc_txt_direccion;
 			return element;
 		});
-		console.log('oyyooooo');
-		console.log($scope.nuevoFiltrado);
 	}
 
 	$scope.agregarSucursales = function(){

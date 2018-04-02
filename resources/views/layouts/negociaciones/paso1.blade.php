@@ -140,7 +140,7 @@
 								</tr>
 								<tr ng-repeat="(key, value) in arrayZona">
 									<td>@{{value.szn_coc_id.cen_txt_descripcion}}</td>
-									<td>@{{value.szn_ppart}}</td>
+									<td>@{{value.szn_ppart}}%</td>
 									<td>
 										<button type="button" class="btn btn-danger btn-sm" ng-click="removeZona(value)"><i class="glyphicon glyphicon-remove"></i></button>
 									</td>
@@ -333,8 +333,8 @@
 							<thead>
 								<tr>
 									<th>Descripción</th>
-									<th>Tipo de servicio</th>
-									<th>Costo</th>
+									<th>Tipo de Servicio</th>
+									<th>Costo Antes de Impuestos</th>
 									<th>Acción</th>
 								</tr>											
 							</thead>
@@ -380,7 +380,7 @@
 								<tr ng-repeat="(key, value) in arrayTipoNegociacion">
 									<td>@{{value.stn_tin_id.tin_descripcion}}</td>
 									<td>@{{value.stn_ser_id.ser_descripcion}}</td>
-									<td>@{{value.stn_costo}}</td>
+									<td>@{{value.stn_costo  | currency : "$" : 2}}</td>
 									<td>
 										<button type="button" class="btn btn-danger btn-sm" ng-click="removeTipoNegociacion(value)"><i class="glyphicon glyphicon-remove"></i></button>
 									</td>
@@ -452,8 +452,8 @@
 					<!-- btn Save -->
 						<div class="col-sm-8"></div>
 						<div class="col-sm-2">
-							<button ng-click="siguiente='grabar.1'" type="submit" class="btn btn-success btn-circle btn-lg  pull-right">
-								<i class="glyphicon glyphicon-floppy-save"></i>
+							<button ng-click="siguiente='grabar.1'" type="submit" class="btn btn-success btn-circle btn-lg  pull-right"><i class="glyphicon glyphicon-floppy-save"></i>
+                             	<md-tooltip md-direction="left">GUARDAR</md-tooltip>
 							</button>
 						</div>									
 					<!-- end btn save -->
@@ -461,6 +461,7 @@
 						<div class="col-sm-2">
 							<button  ng-click="siguiente='adelante.1'"  type="submit" class="btn btn-primary btn-circle btn-lg  pull-right">
 								<i class="glyphicon glyphicon-chevron-right"></i>
+                             	<md-tooltip md-direction="left">GUARDAR Y CONTINUAR A PESTAÑA INFORMACIÓN DE COSTOS</md-tooltip>
 							</button>
 						</div>										
 					<!-- end btn adelante -->

@@ -28,6 +28,7 @@ use App\Models\negociaciones\TSoliCostosLineas;
 use App\Models\negociaciones\TSolEnvioNego;
 use App\Models\negociaciones\TSoliObjetivos;
 use App\Models\negociaciones\TKeyAccount;
+use App\Models\negociaciones\TipoBono;
 use App\Models\Genericas\TVendedor;
 use App\Models\Genericas\TCanal;
 use App\Models\Genericas\TCliente;
@@ -137,9 +138,11 @@ class solicitudController extends Controller
         $lineas = TLineas::with('categorias')->get();
         // Base impuesto
         $baseImpuesto = TBaseImpuesto::all();
+        // Tipo de bono 
+        $tipoBono = TipoBono::with('bonosTerc')->where('tib_estado', 1)->get();
 
 
-        $response = compact('usuario', 'claseNegociacion', 'negoAnoAnterior', 'tipNegociacion', 'VendedorSucursales', 'canales', 'clientes', 'idClientes', 'negociacionPara', 'agruZonasSucursal', 'zonas', 'listaPrecios', 'eventoTemp', 'tipoDeNegociacion', 'tipoDeServicio', 'causalesNego', 'objeto', 'clientesTodos', 'urlMisSolicitudes', 'formaPago', 'lineas', 'baseImpuesto', 'consultaKam', 'idClientesKam');
+        $response = compact('usuario', 'claseNegociacion', 'negoAnoAnterior', 'tipNegociacion', 'VendedorSucursales', 'canales', 'clientes', 'idClientes', 'negociacionPara', 'agruZonasSucursal', 'zonas', 'listaPrecios', 'eventoTemp', 'tipoDeNegociacion', 'tipoDeServicio', 'causalesNego', 'objeto', 'clientesTodos', 'urlMisSolicitudes', 'formaPago', 'lineas', 'baseImpuesto', 'consultaKam', 'idClientesKam', 'tipoBono');
         return response()->json($response);
     }
 
@@ -397,6 +400,7 @@ class solicitudController extends Controller
 
     public function crearSoliCostos($obj, $negociacion){
         $obj['soc_formapago'] = $obj['soc_formapago']['id'];
+        $obj['soc_denominacionbono'] = $obj['soc_denominacionbono']['bonos_terc']['tbt_id'];
         $negociacion->costo()->create($obj);
         return $negociacion;
     }
