@@ -35,6 +35,7 @@ class Tercero extends Model
         'indxEstadoTercero'
     ];
 
+<<<<<<< HEAD
     public function boomerang(){
         return $this->hasOne('App\Models\tccws\TClientesBoomerang', 'clb_idTercero', 'idTercero');
     }
@@ -42,4 +43,15 @@ class Tercero extends Model
     public function tclientetcc(){
         return $this->hasOne('App\Models\Genericas\TCliente', 'ter_id', 'idTercero');
     }
+=======
+    public function Cliente()
+    {
+        return $this->hasOne('App\Models\Genericas\TCliente', 'ter_id', 'idTercero');
+    }
+
+    public function usuario(){
+        return $this->hasOne('App\Models\aplicativos\User', 'idTerceroUsuario', 'idTercero');
+    }
+
+>>>>>>> 15e2bbb341e121797b1900b80e2118a917ec7ace
 }

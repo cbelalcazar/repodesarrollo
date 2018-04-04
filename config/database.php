@@ -131,6 +131,7 @@ return [
             'engine' => 'InnoDB',
         ],
 
+<<<<<<< HEAD
         'intsce' => [
             'driver' => 'sqlsrv',
             'host' => env('DB_SQL_WMS_HOST', '172.100.103.70'),
@@ -157,6 +158,13 @@ return [
             'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', '3306'),
             'database' => 'bd_conectores_siesa',
+=======
+        'bd_controlinversion' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => 'bd_controlinversion',
+>>>>>>> 15e2bbb341e121797b1900b80e2118a917ec7ace
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
             'charset' => 'utf8',
@@ -165,6 +173,7 @@ return [
             'strict' => true,
             'engine' => 'InnoDB',
         ],
+<<<<<<< HEAD
 
 
         'conectortccws' => [
@@ -195,6 +204,8 @@ return [
             'strict' => true,
             'engine' => 'InnoDB',
         ],
+=======
+>>>>>>> 15e2bbb341e121797b1900b80e2118a917ec7ace
     ],
 
     /*

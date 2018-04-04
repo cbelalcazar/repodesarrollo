@@ -2,7 +2,11 @@
  * Funciones generales
  */
 // Declaración de Modulo AngularJs
+<<<<<<< HEAD
 var app = angular.module('aplicativos', ['angular.filter','ngMaterial','ngSanitize','datatables','ui.calendar', 'btorfs.multiselect', 'angular-js-xlsx']);
+=======
+var app = angular.module('aplicativos', ['angular.filter','ngMaterial','ngSanitize','datatables','ui.calendar', 'angular-js-xlsx']);
+>>>>>>> 15e2bbb341e121797b1900b80e2118a917ec7ace
 
 //Declaracion de la paleta de colores para Angular Material
 app.config(function($mdThemingProvider){

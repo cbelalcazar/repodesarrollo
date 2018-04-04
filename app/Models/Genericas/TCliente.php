@@ -29,6 +29,7 @@ class TCliente extends Model
         'cli_subcanal',
     ];
 
+<<<<<<< HEAD
     public function sucursalestcc(){
       return $this->hasMany('App\Models\Genericas\TSucursal','cli_id','cli_id');
     }
@@ -36,4 +37,10 @@ class TCliente extends Model
     public function tercerotcc(){
         return $this->hasOne('App\Models\Genericas\Tercero','idTercero', 'ter_id');
     }
+=======
+    public function Sucursales()
+    {
+        return $this->hasOne('App\Models\Genericas\TSucursal', 'cli_id', 'cli_id')->where('suc_txt_estado', '=', 'ACTIVO')->orderBy('suc_num_codigo');
+    }    
+>>>>>>> 15e2bbb341e121797b1900b80e2118a917ec7ace
 }
