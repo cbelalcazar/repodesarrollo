@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 Route::get('login', ['uses' => 'Auth\LoginController@showLoginForm', 'as' => 'login']);
-Route::get('loginProv', ['uses' => 'Auth\LoginController@showLoginFormProv', 'as' => 'login']);
+// Route::get('loginProv', ['uses' => 'Auth\LoginController@showLoginFormProv', 'as' => 'login']);
 Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', ['uses' => 'Auth\LoginController@logout', 'as' => 'logout']);
 Route::get('logout', ['uses' => 'Auth\LoginController@logout', 'as' => 'logout']);

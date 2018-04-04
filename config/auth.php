@@ -70,11 +70,6 @@ return [
             'model' => App\Models\Aplicativos\User::class,
         ],
 
-        'users' => [
-            'driver' => 'eloquent',
-             'model' => App\Models\bd_proveedores\User::class,
-        ],
-
     ],
 
     /*
