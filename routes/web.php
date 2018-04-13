@@ -62,9 +62,10 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('formValidacionCiegoGetInfo', 'recepcionProveedores\docEntradaAlmacenController@formValidacionCiegoGetInfo');
 		Route::post('guardarEntrada', 'recepcionProveedores\docEntradaAlmacenController@guardarEntrada');
 		Route::post('generarProgramacion', 'recepcionProveedores\docEntradaAlmacenController@generarProgramacion');
-
+    	// Referencias programables
 		Route::resource('refProgramablesRecep', 'recepcionProveedores\RefProgramablesRecepController');		
 		Route::get('getInfoRefeProgramRecep', 'recepcionProveedores\RefProgramablesRecepController@getInfo');
+
 	});
 
 
